@@ -11,6 +11,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "engine:v2:lab": "node --import tsx dev/manualCandidateLab.ts",
-    "test": "vitest --run --config vitest.config.ts"
+    "test": "vitest --run --config vitest.config.ts",
+    "test:cagt": "vitest --run --config vitest.config.ts tests/unit/cagtCore.test.ts tests/unit/cagtAdaptersAndCohorts.test.ts",
+    "test:cagt:stress": "vitest --run --config vitest.config.ts tests/unit/cagtStress.test.ts",
+    "report:cagt": "node --import tsx dev/reportCagt.ts"
   }
 }

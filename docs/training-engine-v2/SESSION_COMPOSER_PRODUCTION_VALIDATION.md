@@ -34,3 +34,7 @@ The production matrix contains 16 named scenarios, 11 fixed-shell users, multipl
 ## Planner Regression
 
 Real `SessionAllocationDirective -> Planner -> Candidate -> Composer -> SessionSkeleton` tests now prove the upstream adapter preserves athlete, outcome, phase, assessment, pain, safety, equipment, history, fatigue, and timestamp ownership. Existing direct-Composer fixtures remain byte-identical and the combined kernel fingerprint above is unchanged.
+
+## CAGT Gate 8
+
+Session Composer is production authority at Gate 8 for required coverage, identity selection, shared need coverage, sections/roles, anchors, marginal value, redundancy, unresolved requirements, and search completeness. CAGT uses the production composition API. Shared exercise identity may pass; random variation cannot. Composer differences never rescue failed Week, materialization, Intent, or Candidate gates.

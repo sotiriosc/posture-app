@@ -1,0 +1,2515 @@
+{
+  "version": "1.0.0",
+  "method": "Causal Adaptation Gate Testing is a hierarchical counterfactual testing method in which a controlled input change is assigned to its canonical owner, the earliest layer legally permitted to respond, the latest layer by which a meaningful response is required, and the output dimensions allowed to change. Upstream invariants are protected, expected convergence is distinguished from unresponsiveness, and downstream variation cannot compensate for an earlier causal failure.",
+  "classification": "CAGT_READY_FOR_POLICY_ADMISSION_USE",
+  "gateSummary": [
+    {
+      "gate": "gate_0_scenario_truth",
+      "authority": "PRODUCTION",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_1_weekly_responsibility_truth",
+      "authority": "DESIGN_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_2_whole_week_allocation_coverage",
+      "authority": "DESIGN_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_3_weekly_causal_adaptation",
+      "authority": "DESIGN_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_4_weekly_duplication_distribution",
+      "authority": "DESIGN_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_5_reservation_day_materialization",
+      "authority": "DESIGN_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_6_session_intent_truth",
+      "authority": "PRODUCTION",
+      "pass": 31,
+      "justifiedConvergence": 1,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_7_candidate_intelligence_truth",
+      "authority": "PRODUCTION",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_8_session_composition_truth",
+      "authority": "PRODUCTION",
+      "pass": 31,
+      "justifiedConvergence": 1,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_9_prescription_handoff_truth",
+      "authority": "HANDOFF_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_10_sequencing_duration_handoff_truth",
+      "authority": "HANDOFF_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_11_execution_response_foundation",
+      "authority": "FOUNDATION_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_12_all_horizon_sessions",
+      "authority": "DESIGN_ONLY",
+      "pass": 27,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    },
+    {
+      "gate": "gate_13_post_prescription_weekly_validation",
+      "authority": "NOT_IMPLEMENTED",
+      "pass": 0,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 32
+    },
+    {
+      "gate": "gate_14_full_prescribed_program_comparison",
+      "authority": "NOT_IMPLEMENTED",
+      "pass": 0,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 32
+    },
+    {
+      "gate": "gate_15_phase_continuity",
+      "authority": "NOT_IMPLEMENTED",
+      "pass": 0,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 32
+    },
+    {
+      "gate": "gate_16_longitudinal_adaptation",
+      "authority": "FOUNDATION_ONLY",
+      "pass": 32,
+      "justifiedConvergence": 0,
+      "deferred": 0,
+      "failStop": 0,
+      "notReached": 0
+    }
+  ],
+  "curatedPairCount": 32,
+  "curatedPassCount": 32,
+  "firstMeaningfulDifferences": [
+    {
+      "contractId": "identical-meaningful-facts",
+      "expectedWindow": [
+        null,
+        null
+      ],
+      "firstMaterialDifference": null,
+      "classification": "EXPECTED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "athlete-id-only",
+      "expectedWindow": [
+        null,
+        null
+      ],
+      "firstMaterialDifference": null,
+      "classification": "EXPECTED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "athlete-label-only",
+      "expectedWindow": [
+        null,
+        null
+      ],
+      "firstMaterialDifference": null,
+      "classification": "EXPECTED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "prose-only",
+      "expectedWindow": [
+        null,
+        null
+      ],
+      "firstMaterialDifference": null,
+      "classification": "EXPECTED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "irrelevant-pain",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_7_candidate_intelligence_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "relevant-shoulder",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_9_prescription_handoff_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "low-back-sensitivity",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_9_prescription_handoff_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "knee-sensitivity",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_9_prescription_handoff_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "strength-vs-hypertrophy",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_7_candidate_intelligence_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "strength-vs-general-fitness",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "pain-aware-same-goal",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_7_candidate_intelligence_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "direct-calf-priority",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "high-assessment",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "low-assessment",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "productive-press-anchor",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "productive-row-anchor",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "adverse-response",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_9_prescription_handoff_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "expected-gym-actual-home",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "raw-minutes-same-capacity",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_6_session_intent_truth"
+      ],
+      "firstMaterialDifference": null,
+      "classification": "JUSTIFIED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "structural-capacity",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "plateau",
+      "expectedWindow": [
+        "gate_16_longitudinal_adaptation",
+        "gate_16_longitudinal_adaptation"
+      ],
+      "firstMaterialDifference": "gate_16_longitudinal_adaptation",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "explicit-block",
+      "expectedWindow": [
+        "gate_7_candidate_intelligence_truth",
+        "gate_7_candidate_intelligence_truth"
+      ],
+      "firstMaterialDifference": "gate_7_candidate_intelligence_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "missed-without-reallocation",
+      "expectedWindow": [
+        "gate_2_whole_week_allocation_coverage",
+        "gate_2_whole_week_allocation_coverage"
+      ],
+      "firstMaterialDifference": "gate_2_whole_week_allocation_coverage",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "explicit-reallocation",
+      "expectedWindow": [
+        "gate_2_whole_week_allocation_coverage",
+        "gate_2_whole_week_allocation_coverage"
+      ],
+      "firstMaterialDifference": "gate_2_whole_week_allocation_coverage",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "same-four-day-different-responsibility",
+      "expectedWindow": [
+        "gate_1_weekly_responsibility_truth",
+        "gate_1_weekly_responsibility_truth"
+      ],
+      "firstMaterialDifference": "gate_1_weekly_responsibility_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "same-framework-different-support",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_6_session_intent_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "framework-identical",
+      "expectedWindow": [
+        null,
+        null
+      ],
+      "firstMaterialDifference": null,
+      "classification": "EXPECTED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "framework-material-change",
+      "expectedWindow": [
+        "gate_1_weekly_responsibility_truth",
+        "gate_1_weekly_responsibility_truth"
+      ],
+      "firstMaterialDifference": "gate_1_weekly_responsibility_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "capacity-main-session",
+      "expectedWindow": [
+        "gate_6_session_intent_truth",
+        "gate_6_session_intent_truth"
+      ],
+      "firstMaterialDifference": "gate_6_session_intent_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "same-reps-permitted",
+      "expectedWindow": [
+        "gate_1_weekly_responsibility_truth",
+        "gate_1_weekly_responsibility_truth"
+      ],
+      "firstMaterialDifference": "gate_1_weekly_responsibility_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "same-exercise-justified",
+      "expectedWindow": [
+        "gate_8_session_composition_truth",
+        "gate_8_session_composition_truth"
+      ],
+      "firstMaterialDifference": null,
+      "classification": "JUSTIFIED_CONVERGENCE",
+      "firstFailingGate": null,
+      "noRescue": true
+    },
+    {
+      "contractId": "compound-real-user",
+      "expectedWindow": [
+        "gate_1_weekly_responsibility_truth",
+        "gate_1_weekly_responsibility_truth"
+      ],
+      "firstMaterialDifference": "gate_1_weekly_responsibility_truth",
+      "classification": "MATERIAL_ADAPTATION",
+      "firstFailingGate": null,
+      "noRescue": true
+    }
+  ],
+  "fourDayCohort": {
+    "size": 10,
+    "everyRowHasFourConfirmedOpportunities": true,
+    "frameworkCollisionRate": 0.7,
+    "adaptiveContentCollisionRate": 0.4,
+    "rows": [
+      {
+        "id": "strength",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "strength",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "21791fe62a6cac26c0ff48d8dfb2a78611ca1aba4e09a8580e0cc22600d1a6d0"
+      },
+      {
+        "id": "hypertrophy",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "hypertrophy",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "46494de35c84c3861fdebb53fe023764faeb26196884644c8d8810f417485e07"
+      },
+      {
+        "id": "general-fitness",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 3,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "general_fitness",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 2,
+              "target": {
+                "targetMovementRoles": [
+                  "squat"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "quads"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "knee"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-3",
+              "responsibilities": [
+                [
+                  "weekly-objective:squat",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities",
+            "weekly-objective:squat": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "a4c93b4bb28eeaae45e653de0f9616f547405f20010a5d61358efd108ee73ddc"
+      },
+      {
+        "id": "direct-calf",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "hypertrophy",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "direct_action_development",
+              "priority": "preferred",
+              "order": 2,
+              "target": {
+                "targetMovementRoles": [
+                  "accessory"
+                ],
+                "targetActionFunctions": [
+                  "ankle_plantar_flexion"
+                ],
+                "targetMuscles": [
+                  "calves"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "ankle"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ],
+                [
+                  "weekly-objective:calf",
+                  "direct_accessory"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities",
+            "weekly-objective:calf": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "d3c48551c4252ca70e5bea77097a4ae83ef6aa63c4dada50e14068ed2bcf33cd"
+      },
+      {
+        "id": "shoulder-sensitive",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "strength",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 2,
+              "target": {
+                "targetMovementRoles": [
+                  "squat"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "quads"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "knee"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:squat",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:pull": "allocated_target_opportunities",
+            "weekly-objective:squat": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "b384899990044c0d180a4b6fddcfd17f6bf2db84deba624a6fd9e932f6fe2b75"
+      },
+      {
+        "id": "low-back-sensitive",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "strength",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "21791fe62a6cac26c0ff48d8dfb2a78611ca1aba4e09a8580e0cc22600d1a6d0"
+      },
+      {
+        "id": "assessment",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 1,
+          "dominantResponsibilityPattern": [
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "posture_and_movement_quality",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "c721a5f13da6f81a15e45b11a58256e8d68486aa966e3f3c28f6171fb8ca17fc"
+      },
+      {
+        "id": "productive-continuity",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "strength",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "21791fe62a6cac26c0ff48d8dfb2a78611ca1aba4e09a8580e0cc22600d1a6d0"
+      },
+      {
+        "id": "adverse-response",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 2,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "strength",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "21791fe62a6cac26c0ff48d8dfb2a78611ca1aba4e09a8580e0cc22600d1a6d0"
+      },
+      {
+        "id": "condensed-one-day",
+        "confirmedOpportunities": 4,
+        "framework": {
+          "opportunityCount": 4,
+          "reservationCount": 3,
+          "dominantResponsibilityPattern": [
+            "dominant_main",
+            "dominant_main",
+            "dominant_main"
+          ],
+          "stableAnchorPattern": []
+        },
+        "weeklyResponsibility": {
+          "status": "weekly_intent_planned",
+          "goal": "general_fitness",
+          "secondaryGoals": [],
+          "contextModes": [],
+          "objectives": [
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 0,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_push"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "chest"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 1,
+              "target": {
+                "targetMovementRoles": [
+                  "horizontal_pull"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "mid_back"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "shoulder"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            },
+            {
+              "purpose": "movement_development",
+              "priority": "required",
+              "order": 2,
+              "target": {
+                "targetMovementRoles": [
+                  "squat"
+                ],
+                "targetActionFunctions": [],
+                "targetMuscles": [
+                  "quads"
+                ],
+                "muscleRequirement": "primary_required",
+                "targetBodyRegions": [
+                  "knee"
+                ]
+              },
+              "frequency": {
+                "minimumAllocatedSessions": 1,
+                "targetAllocatedSessions": 1,
+                "softMaximumAllocatedSessions": 1,
+                "source": "explicit_owner_decision",
+                "sourceRef": "NON_PRODUCTION_POLICY_FIXTURE:frequency",
+                "provenance": {
+                  "sourceType": "non_production_fixture",
+                  "sourceRef": "fixture-frequency",
+                  "evidenceBasis": [
+                    "Explicit deterministic design-lab fixture; not production programming policy."
+                  ],
+                  "recordedAt": "2026-08-12T18:00:00-04:00",
+                  "reviewStatus": "needs_review",
+                  "truthState": "planned_allocation"
+                }
+              },
+              "doseState": "pending_prescription_policy",
+              "policyState": "resolved_for_allocation"
+            }
+          ],
+          "unresolved": []
+        },
+        "weeklyAllocation": {
+          "status": "allocation_designed",
+          "reservations": [
+            {
+              "opportunityId": "day-1",
+              "responsibilities": [
+                [
+                  "weekly-objective:pull",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-2",
+              "responsibilities": [
+                [
+                  "weekly-objective:push",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            },
+            {
+              "opportunityId": "day-3",
+              "responsibilities": [
+                [
+                  "weekly-objective:squat",
+                  "dominant_main"
+                ]
+              ],
+              "capacity": "standard",
+              "equipment": "capability_snapshot"
+            }
+          ],
+          "satisfaction": {
+            "weekly-objective:push": "allocated_target_opportunities",
+            "weekly-objective:pull": "allocated_target_opportunities",
+            "weekly-objective:squat": "allocated_target_opportunities"
+          },
+          "recovery": [],
+          "reallocation": "not_required"
+        },
+        "adaptiveSignature": "a4c93b4bb28eeaae45e653de0f9616f547405f20010a5d61358efd108ee73ddc"
+      }
+    ]
+  },
+  "duplication": {
+    "frameworkRecurrence": 0.7,
+    "weeklyObjectiveRecurrence": 0.4,
+    "allocationRecurrence": 0.5,
+    "selectedAnchorRecurrence": null,
+    "supportingWorkRecurrence": null,
+    "exactFullSessionRecurrence": null,
+    "optionalAccessoryRecurrence": null,
+    "assessmentWorkRecurrence": null,
+    "p0Recurrence": null,
+    "exerciseIdentityRecurrence": null,
+    "prescriptionHandoffRecurrence": null,
+    "repRecurrence": null,
+    "nullMeaning": "future_or_unavailable_gate_observe_only",
+    "classifications": [
+      "PRODUCTIVE_STABILITY",
+      "EXPECTED_FRAMEWORK",
+      "JUSTIFIED_SHARED_SOLUTION",
+      "OPTIONAL_REDUNDANCY",
+      "ASSESSMENT_OVERREPETITION",
+      "TEMPLATE_COLLISION",
+      "UNKNOWN_REQUIRES_REVIEW"
+    ]
+  },
+  "noRescue": {
+    "classification": "DOWNSTREAM_RESCUE_REJECTED",
+    "firstFailingGate": "gate_1_weekly_responsibility_truth",
+    "downstreamRescueAttempted": true,
+    "downstreamDifferencesScored": false,
+    "shadowUnscored": true
+  },
+  "policyCalibration": {
+    "adapterStatus": "DESIGN_EVIDENCE_PASS",
+    "candidateCount": 9,
+    "consequenceCount": 13,
+    "numericPolicyActivated": false,
+    "candidates": [
+      {
+        "id": "participation",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "strength-practice",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "muscle-distribution",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "direct-accessory",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "assessment",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "spacing",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "soft-ceiling",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "constrained-week",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      },
+      {
+        "id": "phase-applicability",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION",
+        "requiredObjectiveCoverage": "evaluated_without_numeric_activation",
+        "frameworkConvergence": "OBSERVE_ONLY",
+        "adaptiveResponsibilityConvergence": "contract_required",
+        "underAdaptation": 0,
+        "overAdaptation": 0,
+        "objectiveDuplication": "reported",
+        "assessmentRecurrence": "reported",
+        "optionalBloat": "reported",
+        "constrainedWeekBehavior": "required_before_preferred_before_optional",
+        "unresolvedPolicyState": "NUMERIC_POLICY_NOT_APPROVED"
+      }
+    ],
+    "consequences": [
+      {
+        "id": "one-vs-two-opportunities",
+        "fixtureA": "minimum=1,target=1",
+        "fixtureB": "minimum=1,target=2",
+        "observedConsequence": "The second fixture reserves another developmental opportunity when feasible; neither proves more dose.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "primary-vs-secondary-priority",
+        "fixtureA": "required push before preferred pull",
+        "fixtureB": "required pull before preferred push",
+        "observedConsequence": "Constrained allocation preserves the explicitly required responsibility first.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "direct-vs-secondary-development",
+        "fixtureA": "explicit direct action objective",
+        "fixtureB": "meaningful-secondary feasibility only",
+        "observedConsequence": "Only the direct objective owns an allocation responsibility; secondary contribution awaits Prescription credit review.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "recovery-spacing-contrast",
+        "fixtureA": "separation=1 opportunity",
+        "fixtureB": "separation=2 opportunities",
+        "observedConsequence": "The legal assignment set changes; exact recovery sufficiency remains unknown without dose.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "strict-minimum-vs-flexible-target",
+        "fixtureA": "required minimum",
+        "fixtureB": "preferred target",
+        "observedConsequence": "Hard validity protects the minimum while target coverage remains later in the lexicographic vector.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "soft-ceiling",
+        "fixtureA": "at target",
+        "fixtureB": "above soft maximum",
+        "observedConsequence": "The latter returns review state and duplication burden instead of a raw-count reward.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "constrained-vs-expanded",
+        "fixtureA": "condensed opportunities",
+        "fixtureB": "expanded opportunities",
+        "observedConsequence": "The constrained fixture omits infeasible optional work while preserving required responsibilities.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "participation-vs-objective-frequency",
+        "observedConsequence": "Public-health participation days do not create every-objective frequency.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "week-goal-vs-session-goal",
+        "observedConsequence": "Copying the primary Week goal misclassifies explicitly secondary-goal sessions.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "capacity-main-support",
+        "observedConsequence": "A required allocated capacity responsibility can truthfully dominate without a strength main.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "order-vs-elapsed-spacing",
+        "observedConsequence": "Opportunity order cannot establish elapsed recovery time.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "profile-vs-confirmed-horizon",
+        "observedConsequence": "Profile defaults stay tentative and yield to confirmed current facts.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      },
+      {
+        "id": "volume-vs-frequency",
+        "observedConsequence": "Set-dose evidence cannot become allocation-frequency authority.",
+        "productionDecision": "NOT_SELECTED_FOR_PRODUCTION"
+      }
+    ]
+  },
+  "productHorizon": {
+    "adapterStatus": "DESIGN_EVIDENCE_PASS",
+    "scenarioCount": 23,
+    "failures": [],
+    "wrongLayerEffects": 0,
+    "calendarCreatesResponsibility": false,
+    "profileDefaultConfirmedAutomatically": false,
+    "equipmentChangesGoals": false,
+    "completedHistoryRewritten": false,
+    "identicalCurrentFactsConverge": true,
+    "factualDimensionsOnly": true
+  },
+  "humanLikeChains": [
+    {
+      "id": "ordinary-successful-week",
+      "stages": [
+        "confirmed_horizon",
+        "weekly_responsibilities",
+        "reservations",
+        "materialized_day",
+        "session_intent",
+        "candidates",
+        "session_skeleton",
+        "response_foundation"
+      ],
+      "result": "FOUNDATION_EVIDENCE_PASS"
+    },
+    {
+      "id": "equipment-changed-today",
+      "stages": [
+        "expected_gym",
+        "actual_home",
+        "truthful_materialization_or_reallocation"
+      ],
+      "unrelatedGoalChanged": false,
+      "result": "DESIGN_EVIDENCE_PASS"
+    },
+    {
+      "id": "pain-during-realization",
+      "stages": [
+        "immutable_original_plan",
+        "response_recorded",
+        "rightful_next_review"
+      ],
+      "permanentBanInvented": false,
+      "result": "FOUNDATION_EVIDENCE_PASS"
+    },
+    {
+      "id": "missed-session",
+      "stages": [
+        "immutable_completed_history",
+        "explicit_reallocation"
+      ],
+      "automaticDoubling": false,
+      "result": "DESIGN_EVIDENCE_PASS"
+    },
+    {
+      "id": "same-framework-different-users",
+      "stages": [
+        "shared_four_day_framework",
+        "different_responsibilities",
+        "productive_anchor_stability"
+      ],
+      "fakeUniqueness": false,
+      "result": "DESIGN_EVIDENCE_PASS"
+    },
+    {
+      "id": "irrelevant-difference",
+      "stages": [
+        "label_or_prose_change",
+        "semantic_equivalence"
+      ],
+      "result": "PASS_WITH_EXPECTED_CONVERGENCE"
+    }
+  ],
+  "stress": {
+    "cases": 10000,
+    "failures": [],
+    "digest": "08d8292334119ab94dc06142b57a92c3a01aacbc8ad99c22bdd2f380aafb14d1"
+  },
+  "pipelines": {
+    "cases": 1000,
+    "failures": [],
+    "digest": "7c31cb06b15099da29c525461fd75db938269ce04a4a4dd36c5bc419edc0bf32"
+  },
+  "metamorphic": {
+    "orderPermutationStable": true,
+    "reasonMutationInert": true,
+    "sourceEvidencePermutationStable": true,
+    "catalogOrderPermutationStable": true,
+    "labelAndIdMutationInert": true,
+    "equivalentFactDuplicationStable": true,
+    "thresholdMutationCannotCreatePass": true,
+    "shadowModeUnscored": true,
+    "searchInconclusiveNotConvergence": true
+  },
+  "thresholdRegistry": [
+    {
+      "metric": "invalid_counterfactual_fixture",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "undeclared_behavioral_field_changes",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "prose_label_behavioral_effects",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "wrong_layer_effects",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "downstream_rescue_accepted",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "material_fact_unresponsive",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "duplicate_identity_in_session",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "optional_zero_marginal_value_assignment",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "assessment_without_authority",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "silent_required_omission",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "hidden_clock_or_order_dependence",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "random_output_variation",
+      "kind": "HARD_INVARIANT",
+      "threshold": 0,
+      "owner": "cagt_v1_owner",
+      "rationale": "A causal integrity violation is never tolerated.",
+      "baselineDistribution": "zero required",
+      "applicableCohort": "all_cagt_pairs",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "inspect declared contract and fixture diff",
+      "falseNegativeReview": "mutation test must trip the invariant"
+    },
+    {
+      "metric": "framework_collision_rate",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "anchor_recurrence",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "exact_rep_sameness",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "same_exercise_rate",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "exact_full_session_collision_rate",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "optional_accessory_recurrence",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    },
+    {
+      "metric": "unique_program_count",
+      "kind": "OBSERVE_ONLY",
+      "threshold": null,
+      "owner": "future_policy_owner",
+      "rationale": "Sameness is not failure without a causal contract.",
+      "baselineDistribution": "captured by CAGT V1",
+      "applicableCohort": "reported_cohorts",
+      "effectiveVersion": "1.0.0",
+      "falsePositiveReview": "not applicable until promoted",
+      "falseNegativeReview": "review distributions before any promotion"
+    }
+  ],
+  "observedMetrics": [
+    "framework_collision_rate",
+    "weekly_responsibility_collision_rate",
+    "allocation_collision_rate",
+    "session_need_collision_rate",
+    "candidate_pool_collision_rate",
+    "session_skeleton_collision_rate",
+    "anchor_recurrence",
+    "supporting_work_recurrence",
+    "exact_session_recurrence",
+    "p0_recurrence",
+    "optional_accessory_recurrence",
+    "assessment_recurrence",
+    "same_rep_placeholder_rate",
+    "first_material_difference_gate_distribution"
+  ],
+  "productionBehaviorChanged": false,
+  "limitations": [
+    "post_prescription_week_validation_not_implemented",
+    "full_prescribed_program_comparison_not_implemented",
+    "phase_continuity_not_implemented",
+    "longitudinal_decision_authority_not_implemented",
+    "week_and_horizon_evidence_design_only"
+  ],
+  "reportFingerprint": "23475a064fa348c797e451e15792ae132eb3c8c5a7773e835b4e85be00d3ad9a"
+}

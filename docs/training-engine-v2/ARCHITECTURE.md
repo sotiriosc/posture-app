@@ -233,3 +233,7 @@ The Week design calls the frozen Planner, Candidate, and Composer stack as an op
 # Product Horizon Adapter Design Layer (2026-08-12)
 
 The private, unexported Product Adapter contracts resolve structured factual sources into tentative/confirmed Week horizons and immutable revisions, then collect day-of actual context. They contain no allocation, objectives, split, reservations, exercise selection, dose, spacing invention, or missed-session compensation. Overall readiness is `TARGETED_WEEK_POLICY_DECISIONS_REMAIN`.
+
+# CAGT Developer Architecture (2026-08-12)
+
+`tests/cagt` contains contracts, canonical diffing/signatures, ordered gates, runner, thresholds, cohorts, Week-policy/Product adapters, human chains, deterministic reports, and stress tools. It imports existing helpers and production APIs but is absent from `src/index.ts` and application runtime. No later gate can score after `FAIL_STOP`; optional shadow output is diagnostic and invalid upstream context.

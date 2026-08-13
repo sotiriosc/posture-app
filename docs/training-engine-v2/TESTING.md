@@ -125,3 +125,7 @@ The design tests use explicit timestamp `2026-08-12T18:00:00-04:00` and seed `0x
 # Policy And Horizon Validation (2026-08-12)
 
 New suites cover sole `capacity_main`, competing dominant responsibilities, session-goal propagation/conflicts, missing and conflicting policy, 23 Product scenarios, source precedence/conflicts, equipment resolution, immutable revisions, expected-versus-actual context, same-profile current-week differentiation, anti-template boundaries, 13 consequence rows, and 10,000 fixed-seed cases (`49f795108a2cc574e31352c6666c416b491af3d30c1303844d781d87666c9e14`). Twenty-two policy/horizon fingerprints and the updated Week/Planner fingerprints are frozen.
+
+# CAGT Commands And Coverage
+
+Use `npm run test:cagt --workspace=@praxis/training-engine-v2`, `npm run test:cagt:stress --workspace=@praxis/training-engine-v2`, and `npm run report:cagt --workspace=@praxis/training-engine-v2`. CAGT covers Gate 0 fixture truth, ordered authority, response windows, convergence, under/over-adaptation, no rescue, shadow diagnostics, four-day frameworks, duplication, policy/horizon adapters, human chains, 10,000 pair stress, 1,000 pipeline stress, metamorphic mutations, and 23 frozen fingerprints.

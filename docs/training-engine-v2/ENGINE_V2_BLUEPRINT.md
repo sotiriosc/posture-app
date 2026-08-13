@@ -2013,3 +2013,7 @@ The design classification is `WEEK_LAYER_DESIGN_READY_FOR_OWNER_POLICY_APPROVAL`
 # 2026-08-12 Policy And Product Horizon Amendment
 
 Owner semantics, authoritative evidence review, typed policy/conflict design, Product horizon/revision/day-of contracts, and session-specific goal ownership are recorded. Numeric policies and Week production remain unauthorized. The only production change is Planner recognition of sole required `capacity_main`; Candidate, catalog, Knowledge, Composer, public API, and all other Planner behavior remain invariant.
+
+# Causal Adaptation Gate Testing V1
+
+CAGT is private developer tooling that assigns each controlled fact change to an owner and earliest/latest response window across immutable Gate 0-16 order. It distinguishes shared framework from adaptive content, hard-stops the scored path at first failure, and rejects downstream rescue. Production gates use production APIs; Week/Product results remain design evidence; Prescription/Sequencing remain handoff evidence; unavailable future gates never pass.

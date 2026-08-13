@@ -77,3 +77,7 @@ The Planner adds an 18-user fixed shell and a 10+ same-experience/equipment regr
 The design-only Week lab adds a separate 18-user fixed shell, including 12 users sharing experience and equipment. Explicit weekly priority changes intent; current opportunities, completion, expected equipment/capacity, and productive continuity can change allocation; actual-day divergence changes materialization or requests reallocation; and downstream-only facts do not force cosmetic Week differences.
 
 The matrix reports material intent differences, material allocation differences, same responsibility in different sessions, justified convergence, policy-required, current-availability-required, reallocation, wrong-layer effects, and unresponsive material inputs. No tested row has a wrong-layer or unresponsive-material classification. This evidence remains non-production.
+
+## CAGT Formalization (2026-08-12)
+
+CAGT operationalizes this counterfactual boundary with predeclared changed paths, owner, response window, invariant gates, and permitted dimensions. It distinguishes expected/justified convergence from unresponsiveness, detects over-adaptation before an owner has authority, and prevents lower-level novelty from rescuing missing higher-level personalization.

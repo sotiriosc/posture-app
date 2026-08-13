@@ -55,3 +55,7 @@ Intentional changes are limited to Planner ontology/contracts, `AssessmentSignal
 - Planner ontology, ownership, boundary, fixed-shell, integration, unresolved-context, anti-bloat, and 10,000-case deterministic assertions: passed.
 
 PR #86 remains draft and unmerged.
+
+## CAGT Gate 6
+
+Session Intent Planner is production authority at Gate 6 for needs, priority, section, role, admission, preparation, assessment enrichment, continuity, and anti-bloat. CAGT calls the production API and preserves fingerprint `b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab`. Session-level changes cannot compensate for an incorrect upstream Week responsibility.

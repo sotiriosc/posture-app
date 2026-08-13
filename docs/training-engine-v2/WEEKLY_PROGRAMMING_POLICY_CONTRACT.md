@@ -30,3 +30,7 @@ Before production implementation, an accountable owner must approve rule semanti
 ## Reviewed Rule Amendment (2026-08-12)
 
 Owner semantics are approved, but values are not. `rules` is now a compact typed union covering participation, objective frequency, direct ownership, assessment recurrence, spacing, soft ceilings, constrained horizons, phase applicability, and conflict resolution. Missing frequency authority returns `WEEKLY_POLICY_REQUIRED`; equal unresolved rules return `WEEKLY_POLICY_CONFLICT`. The consequence lab now has 13 comparisons, all numeric candidates `NOT_SELECTED_FOR_PRODUCTION`.
+
+## CAGT Admission Requirement
+
+Before a numeric rule gains production authority it must pass CAGT weekly truth, allocation coverage, causal response, framework/adaptive separation, duplication, anti-bloat, and constrained-week gates for every applicable cohort. A green design-only gate is owner evidence, not production authorization.

@@ -15,3 +15,7 @@ Status: all candidates are `NOT_SELECTED_FOR_PRODUCTION`.
 | Phase applicability | Select explicitly scoped policy variants | Reviewed phase scope | `LONGITUDINAL_RESPONSE_DEPENDENT` | Avoids multipliers; risks phase templates | Owner policy plus Longitudinal evidence |
 
 No row selects a number, credits a set, changes dose, or authorizes production search bounds.
+
+## CAGT Calibration
+
+All nine candidate areas run through the CAGT policy envelope with thirteen consequence comparisons. Coverage, convergence, under/over-adaptation, duplication, recurrence, bloat, constrained-week behavior, and unresolved states are reported. Every candidate remains `NOT_SELECTED_FOR_PRODUCTION`; CAGT supplies evidence and does not choose values.

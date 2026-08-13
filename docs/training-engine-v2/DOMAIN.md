@@ -208,3 +208,7 @@ Weekly development purposes are movement, muscle, direct action, capacity, condi
 # Policy And Horizon Domain Amendment (2026-08-12)
 
 Reviewed policy now has compact typed rules and deterministic required/conflict outcomes. Objectives have structured goal relationships; reservations have session-specific goals. Product source facts, explicit time windows, confirmation states, equipment records, horizon revisions, and day-of context remain private design types. Recovery readiness, external load, accessibility, and broad conditioning retain future owners.
+
+# CAGT Test Domain
+
+CAGT adds no production domain concepts. Test-only contracts name canonical fact owner, materiality, response window, invariants, difference dimensions, convergence reasons, framework/adaptive relationships, authority expectation, and no-rescue requirement. Authority is explicitly `PRODUCTION`, `DESIGN_ONLY`, `HANDOFF_ONLY`, `FOUNDATION_ONLY`, or `NOT_IMPLEMENTED`.

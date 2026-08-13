@@ -83,3 +83,7 @@ Exhaustive enumeration is the small-case oracle. A future production implementat
 ## Policy Resolution Amendment (2026-08-12)
 
 Policy specificity is resolved before optimization. Explicitly declared specific overrides may replace broad defaults; equally authoritative conflicts return `WEEKLY_POLICY_CONFLICT`, and missing frequency authority returns `WEEKLY_POLICY_REQUIRED`. Soft maxima remain lexicographic review evidence, not hard pruning. Product source precedence changes facts only, never objective priority.
+
+## CAGT Admission Boundary
+
+Optimization output cannot rescue an earlier causal failure. A future search or policy rule must pass every gate it can affect, preserve upstream invariants, expose inconclusive search honestly, and avoid diversity objectives. Framework/adaptive collision metrics remain observed distributions, not optimizer terms or additive scores.
