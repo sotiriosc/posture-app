@@ -27,3 +27,7 @@ Statuses are `reserved`, `completed_immutable`, `missed_requires_reallocation`, 
 - Assessment or optional responsibilities are not repeated without unique marginal value.
 - A fixed-split label cannot create, remove, or position a responsibility.
 - Actual-day divergence routes through materialization and Week reallocation.
+
+## Session Goal Amendment (2026-08-12)
+
+A reservation separately carries `weeklyPrimaryOutcomeGoal`, `weeklySecondaryOutcomeGoals`, `sessionOutcomeGoal`, and structured `sessionGoalEvidence`. It must not copy the primary Week goal into every session. The session goal comes from dominant allocated objective-to-goal evidence; conflicting evidence returns `SESSION_GOAL_CONFLICT`.

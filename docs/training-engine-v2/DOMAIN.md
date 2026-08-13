@@ -204,3 +204,7 @@ Planner authority uses `TrainingOutcomeGoal` separately from `ProgrammingContext
 Design-only Week concepts distinguish `WeekPlanningHorizon`, `WeekTrainingOpportunity`, proposed `WeeklyIntent`, `WeeklyDevelopmentObjective`, reviewed weekly policy, `SessionAllocationReservation`, materialization, and `WeekAllocationPlan`. Their truth states are explicit: expected future fact, actual current fact, planned allocation, prescribed dose, completed performance, and observed response.
 
 Weekly development purposes are movement, muscle, direct action, capacity, conditioning, assessment priority, and recovery support. Frequency intent counts allocated opportunities only. Movement/action/capacity/muscle lanes remain separate, and muscle relationships create no fractional set credit. These types are intentionally absent from the package index pending policy and domain approval.
+
+# Policy And Horizon Domain Amendment (2026-08-12)
+
+Reviewed policy now has compact typed rules and deterministic required/conflict outcomes. Objectives have structured goal relationships; reservations have session-specific goals. Product source facts, explicit time windows, confirmation states, equipment records, horizon revisions, and day-of context remain private design types. Recovery readiness, external load, accessibility, and broad conditioning retain future owners.

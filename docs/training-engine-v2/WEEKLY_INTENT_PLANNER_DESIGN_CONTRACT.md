@@ -36,3 +36,7 @@ Equivalent explicit priorities may merge only when purpose, target, and policy s
 - Global safety may block intent; local pain or assessment context only changes intent through a typed reviewed rule.
 - Productive continuity is evidence, not an immutable schedule.
 - Production implementation remains blocked on owner policy approval and product adapters for live horizon facts.
+
+## Policy And Goal Ownership Amendment (2026-08-12)
+
+Each proposed objective now records typed `primary_weekly_goal`, `secondary_weekly_goal`, or `cross_goal_support` evidence. Frequency has no hidden default: missing authority returns `FREQUENCY_POLICY_REQUIRED`. Phase selects only explicitly applicable reviewed policy and never multiplies values. Numeric policy remains unapproved.

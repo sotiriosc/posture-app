@@ -31,3 +31,7 @@ Status: mandatory pre-design gate, 2026-08-12. Every behavioral fact requires a 
 | completed response | performance/response receiver | observed | Longitudinal Adaptation updates future targets | unknown | cannot rewrite current history |
 
 Any proposed fact without one of these givers and receivers remains `UNKNOWN_REQUIRES_REVIEW`, `DEFER_TO_PRODUCT_ADAPTER`, `DEFER_TO_PRESCRIPTION`, or `DEFER_TO_LONGITUDINAL_ADAPTATION`. It is not added merely to make personalization appear broader.
+
+## Policy And Horizon Amendment (2026-08-12)
+
+Owner decisions supply policy semantics; reviewed typed rules eventually supply executable frequency authority. Product supplies confirmed/tentative opportunities, source provenance, immutable revisions, and expected equipment. Day-of Product input supplies actual availability/equipment/safety again. Week owns objective-to-goal and reservation-to-session-goal relationships. Prescription still owns dose and Longitudinal still owns adaptation/deload authority.

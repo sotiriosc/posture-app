@@ -35,3 +35,7 @@ An added reservation/objective must satisfy an unmet higher-order responsibility
 ## Deferred Evaluation
 
 Prescription owns source-exposure events, dose and realized stress. Post-Prescription Week evaluation may later aggregate planned dose without double-counting source events. Longitudinal Adaptation owns response-based target changes. None of those values participate in this allocation evaluator today.
+
+## Owner Semantics Amendment (2026-08-12)
+
+Minimum is a visible allocation floor, target is preferred distribution, and soft maximum is review evidence rather than rejection. An above-ceiling occurrence needs unique marginal value and may not worsen higher-priority constraints. Phase applies policy but never multiplies values; missing frequency policy and policy conflicts remain explicit outcomes.

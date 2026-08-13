@@ -23,3 +23,7 @@ The Session Allocation Materializer is the only proposed bridge from a future re
 - The materializer does not choose replacement responsibilities, exercises, dose, or sequence.
 
 The production Session Planner remains the authority that validates the materialized directive and builds session needs. The design lab invokes it only as an opaque downstream feasibility oracle.
+
+## Session Goal And Day-Of Amendment (2026-08-12)
+
+Materialization writes the reservation's `sessionOutcomeGoal` to the directive and rechecks actual evaluation time, availability, structural capacity, equipment, safety, cancellation/location changes, unresolved context, and product update references. Expected equipment never substitutes for actual day-of truth, and divergence cannot silently swap weekly responsibility.

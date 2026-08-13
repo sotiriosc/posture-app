@@ -79,3 +79,7 @@ Session Intent Planner and Session Composer production kernels are implemented. 
 The non-production lab recommends complete-plan lexicographic evaluation: hard safety/legality/minimum/spacing invariants first, then continuity and opaque session feasibility, priority-frequency vectors, stress concentration, equipment/capacity coherence, preferred targets, unique optional marginal value, duplication burden, and a canonical tie-break. Additive weighted totals and fixed/greedy split allocation are rejected.
 
 Exhaustive enumeration is the small-case oracle. A future production implementation should use deterministic Pareto-frontier pruning with approved bounds and must report inconclusive or unproven optimality honestly. Allocation ledger entries always carry zero dose credit; the earlier future muscle-set language is superseded by the three-ledger boundary and remains deferred to reviewed Prescription policy.
+
+## Policy Resolution Amendment (2026-08-12)
+
+Policy specificity is resolved before optimization. Explicitly declared specific overrides may replace broad defaults; equally authoritative conflicts return `WEEKLY_POLICY_CONFLICT`, and missing frequency authority returns `WEEKLY_POLICY_REQUIRED`. Soft maxima remain lexicographic review evidence, not hard pruning. Product source precedence changes facts only, never objective priority.

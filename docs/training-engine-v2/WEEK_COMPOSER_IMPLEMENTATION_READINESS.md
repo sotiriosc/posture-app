@@ -33,4 +33,4 @@ Prescription must define exercise-level source exposure identity, sets/reps/load
 
 Current production ontology has no Week owner, typed live horizon, reviewed weekly policy, external-load consequence model, acute recovery/illness adapter, standalone recovery-session contract, or prescribed/completed weekly ledgers. Capacity-only ordinary sessions also conflict with the current Planner's dominant-main requirement and need an explicit owner decision rather than a workaround.
 
-The exact next dependency is owner review and approval of the reviewed-policy question set, followed by Product Adapter horizon design. Production behavior remains unchanged.
+Owner semantics and Product Adapter design are now complete. The remaining production blockers are owner numeric policy selection, production search calibration, Product domain authorization/integration, future recovery/external-load/accessibility receivers, and a separate Week implementation/API review. Prescribed weekly validation still requires Prescription and Longitudinal contracts. Classification is `TARGETED_WEEK_POLICY_DECISIONS_REMAIN`; Week behavior remains non-production.

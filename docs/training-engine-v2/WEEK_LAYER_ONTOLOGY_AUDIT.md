@@ -50,3 +50,7 @@ Absence of a current opportunity means unknown/unavailable, never profile-defaul
 ## Required Design Corrections
 
 The design lab must separate Weekly Intent Planner, Week Allocation Composer, Session Allocation Materializer, Session Intent Planner, Candidate Intelligence, Session Composer, Prescription, post-Prescription Week evaluation, and Longitudinal Adaptation. It must model responsibilities rather than split labels, reserve future sessions without claiming current facts, and use a downstream feasibility oracle without inspecting or rewriting production internals.
+
+## Policy And Horizon Amendment (2026-08-12)
+
+The foundation gap is narrowed by typed reviewed-policy rules and a private Product Horizon Adapter design. Objectives now own structured goal relationships; reservations own session-specific goals; spacing declares ordered-gap, elapsed-time, pending-Prescription, or external-event basis. These remain non-production. The sole production amendment is Planner acceptance of one explicitly allocated required `capacity_main` as the ordinary session's dominant responsibility.

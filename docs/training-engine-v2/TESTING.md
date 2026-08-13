@@ -121,3 +121,7 @@ Planner tests cover ontology and fact ownership, all nine objective mappings, al
 Private design tests cover the pre-design ontology/ownership/context audits; intent/objective/policy contracts; reservation and current-day materialization; 19 controlled weeks; 18-user fixed shell; 12 same-experience/equipment users; fixed-split and greedy failure contrast; anti-bloat and missed-session reallocation; seven policy-consequence rows; opaque production feasibility; three-ledger separation; 10,000 fixed-seed fuzz cases; and 24 deterministic design fingerprints.
 
 The design tests use explicit timestamp `2026-08-12T18:00:00-04:00` and seed `0x086710`. Green tests establish internal determinism and invariants only. They do not approve scientific policy, production search bounds, Product Adapter truth, prescribed dose, standalone recovery sessions, or a production Week API.
+
+# Policy And Horizon Validation (2026-08-12)
+
+New suites cover sole `capacity_main`, competing dominant responsibilities, session-goal propagation/conflicts, missing and conflicting policy, 23 Product scenarios, source precedence/conflicts, equipment resolution, immutable revisions, expected-versus-actual context, same-profile current-week differentiation, anti-template boundaries, 13 consequence rows, and 10,000 fixed-seed cases (`49f795108a2cc574e31352c6666c416b491af3d30c1303844d781d87666c9e14`). Twenty-two policy/horizon fingerprints and the updated Week/Planner fingerprints are frozen.

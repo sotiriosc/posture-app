@@ -23,3 +23,7 @@ Completed history is immutable. Missed/cancelled opportunities are evidence for 
 ## Deferred Context
 
 Live calendar integration, accessibility, social/environmental constraints, sleep, illness, and external activity ingestion require typed Product Adapter, Safety/Clinical, or future policy contracts. Unknown context remains visible and may block intent, allocation, or materialization according to its declared owner.
+
+## Product Source Amendment (2026-08-12)
+
+The private Product Adapter design supplies typed current-week sources, confirmation states, optional explicit windows, versioned equipment references, immutable revisions, and stable opportunity IDs. Calendar gaps and profile defaults begin tentative and are not consent. Opportunity order cannot impersonate elapsed time. The adapter changes factual horizon truth only and performs no allocation.

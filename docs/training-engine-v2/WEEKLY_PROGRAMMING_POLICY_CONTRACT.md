@@ -26,3 +26,7 @@ Seven non-production comparisons expose consequences of one versus two opportuni
 ## Approval Gate
 
 Before production implementation, an accountable owner must approve rule semantics and evidence, define applicability and conflict handling, and lock deterministic fixtures. Before prescribed weekly validation, Prescription must define source-exposure identity, dose units, contribution relationships, realized stress, and recovery burden. Green design tests do not satisfy either gate.
+
+## Reviewed Rule Amendment (2026-08-12)
+
+Owner semantics are approved, but values are not. `rules` is now a compact typed union covering participation, objective frequency, direct ownership, assessment recurrence, spacing, soft ceilings, constrained horizons, phase applicability, and conflict resolution. Missing frequency authority returns `WEEKLY_POLICY_REQUIRED`; equal unresolved rules return `WEEKLY_POLICY_CONFLICT`. The consequence lab now has 13 comparisons, all numeric candidates `NOT_SELECTED_FOR_PRODUCTION`.

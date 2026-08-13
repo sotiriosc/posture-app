@@ -25,7 +25,7 @@ export function plannerObjective(input: Partial<AllocatedSessionObjective> & Pic
   return {
     id: input.id,
     kind: input.kind,
-    priority: input.priority ?? (input.kind === "dominant_main" ? "required" : "preferred"),
+    priority: input.priority ?? (input.kind === "dominant_main" || input.kind === "capacity_main" ? "required" : "preferred"),
     priorityOrder: input.priorityOrder ?? 0,
     selectionTarget: input.selectionTarget ?? {
       targetMovementRoles: ["horizontal_pull"],
@@ -229,6 +229,8 @@ export function buildPlannerFingerprintPayloads() {
   const unresolved = planSessionIntent(plannerInput({ directive: plannerDirective({ unresolved: [{ observationId: "sleep", source: "user prose",
     contextCategory: "recovery_readiness", proposedOwner: "future_readiness_adapter", resolutionState: "requires_typed_input", blocksPlanning: false,
     description: "Slept badly." }] }) }));
+  const capacityMain = planSessionIntent(plannerInput({ directive: plannerDirective({ id: "capacity-main-fingerprint",
+    outcomeGoal: "conditioning", objectives: [plannerObjective({ id: "capacity-main", kind: "capacity_main" })] }) }));
   const integrated = planAndComposeSessionSkeleton(plannerInput());
   const payloads = {
     goalContextOntology: { outcome: ["strength", "hypertrophy", "general_fitness", "conditioning", "posture_and_movement_quality"], context: ["pain_aware_return"] },
@@ -245,7 +247,9 @@ export function buildPlannerFingerprintPayloads() {
     phaseBoundary: baseline.decisionTrace.phaseContextOnlyFields,
     continuityProjection: behavioralSignature(planSessionIntent(plannerInput({ history: historyWith({ stable: true }) }))),
     unresolvedContextProtocol: unresolved.unresolvedContextFindings,
-    plannerValidation: baseline.validationFindings,
+    plannerValidation: { baseline: baseline.validationFindings, capacityMain: {
+      findings: capacityMain.validationFindings, signature: behavioralSignature(capacityMain),
+    } },
     plannerOutput: behavioralSignature(baseline),
     plannerCandidateAdapter: Object.fromEntries(Object.entries(integrated.candidateResultsByNeed ?? {}).map(([id, result]) => [id, result.request.id])),
     plannerComposerIntegration: integrated.skeleton && { status: integrated.skeleton.compositionStatus, assignments: integrated.skeleton.assignments.map((entry) => entry.exerciseId) },
@@ -278,7 +282,7 @@ export const EXPECTED_PLANNER_FINGERPRINTS: Readonly<Record<string, string>> = {
   phaseBoundary: "8808fb5ef384084a0cb44af21dc1ffcb81b355f0881140d566f6ae7c68a6700c",
   continuityProjection: "673a18f57f5449692bc6c2f27b6c02d358ab993ffd86c952901cc3788dfcf551",
   unresolvedContextProtocol: "3dee5afe72eb4d9dec44f99f239aa34c10dc449cf09c7b5b419ba02746305226",
-  plannerValidation: "f156037bb8eb7b4689ed30552b9b004860ca901d76a68ffb3550dc6119ca3210",
+  plannerValidation: "99628fb3033aa7f0167a93d23fa235a2f9c39dd9eaefec3076dd465d2f3b0f86",
   plannerOutput: "ff7b1090d7e62f3a95e6c3b4115a6dd2a62a8c00497fc28c3c2f9698ce070041",
   plannerCandidateAdapter: "54dd4ec4080469a5fc93a4e8934ca52787539d04fb3a87f6a3e9ae5e5d60b54e",
   plannerComposerIntegration: "35486e970821ee299868809b562a2cabcf007b4864edf94b32547ba9f1b6a150",
@@ -286,7 +290,7 @@ export const EXPECTED_PLANNER_FINGERPRINTS: Readonly<Record<string, string>> = {
   sameExperienceEquipmentRegression: "cfacf66f40d3f51b3038db0474fd14978a54d4cb5b90b307d7ef7ef7951345f6",
   realUserVariableAudit: "b969afebdbc1f17548e691292c599a8ac08ca2ab3887784ee16fd6cba31ecf70",
   ontologyGraduationReview: "aef4b803d6f9a38b566747e50546b53ca9d5474748ebaa9c2f7b03d49a2cc0e1",
-  combinedPlannerKernel: "44d959a156caa1c4d4494aaed0f30a48bf5ad3f5a6f1c6e5ffde4900217d3d13",
+  combinedPlannerKernel: "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
 };
 
 export function runDeterministicPlannerFuzz(caseCount = 10_000): { readonly cases: number; readonly failures: readonly string[]; readonly digest: string } {

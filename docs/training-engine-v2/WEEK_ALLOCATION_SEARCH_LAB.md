@@ -27,3 +27,7 @@ Every selected controlled reservation accepted by the opaque production Planner/
 The lab uses fixed evaluation time, stable ordering, canonical ties, and seed `0x086710`. The 10,000-case fuzz run evaluates 1,000 allocation enumerations with no invariant failures; digest `dc633459982820b83914c34f5835e368c2dc0c549ad0aaa829b47aa40a26ea4c` locks that result.
 
 Production search bounds are `UNAPPROVED`. A bounded implementation must return `bounded_design_optimality_not_proven` or `search_inconclusive` honestly when it cannot prove the lexicographic optimum.
+
+## Policy Horizon Amendment (2026-08-12)
+
+The exact-oracle, deterministic Pareto/dominance, strict lexicographic architecture is owner-approved; numeric production bounds are not. The expanded 13-row consequence lab distinguishes participation/frequency, Week/session goals, capacity-main validity, order/elapsed spacing, profile/confirmed horizon, and volume/frequency without adding an objective weight or fallback path.

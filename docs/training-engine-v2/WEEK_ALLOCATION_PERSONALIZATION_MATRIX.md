@@ -28,3 +28,7 @@ No cohort row is `WRONG_LAYER_EFFECT` or `UNRESPONSIVE_TO_MATERIAL_INPUT`. Conve
 ## Anti-Bloat
 
 Across controlled plans, reservations never exceed opportunities, no reservation is empty, assessment activation is allocated once, and an optional direct-calf objective is allocated once. Required push/pull responsibilities survive a condensed two-opportunity case while optional calf remains `optional_not_allocated`.
+
+## Current-Week Horizon Amendment (2026-08-12)
+
+A 12-user same-profile cohort now varies confirmed availability, travel, equipment, cancellation, location, windows, and confirmation. Materially different current facts do not collapse to one horizon; an identical pair converges. Profile defaults remain traced tentative suggestions and create no artificial uniqueness or programming priority.

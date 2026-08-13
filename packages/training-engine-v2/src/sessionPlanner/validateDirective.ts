@@ -73,15 +73,17 @@ export function validateSessionAllocationDirective(
       add("error", "prose_only_objective", objective.id, "Objective requires structured source evidence.");
     }
   });
-  const dominant = directive.allocatedObjectives.filter((objective) => objective.kind === "dominant_main");
+  const dominant = directive.allocatedObjectives.filter((objective) =>
+    objective.kind === "dominant_main" || objective.kind === "capacity_main",
+  );
   if (dominant.length === 0) {
-    add("error", "ordinary_session_requires_dominant_main_objective", directive.id, "Ordinary training requires a dominant main objective.");
+    add("error", "ordinary_session_requires_dominant_main_objective", directive.id, "Ordinary training requires one dominant session responsibility.");
   }
   if (dominant.length > 1) {
-    add("error", "contradictory_required_dominant_objectives", directive.id, "Only one dominant main purpose is permitted.");
+    add("error", "contradictory_required_dominant_objectives", directive.id, "Only one dominant session responsibility is permitted.");
   }
   if (dominant.some((objective) => objective.priority !== "required")) {
-    add("error", "dominant_main_must_be_required", dominant[0]?.id ?? directive.id, "Dominant main must be required.");
+    add("error", "dominant_main_must_be_required", dominant[0]?.id ?? directive.id, "The dominant session responsibility must be required.");
   }
   const availability = directive.currentSessionAvailability;
   if (availability?.availableMinutes !== null && availability?.availableMinutes !== undefined &&

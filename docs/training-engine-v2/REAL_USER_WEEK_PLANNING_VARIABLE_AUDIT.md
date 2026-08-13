@@ -29,3 +29,7 @@ The standalone recovery-session verdict is `KEEP_DEFERRED`. An ordinary-session 
 ## Scientific Review Questions
 
 The six question families are weekly set targets, frequency superiority, recovery spacing, direct-versus-secondary credit, deload scheduling, and phase-volume adjustment. Each requires owner decision, human exercise-science review, external references, or remains unsupported. The repository does not fabricate literature.
+
+## Evidence And Product Amendment (2026-08-12)
+
+Authoritative evidence is now inventoried with population, goal, dose definition, volume-equated status, limitations, and Praxis classification. Twenty-three Product scenarios cover confirmation, calendar, travel, mixed equipment, revisions, conflicts, no availability, unresolved recovery/illness/external load/accessibility, and prove factual adaptation without Week programming effects.

@@ -13,6 +13,7 @@ import {
   type EquipmentCapabilities,
   type SessionAllocationDirective,
   type StructuralCapacityMode,
+  type TrainingOutcomeGoal,
   type TrainingSafetyState,
 } from "../../src";
 import type {
@@ -93,6 +94,17 @@ export const NON_PRODUCTION_WEEKLY_POLICY: ReviewedWeeklyProgrammingPolicy = {
     "fixture_no_dose_credit",
     "fixture_no_fixed_split",
   ],
+  rules: [{
+    id: "fixture-constrained-priority",
+    kind: "constrained_horizon_priority",
+    scope: {
+      outcomeGoals: [], secondaryGoals: [], experienceLevels: [], phaseIds: [], contextModes: [],
+      objectivePurposes: [], targetTypes: [], populations: [], horizonCapacity: [],
+    },
+    behavior: "required_before_preferred_before_optional",
+    evidenceRefs: ["NON_PRODUCTION_POLICY_FIXTURE"],
+    overridesRuleIds: [],
+  }],
   explicitUnknowns: [
     "production_frequency_policy",
     "production_dose_policy",
@@ -144,6 +156,11 @@ export function weeklyPriority(input: Partial<ExplicitWeeklyPriority> & Pick<Exp
       sourceId: `${input.id}:source`,
       evidenceRefs: [`${input.id}:explicit-priority`],
       provenance: fixtureProvenance(`${input.id}:priority`, "planned_allocation"),
+    }],
+    goalRelationships: input.goalRelationships ?? [{
+      goal: "strength",
+      relationship: "primary_weekly_goal",
+      sourceEvidenceRefs: [`${input.id}:explicit-priority`],
     }],
   };
 }
@@ -226,6 +243,7 @@ export const EMPTY_WEEK_CONTINUITY: WeekStructureContinuityEvidence = {
 
 export function weeklyIntentInput(input: {
   readonly outcomeGoal?: WeeklyIntentPlannerInput["explicitOutcomeGoal"];
+  readonly secondaryGoals?: WeeklyIntentPlannerInput["orderedSecondaryGoals"];
   readonly priorities?: readonly ExplicitWeeklyPriority[];
   readonly horizon?: WeekPlanningHorizon;
   readonly policy?: ReviewedWeeklyProgrammingPolicy | null;
@@ -238,7 +256,7 @@ export function weeklyIntentInput(input: {
   return {
     athlete: BASE_REQUEST.athlete,
     explicitOutcomeGoal: input.outcomeGoal === undefined ? "strength" : input.outcomeGoal,
-    orderedSecondaryGoals: [],
+    orderedSecondaryGoals: input.secondaryGoals ?? [],
     programmingContextModes: input.contextModes ?? [],
     phaseIntent: BASE_REQUEST.phase,
     planningHorizon: input.horizon ?? weekHorizon(),
@@ -301,6 +319,8 @@ function normalizeWeeklyObjectives(priorities: readonly ExplicitWeeklyPriority[]
       priority: source.priority,
       priorityOrder: source.priorityOrder,
       sourceEvidence: ordered.flatMap((entry) => entry.sourceEvidence).sort((left, right) => left.sourceId.localeCompare(right.sourceId)),
+      goalRelationships: ordered.flatMap((entry) => entry.goalRelationships)
+        .sort((left, right) => left.goal.localeCompare(right.goal) || left.relationship.localeCompare(right.relationship)),
       ...(source.frequencyIntent ? { frequencyIntent: source.frequencyIntent } : {}),
       dosePolicyReference: source.dosePolicyReference,
       recoverySpacingRequirementRefs: [],
@@ -485,12 +505,14 @@ function spacingValid(
 ): boolean {
   const orderById = new Map(opportunities.map((entry) => [entry.id, entry.order]));
   return requirements.every((requirement) => {
-    if (!requirement.required || requirement.minimumOpportunitySeparation === undefined) return true;
+    const basis = requirement.spacingBasis;
+    if (!requirement.required || basis.kind !== "ordered_opportunity_gap") return true;
     const allocated = unique(requirement.weeklyObjectiveIds.flatMap((id) => assignments[id] ?? []))
       .map((id) => orderById.get(id))
       .filter((order): order is number => order !== undefined)
       .sort((left, right) => left - right);
-    return allocated.every((order, index) => index === 0 || order - allocated[index - 1] >= requirement.minimumOpportunitySeparation!);
+    return allocated.every((order, index) => index === 0 ||
+      order - allocated[index - 1] >= basis.minimumGap);
   });
 }
 
@@ -620,6 +642,23 @@ function sessionPurpose(objective: WeeklyDevelopmentObjective, dominant: boolean
   return "secondary_main";
 }
 
+export function resolveSessionOutcomeGoal(
+  objectives: readonly WeeklyDevelopmentObjective[],
+  weeklyPrimaryGoal: TrainingOutcomeGoal,
+): { readonly status: "session_goal_resolved"; readonly goal: TrainingOutcomeGoal; readonly evidence: readonly string[] } |
+  { readonly status: "SESSION_GOAL_CONFLICT"; readonly goal: null; readonly evidence: readonly string[] } {
+  const dominant = objectives.find((entry) => entry.purpose !== "recovery_support" &&
+    entry.purpose !== "assessment_priority_development" && entry.purpose !== "direct_action_development");
+  const relationships = dominant?.goalRelationships.filter((entry) => entry.relationship !== "cross_goal_support") ?? [];
+  const goals = unique(relationships.map((entry) => entry.goal));
+  if (goals.length > 1) {
+    return { status: "SESSION_GOAL_CONFLICT", goal: null,
+      evidence: unique(relationships.flatMap((entry) => entry.sourceEvidenceRefs)) };
+  }
+  return { status: "session_goal_resolved", goal: goals[0] ?? weeklyPrimaryGoal,
+    evidence: unique(relationships.flatMap((entry) => entry.sourceEvidenceRefs)) };
+}
+
 function reservationFor(
   input: WeekAllocationCompositionInput,
   assignments: ObjectiveOpportunityAssignments,
@@ -630,13 +669,21 @@ function reservationFor(
     .sort((left, right) => PRIORITY_RANK[left.priority] - PRIORITY_RANK[right.priority] || left.priorityOrder - right.priorityOrder || left.id.localeCompare(right.id));
   const dominantIndex = objectives.findIndex((entry) => entry.purpose !== "recovery_support" && entry.purpose !== "assessment_priority_development" &&
     entry.purpose !== "direct_action_development");
+  const sessionGoal = resolveSessionOutcomeGoal(objectives, input.weeklyIntent.outcomeGoal);
+  if (sessionGoal.status === "SESSION_GOAL_CONFLICT") throw new Error("SESSION_GOAL_CONFLICT");
   return {
     id: `${input.weeklyIntent.id}:reservation:${opportunity.id}`,
     weekIntentId: input.weeklyIntent.id,
     opportunityId: opportunity.id,
     athleteId: input.weeklyIntent.athleteId,
     sessionType: "ordinary_training",
-    outcomeGoal: input.weeklyIntent.outcomeGoal,
+    weeklyPrimaryOutcomeGoal: input.weeklyIntent.outcomeGoal,
+    weeklySecondaryOutcomeGoals: input.weeklyIntent.orderedSecondaryGoals,
+    sessionOutcomeGoal: sessionGoal.goal,
+    sessionGoalEvidence: objectives.flatMap((objective) => objective.goalRelationships.map((goalRelationship) => ({
+      weeklyObjectiveId: objective.id,
+      goalRelationship,
+    }))),
     programmingContextModes: input.weeklyIntent.programmingContextModes,
     allocatedObjectives: objectives.map((objective, index) => ({
       id: `${opportunity.id}:${objective.id}`,
@@ -832,7 +879,7 @@ export function materializeReservationDesign(input: SessionAllocationMaterializa
     source: "future_week_composer",
     athleteId: input.reservation.athleteId,
     sessionType: input.reservation.sessionType,
-    outcomeGoal: input.reservation.outcomeGoal,
+    outcomeGoal: input.reservation.sessionOutcomeGoal,
     programmingContextModes: input.reservation.programmingContextModes,
     currentSessionAvailability: input.actualCurrentAvailability,
     allocatedObjectives: input.reservation.allocatedObjectives.map(allocatedObjectiveFromReservation),
@@ -936,7 +983,7 @@ function allNonEmptySubsets(values: readonly string[]): readonly (readonly strin
 }
 
 function hasDominantEligiblePurpose(objectives: readonly WeeklyDevelopmentObjective[]): boolean {
-  return objectives.some((entry) => entry.purpose === "movement_development");
+  return objectives.some((entry) => entry.purpose === "movement_development" || entry.purpose === "capacity_development");
 }
 
 export function buildPrecomputedFeasibility(input: {
@@ -1162,7 +1209,7 @@ function spacingRequirement(input: {
     muscles: input.muscles ?? [],
     stressTags: input.stressTags ?? [],
     capacityLanes: [],
-    minimumOpportunitySeparation: input.separation ?? 2,
+    spacingBasis: { kind: "ordered_opportunity_gap", minimumGap: input.separation ?? 2 },
     required: true,
     policySourceRef: "NON_PRODUCTION_POLICY_FIXTURE:spacing",
     provenance: fixtureProvenance(`${input.id}:spacing`, "planned_allocation"),
@@ -1781,24 +1828,24 @@ export const EXPECTED_WEEK_DESIGN_FINGERPRINTS: Readonly<Record<string, string>>
   factOwnership: "c91607863c1afd2c830439913f79aa9e2da9872d673823c15bf38b18e72ded95",
   contextCoverage: "8cb401e6a70fa8a90d88b9e56e83a3e350c95805a1ed3f42d8bef38a4955bcdb",
   weeklyIntentProposal: "607efc4a20aeff42565142ad6bc7fd2f317fed6f8237a3840113e1ee1c32c2e0",
-  weeklyDevelopmentObjective: "b566d6844187ab2518d0953ec5b88a58a8e905da82fde2433d51e13b2cb8a53d",
-  reviewedWeeklyProgrammingPolicy: "d8000e32416c0d3c1530a97ef7a8043339a4bd6d667493fad60b66d949733c95",
+  weeklyDevelopmentObjective: "c7eb8840236e71493674359ff726e2df1f507eb7d59a1347930600e8dde706c4",
+  reviewedWeeklyProgrammingPolicy: "e29e268d9d480d5c11c49766cf0e8489fef00fd8dd4d4797329f76cfb4b862b6",
   planningHorizon: "d782dc1d1877d18aa0defddf2ab2ada5ac239258df32a5a143d315d03f44a2b9",
   trainingOpportunities: "cc9ef6dda45d8c0a884907d5ae8500eb3fc5c1e9b0cbdebd9cc340e146d1c97b",
-  reservation: "e482659ee93683180067865e5b6466cd04e303302ba652987d9fd9ed62f7621c",
+  reservation: "3d36d6ba36851cc036cee3fec14b118a3605fa86d292cb8d6b2863bc2f0e131a",
   materialization: "76abe73f18dc1501b9f9b3208d820d526d619ab57a26dab3e9d0c9d164044410",
   allocationResult: "162f66cbdb41ae57f3aa88ae4cd2981635c0f24c6df874b72e0e3135096322e0",
   ledgerBoundary: "4095f7d32e21cff5121193d74bae22e254177c8aff52b28b0cb79d3b0096e805",
-  recoverySpacingModel: "0bddc8dbe2e801713ca9fdd3c5fda39a59c38acdc4c4968d75c8318725dfb34c",
+  recoverySpacingModel: "dcfe21444996f8e9f643d3782b0d8b15c6512685f16173f6323e835429290280",
   reallocationPolicy: "b43f6e5f96af207178ceb2bf947d95e0899f5011f96e22893e56931c9edbee4b",
   evaluationVector: "7b9e26674d6d9da5a347202d5fdb32584a3d955c16ca9d50a2f2f7d21c2728b7",
   searchComparison: "67a40cc12b67c0c21bca8f57a51356b604606932d291dc3d5eb0b7b406dc0f59",
   fixedSplitFailureMatrix: "714806c6cda196744619e798288fd6a5e67142f072bf4220564a3c5023db17f1",
-  controlledWeekScenarios: "6d7a9f0e797dc022f82068deacd7ca937b60422ef25853a3447806c1b0b966fd",
+  controlledWeekScenarios: "e4ed5cf8f44974bff20001b3ccd5b90f61d8b54ddcf5a4582c9023af7c633662",
   fixedShellPersonalization: "76b64a2aa336e24453e0aebc75529e66d38270bce0208a76ea9da1b6630b6179",
   sameExperienceEquipmentRegression: "dc3a3edd88a9d17c23e9dcfa46ebd0c1f669bc95f6ef481b27aa60d7966c4d63",
   realUserVariables: "8cb401e6a70fa8a90d88b9e56e83a3e350c95805a1ed3f42d8bef38a4955bcdb",
   policyConsequenceLab: "cb2d45db82bc841137ae17d36e28aab00bea5ad5e932fcea54ca4adff8d668de",
   implementationReadiness: "1f83f306077122c75ee81547e85e6acdffda64d347fff470323a6a7c54bfd04c",
-  combinedWeekDesign: "3d3bd1542248294a6c02d94bfddf4a078e0b73e851a269ebfb8292e4532a7c03",
+  combinedWeekDesign: "903d034e50b2c210ad7ffee011e267e4f4d7ff9b396d9735a49f276909137047",
 };

@@ -26,3 +26,7 @@ Owned by completed-performance collection and Longitudinal Adaptation. An entry 
 - Expected future recovery burden is not observed readiness.
 - Weekly frequency allocation can be validated before dose only as an allocation fact.
 - Prescribed weekly validation is blocked until Prescription defines source-event and aggregation semantics.
+
+## Evidence Amendment (2026-08-12)
+
+The evidence review reinforces this boundary: participation guidance is not objective frequency, frequency is not set dose, volume is not opportunity count, and indirect contribution evidence is not a Praxis coefficient. The Product horizon ledger adds factual availability/revision history only; completed opportunities and prescriptions remain immutable.

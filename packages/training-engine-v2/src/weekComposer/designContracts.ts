@@ -179,6 +179,41 @@ export type WeeklyPolicySourceType =
   | "external_reference"
   | "NON_PRODUCTION_POLICY_FIXTURE";
 
+export interface WeeklyPolicyRuleScope {
+  readonly outcomeGoals: readonly TrainingOutcomeGoal[];
+  readonly secondaryGoals: readonly TrainingOutcomeGoal[];
+  readonly experienceLevels: readonly ExperienceLevel[];
+  readonly phaseIds: readonly PhaseId[];
+  readonly contextModes: readonly ProgrammingContextMode[];
+  readonly objectivePurposes: readonly WeeklyDevelopmentPurpose[];
+  readonly targetTypes: readonly ("movement" | "action" | "muscle" | "capacity" | "assessment")[];
+  readonly populations: readonly string[];
+  readonly horizonCapacity: readonly StructuralCapacityMode[];
+}
+
+export type ReviewedWeeklyPolicyRule = {
+  readonly id: string;
+  readonly scope: WeeklyPolicyRuleScope;
+  readonly evidenceRefs: readonly string[];
+  readonly overridesRuleIds: readonly string[];
+} & (
+  | { readonly kind: "participation_intent"; readonly candidateRef: string;
+      readonly executableState: "value_not_approved" }
+  | { readonly kind: "objective_frequency_intent"; readonly candidateRef: string;
+      readonly executableState: "value_not_approved" }
+  | { readonly kind: "direct_development_ownership";
+      readonly directRequirement: "primary_required_or_exact_action"; readonly secondaryCredit: "no_numeric_credit";
+    }
+  | { readonly kind: "assessment_recurrence";
+      readonly clusterLimit: "one_weekly_objective_per_coherent_cluster"; readonly additionalFrequency: "explicit_authority_required";
+    }
+  | { readonly kind: "spacing_requirement"; readonly spacingBasis: WeeklyRecoverySpacingBasis }
+  | { readonly kind: "soft_ceiling_behavior"; readonly behavior: "review_unique_marginal_value" }
+  | { readonly kind: "constrained_horizon_priority"; readonly behavior: "required_before_preferred_before_optional" }
+  | { readonly kind: "phase_applicability"; readonly behavior: "select_applicable_rule_without_multiplier" }
+  | { readonly kind: "conflict_resolution"; readonly behavior: "explicit_override_or_weekly_policy_conflict" }
+);
+
 export interface ReviewedWeeklyProgrammingPolicy {
   readonly policyId: string;
   readonly version: string;
@@ -192,6 +227,7 @@ export interface ReviewedWeeklyProgrammingPolicy {
   readonly applicablePhaseIds: readonly PhaseId[];
   readonly applicableContextModes: readonly ProgrammingContextMode[];
   readonly ruleRefs: readonly string[];
+  readonly rules: readonly ReviewedWeeklyPolicyRule[];
   readonly explicitUnknowns: readonly string[];
 }
 
@@ -253,6 +289,12 @@ export type WeeklyDosePolicyReference =
 
 export type WeeklySessionRoleFlexibility = "main" | "secondary" | "accessory";
 
+export interface WeeklyObjectiveGoalRelationship {
+  readonly goal: TrainingOutcomeGoal;
+  readonly relationship: "primary_weekly_goal" | "secondary_weekly_goal" | "cross_goal_support";
+  readonly sourceEvidenceRefs: readonly string[];
+}
+
 export interface WeeklyDevelopmentObjective {
   readonly id: string;
   readonly purpose: WeeklyDevelopmentPurpose;
@@ -260,6 +302,7 @@ export interface WeeklyDevelopmentObjective {
   readonly priority: "required" | "preferred" | "optional";
   readonly priorityOrder: number;
   readonly sourceEvidence: readonly WeeklyObjectiveSourceEvidence[];
+  readonly goalRelationships: readonly WeeklyObjectiveGoalRelationship[];
   readonly frequencyIntent?: WeeklyFrequencyIntent;
   readonly dosePolicyReference: WeeklyDosePolicyReference;
   readonly recoverySpacingRequirementRefs: readonly string[];
@@ -274,6 +317,14 @@ export interface WeeklyDevelopmentObjective {
   readonly explanation: string;
 }
 
+export type WeeklyRecoverySpacingBasis =
+  | { readonly kind: "ordered_opportunity_gap"; readonly minimumGap: number }
+  | { readonly kind: "elapsed_time_duration"; readonly minimumDurationMinutes: number;
+      readonly requiresExplicitTimeWindows: true }
+  | { readonly kind: "unknown_pending_prescription"; readonly unresolvedReason: string }
+  | { readonly kind: "external_event_spacing"; readonly externalEventRefs: readonly string[];
+      readonly reviewedRuleRef: string };
+
 export interface WeeklyRecoverySpacingRequirement {
   readonly id: string;
   readonly weeklyObjectiveIds: readonly string[];
@@ -281,7 +332,7 @@ export interface WeeklyRecoverySpacingRequirement {
   readonly muscles: readonly MuscleGroup[];
   readonly stressTags: readonly JointStressTag[];
   readonly capacityLanes: readonly ("capacity" | "conditioning" | "stress_monitoring")[];
-  readonly minimumOpportunitySeparation?: number;
+  readonly spacingBasis: WeeklyRecoverySpacingBasis;
   readonly required: boolean;
   readonly policySourceRef: string;
   readonly provenance: WeekFactProvenance;
@@ -356,6 +407,7 @@ export interface ExplicitWeeklyPriority {
   readonly frequencyIntent?: WeeklyFrequencyIntent;
   readonly dosePolicyReference: WeeklyDosePolicyReference;
   readonly sourceEvidence: readonly WeeklyObjectiveSourceEvidence[];
+  readonly goalRelationships: readonly WeeklyObjectiveGoalRelationship[];
 }
 
 export interface WeeklyIntentPlannerInput {
@@ -453,7 +505,13 @@ export interface SessionAllocationReservation {
   readonly opportunityId: string;
   readonly athleteId: string;
   readonly sessionType: "ordinary_training";
-  readonly outcomeGoal: TrainingOutcomeGoal;
+  readonly weeklyPrimaryOutcomeGoal: TrainingOutcomeGoal;
+  readonly weeklySecondaryOutcomeGoals: readonly TrainingOutcomeGoal[];
+  readonly sessionOutcomeGoal: TrainingOutcomeGoal;
+  readonly sessionGoalEvidence: readonly {
+    readonly weeklyObjectiveId: string;
+    readonly goalRelationship: WeeklyObjectiveGoalRelationship;
+  }[];
   readonly programmingContextModes: readonly ProgrammingContextMode[];
   readonly allocatedObjectives: readonly ReservedSessionObjective[];
   readonly expectedStructuralCapacity: StructuralCapacityMode;

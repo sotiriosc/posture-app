@@ -31,3 +31,7 @@ Allocation gives zero dose credit. Movement, action, capacity, and muscle target
 ## Merge And Satisfaction
 
 Objectives may merge only under semantic equivalence and must retain all provenance. Satisfaction at this layer means allocation status only. `allocated_target_opportunities` must never be presented as prescribed-dose sufficiency, completed training, or observed adaptation.
+
+## Goal Relationship Amendment (2026-08-12)
+
+`goalRelationships` is structured provenance, not prose. One objective may serve multiple goals only with explicit evidence and remains one objective. Direct objectives require primary/exact action truth; meaningful-secondary feasibility creates no numeric credit. Dominant goal evidence helps select a reservation's session goal, while conflicting dominant relationships return a design conflict.

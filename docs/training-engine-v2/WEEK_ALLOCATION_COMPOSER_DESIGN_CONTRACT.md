@@ -33,3 +33,7 @@ Allocation success means responsibility was reserved in an opportunity. It does 
 ## Continuity And Marginal Value
 
 Productive objective-to-opportunity relationships are preserved when still legal and useful. Change requires a traceable reason: availability, equipment, safety, explicit goal/priority, reviewed policy, recovery spacing, or feasibility. Optional duplication is admitted only after higher-priority obligations and only when its Boolean marginal-value lane is true.
+
+## Policy And Goal Amendment (2026-08-12)
+
+Allocation consumes explicit reviewed frequency rules and factual horizons; neither is invented from profile or goal labels. It chooses one session goal from dominant objective relationships and may allocate a truthful `capacity_main` responsibility where supported. Product source resolution, dose generation, and broad conditioning modality invention remain outside this composer.

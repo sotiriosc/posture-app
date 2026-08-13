@@ -41,3 +41,7 @@ Status: mandatory pre-design gate, 2026-08-12.
 ## Coverage Verdict
 
 The existing production domain does not represent the Week layer truthfully, so the pre-design classification is `WEEK_ONTOLOGY_FOUNDATION_GAP`. The missing contexts do not authorize silent defaults. The design lab should make policy requirements, current-availability requirements, reallocation, unresolved context, and downstream Prescription dependencies first-class results.
+
+## Updated Coverage (2026-08-12)
+
+Product horizon source, confirmation, time window, revision, stable identity, profile-default, versioned equipment, and day-of seams are now `DESIGN_READY`. Recovery readiness, external load, and accessibility remain `FUTURE_TYPED_CONTRACT_REQUIRED`; illness remains Safety/Clinical owned. Broad conditioning is still unsupported without Prescription modality truth.

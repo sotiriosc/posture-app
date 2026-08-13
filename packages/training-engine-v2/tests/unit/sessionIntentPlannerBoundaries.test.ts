@@ -9,13 +9,13 @@ describe("Session Intent Planner boundaries", () => {
       ["secondary_main", "main", "secondary_strength", "preferred"],
       ["secondary_accessory", "accessory", "secondary_strength", "preferred"],
       ["direct_accessory", "accessory", "hypertrophy_accessory", "preferred"],
-      ["capacity_main", "main", "capacity", "preferred"],
+      ["capacity_main", "main", "capacity", "required"],
       ["capacity_accessory", "accessory", "capacity", "preferred"],
       ["explicit_preparation", "warmup", "preparation", "preferred"],
       ["activation", "activation", "activation", "preferred"],
       ["recovery", "cooldown", "recovery", "preferred"],
     ] as const;
-    const objectives = kinds.map(([kind, , , priority], index) => plannerObjective({
+    const objectives = kinds.filter(([kind]) => kind !== "capacity_main").map(([kind, , , priority], index) => plannerObjective({
       id: kind,
       kind,
       priority,
@@ -27,7 +27,11 @@ describe("Session Intent Planner boundaries", () => {
     const result = planSessionIntent(plannerInput({ directive: plannerDirective({ objectives }) }));
     expect(result.status).toBe("planned");
     for (const [kind, section, role] of kinds) {
-      const need = result.sessionIntent?.needs.find((entry) => entry.id.endsWith(`:${kind}`));
+      const source = kind === "capacity_main"
+        ? planSessionIntent(plannerInput({ directive: plannerDirective({ id: "capacity-map", outcomeGoal: "general_fitness",
+          objectives: [plannerObjective({ id: kind, kind })] }) }))
+        : result;
+      const need = source.sessionIntent?.needs.find((entry) => entry.id.endsWith(`:${kind}`));
       expect(need).toMatchObject({ section, selection: { requestedRole: role } });
     }
   });

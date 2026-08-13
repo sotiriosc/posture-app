@@ -229,3 +229,7 @@ The Session Intent Planner is now the production authority between explicit sess
 The private `src/weekComposer/designContracts.ts` and test-only lab propose three pre-Planner authorities without exporting them: Weekly Intent Planner owns structured weekly objective truth; Week Allocation Composer owns responsibility distribution across explicit future opportunities; Session Allocation Materializer converts a reservation plus actual current facts into the existing directive. The Planner remains the first production authority and receives only a materialized directive.
 
 The Week design calls the frozen Planner, Candidate, and Composer stack as an opaque feasibility oracle. It cannot inspect or rewrite those kernels. Allocation has zero dose credit; Prescription and completed-response ledgers remain future owners. Overall design status is `WEEK_LAYER_DESIGN_READY_FOR_OWNER_POLICY_APPROVAL`; there is no production Week API, application adapter, or `generateProgram` integration.
+
+# Product Horizon Adapter Design Layer (2026-08-12)
+
+The private, unexported Product Adapter contracts resolve structured factual sources into tentative/confirmed Week horizons and immutable revisions, then collect day-of actual context. They contain no allocation, objectives, split, reservations, exercise selection, dose, spacing invention, or missed-session compensation. Overall readiness is `TARGETED_WEEK_POLICY_DECISIONS_REMAIN`.

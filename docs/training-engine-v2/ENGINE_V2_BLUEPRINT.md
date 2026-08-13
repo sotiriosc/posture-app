@@ -2009,3 +2009,7 @@ The production Session Intent Planner now converts an explicit Week or standalon
 The non-production Week design separates Weekly Intent objective truth, future-opportunity allocation reservations, actual-day directive materialization, Session Planner needs, Candidate evidence, Session Composer skeletons, Prescription dose, completed performance, and longitudinal response. Fixed split labels, legacy `WeeklyIntent` numeric maps, profile session counts, and prose are never causal allocation facts.
 
 The design classification is `WEEK_LAYER_DESIGN_READY_FOR_OWNER_POLICY_APPROVAL`, not production readiness. The 16 Week documents and private design lab define the review surface; production implementation remains blocked on reviewed weekly policy, live horizon/Product Adapter contracts, recovery/external-load ownership, search bounds, and later prescribed-dose ledger semantics.
+
+# 2026-08-12 Policy And Product Horizon Amendment
+
+Owner semantics, authoritative evidence review, typed policy/conflict design, Product horizon/revision/day-of contracts, and session-specific goal ownership are recorded. Numeric policies and Week production remain unauthorized. The only production change is Planner recognition of sole required `capacity_main`; Candidate, catalog, Knowledge, Composer, public API, and all other Planner behavior remain invariant.
