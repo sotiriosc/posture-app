@@ -10,6 +10,7 @@ export * from "./prescription";
 export * from "./prescriptionProgression";
 export * from "./reasonCodes";
 export * from "./scoringContracts";
+export * from "./sequencing";
 export * from "./sessionComposer";
 export * from "./sessionPlanner";
 export * from "./transitionComparison";

@@ -1,0 +1,1615 @@
+{
+  "admittedScenarioCount": 132,
+  "completePrescribedScenarioCount": 107,
+  "exactSemanticMatchCount": 107,
+  "orderEquivalentCount": 107,
+  "unexplainedDifferenceCount": 0,
+  "cases": [
+    {
+      "scenarioId": "owner-v1-holdout-001-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-002-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-003-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-005-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-006-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-008-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-009-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-010-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-011-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-012-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-013-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-014-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-015-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-017-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-018-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-020-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-021-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-022-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-023-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-024-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-025-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-026-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-027-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-029-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-030-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-032-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-033-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-034-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-035-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-036-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-037-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-038-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-039-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-041-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-042-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-044-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-045-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-046-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-047-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-048-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-049-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-050-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-051-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-053-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-054-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-056-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-057-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-058-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-059-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-060-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-061-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-062-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-063-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-065-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-066-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-068-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-069-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-070-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-071-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-072-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-073-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-074-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-075-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-077-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-078-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-080-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-081-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-082-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-083-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-084-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-085-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-086-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-087-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-089-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-090-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-092-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-093-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-094-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-095-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-096-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-097-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-098-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-099-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-101-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-102-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-104-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-105-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-106-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-107-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-108-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-109-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-110-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-111-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-113-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-114-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-116-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-117-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-118-timed_hold",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-119-optional_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-120-required_direct",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-121-upper_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-122-lower_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-123-hypertrophy",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-125-distance_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-126-timed_carry",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-128-cooldown",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    },
+    {
+      "scenarioId": "owner-v1-holdout-129-secondary_strength",
+      "exactMatch": true,
+      "orderEquivalent": true,
+      "representationCorrections": [
+        "ASSIGNMENT_ID_JOIN",
+        "SEMANTIC_EQUIPMENT_SUPPORT_SETUP_CLASSIFICATION",
+        "ASSIGNMENT_PAIR_TIMING_FACT",
+        "VERSIONED_PLAN_AND_REVISION_IDENTITY",
+        "TYPED_INTERFERENCE_NORMALIZED_TO_ADMITTED_COARSE_CLASSIFICATION",
+        "SAME_SETUP_DURATION_REMAINS_UNKNOWN",
+        "EXPLICIT_SEARCH_RESOURCE_POLICY",
+        "NO_PRODUCTION_RANDOM_SEED"
+      ]
+    }
+  ],
+  "result": "GOLDEN_EQUIVALENCE_PASSED"
+}

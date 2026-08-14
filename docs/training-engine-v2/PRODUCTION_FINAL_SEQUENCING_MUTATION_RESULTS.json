@@ -1,0 +1,253 @@
+{
+  "mutationCount": 49,
+  "semanticStructureChangeCount": 49,
+  "rejectedCount": 49,
+  "cases": [
+    {
+      "name": "missing_sequencing_policy",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unknown_sequencing_policy",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "sequencing_policy_conflict",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "missing_search_resource_policy",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unknown_search_policy",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unsupported_sequencing_contract",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unsupported_prescription_contract",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "test_helper_import",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "report_import",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "hidden_activation",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "hidden_current_time",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "random_plan_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "random_order",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "exercise_id_only_ambiguous_join",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "duplicate_assignment",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "missing_assignment",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "extra_prescription_plan",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "wrong_assignment_source_mapping",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "wrong_execution_attempt",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "section_change",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "role_change",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "source_event_rewrite",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "prescription_id_rewrite",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "revision_rewrite",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "block_reorder",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "block_interleaving",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "dependency_cycle",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "dependency_violation",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "required_warmup_after_dependent",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "required_activation_after_dependent",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "policy_created_warmup",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "policy_created_activation",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "policy_created_exercise",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "policy_removed_exercise",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "candidate_rank_ordering",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "setup_first_purpose_displacement",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "fatigue_only_purpose_displacement",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unsupported_pairing",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "copied_within_exercise_rest",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "duplicated_rest",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "same_setup_treated_as_zero",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "fake_setup_duration",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "fake_recovery_duration",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "fake_section_duration",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "unknown_duration_called_fit",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "timing_fact_counted_twice",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "greedy_fallback_after_limit",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "best_so_far_called_optimal",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "name": "completed_sequence_revision_rewritten",
+      "semanticStructureChanged": true,
+      "rejected": true
+    }
+  ],
+  "fingerprint": "49ca5121746175d5a90c13013cd60bfd9f8e3756323089ea497c8bb5c3857aa3"
+}

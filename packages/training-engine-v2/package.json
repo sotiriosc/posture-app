@@ -60,6 +60,18 @@
     "test:session-sequencing-v1:stress": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingStress.test.ts",
     "test:session-sequencing-v1:full-session": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingPolicyV1.test.ts tests/unit/finalSessionSequencingMatrices.test.ts",
     "test:session-sequencing-v1:duration": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingMatrices.test.ts",
-    "report:session-sequencing-v1": "node --import tsx dev/reportFinalSessionSequencingV1.ts"
+    "report:session-sequencing-v1": "node --import tsx dev/reportFinalSessionSequencingV1.ts",
+    "test:final-sequencing": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingContracts.test.ts tests/unit/productionFinalSequencingGolden.test.ts tests/unit/productionFinalSequencingMutations.test.ts tests/unit/productionFinalSequencingMetamorphic.test.ts tests/unit/productionFinalSequencingRevisions.test.ts tests/unit/productionFinalSequencingStress.test.ts tests/unit/finalSessionSequencingArchitecture.test.ts",
+    "test:final-sequencing:contracts": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingContracts.test.ts tests/unit/finalSessionSequencingArchitecture.test.ts",
+    "test:final-sequencing:policy": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingContracts.test.ts tests/unit/productionFinalSequencingMetamorphic.test.ts",
+    "test:final-sequencing:search": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingGolden.test.ts tests/unit/productionFinalSequencingMutations.test.ts",
+    "test:final-sequencing:transitions": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingGolden.test.ts tests/unit/productionFinalSequencingMutations.test.ts",
+    "test:final-sequencing:duration": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingGolden.test.ts tests/unit/productionFinalSequencingMetamorphic.test.ts",
+    "test:final-sequencing:revisions": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingRevisions.test.ts",
+    "test:final-sequencing:golden": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingGolden.test.ts",
+    "test:final-sequencing:stress": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingStress.test.ts",
+    "report:final-sequencing": "node --import tsx dev/reportProductionFinalSequencing.ts",
+    "report:final-sequencing:golden": "node --import tsx dev/reportProductionFinalSequencing.ts",
+    "report:final-sequencing:stress": "node --import tsx dev/reportProductionFinalSequencing.ts"
   }
 }

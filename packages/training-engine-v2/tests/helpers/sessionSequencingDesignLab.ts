@@ -187,7 +187,7 @@ export interface FinalSessionSequencingAdmissionReport {
 const preparedCache = new Map<string, PreparedSequencingCase>();
 let reportCache: FinalSessionSequencingAdmissionReport | undefined;
 
-function compositionFact(exerciseId: string): CanonicalCompositionFact {
+export function compositionFact(exerciseId: string): CanonicalCompositionFact {
   const exercise = REFERENCE_EXERCISES.find((entry) => entry.id === exerciseId);
   if (!exercise) throw new Error(`Missing canonical exercise ${exerciseId}.`);
   const support = exercise.mechanics?.support;

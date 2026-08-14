@@ -1,11 +1,7 @@
 import { REFERENCE_EXERCISES } from "../../src";
 import {
-  FINAL_SESSION_PAIRING_DISPOSITION,
-  FINAL_SESSION_SECTION_PRECEDENCE,
-  FINAL_SESSION_SEQUENCING_EXECUTION_MODE,
-  FINAL_SESSION_SEQUENCING_PHILOSOPHY,
-  SESSION_SEQUENCING_POLICY_V1_REFERENCE,
-} from "../../src/sequencing/designContracts";
+  SESSION_SEQUENCING_POLICY_V1_ADMISSION_PROJECTION,
+} from "../../src/sequencing/policies";
 import { PRESCRIPTION_POLICY_V1_OWNER_HOLDOUT } from "./prescriptionPolicyV1OwnerAdmission";
 import { digest } from "./signatures";
 
@@ -17,17 +13,8 @@ export const SESSION_SEQUENCING_GATE_10_AUTHORITY =
   "DESIGN_EVIDENCE_PLUS_HANDOFF_AUTHORITY" as const;
 export const SESSION_SEQUENCING_GATE_11_AUTHORITY = "FOUNDATION_ONLY" as const;
 
-export const SESSION_SEQUENCING_POLICY_V1 = Object.freeze({
-  ...SESSION_SEQUENCING_POLICY_V1_REFERENCE,
-  reviewedAt: SESSION_SEQUENCING_POLICY_V1_EVALUATION_TIME,
-  reviewerId: "PROJECT_OWNER",
-  philosophy: FINAL_SESSION_SEQUENCING_PHILOSOPHY,
-  sectionPrecedence: FINAL_SESSION_SECTION_PRECEDENCE,
-  executionMode: FINAL_SESSION_SEQUENCING_EXECUTION_MODE,
-  pairingDisposition: FINAL_SESSION_PAIRING_DISPOSITION,
-  automaticSelectionPermitted: false,
-  productionActivationAuthorized: false,
-} as const);
+export const SESSION_SEQUENCING_POLICY_V1 =
+  SESSION_SEQUENCING_POLICY_V1_ADMISSION_PROJECTION;
 
 export const SESSION_SEQUENCING_POLICY_CANDIDATES = Object.freeze([
   { id: "SEQUENCE_C0_CANONICAL_SERIALIZATION_CONTROL", blindedLabel: "POLICY_A", semantics: "canonical" },
