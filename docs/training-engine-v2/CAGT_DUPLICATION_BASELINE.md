@@ -11,3 +11,9 @@ The numeric tournament adds per-candidate reservation recurrence, objectives per
 ## Preparation Recurrence
 
 The coherent-session extension keeps warm-up and activation recurrence separate from weekly dose and assessment recurrence. Required dependency recurrence and productive continuity may pass; generic filler, optional redundancy, stale recurrence, cross-section identity duplication, assessment-cluster multiplication, and preparation counted as weekly dose fail independently. No hard count or diversity target is introduced.
+
+<!-- FULL_PRESCRIBED_PROGRAM_CAGT_GATE_14:START -->
+## Full Prescribed Program CAGT Gate 14
+
+Classification: `FULL_PRESCRIBED_PROGRAM_CAGT_V1_READY_FOR_PHASE_CONTINUITY_AUTHORIZATION`. Authority Registry: `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0`. Gate 14 is `MIXED_PRODUCTION_AND_DESIGN_PROGRAM_COMPARISON_EVIDENCE` test/developer tooling and is not a product-runtime kernel. The frozen holdout contains `248` pairs with `0` expectation mismatches, `0` accepted rescues, and combined fingerprint `ca12131efdc1fc1a8253bbfa8586be705b6e8bf68384366566eda13dcab8bee6`. Historical CAGT V1 and all production fingerprints remain unchanged. Gate 15 is `NOT_IMPLEMENTED`; Gate 16 is `FOUNDATION_ONLY_NOT_IMPLEMENTED`.
+<!-- FULL_PRESCRIBED_PROGRAM_CAGT_GATE_14:END -->

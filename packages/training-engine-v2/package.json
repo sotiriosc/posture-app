@@ -85,6 +85,14 @@
     "test:post-prescription-week:stress": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekStress.test.ts",
     "report:post-prescription-week": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts",
     "report:post-prescription-week:golden": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts",
-    "report:post-prescription-week:stress": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts"
+    "report:post-prescription-week:stress": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts",
+    "test:cagt:full-program": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramAuthority.test.ts tests/unit/cagtFullProgramAlignment.test.ts tests/unit/cagtFullProgramGate14.test.ts tests/unit/cagtFullProgramCohorts.test.ts tests/unit/cagtFullProgramHoldout.test.ts tests/unit/cagtFullProgramReports.test.ts",
+    "test:cagt:full-program:alignment": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramAlignment.test.ts",
+    "test:cagt:full-program:cohorts": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramCohorts.test.ts",
+    "test:cagt:full-program:holdout": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramHoldout.test.ts",
+    "test:cagt:full-program:stress": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramStress.test.ts",
+    "report:cagt:full-program": "node --import tsx dev/reportFullPrescribedProgramCagt.ts",
+    "report:cagt:full-program:collisions": "node --import tsx dev/reportFullPrescribedProgramCagt.ts",
+    "report:cagt:full-program:stress": "node --import tsx dev/reportFullPrescribedProgramCagt.ts"
   }
 }
