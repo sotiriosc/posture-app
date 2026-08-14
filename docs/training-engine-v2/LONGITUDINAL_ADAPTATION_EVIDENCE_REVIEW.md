@@ -31,6 +31,27 @@ Evidence review date: 2026-08-14. Evidence informs candidate actions and uncerta
 | [Real-life adherence systematic review](https://pubmed.ncbi.nlm.nih.gov/41033882/) | Healthy community-dwelling adults, 69 studies | Real-life muscle-strengthening promotion interventions | Varied control/behavior strategies | Attendance varied widely; study quality was mostly weak | Low-moderate | Supports explicit adherence records and review rather than moralized inference | That one missed session proves nonresponse or a single best adherence intervention |
 | [Pain-rehabilitation barriers review](https://pubmed.ncbi.nlm.nih.gov/40088807/) | People with musculoskeletal conditions | Review of barriers/facilitators to exercise rehabilitation | Across included studies | Time, pain and health were frequently reported barriers | Low-moderate, mostly associative | Supports distinguishing adherence constraint from physiological failure | Causality for an individual, automatic Week reallocation, or goal rewrite |
 
+## Requested topic coverage
+
+| Topic | Evidence rows used | Gate 16 conclusion |
+|---|---|---|
+| Progressive overload | ACSM 2026; ACSM progression models | Multiple legal axes; no calendar or universal increment |
+| Autoregulation, RPE, and RIR | Autoregulation meta-analysis; RIR review; proximity-to-failure meta-regressions | Explicit owner signals with uncertainty; no automatic app-side dose change |
+| Load progression | ACSM progression models; load-vs-repetition RCT; older-adult progression RCT | Legal only with observed load, repeated success, equipment capability, and policy |
+| Double/repetition progression | Load-vs-repetition RCT | Plausible policy family; no universal trigger or superiority claim |
+| Set progression | Weekly set progression RCT | Possible Prescription/Week axis; never inferred from one completed set |
+| Exercise variation | Exercise variation review | Bounded optional rotation only; preserve anchors and reject novelty quotas |
+| Plateau interpretation | Exercise variation review plus progression evidence | Plateau opens review but does not prove replacement or progression |
+| Detraining and return | Periodic detraining/retraining RCT | Reassess completed evidence and preserve successful re-exposure; no fixed return dose |
+| Deloading | Deload Delphi | Review-only with a genuine Week aggregate; no schedule, magnitude, or duration rule |
+| Fatigue and recovery | Older-adult recovery review | Keep unknown explicit; no inferred or universal threshold |
+| Adherence | Real-life adherence review; rehabilitation barriers review | Separate constraint from physiological nonresponse; Week review remains downstream |
+| Strength and hypertrophy | ACSM 2026; load/repetition and set-progression trials | Outcome-specific adaptation with no single mandatory axis |
+| Power progression | ACSM progression models; older-adult strength/power meta-analysis | Population-aware explicit policy and quality evidence required |
+| Pain-aware progression and re-exposure | Achilles pain-monitoring RCT; painful-exercise review | Local Safety/Response ownership; pain alone is neither global regression nor replacement |
+| Novice versus trained populations | ACSM progression models; trained load/repetition and set trials | Training status changes applicability, not automatic action authority |
+| Older/adapted populations | Older-adult progression, recovery, power, and position-statement evidence | Conservative individualized review; age labels alone have no direct action effect |
+
 ## Policy conclusion
 
 Evidence supports progressive, individualized resistance training and several plausible progression axes, while repeatedly showing population, protocol, outcome, and measurement dependence. The strongest defensible Gate 16 behavior is therefore response-led continuity: preserve a productive target; use repeated exact evidence before material change; request local owner action; expose conflict/unknown; and never convert a cohort average into automatic application.

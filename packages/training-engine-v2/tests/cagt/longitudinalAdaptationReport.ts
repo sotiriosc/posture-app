@@ -82,6 +82,73 @@ The repository previously had typed planned program truth, independent Performan
 
 The admitted design closes those ontology gaps without claiming runtime source adapters. Planned dose and timing remain references only; actual dose and timing require independent observation. Recovery is explicit or unknown, never inferred.
 
+## Concept audit
+
+| Concept | Pre-design classification | Gate 16 treatment |
+|---|---|---|
+| \`ExercisePerformanceRecord\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`COMPLETED_OUTCOME_OWNER\` | Authoritative occurrence and actual-performance source; normalized, never re-owned |
+| \`CompletionStatus\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`COMPLETED_OUTCOME_OWNER\` | Preserves completed, partial, not-performed, substituted, and unknown distinctions |
+| \`actualDose\` | \`COMPLETED_OUTCOME_OWNER\`, \`OBSERVATIONAL_ONLY\` | Independent observation; planned dose is reference-only |
+| \`actualTiming\` | \`COMPLETED_OUTCOME_OWNER\`, \`OBSERVATIONAL_ONLY\` | Independent observation; prescribed timing is never copied as actual |
+| \`ExecutionQualityObservation\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`OBSERVATIONAL_ONLY\` | Evidence with criterion and source identity, not an action |
+| \`ExerciseSubstitutionRecord\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`COMPLETED_OUTCOME_OWNER\` | Preserves original assignment/exercise and realized exercise |
+| \`recoveryStatus\` / \`recoveryEvidenceIds\` | \`COMPLETED_OUTCOME_OWNER\`, \`UNKNOWN_REQUIRES_REVIEW\` | Explicit recovered/concern/unknown truth; never inferred from elapsed time |
+| \`TrainingResponseObservation\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`RESPONSE_OWNER\` | Response Receiver-owned signal linked to one completed source event |
+| \`TrainingResponseHistory\` | \`RESPONSE_OWNER\` | Contextual history retained below exact and related realization evidence |
+| Training Response Receiver | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`RESPONSE_OWNER\` | Owns applicability, tolerance, symptom course, re-exposure, and replacement consideration |
+| exact/related/identity applicability | \`RESPONSE_OWNER\` | Canonical strongest-first hierarchy; structured related differences are required |
+| successful re-exposure | \`RESPONSE_OWNER\` | Remains visible, weakens permanent-failure pressure, and preserves options |
+| adverse-history summary | \`RESPONSE_OWNER\` | Context only; cannot override stronger current realization evidence without policy |
+| \`ProgressionEvidence\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`PROGRESSION_READINESS_OWNER\` | Evidence, never an applied dose change |
+| \`ProgressionReadinessTrace\` | \`PROGRESSION_READINESS_OWNER\` | May open progression review; selects no axis |
+| \`ProgressionDecision\` | \`OVERLOADED_CONCEPT\`, \`DOMAIN_CHANGE_REQUIRED\` | Gate 16 separates axis authorization from downstream exact-dose realization |
+| \`ExerciseProgressionProfile\` / \`ProgressionAxis\` | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Defines legal axis candidates; no automatic choice |
+| exercise transition relationships | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Candidate/Composer knowledge after an explicit reopen directive |
+| phase progression intent | \`PLANNED_ONLY\` | Contextual late input, never action authority |
+| Production Phase Continuity result | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Gate 15-owned current phase decision consumed without mutation |
+| \`ProgramHistory\` / \`ExerciseHistoryEvent\` / \`SessionHistory\` | \`LEGACY_COMPATIBILITY_ONLY\` | May be adapted only through typed source records; prose/history alone has no authority |
+| \`FatigueState\` | \`OBSERVATIONAL_ONLY\`, \`UNKNOWN_REQUIRES_REVIEW\` | Requires an explicit recovery, adherence, Performance, or reviewed aggregate owner |
+| production source-exposure identity | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Canonical join key; exactly one outcome entry per realized event |
+| final Prescription revision | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`PLANNED_ONLY\` | Required lineage check; remains planned truth, not actual outcome |
+| final Sequence revision | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`PLANNED_ONLY\` | Required lineage check; actual order remains independently observed when available |
+| Production Post-Prescription Week result | \`CORRECT_SINGLE_PURPOSE_CONCEPT\`, \`PLANNED_ONLY\` | Gate 13 validates planned program truth and cannot prove completion |
+| planned stress/burden traces | \`PLANNED_ONLY\` | References only; completed stress requires realized source evidence |
+| live Performance/Product ingestion | \`MISSING_COMPLETED_EXPOSURE_LEDGER\`, \`OUT_OF_SCOPE\` | Explicit test/design adapters only; production adapters remain absent |
+| Gate 11 | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Foundation authority for Performance linkage, not live Gate 16 ingestion |
+| Gate 13 | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Production planned-Week validation authority |
+| Gate 14 | \`TEST_FIXTURE_ONLY\` | Mixed production/design comparison evidence; no runtime decision authority |
+| Gate 15 | \`CORRECT_SINGLE_PURPOSE_CONCEPT\` | Production Phase Continuity decision owner; application remains separate |
+| current application-history storage | \`MISSING_APPLICATION_CONTRACT\`, \`OUT_OF_SCOPE\` | Candidate validation is designed; production persistence/orchestration is absent |
+| completed exposure ledger | \`MISSING_COMPLETED_EXPOSURE_LEDGER\` | Closed by \`CompletedExposureOutcomeLedgerEntry\` design, not runtime storage |
+| evidence window | \`MISSING_EVIDENCE_WINDOW\` | Closed by explicit bounded window with evaluation time and exclusions |
+| target scope | \`MISSING_TARGET_SCOPE\` | Closed by the typed target and no-silent-broadening rule |
+| action vocabulary | \`MISSING_ACTION_VOCABULARY\` | Closed by the 14-action vocabulary and owner/application fields |
+| decision identity/revision | \`MISSING_DECISION_IDENTITY\`, \`MISSING_DECISION_REVISION\` | Closed by deterministic lineage and immutable revision-ledger designs |
+| rotation/deload policy | \`MISSING_ROTATION_POLICY\`, \`MISSING_DELOAD_POLICY\` | Closed for review authorization only; application policy remains downstream |
+
+## Required boundary answers
+
+1. **Yes.** Actual dose remains independent from planned dose and requires an observed source.
+2. **Yes.** Actual timing remains independent from prescribed timing and requires an observed source.
+3. **Yes.** One completed exposure links to exactly one production source event.
+4. **Yes.** Several response observations reference one event without multiplying exposures.
+5. **Yes.** Substitution lineage preserves both original and realized exercise truth.
+6. **Yes.** Exact realization evidence remains above related realization evidence.
+7. **Yes.** Identity history remains contextual and weaker than realization evidence.
+8. **Yes.** Successful re-exposure blocks inappropriate permanent-failure pressure without erasing history.
+9. **Yes.** Progression Readiness remains evidence and selects no action or axis.
+10. **Yes.** Gate 16 may authorize one legal axis without selecting exact future dose.
+11. **Yes.** A separately authorized Prescription Compiler policy may later realize that axis.
+12. **Yes.** One failed target cannot authorize global regression.
+13. **Yes.** One adverse realization is insufficient for replacement review.
+14. **Yes.** Repeated adverse evidence remains scoped to structured support/load/range/side context.
+15. **Yes.** Local evidence remains local; unrelated targets are invariant.
+16. **Yes.** Week fatigue/adherence requires a separate reviewed aggregate over distinct events.
+17. **Yes.** Deload review is possible from that aggregate without a universal schedule.
+18. **Yes.** Bounded rotation remains distinct from adverse-response replacement.
+19. **Yes.** Phase review remains a request to Gate 15, separate from phase-state application.
+20. **Yes.** Gate 16 can consume caller-supplied normalized outcomes while live Product ingestion is absent.
+
 ## Canonical layers
 
 1. Source owners emit typed records and remain authoritative for their domains.
@@ -279,27 +346,71 @@ Evidence review date: 2026-08-14. Evidence informs candidate actions and uncerta
 | [Real-life adherence systematic review](https://pubmed.ncbi.nlm.nih.gov/41033882/) | Healthy community-dwelling adults, 69 studies | Real-life muscle-strengthening promotion interventions | Varied control/behavior strategies | Attendance varied widely; study quality was mostly weak | Low-moderate | Supports explicit adherence records and review rather than moralized inference | That one missed session proves nonresponse or a single best adherence intervention |
 | [Pain-rehabilitation barriers review](https://pubmed.ncbi.nlm.nih.gov/40088807/) | People with musculoskeletal conditions | Review of barriers/facilitators to exercise rehabilitation | Across included studies | Time, pain and health were frequently reported barriers | Low-moderate, mostly associative | Supports distinguishing adherence constraint from physiological failure | Causality for an individual, automatic Week reallocation, or goal rewrite |
 
+## Requested topic coverage
+
+| Topic | Evidence rows used | Gate 16 conclusion |
+|---|---|---|
+| Progressive overload | ACSM 2026; ACSM progression models | Multiple legal axes; no calendar or universal increment |
+| Autoregulation, RPE, and RIR | Autoregulation meta-analysis; RIR review; proximity-to-failure meta-regressions | Explicit owner signals with uncertainty; no automatic app-side dose change |
+| Load progression | ACSM progression models; load-vs-repetition RCT; older-adult progression RCT | Legal only with observed load, repeated success, equipment capability, and policy |
+| Double/repetition progression | Load-vs-repetition RCT | Plausible policy family; no universal trigger or superiority claim |
+| Set progression | Weekly set progression RCT | Possible Prescription/Week axis; never inferred from one completed set |
+| Exercise variation | Exercise variation review | Bounded optional rotation only; preserve anchors and reject novelty quotas |
+| Plateau interpretation | Exercise variation review plus progression evidence | Plateau opens review but does not prove replacement or progression |
+| Detraining and return | Periodic detraining/retraining RCT | Reassess completed evidence and preserve successful re-exposure; no fixed return dose |
+| Deloading | Deload Delphi | Review-only with a genuine Week aggregate; no schedule, magnitude, or duration rule |
+| Fatigue and recovery | Older-adult recovery review | Keep unknown explicit; no inferred or universal threshold |
+| Adherence | Real-life adherence review; rehabilitation barriers review | Separate constraint from physiological nonresponse; Week review remains downstream |
+| Strength and hypertrophy | ACSM 2026; load/repetition and set-progression trials | Outcome-specific adaptation with no single mandatory axis |
+| Power progression | ACSM progression models; older-adult strength/power meta-analysis | Population-aware explicit policy and quality evidence required |
+| Pain-aware progression and re-exposure | Achilles pain-monitoring RCT; painful-exercise review | Local Safety/Response ownership; pain alone is neither global regression nor replacement |
+| Novice versus trained populations | ACSM progression models; trained load/repetition and set trials | Training status changes applicability, not automatic action authority |
+| Older/adapted populations | Older-adult progression, recovery, power, and position-statement evidence | Conservative individualized review; age labels alone have no direct action effect |
+
 ## Policy conclusion
 
 Evidence supports progressive, individualized resistance training and several plausible progression axes, while repeatedly showing population, protocol, outcome, and measurement dependence. The strongest defensible Gate 16 behavior is therefore response-led continuity: preserve a productive target; use repeated exact evidence before material change; request local owner action; expose conflict/unknown; and never convert a cohort average into automatic application.
 `);
 
 const realUserAudit = document("Real User Longitudinal Adaptation Variable Audit", `
-| Variable | Present owner/contract | Gate 16 use | Production gap |
+Owner classifications below use only the requested receiver vocabulary. A row may name a capture owner and a separate decision/application owner where the fact crosses a typed handoff.
+
+| Variable | Owner classification | Gate 16 use | Production gap |
 |---|---|---|---|
-| Actual completion / partial / not performed | Performance outcome contract | Canonical ledger status | No live adapter authorized |
-| Substitution | Performance substitution record | Preserve original and realized identity | Product ingestion and reconciliation absent |
-| Actual dose | Independent Performance field | Compare trajectory without copying plan | Device/user adapter and confidence model absent |
-| Actual timing/tempo | Independent timing observation | Visible only when independently observed | Sensor/manual capture absent |
-| Quality | Structured quality observations | Target/quality evidence | Owner-specific criteria and calibration absent |
-| Response/pain | Response Receiver | Exact/related/identity, modification, replacement consideration, re-exposure | Product response adapter and clinical escalation contract absent |
-| Recovery | Recovery summary or Performance evidence | Adequate/concern/unknown | Canonical normalized recovery source absent |
-| Adherence | Adherence summary | Constraint and Week-review aggregate | Product adherence owner/adapter absent |
-| RIR/RPE | Performance/coach/athlete source | Potential readiness and axis context | Validated source schema and uncertainty absent |
-| Load availability | Prescription/equipment owner | Axis availability | Runtime equipment delta adapter absent |
-| Session/Week aggregate | Completed session/adherence owner | Week and deload review only | Production aggregate contracts/policies absent |
-| Phase decision | Production Phase Continuity | Current phase truth or reevaluation request | Gate 16-to-Gate 15 orchestration unauthorized |
-| Safety | Training Safety | Precedence and external review | No new gap introduced |
+| Actual completion | \`Performance\` | Canonical completed-event status | No live adapter authorized |
+| Partial completion | \`Performance\` | Distinct partial status; never described as completed | No live adapter authorized |
+| Substitution | \`Performance\` | Preserve original and realized identity | Product reconciliation absent |
+| Actual dose | \`Performance\` | Dose trajectory independent from plan | Device/manual source and confidence contract absent |
+| Actual effort | \`Performance\` | Readiness/realization context only when observed | Validated RPE/RIR schema absent |
+| Actual tempo | \`Performance\` | Timing evidence independent from Prescription | Sensor/manual capture absent |
+| Actual duration | \`Performance\` | Duration evidence independent from Prescription | Sensor/manual capture absent |
+| Quality | \`Performance\` | Criterion-specific trajectory | Calibration and owner-specific criteria absent |
+| Symptoms | \`Response Receiver\`, \`TrainingSafety\` | Local applicability, modification, or Safety review | Live response and escalation adapters absent |
+| Delayed symptoms | \`Response Receiver\` | Time-ordered response/persistence evidence | Follow-up capture contract absent |
+| Recovery | \`Progression Readiness\` | Adequate/concern/unknown evidence | Canonical normalized recovery source absent |
+| Sleep/readiness | \`Progression Readiness\` | Explicit blocker/context, never inferred action | Validated normalization and uncertainty absent |
+| Illness | \`TrainingSafety\` | Safety precedence or external review | Product-to-Safety source contract absent |
+| Adherence | \`Product Adapter\`, \`Week\` | Constraint or reviewed Week aggregate | Live adherence adapter absent |
+| Motivation | \`Future Typed Contract\`, \`Intentionally No Direct Effect\` | No direct progression/replacement effect in V1 | Legitimate receiver and semantics unresolved |
+| Equipment | \`Product Adapter\`, \`Prescription\` | Legal realization and axis capability | Runtime equipment-delta adapter absent |
+| Travel | \`Product Adapter\`, \`Week\` | Potential schedule/equipment constraint after normalization | Typed travel-to-Week handoff absent |
+| Work/sport load | \`Product Adapter\`, \`Progression Readiness\` | Recovery/readiness context after owner review | External-load aggregate contract absent |
+| Schedule | \`Week\` | Week-review input only | Production Week Planner/allocation absent |
+| Repeated pain | \`Response Receiver\`, \`TrainingSafety\` | Scoped repeated adverse evidence; Safety retains precedence | Clinical escalation contract absent |
+| Successful re-exposure | \`Response Receiver\` | Preserve options and weaken replacement pressure | Live response linkage absent |
+| Plateau | \`Progression Readiness\`, \`Gate 16 Longitudinal Adaptation\` | Review evidence, never automatic replacement | Production policy/kernel absent |
+| Return after absence | \`Progression Readiness\`, \`Gate 16 Longitudinal Adaptation\` | Rebuild evidence window; do not infer regression | Return/readiness source policy absent |
+| Phase transition | \`Gate 15 Phase Continuity\` | Consume current result or request reevaluation | Gate 16-to-Gate 15 orchestration unauthorized |
+| Goal change | \`Application/Persistence\`, \`Intentionally No Direct Effect\` | Invalidates/changes active lineage only after rightful owner update | Goal-owner revision contract absent |
+| Preference/variety | \`Candidate Intelligence\`, \`Gate 16 Longitudinal Adaptation\` | Bounded non-anchor rotation review when eligible | Live preference source and rerun integration absent |
+| Coach override | \`Application/Persistence\` | Reviewed source/revision; never hidden policy | Typed override, audit, and rollback absent |
+| Clinician restriction | \`TrainingSafety\` | Safety authority and external review | Live clinical restriction adapter absent |
+| Missed sessions | \`Performance\`, \`Week\` | Not-performed truth; repeated pattern may request Week review | Live completion and Week aggregate absent |
+| Deload | \`Gate 16 Longitudinal Adaptation\`, \`Week\`, \`Prescription\` | Gate 16 may request review; Week/Prescription realize later | Production aggregate and realization policies absent |
+| Progression | \`Gate 16 Longitudinal Adaptation\`, \`Prescription\` | Authorize one legal axis; exact dose deferred | Production Gate 16 kernel and compiler handoff absent |
+| Regression | \`Gate 16 Longitudinal Adaptation\`, \`Prescription\` | Authorize one local legal axis | Production Gate 16 kernel and compiler handoff absent |
+| Replacement | \`Gate 16 Longitudinal Adaptation\`, \`Candidate Intelligence\`, \`Session Composer\` | Reopen selection after repeated evidence/review; no identity choice | Candidate/Composer rerun integration absent |
+| Rotation | \`Gate 16 Longitudinal Adaptation\`, \`Candidate Intelligence\`, \`Session Composer\` | Reopen bounded eligible non-anchor selection | Rotation source policy and rerun integration absent |
 
 The design deliberately represents unknown values instead of imputing them. Before live integration, every source needs identity, authority, revision, occurrence time, confidence/unknown semantics, athlete consent/privacy handling, deduplication, correction behavior, and deterministic reconciliation.
 `);

@@ -34,4 +34,19 @@ describe("Gate 16 reports", () => {
     expect(report).toContain("OWNER_AUTHORIZATION_FOR_PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_IMPLEMENTATION");
     expect(report).toContain("does not implement, export, activate, or wire a production Longitudinal Adaptation kernel");
   });
+
+  it("retains the complete ontology, evidence-topic, and real-user audits", () => {
+    const reports = buildLongitudinalAdaptationReports();
+    const ontology = reports["LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT.md"];
+    expect(ontology).toContain("## Concept audit");
+    expect(ontology).toContain("20. **Yes.** Gate 16 can consume caller-supplied normalized outcomes");
+    expect(ontology).toContain("current application-history storage");
+    const evidence = reports["LONGITUDINAL_ADAPTATION_EVIDENCE_REVIEW.md"];
+    expect(evidence).toContain("| Double/repetition progression |");
+    expect(evidence).toContain("| Older/adapted populations |");
+    const variables = reports["REAL_USER_LONGITUDINAL_ADAPTATION_VARIABLE_AUDIT.md"];
+    expect(variables).toContain("| Delayed symptoms |");
+    expect(variables).toContain("| Coach override |");
+    expect(variables).toContain("| Rotation |");
+  });
 });
