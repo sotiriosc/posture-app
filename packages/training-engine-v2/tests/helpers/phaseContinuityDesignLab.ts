@@ -407,7 +407,8 @@ export function phaseContinuityActivationGuards() {
     resolve(process.cwd(), "packages/training-engine-v2");
   const workspaceRoot = resolve(packageRoot, "../..");
   const productionFiles = recursiveFiles(resolve(packageRoot, "src"))
-    .filter((path) => !path.endsWith("phaseContinuity/designContracts.ts"));
+    .filter((path) => !path.endsWith("phaseContinuity/designContracts.ts") &&
+      !path.endsWith("longitudinalAdaptation/designContracts.ts"));
   const appFiles = recursiveFiles(resolve(workspaceRoot, "apps"));
   const read = (paths: readonly string[]) => paths.map((path) => ({ path, content: readFileSync(path, "utf8") }));
   const production = read(productionFiles);

@@ -113,6 +113,16 @@
     "test:phase-continuity:stress": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityStress.test.ts",
     "report:phase-continuity": "node --import tsx dev/reportProductionPhaseContinuity.ts",
     "report:phase-continuity:golden": "node --import tsx dev/reportProductionPhaseContinuity.ts",
-    "report:phase-continuity:stress": "node --import tsx dev/reportProductionPhaseContinuity.ts"
+    "report:phase-continuity:stress": "node --import tsx dev/reportProductionPhaseContinuity.ts",
+    "test:cagt:longitudinal-adaptation": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationAuthority.test.ts tests/unit/cagtLongitudinalAdaptationEvidence.test.ts tests/unit/cagtLongitudinalAdaptationActions.test.ts tests/unit/cagtLongitudinalAdaptationApplication.test.ts tests/unit/cagtLongitudinalAdaptationCohorts.test.ts tests/unit/cagtLongitudinalAdaptationHoldout.test.ts tests/unit/cagtLongitudinalAdaptationMutations.test.ts tests/unit/cagtLongitudinalAdaptationMetamorphic.test.ts tests/unit/cagtLongitudinalAdaptationReports.test.ts",
+    "test:cagt:longitudinal-adaptation:evidence": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationEvidence.test.ts",
+    "test:cagt:longitudinal-adaptation:actions": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationActions.test.ts",
+    "test:cagt:longitudinal-adaptation:application": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationApplication.test.ts",
+    "test:cagt:longitudinal-adaptation:cohorts": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationCohorts.test.ts",
+    "test:cagt:longitudinal-adaptation:holdout": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationHoldout.test.ts",
+    "test:cagt:longitudinal-adaptation:stress": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationStress.test.ts",
+    "report:cagt:longitudinal-adaptation": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts",
+    "report:cagt:longitudinal-adaptation:actions": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts",
+    "report:cagt:longitudinal-adaptation:stress": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts"
   }
 }
