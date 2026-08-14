@@ -93,6 +93,15 @@
     "test:cagt:full-program:stress": "vitest --run --config vitest.config.ts tests/unit/cagtFullProgramStress.test.ts",
     "report:cagt:full-program": "node --import tsx dev/reportFullPrescribedProgramCagt.ts",
     "report:cagt:full-program:collisions": "node --import tsx dev/reportFullPrescribedProgramCagt.ts",
-    "report:cagt:full-program:stress": "node --import tsx dev/reportFullPrescribedProgramCagt.ts"
+    "report:cagt:full-program:stress": "node --import tsx dev/reportFullPrescribedProgramCagt.ts",
+    "test:cagt:phase-continuity": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityAuthority.test.ts tests/unit/cagtPhaseContinuityState.test.ts tests/unit/cagtPhaseContinuityCriteria.test.ts tests/unit/cagtPhaseContinuityAlignment.test.ts tests/unit/cagtPhaseContinuityCohorts.test.ts tests/unit/cagtPhaseContinuityHoldout.test.ts tests/unit/cagtPhaseContinuityMutations.test.ts tests/unit/cagtPhaseContinuityReports.test.ts",
+    "test:cagt:phase-continuity:criteria": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityCriteria.test.ts tests/unit/cagtPhaseContinuityState.test.ts",
+    "test:cagt:phase-continuity:alignment": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityAlignment.test.ts",
+    "test:cagt:phase-continuity:cohorts": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityCohorts.test.ts",
+    "test:cagt:phase-continuity:holdout": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityHoldout.test.ts",
+    "test:cagt:phase-continuity:stress": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityStress.test.ts",
+    "report:cagt:phase-continuity": "node --import tsx dev/reportPhaseContinuityCagt.ts",
+    "report:cagt:phase-continuity:continuity": "node --import tsx dev/reportPhaseContinuityCagt.ts",
+    "report:cagt:phase-continuity:stress": "node --import tsx dev/reportPhaseContinuityCagt.ts"
   }
 }
