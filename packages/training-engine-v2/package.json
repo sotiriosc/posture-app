@@ -102,6 +102,17 @@
     "test:cagt:phase-continuity:stress": "vitest --run --config vitest.config.ts tests/unit/cagtPhaseContinuityStress.test.ts",
     "report:cagt:phase-continuity": "node --import tsx dev/reportPhaseContinuityCagt.ts",
     "report:cagt:phase-continuity:continuity": "node --import tsx dev/reportPhaseContinuityCagt.ts",
-    "report:cagt:phase-continuity:stress": "node --import tsx dev/reportPhaseContinuityCagt.ts"
+    "report:cagt:phase-continuity:stress": "node --import tsx dev/reportPhaseContinuityCagt.ts",
+    "test:phase-continuity": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityContracts.test.ts tests/unit/productionPhaseContinuityPolicyEvidence.test.ts tests/unit/productionPhaseContinuityKernel.test.ts tests/unit/productionPhaseContinuityAlignment.test.ts tests/unit/productionPhaseContinuityRevisions.test.ts tests/unit/productionPhaseContinuityGolden.test.ts tests/unit/productionPhaseContinuityMutations.test.ts tests/unit/productionPhaseContinuityActivation.test.ts tests/unit/productionPhaseContinuityReports.test.ts",
+    "test:phase-continuity:contracts": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityContracts.test.ts tests/unit/productionPhaseContinuityActivation.test.ts",
+    "test:phase-continuity:policy": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityPolicyEvidence.test.ts",
+    "test:phase-continuity:evidence": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityPolicyEvidence.test.ts tests/unit/productionPhaseContinuityKernel.test.ts",
+    "test:phase-continuity:alignment": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityAlignment.test.ts",
+    "test:phase-continuity:revisions": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityRevisions.test.ts",
+    "test:phase-continuity:golden": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityGolden.test.ts",
+    "test:phase-continuity:stress": "vitest --run --config vitest.config.ts tests/unit/productionPhaseContinuityStress.test.ts",
+    "report:phase-continuity": "node --import tsx dev/reportProductionPhaseContinuity.ts",
+    "report:phase-continuity:golden": "node --import tsx dev/reportProductionPhaseContinuity.ts",
+    "report:phase-continuity:stress": "node --import tsx dev/reportProductionPhaseContinuity.ts"
   }
 }

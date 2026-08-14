@@ -35,7 +35,7 @@ import {
   fullProgramCoverageEvidence,
 } from "./fullPrescribedProgramCagtLab";
 
-function optionsForControlledCase(index: number): BuildPhaseContinuityInputOptions {
+export function optionsForControlledCase(index: number): BuildPhaseContinuityInputOptions {
   const caseId = `controlled-${String(index + 1).padStart(3, "0")}`;
   if (index < 15) {
     return {
@@ -103,14 +103,19 @@ function optionsForControlledCase(index: number): BuildPhaseContinuityInputOptio
     transitionKind: "adjacent_advancement", evidenceMode: "met", mutationKind };
 }
 
+export function buildPhaseContinuityControlledInput(index: number): PhaseContinuityGate15Input {
+  let input = buildPhaseContinuityGate15Input(optionsForControlledCase(index));
+  if (index === 50) {
+    const draft = structuredClone(input) as unknown as PhaseContinuityGate15Input;
+    (draft.transitionProposal as unknown as { proposedTargetPhaseId: string }).proposedTargetPhaseId = "phase_4";
+    input = draft;
+  }
+  return input;
+}
+
 export function runPhaseContinuityControlledCases() {
   const results = PHASE_CONTINUITY_CONTROLLED_CASE_NAMES.map((caseName, index) => {
-    let input = buildPhaseContinuityGate15Input(optionsForControlledCase(index));
-    if (index === 50) {
-      const draft = structuredClone(input) as unknown as PhaseContinuityGate15Input;
-      (draft.transitionProposal as unknown as { proposedTargetPhaseId: string }).proposedTargetPhaseId = "phase_4";
-      input = draft;
-    }
+    const input = buildPhaseContinuityControlledInput(index);
     const result = runPhaseContinuityGate15(input);
     return Object.freeze({ caseName, status: result.status,
       classifications: result.detailedClassifications, firstFailingSubgate: result.firstFailingSubgate,
@@ -200,31 +205,37 @@ function relineageSnapshot(input: FullPrescribedProgramSnapshot, index: number):
 
 let fixedShellCache: ReturnType<typeof executeFixedShell> | null = null;
 
-function executeFixedShell() {
+export function buildPhaseContinuityFixedShellInput(index: number): PhaseContinuityGate15Input {
   const base = fullProgramCleanSnapshots().find((snapshot) =>
     snapshot.normalizedWeekSourceSnapshot.opportunities.length === 4);
   if (!base) throw new Error("PHASE_CONTINUITY_FOUR_OPPORTUNITY_BASE_REQUIRED");
+  const mode = index % 7;
+  const currentPhaseId: PhaseId = mode >= 3 ? mode >= 5 ? "phase_3" : "phase_2" : "phase_1";
+  const targetPhaseId: PhaseId = mode === 1 || mode === 2 ? "phase_2" :
+    mode === 3 || mode === 4 ? "phase_3" : currentPhaseId;
+  const transitionKind = mode === 6 ? "cycle_completion_review" as const :
+    targetPhaseId === currentPhaseId ? "stay" as const : "adjacent_advancement" as const;
+  const currentPhaseSnapshot = base.sessionIntents[0]?.phaseIntent.id === currentPhaseId ? base :
+    buildPhaseTransitionProgramSnapshot({ current: base, targetPhaseId: currentPhaseId,
+      suffix: `fixed-shell-current:${index}` });
+  return buildPhaseContinuityGate15Input({
+    caseId: `fixed-shell-${String(index + 1).padStart(2, "0")}`,
+    currentPhaseId,
+    targetPhaseId,
+    transitionKind,
+    evidenceMode: mode === 2 || mode === 4 ? "missing" : "met",
+    currentProgramSnapshot: relineageSnapshot(currentPhaseSnapshot, index),
+  });
+}
+
+function executeFixedShell() {
   const results = Array.from({ length: PHASE_CONTINUITY_FIXED_SHELL_COHORT_SIZE }, (_, index) => {
-    const mode = index % 7;
-    const currentPhaseId: PhaseId = mode >= 3 ? mode >= 5 ? "phase_3" : "phase_2" : "phase_1";
-    const targetPhaseId: PhaseId = mode === 1 || mode === 2 ? "phase_2" :
-      mode === 3 || mode === 4 ? "phase_3" : currentPhaseId;
-    const transitionKind = mode === 6 ? "cycle_completion_review" as const :
-      targetPhaseId === currentPhaseId ? "stay" as const : "adjacent_advancement" as const;
-    const currentPhaseSnapshot = base.sessionIntents[0]?.phaseIntent.id === currentPhaseId ? base :
-      buildPhaseTransitionProgramSnapshot({ current: base, targetPhaseId: currentPhaseId,
-        suffix: `fixed-shell-current:${index}` });
-    const current = relineageSnapshot(currentPhaseSnapshot, index);
-    const result = runPhaseContinuityGate15(buildPhaseContinuityGate15Input({
-      caseId: `fixed-shell-${String(index + 1).padStart(2, "0")}`,
-      currentPhaseId,
-      targetPhaseId,
-      transitionKind,
-      evidenceMode: mode === 2 || mode === 4 ? "missing" : "met",
-      currentProgramSnapshot: current,
-    }));
-    return Object.freeze({ athleteId: current.athleteId, opportunityCount: 4,
-      currentPhaseId, targetPhaseId, status: result.status, metrics: result.metrics, result });
+    const gateInput = buildPhaseContinuityFixedShellInput(index);
+    const result = runPhaseContinuityGate15(gateInput);
+    return Object.freeze({ athleteId: gateInput.currentProgramSnapshot.athleteId, opportunityCount: 4,
+      currentPhaseId: gateInput.transitionProposal.currentPhaseId,
+      targetPhaseId: gateInput.transitionProposal.proposedTargetPhaseId,
+      status: result.status, metrics: result.metrics, result });
   });
   const average = (field: keyof PhaseContinuityGate15Result["metrics"]) => Number((results.reduce((sum, entry) =>
     sum + entry.metrics[field], 0) / results.length).toFixed(6));
@@ -409,7 +420,7 @@ export function phaseContinuityActivationGuards() {
     appGate15ImportCount: apps.filter((entry) => /phaseContinuity|phase-continuity|Gate15/.test(entry.content)).length,
     productionGate15ImportCount: production.filter((entry) => /phaseContinuity\/|phaseContinuityGate15/.test(entry.content)).length,
     publicIndexExportCount: production.filter((entry) => entry.path.endsWith("src/index.ts") &&
-      /phaseContinuity/.test(entry.content)).length,
+      /phaseContinuity\/designContracts/.test(entry.content)).length,
     generateProgramCallCount: tooling.filter((entry) => /generateProgram\s*\(/.test(entry.content)).length,
     productAdapterWiringCount: tooling.filter((entry) => /from ["'][^"']*ProductAdapter|ProductAdapter\s*\(/.test(
       entry.content)).length,

@@ -1,0 +1,24 @@
+{
+  "contract": {
+    "contractId": "PRODUCTION_PHASE_EVIDENCE_SOURCE_CONTRACT",
+    "contractVersion": "1.0.0"
+  },
+  "supportedOwners": [
+    "performance_summary",
+    "completed_session_summary",
+    "training_response_receiver",
+    "progression_readiness",
+    "training_safety",
+    "coach_review",
+    "clinician_restriction",
+    "athlete_report",
+    "product_adherence",
+    "planned_program_truth",
+    "unknown"
+  ],
+  "testOnlyOwnerAcceptedCount": 0,
+  "plannedTruthCompletedEvidenceCount": 0,
+  "livePerformanceAdapterCount": 0,
+  "liveProductAdherenceAdapterCount": 0,
+  "repeatedEvidenceDistinctBasisRequired": true
+}

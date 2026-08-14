@@ -77,3 +77,18 @@ Classification: `FULL_PRESCRIBED_PROGRAM_CAGT_V1_READY_FOR_PHASE_CONTINUITY_AUTH
 
 Classification: `PHASE_CONTINUITY_GATE_15_V1_READY_FOR_PRODUCTION_KERNEL_IMPLEMENTATION_AUTHORIZATION`. Ontology: `PHASE_CONTINUITY_ONTOLOGY_READY`. Authority Registry: `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@3.0.0`; Gate 15 is `PHASE_CONTINUITY_DESIGN_EVIDENCE` and remains test/developer tooling, not product runtime. The frozen holdout has `295` cases, `0` mismatches, and `0` accepted rescues. No automatic phase advancement/regression/reset, progression, replacement, rotation or deload exists. Gate 16 remains `FOUNDATION_ONLY_NOT_IMPLEMENTED`. Combined fingerprint: `9b5602fbbfe5f9f32537bff8c07b434e8cb7528f62513a97d6c823d0cba3f3fc`.
 <!-- PHASE_CONTINUITY_GATE_15_V1:END -->
+
+<!-- PRODUCTION_PHASE_CONTINUITY_KERNEL_V1:START -->
+## Production Phase Continuity Kernel V1
+
+- Status: `PRODUCTION_PHASE_CONTINUITY_KERNEL_IMPLEMENTED_NOT_ACTIVATED`
+- Classification: `PRODUCTION_PHASE_CONTINUITY_KERNEL_READY_FOR_LONGITUDINAL_ADAPTATION_GATE_16_AUTHORIZATION`
+- Activation: `NOT_ACTIVATED`
+- Contract: `PRODUCTION_PHASE_CONTINUITY_KERNEL@1.0.0`
+- Policy injection is explicit; no default policy or evidence source is selected.
+- Decisions remain unapplied: `stateMutationApplied=false`, `applicationOwnerRequired=true`.
+- Gate 15 authority is production kernel; Gate 16 remains foundation-only and not implemented.
+- Golden equivalence: `PRODUCTION_PHASE_CONTINUITY_GOLDEN_EQUIVALENCE_PASS` with 0 unexplained differences.
+- Deterministic stress: `PRODUCTION_PHASE_CONTINUITY_DETERMINISTIC_STRESS_PASS` across 10000 evaluations.
+- Combined fingerprint: `39236671808d605a53258351b58b081a64231b8c4fd6dee4125501e68e9bd232`
+<!-- PRODUCTION_PHASE_CONTINUITY_KERNEL_V1:END -->

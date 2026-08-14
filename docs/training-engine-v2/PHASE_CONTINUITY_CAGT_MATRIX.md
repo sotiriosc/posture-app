@@ -91,3 +91,18 @@ Controlled cases: `85`; malformed result count: `0`.
 | same_exercise_changed_prescription | advance_to_next_phase_authorized | none |
 | same_exercise_reps_tempo | advance_to_next_phase_authorized | none |
 | exercise_changed_due_equipment_not_phase | advance_to_next_phase_authorized | none |
+
+<!-- PRODUCTION_PHASE_CONTINUITY_KERNEL_V1:START -->
+## Production Phase Continuity Kernel V1
+
+- Status: `PRODUCTION_PHASE_CONTINUITY_KERNEL_IMPLEMENTED_NOT_ACTIVATED`
+- Classification: `PRODUCTION_PHASE_CONTINUITY_KERNEL_READY_FOR_LONGITUDINAL_ADAPTATION_GATE_16_AUTHORIZATION`
+- Activation: `NOT_ACTIVATED`
+- Contract: `PRODUCTION_PHASE_CONTINUITY_KERNEL@1.0.0`
+- Policy injection is explicit; no default policy or evidence source is selected.
+- Decisions remain unapplied: `stateMutationApplied=false`, `applicationOwnerRequired=true`.
+- Gate 15 authority is production kernel; Gate 16 remains foundation-only and not implemented.
+- Golden equivalence: `PRODUCTION_PHASE_CONTINUITY_GOLDEN_EQUIVALENCE_PASS` with 0 unexplained differences.
+- Deterministic stress: `PRODUCTION_PHASE_CONTINUITY_DETERMINISTIC_STRESS_PASS` across 10000 evaluations.
+- Combined fingerprint: `39236671808d605a53258351b58b081a64231b8c4fd6dee4125501e68e9bd232`
+<!-- PRODUCTION_PHASE_CONTINUITY_KERNEL_V1:END -->
