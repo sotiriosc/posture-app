@@ -3,6 +3,7 @@ import {
   LONGITUDINAL_ADAPTATION_CONTRACT_REFERENCE,
   LONGITUDINAL_ADAPTATION_GATE_16_ACTIVATION_STATUS,
   LONGITUDINAL_ADAPTATION_GATE_16_STATUS,
+  LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION,
   LONGITUDINAL_ADAPTATION_POLICY_PHILOSOPHY,
   LONGITUDINAL_ADAPTATION_POLICY_REFERENCE,
   LONGITUDINAL_DETAILED_CLASSIFICATIONS,
@@ -73,6 +74,8 @@ function document(title: string, body: string): string {
 }
 
 const ontology = document("Longitudinal Adaptation Ontology Audit", `
+**Ontology audit classification:** \`${LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION}\`
+
 ## Finding
 
 The repository previously had typed planned program truth, independent Performance outcome fields, Training Response Receiver applicability, Progression Readiness without axis selection, and production Phase Continuity with unapplied decisions. It did not have a canonical completed-exposure outcome ledger, bounded evidence window, longitudinal target/thread/state identity, closed action vocabulary, or decision/application validation contract.
@@ -309,6 +312,7 @@ export function buildLongitudinalAdaptationReports(): Readonly<Record<string, st
   const guards = longitudinalAdaptationActivationGuards();
   const fingerprints = Object.freeze({ ...longitudinalAdaptationFingerprints(), stress: stress.fingerprint });
   const admission = Object.freeze({ classification: LONGITUDINAL_ADAPTATION_CLASSIFICATION,
+    ontologyAuditClassification: LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION,
     authorityRegistry: CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V5.reference,
     gate16Authority: CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V5.gates.gate_16_longitudinal_adaptation,
     contract: LONGITUDINAL_ADAPTATION_CONTRACT_REFERENCE, policy: LONGITUDINAL_ADAPTATION_POLICY_REFERENCE,

@@ -8,6 +8,8 @@
 
 This is test/developer evidence. It does not implement, export, activate, or wire a production Longitudinal Adaptation kernel. It does not mutate a Prescription, exercise identity, Week, phase state, or product program.
 
+**Ontology audit classification:** `LONGITUDINAL_ADAPTATION_ONTOLOGY_READY`
+
 ## Finding
 
 The repository previously had typed planned program truth, independent Performance outcome fields, Training Response Receiver applicability, Progression Readiness without axis selection, and production Phase Continuity with unapplied decisions. It did not have a canonical completed-exposure outcome ledger, bounded evidence window, longitudinal target/thread/state identity, closed action vocabulary, or decision/application validation contract.

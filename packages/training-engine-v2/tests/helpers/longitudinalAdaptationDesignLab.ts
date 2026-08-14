@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import {
   LONGITUDINAL_ACTIONS,
   LONGITUDINAL_ADAPTATION_CONTRACT_REFERENCE,
+  LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION,
   LONGITUDINAL_ADAPTATION_POLICY_PHILOSOPHY,
   LONGITUDINAL_ADAPTATION_POLICY_REFERENCE,
   LONGITUDINAL_DETAILED_CLASSIFICATIONS,
@@ -289,8 +290,12 @@ export function longitudinalAdaptationFingerprints() {
   const holdout = runLongitudinalHoldout();
   const activation = longitudinalAdaptationActivationGuards();
   const metamorphic = runLongitudinalMetamorphicChecks();
-  const values = Object.freeze({ ontologyAudit: digest({ sources: LONGITUDINAL_OUTCOME_SOURCE_OWNERS,
-    signals: LONGITUDINAL_OUTCOME_SIGNALS, targets: LONGITUDINAL_TARGET_SCOPES }),
+  const values = Object.freeze({ ontologyAudit: digest({
+    classification: LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION,
+    sources: LONGITUDINAL_OUTCOME_SOURCE_OWNERS,
+    signals: LONGITUDINAL_OUTCOME_SIGNALS,
+    targets: LONGITUDINAL_TARGET_SCOPES,
+  }),
   registryV5: digest(CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V5),
   ownerBoundaries: digest({ sourceOwners: LONGITUDINAL_OUTCOME_SOURCE_OWNERS, runtime: false }),
   policyV1: digest({ ref: LONGITUDINAL_ADAPTATION_POLICY_REFERENCE,

@@ -6,6 +6,8 @@ import {
   LONGITUDINAL_ADAPTATION_CLASSIFICATION,
   LONGITUDINAL_ADAPTATION_REPORT_FILENAMES,
 } from "../cagt/longitudinalAdaptationReport";
+import { LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION } from
+  "../../src/longitudinalAdaptation/designContracts";
 
 describe("Gate 16 reports", () => {
   it("builds and freezes all 32 required artifacts", () => {
@@ -23,6 +25,11 @@ describe("Gate 16 reports", () => {
   it("states readiness without claiming production runtime", () => {
     expect(LONGITUDINAL_ADAPTATION_CLASSIFICATION)
       .toBe("LONGITUDINAL_ADAPTATION_GATE_16_V1_READY_FOR_PRODUCTION_KERNEL_IMPLEMENTATION_AUTHORIZATION");
+    expect(LONGITUDINAL_ADAPTATION_ONTOLOGY_AUDIT_CLASSIFICATION)
+      .toBe("LONGITUDINAL_ADAPTATION_ONTOLOGY_READY");
+    const admission = JSON.parse(buildLongitudinalAdaptationReports()
+      ["LONGITUDINAL_ADAPTATION_CAGT_ADMISSION_REPORT.json"]);
+    expect(admission.ontologyAuditClassification).toBe("LONGITUDINAL_ADAPTATION_ONTOLOGY_READY");
     const report = buildLongitudinalAdaptationReports()["LONGITUDINAL_ADAPTATION_IMPLEMENTATION_READINESS.md"];
     expect(report).toContain("OWNER_AUTHORIZATION_FOR_PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_IMPLEMENTATION");
     expect(report).toContain("does not implement, export, activate, or wire a production Longitudinal Adaptation kernel");
