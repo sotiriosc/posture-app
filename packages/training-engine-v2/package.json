@@ -54,6 +54,12 @@
     "test:prescription-compiler:stress": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerStress.test.ts",
     "report:prescription-compiler": "node --import tsx dev/reportProductionPrescriptionCompiler.ts",
     "report:prescription-compiler:catalog": "node --import tsx dev/reportProductionPrescriptionCompiler.ts",
-    "report:prescription-compiler:stress": "node --import tsx dev/reportProductionPrescriptionCompiler.ts"
+    "report:prescription-compiler:stress": "node --import tsx dev/reportProductionPrescriptionCompiler.ts",
+    "test:session-sequencing-v1": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingPolicyV1.test.ts tests/unit/finalSessionSequencingMatrices.test.ts tests/unit/finalSessionSequencingArchitecture.test.ts",
+    "test:session-sequencing-v1:holdout": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingHoldout.test.ts",
+    "test:session-sequencing-v1:stress": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingStress.test.ts",
+    "test:session-sequencing-v1:full-session": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingPolicyV1.test.ts tests/unit/finalSessionSequencingMatrices.test.ts",
+    "test:session-sequencing-v1:duration": "vitest --run --config vitest.config.ts tests/unit/finalSessionSequencingMatrices.test.ts",
+    "report:session-sequencing-v1": "node --import tsx dev/reportFinalSessionSequencingV1.ts"
   }
 }
