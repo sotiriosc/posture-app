@@ -243,15 +243,18 @@ describe("post-Prescription Week validation V1 design admission", () => {
     });
   }, 90_000);
 
-  it("remains design-only, unexported, and inactive", () => {
+  it("keeps historical design contracts private after production-kernel graduation", () => {
     const rootIndex = readFileSync(resolve(process.cwd(), "src/index.ts"), "utf8");
+    const weekValidationIndex = readFileSync(resolve(process.cwd(), "src/weekValidation/index.ts"), "utf8");
     const designContracts = readFileSync(resolve(process.cwd(), "src/weekValidation/designContracts.ts"), "utf8");
     const appSources = sourceText(resolve(process.cwd(), "../../apps"));
     const productionSources = sourceText(resolve(process.cwd(), "src"));
-    expect(rootIndex).not.toContain("weekValidation");
+    expect(rootIndex).toContain('export * from "./weekValidation"');
+    expect(weekValidationIndex).not.toContain("designContracts");
     expect(designContracts).toContain("intentionally absent from the package index");
     expect(designContracts).not.toContain("generateProgram");
     expect(appSources).not.toContain("validatePostPrescriptionWeekDesign");
+    expect(appSources).not.toContain("validatePostPrescriptionWeek");
     expect(appSources).not.toContain("POST_PRESCRIPTION_WEEK_VALIDATION_V1_CAUSAL_LEDGER_POLICY");
     expect(productionSources).not.toContain("tests/helpers");
     expect(productionSources).not.toContain("tests/cagt");

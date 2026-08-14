@@ -72,6 +72,19 @@
     "test:final-sequencing:stress": "vitest --run --config vitest.config.ts tests/unit/productionFinalSequencingStress.test.ts",
     "report:final-sequencing": "node --import tsx dev/reportProductionFinalSequencing.ts",
     "report:final-sequencing:golden": "node --import tsx dev/reportProductionFinalSequencing.ts",
-    "report:final-sequencing:stress": "node --import tsx dev/reportProductionFinalSequencing.ts"
+    "report:final-sequencing:stress": "node --import tsx dev/reportProductionFinalSequencing.ts",
+    "test:post-prescription-week": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekContracts.test.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekGolden.test.ts tests/unit/productionPostPrescriptionWeekMutations.test.ts tests/unit/productionPostPrescriptionWeekRevisions.test.ts tests/unit/productionPostPrescriptionWeekActivation.test.ts tests/unit/productionPostPrescriptionWeekStress.test.ts tests/unit/productionPostPrescriptionWeekReports.test.ts tests/unit/postPrescriptionWeekValidationV1.test.ts tests/unit/postPrescriptionWeekValidationReports.test.ts",
+    "test:post-prescription-week:contracts": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekContracts.test.ts tests/unit/productionPostPrescriptionWeekActivation.test.ts",
+    "test:post-prescription-week:ledger": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekMutations.test.ts",
+    "test:post-prescription-week:objectives": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekGolden.test.ts",
+    "test:post-prescription-week:relationships": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekMutations.test.ts",
+    "test:post-prescription-week:duration": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekMutations.test.ts",
+    "test:post-prescription-week:spacing": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekKernel.test.ts tests/unit/productionPostPrescriptionWeekMutations.test.ts",
+    "test:post-prescription-week:revisions": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekRevisions.test.ts",
+    "test:post-prescription-week:golden": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekGolden.test.ts tests/unit/postPrescriptionWeekValidationV1.test.ts",
+    "test:post-prescription-week:stress": "vitest --run --config vitest.config.ts tests/unit/productionPostPrescriptionWeekStress.test.ts",
+    "report:post-prescription-week": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts",
+    "report:post-prescription-week:golden": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts",
+    "report:post-prescription-week:stress": "node --import tsx dev/reportProductionPostPrescriptionWeek.ts"
   }
 }

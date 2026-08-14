@@ -18,6 +18,7 @@ export * from "./trainingResponseHistory";
 export * from "./trainingResponseReceiver";
 export * from "./trunkMechanics";
 export * from "./validation";
+export * from "./weekValidation";
 export * from "./data/candidateScenarios";
 export * from "./data/goldenPersonas";
 export * from "./data/referenceExercises";

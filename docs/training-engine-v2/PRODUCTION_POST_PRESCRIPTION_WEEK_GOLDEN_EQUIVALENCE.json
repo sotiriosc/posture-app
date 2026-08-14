@@ -1,0 +1,83 @@
+{
+  "manifestFingerprint": "f2116ec34146fa25f1c3fa23906becc5b3d35cac8160f38124273d79ccbdf402",
+  "scenarioCount": 160,
+  "genuineCompletePrescribedWeekCount": 128,
+  "adaptedCount": 156,
+  "rejectedCount": 4,
+  "cleanComparisonCount": 128,
+  "exactCommonSemanticMatchCount": 128,
+  "unexplainedSemanticDifferenceCount": 0,
+  "expectedEventCount": 860,
+  "observedEventCount": 860,
+  "uniqueEventCount": 860,
+  "cleanGate13FailureCount": 0,
+  "adapterRejections": [
+    {
+      "scenarioId": "post-prescription-week-holdout-130",
+      "reasonCodes": [
+        "DESIGN_OBJECTIVE_SESSION_NEED_TRACE_REQUIRED"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-137",
+      "reasonCodes": [
+        "DESIGN_OBJECTIVE_SESSION_NEED_TRACE_REQUIRED"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-151",
+      "reasonCodes": [
+        "DESIGN_OBJECTIVE_SESSION_NEED_TRACE_REQUIRED"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-158",
+      "reasonCodes": [
+        "DESIGN_OBJECTIVE_SESSION_NEED_TRACE_REQUIRED"
+      ]
+    }
+  ],
+  "documentedRepresentationCorrections": [
+    "VERSIONED_PRODUCTION_CONTRACTS",
+    "NORMALIZED_PRODUCTION_WEEK_SOURCE",
+    "VALIDATION_IDENTITY_AND_REVISIONS",
+    "EXPLICIT_PRODUCTION_POLICY_INJECTION",
+    "PRESCRIBED_AND_EXECUTABLE_FREQUENCY_SEPARATION",
+    "EXPLICIT_INPUT_AUTHORITY_TRACE",
+    "EXECUTION_FEASIBILITY_PENDING_STATUS",
+    "ADDITIVE_REQUIRED_PRODUCTION_CONCENTRATION_TRACES"
+  ],
+  "h1H2Evidence": {
+    "sourcePlanId": "prescription:1e2ba521cfa6175d",
+    "sourceBlockId": "prescription-block:a53ec64f20b3a223",
+    "h1TotalDevelopmentalSetRange": [
+      2,
+      2
+    ],
+    "h2DistributedSessionRanges": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "h2DistributedTotalDevelopmentalSetRange": [
+      2,
+      2
+    ],
+    "h2AdditiveMutationTotalDevelopmentalSetRange": [
+      4,
+      4
+    ],
+    "equalTotalDistribution": true,
+    "additiveMutationRejected": true,
+    "disposition": "DISTRIBUTION_FEASIBILITY_EVIDENCE_ONLY_RESPONSE_DEPENDENT",
+    "completedResponseClaimed": false,
+    "hypertrophySuperiorityClaimed": false
+  },
+  "comparisonFingerprint": "e8b5992399905d50d7e6e382dbb7f85841958effd61172cacabc5c764c0869e1",
+  "result": "PRODUCTION_POST_PRESCRIPTION_WEEK_GOLDEN_EQUIVALENCE_PASSED"
+}

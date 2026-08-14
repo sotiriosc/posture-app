@@ -1,0 +1,526 @@
+{
+  "mutationCount": 57,
+  "rejectedCount": 57,
+  "semanticMutationCount": 57,
+  "nameBasedRejectionCount": 0,
+  "acceptedDownstreamRescueCount": 0,
+  "results": [
+    {
+      "mutation": "unsupported_validator_contract",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "UNSUPPORTED_POST_PRESCRIPTION_WEEK_VALIDATOR_CONTRACT_VERSION"
+      ]
+    },
+    {
+      "mutation": "unsupported_source_contract",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "UNSUPPORTED_PRODUCTION_PRESCRIBED_WEEK_SOURCE_CONTRACT_VERSION"
+      ]
+    },
+    {
+      "mutation": "unsupported_prescription_contract",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "UNSUPPORTED_PRESCRIPTION_CONTRACT_VERSION"
+      ]
+    },
+    {
+      "mutation": "unsupported_sequencing_contract",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "UNSUPPORTED_SEQUENCING_CONTRACT_VERSION"
+      ]
+    },
+    {
+      "mutation": "missing_validation_policy",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_REQUIRED"
+      ]
+    },
+    {
+      "mutation": "unknown_validation_policy",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_UNAVAILABLE"
+      ]
+    },
+    {
+      "mutation": "policy_conflict",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_CONFLICT"
+      ]
+    },
+    {
+      "mutation": "design_contract_imported_into_production_kernel",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PRODUCTION_SOURCE_BOUNDARY_IMPORT_REJECTED"
+      ]
+    },
+    {
+      "mutation": "hidden_design_adapter",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PRODUCTION_SOURCE_BOUNDARY_IMPORT_REJECTED"
+      ]
+    },
+    {
+      "mutation": "duplicate_source_event",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "missing_source_event",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "MISSING_SOURCE_EVENT",
+        "ORPHAN_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "orphan_source_event",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "ORPHAN_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_objective",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_need",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_muscle",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_action",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_role",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_block",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "event_per_set",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT"
+      ]
+    },
+    {
+      "mutation": "cross_session_event_collision",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_EVENT",
+        "CROSS_SESSION_EVENT_COLLISION"
+      ]
+    },
+    {
+      "mutation": "stale_prescription_revision",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "STALE_PRESCRIPTION_REVISION"
+      ]
+    },
+    {
+      "mutation": "stale_sequence_revision",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "STALE_SEQUENCE_REVISION"
+      ]
+    },
+    {
+      "mutation": "wrong_reservation",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "WRONG_RESERVATION_REJECTED_BY_IDENTITY_CHAIN"
+      ]
+    },
+    {
+      "mutation": "wrong_opportunity",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "WRONG_OPPORTUNITY_REJECTED_BY_IDENTITY_CHAIN"
+      ]
+    },
+    {
+      "mutation": "wrong_execution_attempt",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "WRONG_EXECUTION_ATTEMPT_REJECTED_BY_IDENTITY_CHAIN"
+      ]
+    },
+    {
+      "mutation": "wrong_objective_mapping",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "WEEK_OBJECTIVE_SOURCE_TRACE_INCOMPLETE"
+      ]
+    },
+    {
+      "mutation": "exercise_identity_inferred_objective",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "WEEK_OBJECTIVE_SOURCE_TRACE_INCOMPLETE"
+      ]
+    },
+    {
+      "mutation": "preparatory_developmental_credit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_BLOCK_CONTRIBUTION_CLASSIFICATION"
+      ]
+    },
+    {
+      "mutation": "technique_hypertrophy_credit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_BLOCK_CONTRIBUTION_CLASSIFICATION"
+      ]
+    },
+    {
+      "mutation": "recovery_strength_credit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_BLOCK_CONTRIBUTION_CLASSIFICATION"
+      ]
+    },
+    {
+      "mutation": "key_secondary_direct_credit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DIRECT_REQUIRES_EXACT_ACTION_OR_PRIMARY_TARGET"
+      ]
+    },
+    {
+      "mutation": "incidental_meaningful_credit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DIRECT_REQUIRES_EXACT_ACTION_OR_PRIMARY_TARGET"
+      ]
+    },
+    {
+      "mutation": "mixed_dose_unit_sum",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_NONCOMMENSURABLE_DOSE_LANE"
+      ]
+    },
+    {
+      "mutation": "invented_cross_mode_conversion",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_NONCOMMENSURABLE_DOSE_LANE"
+      ]
+    },
+    {
+      "mutation": "distance_converted_to_time_without_pace",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_NONCOMMENSURABLE_DOSE_LANE"
+      ]
+    },
+    {
+      "mutation": "steps_converted_to_time_without_cadence",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_NONCOMMENSURABLE_DOSE_LANE"
+      ]
+    },
+    {
+      "mutation": "breaths_converted_to_time_without_cadence",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_NONCOMMENSURABLE_DOSE_LANE"
+      ]
+    },
+    {
+      "mutation": "unknown_duration_called_fit",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_WEEK_DURATION_KNOWLEDGE_STATE"
+      ]
+    },
+    {
+      "mutation": "definitely_over_budget_counted_executable",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DEFINITELY_OVER_BUDGET_EXECUTABLE_PROHIBITED"
+      ]
+    },
+    {
+      "mutation": "opportunity_order_treated_as_elapsed_time",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_WEEK_SPACING_TRACE"
+      ]
+    },
+    {
+      "mutation": "h1_upgraded_to_h2",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_VALIDATION_POLICY_SCOPE"
+      ]
+    },
+    {
+      "mutation": "h1_dose_duplicated_across_h2",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "INVALID_VALIDATION_POLICY_SCOPE"
+      ]
+    },
+    {
+      "mutation": "assessment_cluster_multiplied",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_OBJECTIVE_ID"
+      ]
+    },
+    {
+      "mutation": "recurring_preparation_called_repeated_a1",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DUPLICATE_SOURCE_OBJECTIVE_ID"
+      ]
+    },
+    {
+      "mutation": "stress_potential_called_injury",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PLANNED_STRESS_MUST_NOT_CLAIM_INJURY_OR_DIAGNOSIS"
+      ]
+    },
+    {
+      "mutation": "burden_called_recovery",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PLANNED_BURDEN_MUST_REMAIN_STRUCTURED_OBSERVATION"
+      ]
+    },
+    {
+      "mutation": "planned_work_called_completed",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PLANNED_FACT_CALLED_COMPLETED"
+      ]
+    },
+    {
+      "mutation": "completed_exposure_inferred",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PLANNED_WEEK_VALIDATOR_OWNER_BOUNDARY_VIOLATION"
+      ]
+    },
+    {
+      "mutation": "adaptation_inferred",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "PLANNED_WEEK_VALIDATOR_OWNER_BOUNDARY_VIOLATION"
+      ]
+    },
+    {
+      "mutation": "validator_added_session",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "VALIDATOR_MUTATED_PRESCRIBED_WEEK"
+      ]
+    },
+    {
+      "mutation": "validator_removed_session",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "VALIDATOR_MUTATED_PRESCRIBED_WEEK"
+      ]
+    },
+    {
+      "mutation": "validator_added_exercise",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "VALIDATOR_MUTATED_PRESCRIBED_WEEK"
+      ]
+    },
+    {
+      "mutation": "week_reallocation_performed",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "VALIDATOR_REALLOCATED_PRESCRIBED_WEEK"
+      ]
+    },
+    {
+      "mutation": "downstream_rescue_accepted",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "DOWNSTREAM_RESCUE_PROHIBITED"
+      ]
+    },
+    {
+      "mutation": "hidden_current_time",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "POST_PRESCRIPTION_WEEK_EVALUATION_TIME_INVALID"
+      ]
+    },
+    {
+      "mutation": "random_validation_id",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "RANDOM_VALIDATION_ID_PROHIBITED"
+      ]
+    },
+    {
+      "mutation": "prior_validation_revision_rewritten",
+      "semanticDataChanged": true,
+      "detectedFromMutationName": false,
+      "rejected": true,
+      "reasonCodes": [
+        "FINALIZED_HISTORICAL_VALIDATION_REVISION_IMMUTABLE",
+        "FINAL_VALIDATION_REVISION_SUPERSEDED"
+      ]
+    }
+  ],
+  "result": "PRODUCTION_POST_PRESCRIPTION_WEEK_MUTATIONS_REJECTED"
+}

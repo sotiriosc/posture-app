@@ -1,5 +1,6 @@
 import {
   REFERENCE_EXERCISES,
+  POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_DESIGN_COMPATIBILITY_PROJECTION,
   sequenceFinalSession,
   type SessionIntent,
   type SessionNeed,
@@ -43,44 +44,8 @@ export const POST_PRESCRIPTION_WEEK_VALIDATION_ONTOLOGY_CLASSIFICATION =
   "POST_PRESCRIPTION_WEEK_VALIDATION_ONTOLOGY_READY" as const;
 
 export const POST_PRESCRIPTION_WEEK_VALIDATION_V1_POLICY:
-PostPrescriptionWeekValidationPolicy = Object.freeze({
-  policyId: POST_PRESCRIPTION_WEEK_VALIDATION_V1_POLICY_ID,
-  version: POST_PRESCRIPTION_WEEK_VALIDATION_V1_POLICY_VERSION,
-  authority: "OWNER_SELECTED_DESIGN_EVIDENCE",
-  weekPolicyRef: { policyId: "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE", version: "1.0.0" },
-  frequencyRules: Object.freeze([
-    { purpose: "movement_development" as const, required: [1, 2, 3] as const, preferred: [0, 1, 2] as const, optional: [0, 1, 1] as const, sourceRuleId: "STRENGTH_S2_BALANCED" },
-    { purpose: "muscle_development" as const, required: [1, 1, 2] as const, preferred: [0, 1, 2] as const, optional: [0, 1, 1] as const, sourceRuleId: "MUSCLE_H1_SINGLE_FLEXIBLE" },
-    { purpose: "direct_action_development" as const, required: [1, 1, 1] as const, preferred: [0, 1, 1] as const, optional: [0, 1, 1] as const, sourceRuleId: "DIRECT_D1_ONCE" },
-    { purpose: "assessment_priority_development" as const, required: [1, 1, 1] as const, preferred: [0, 1, 1] as const, optional: [0, 1, 1] as const, sourceRuleId: "ASSESSMENT_A1_SINGLE_CLUSTER" },
-    { purpose: "capacity_development" as const, required: [1, 1, 1] as const, preferred: [0, 1, 1] as const, optional: [0, 1, 1] as const, sourceRuleId: "CAPACITY_C1_ONCE" },
-    { purpose: "recovery_support" as const, required: [1, 1, 1] as const, preferred: [0, 1, 1] as const, optional: [0, 1, 1] as const, sourceRuleId: "RECOVERY_EXPLICIT_ONLY" },
-  ]),
-  supportedPurposes: Object.freeze([
-    "movement_development" as const, "muscle_development" as const, "direct_action_development" as const,
-    "assessment_priority_development" as const, "capacity_development" as const, "recovery_support" as const,
-  ]),
-  unsupportedScopes: Object.freeze([
-    "general_fitness_movement",
-    "posture_movement_quality_frequency",
-    "systemic_conditioning",
-    "external_sport_load",
-    "standalone_recovery_session_semantics",
-    "phase_specific_weekly_overrides",
-    "direct_secondary_numeric_dose_equivalence",
-    "response_led_h2_distribution",
-    "universal_recovery_spacing",
-    "deload",
-    "completed_exposure",
-    "adaptation",
-  ]),
-  spacingPolicy: "SPACING_R0_PRESCRIPTION_PENDING",
-  h1Policy: "MUSCLE_H1_SINGLE_FLEXIBLE",
-  h2Disposition: "DEFERRED_PENDING_PRESCRIPTION_AND_COMPLETED_RESPONSE_EVIDENCE",
-  automaticSelection: false,
-  productionActivation: false,
-  provenance: { source: "policy" as const, sourceRef: "POST_PRESCRIPTION_WEEK_VALIDATION_V1_CAUSAL_LEDGER_POLICY@1.0.0" },
-});
+PostPrescriptionWeekValidationPolicy =
+  POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_DESIGN_COMPATIBILITY_PROJECTION;
 
 const provenance: WeekFactProvenance = Object.freeze({
   sourceType: "non_production_fixture",

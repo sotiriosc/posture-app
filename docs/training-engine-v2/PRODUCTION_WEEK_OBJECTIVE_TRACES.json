@@ -1,0 +1,239 @@
+[
+  {
+    "objectiveId": "week-objective:direct_action_development:elbow_extension",
+    "purpose": "direct_action_development",
+    "target": {
+      "targetMovementRoles": [],
+      "targetActionFunctions": [
+        "elbow_extension"
+      ],
+      "targetMuscles": [
+        "triceps"
+      ],
+      "muscleRequirement": "primary_required",
+      "targetBodyRegions": []
+    },
+    "priority": "preferred",
+    "priorityOrder": 0,
+    "policyRef": {
+      "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE",
+      "version": "1.0.0"
+    },
+    "allocatedReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "prescribedQualifyingReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "executableQualifyingReservationIds": [],
+    "pendingDurationReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "nonexecutiveReservationIds": [],
+    "qualifyingEventIds": [
+      "source-exposure:10cb3473b9f34e0f"
+    ],
+    "nonqualifyingEvents": [],
+    "qualifyingBlockIds": [
+      "prescription-block:681fecd3afa9529f"
+    ],
+    "relationshipEvidence": [
+      "elbow_extension",
+      "triceps:primary_target"
+    ],
+    "allocatedOpportunityCount": 1,
+    "prescribedFrequencyCount": 1,
+    "executablePrescribedFrequencyCount": 0,
+    "pendingFeasibilityOpportunityCount": 1,
+    "minimumState": "met",
+    "targetState": "below",
+    "softMaximumState": "below",
+    "dosePolicyState": "prescribed_dose_target_not_defined",
+    "spacingState": "spacing_policy_not_defined",
+    "status": "prescribed_realization_present_duration_pending",
+    "unresolvedRefs": [
+      "INSUFFICIENT_FOR_NUMERIC_VALIDATION"
+    ],
+    "provenance": [
+      "evidence:week-objective:direct_action_development:elbow_extension"
+    ]
+  },
+  {
+    "objectiveId": "week-objective:movement_development:horizontal_push",
+    "purpose": "movement_development",
+    "target": {
+      "targetMovementRoles": [
+        "horizontal_push"
+      ],
+      "targetActionFunctions": [],
+      "targetMuscles": [
+        "chest"
+      ],
+      "muscleRequirement": "primary_required",
+      "targetBodyRegions": []
+    },
+    "priority": "required",
+    "priorityOrder": 0,
+    "policyRef": {
+      "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE",
+      "version": "1.0.0"
+    },
+    "allocatedReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "prescribedQualifyingReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "executableQualifyingReservationIds": [],
+    "pendingDurationReservationIds": [
+      "post-prescription-week-holdout-002:reservation:2"
+    ],
+    "nonexecutiveReservationIds": [],
+    "qualifyingEventIds": [
+      "source-exposure:449cbf257adedd09"
+    ],
+    "nonqualifyingEvents": [],
+    "qualifyingBlockIds": [
+      "prescription-block:d5a4183bfeb10c7f"
+    ],
+    "relationshipEvidence": [
+      "horizontal_push"
+    ],
+    "allocatedOpportunityCount": 1,
+    "prescribedFrequencyCount": 1,
+    "executablePrescribedFrequencyCount": 0,
+    "pendingFeasibilityOpportunityCount": 1,
+    "minimumState": "below",
+    "targetState": "below",
+    "softMaximumState": "below",
+    "dosePolicyState": "prescribed_dose_target_not_defined",
+    "spacingState": "spacing_policy_not_defined",
+    "status": "prescribed_realization_present_duration_pending",
+    "unresolvedRefs": [
+      "INSUFFICIENT_FOR_NUMERIC_VALIDATION"
+    ],
+    "provenance": [
+      "evidence:week-objective:movement_development:horizontal_push"
+    ]
+  },
+  {
+    "objectiveId": "week-objective:movement_development:squat",
+    "purpose": "movement_development",
+    "target": {
+      "targetMovementRoles": [
+        "squat",
+        "knee_dominant"
+      ],
+      "targetActionFunctions": [],
+      "targetMuscles": [
+        "quads",
+        "glutes"
+      ],
+      "muscleRequirement": "primary_required",
+      "targetBodyRegions": []
+    },
+    "priority": "required",
+    "priorityOrder": 0,
+    "policyRef": {
+      "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE",
+      "version": "1.0.0"
+    },
+    "allocatedReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "prescribedQualifyingReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "executableQualifyingReservationIds": [],
+    "pendingDurationReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "nonexecutiveReservationIds": [],
+    "qualifyingEventIds": [
+      "source-exposure:2a513d2392563c9f"
+    ],
+    "nonqualifyingEvents": [],
+    "qualifyingBlockIds": [
+      "prescription-block:2b5c214119eaa0dd"
+    ],
+    "relationshipEvidence": [
+      "knee_dominant",
+      "squat"
+    ],
+    "allocatedOpportunityCount": 1,
+    "prescribedFrequencyCount": 1,
+    "executablePrescribedFrequencyCount": 0,
+    "pendingFeasibilityOpportunityCount": 1,
+    "minimumState": "below",
+    "targetState": "below",
+    "softMaximumState": "below",
+    "dosePolicyState": "prescribed_dose_target_not_defined",
+    "spacingState": "spacing_policy_not_defined",
+    "status": "prescribed_realization_present_duration_pending",
+    "unresolvedRefs": [
+      "INSUFFICIENT_FOR_NUMERIC_VALIDATION"
+    ],
+    "provenance": [
+      "evidence:week-objective:movement_development:squat"
+    ]
+  },
+  {
+    "objectiveId": "week-objective:movement_development:hinge",
+    "purpose": "movement_development",
+    "target": {
+      "targetMovementRoles": [
+        "hinge"
+      ],
+      "targetActionFunctions": [],
+      "targetMuscles": [
+        "hamstrings",
+        "glutes"
+      ],
+      "muscleRequirement": "primary_required",
+      "targetBodyRegions": []
+    },
+    "priority": "required",
+    "priorityOrder": 1,
+    "policyRef": {
+      "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE",
+      "version": "1.0.0"
+    },
+    "allocatedReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "prescribedQualifyingReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "executableQualifyingReservationIds": [],
+    "pendingDurationReservationIds": [
+      "post-prescription-week-holdout-002:reservation:1"
+    ],
+    "nonexecutiveReservationIds": [],
+    "qualifyingEventIds": [
+      "source-exposure:fa6369ec1db56658"
+    ],
+    "nonqualifyingEvents": [],
+    "qualifyingBlockIds": [
+      "prescription-block:279c9fd449ba83c8"
+    ],
+    "relationshipEvidence": [
+      "hinge"
+    ],
+    "allocatedOpportunityCount": 1,
+    "prescribedFrequencyCount": 1,
+    "executablePrescribedFrequencyCount": 0,
+    "pendingFeasibilityOpportunityCount": 1,
+    "minimumState": "below",
+    "targetState": "below",
+    "softMaximumState": "below",
+    "dosePolicyState": "prescribed_dose_target_not_defined",
+    "spacingState": "spacing_policy_not_defined",
+    "status": "prescribed_realization_present_duration_pending",
+    "unresolvedRefs": [
+      "INSUFFICIENT_FOR_NUMERIC_VALIDATION"
+    ],
+    "provenance": [
+      "evidence:week-objective:movement_development:hinge"
+    ]
+  }
+]
