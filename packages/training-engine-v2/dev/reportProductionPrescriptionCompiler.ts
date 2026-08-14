@@ -5,6 +5,7 @@ import {
   PRESCRIPTION_POLICY_V1,
   PRESCRIPTION_POLICY_V1_REST_PLACEMENT,
   PRODUCTION_PRESCRIPTION_COMPILATION_STATUSES,
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
   PRODUCTION_PRESCRIPTION_COMPILER_STATUS,
 } from "../src";
 import {
@@ -71,6 +72,7 @@ Historical CAGT reports remain frozen. Admission tooling now imports the product
 
 write("PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT.md", `${header("Production Prescription Compiler Contract")}
 Status: ${code(PRODUCTION_PRESCRIPTION_COMPILER_STATUS)}.
+Contract: ${code(`${PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractId}@${PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractVersion}`)}.
 
 The pure kernel exports ${code("compilePrescriptionAssignment")} and ${code("compileSessionPrescription")}. It consumes authoritative upstream assignments and compiles Prescription-owned dose, execution, rest, load, timing, duration, and compatibility truth. It never chooses, removes, reorders, substitutes, or progresses exercises.
 
@@ -88,7 +90,31 @@ Production statuses:
 
 ${PRODUCTION_PRESCRIPTION_COMPILATION_STATUSES.map((status) => `- ${code(status)}`).join("\n")}
 
-Successful results include a stable source event, stable Prescription lineage ID, immutable final revision, one or more ordered blocks, structured execution standards, explicit rest instructions, honest load trace, honest duration interval, compatibility projection, and structured decision trace.
+Every session result, assignment result, and plan carries the explicit Compiler contract reference. Successful results also include a stable source event, stable Prescription lineage ID, immutable final revision, one or more ordered blocks, structured execution standards, explicit rest instructions, honest load trace, honest duration interval, compatibility projection, and structured decision trace.
+`);
+
+write("PRODUCTION_PRESCRIPTION_COMPILER_FUTURE_INTEGRATION.md", `${header("Production Prescription Compiler Future Integration")}
+## Contract Evolution
+
+- Current contract: ${code(`${PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractId}@${PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractVersion}`)}.
+- Session results, assignment results, and plans are self-identifying; validators reject unsupported versions.
+- New optional observations may be additive. Changed ownership, identity, dose semantics, or required fields require a reviewed contract-version change, new locked evidence, golden comparison, mutations, stress, and migration notes.
+
+## Sequencing Receiver
+
+Sequencing may consume ordered assignment plans, block dependencies, explicit rest, and duration unknowns. Sequencing owns exercise order, setup, transitions, and final session duration. It may not rewrite source-event identity, Prescription lineage, completed revision history, upstream assignment identity, or contribution classifications.
+
+## Post-Prescription Week Receiver
+
+Weekly validation starts only after final Sequencing. Planned Prescription blocks remain separate from completed exposure credit. The receiver must preserve direct/secondary classification, avoid preparatory double credit, and link any completed facts through source event, Prescription revision, and block identity.
+
+## Product Activation
+
+Activation requires a separate owner decision, an explicit policy selector, current equipment and TrainingSafety inputs, explicit execution-attempt identity and evaluation time, adapter-level contract-version rejection, persistence migration review, performance-ingestion linkage, observability, rollback, and end-to-end app tests. Importing the package or exported policy does not activate the Compiler.
+
+## Extension Checklist
+
+Any new policy version, dose mode, requirement dimension, compatibility projection, or downstream receiver must update the canonical contracts, validation, full-catalog coverage, golden evidence, semantic mutations, metamorphic invariants, deterministic stress, fingerprints, and this handoff before authorization.
 `);
 
 write("PRODUCTION_PRESCRIPTION_REQUIREMENT_RESOLUTION.md", `${header("Production Prescription Requirement Resolution")}

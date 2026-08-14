@@ -8,6 +8,7 @@ import {
   PRESCRIPTION_POLICY_V1_ADMISSION_SPECIFICITY_ORDER,
   PRESCRIPTION_POLICY_V1_REST_PLACEMENT,
   PRESCRIPTION_POLICY_V1_RULE_MATRIX,
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
   PRODUCTION_PRESCRIPTION_COMPILER_STATUS,
   REFERENCE_EXERCISES,
   buildPrescriptionRevisionLedger,
@@ -417,6 +418,7 @@ export function buildProductionPrescriptionCompilerReadinessReport(input: {
     inputContract: digest(["PrescriptionSessionCompilerInput", "PrescriptionAssignmentCompilerInput"]),
     requirementResolution: digest(["PrescriptionExecutionRequirement", "ResolvedPrescriptionRequirementSet"]),
     outputContract: digest(["ProductionExercisePrescriptionPlan", "PrescriptionSessionCompilationResult"]),
+    compilerContractReference: digest(PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE),
     policyResolver: sourceFingerprint("compiler/policyResolution.ts"),
     sourceEventIdentity: sourceFingerprint("compiler/sourceExposure.ts"),
     prescriptionIdentity: digest("prescriptionId:sourceExposureEventId"),
@@ -444,6 +446,7 @@ export function buildProductionPrescriptionCompilerReadinessReport(input: {
       "compilePrescriptionAssignment", "compileSessionPrescription", "resolvePrescriptionPolicy",
       "resolvePrescriptionRequirements", "buildPrescriptionDurationInterval",
       "buildPrescriptionCompatibilityProjection",
+      "PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE",
     ]),
     productionInvariance: digest({
       generateProgramChanged: false,

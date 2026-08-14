@@ -1,13 +1,14 @@
 import type { SessionExerciseAssignment } from "../../sessionComposer/contracts";
 import { compilePrescriptionAssignment } from "./compilePrescriptionAssignment";
-import type {
-  CompiledPrescriptionSessionArgumentTrace,
-  PrescriptionAssignmentCompilationResult,
-  PrescriptionDurationUnknownComponent,
-  PrescriptionSessionCompilationResult,
-  PrescriptionSessionCompilerInput,
-  PrescriptionSupportingWorkAggregate,
-  ProductionExercisePrescriptionPlan,
+import {
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
+  type CompiledPrescriptionSessionArgumentTrace,
+  type PrescriptionAssignmentCompilationResult,
+  type PrescriptionDurationUnknownComponent,
+  type PrescriptionSessionCompilationResult,
+  type PrescriptionSessionCompilerInput,
+  type PrescriptionSupportingWorkAggregate,
+  type ProductionExercisePrescriptionPlan,
 } from "./contracts";
 import { combinePrescriptionDurationIntervals } from "./durationInterval";
 import { numericBounds, uniqueSorted } from "./utilities";
@@ -63,6 +64,7 @@ export function compileSessionPrescription(
         ? "compiled" as const
         : "incomplete" as const;
   return {
+    compilerContract: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
     status,
     assignmentResults,
     plans,
@@ -102,6 +104,7 @@ function missingContextResult(
     entry.handoffId === assignmentHandoffId
   ) ?? null;
   return {
+    compilerContract: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
     status: "invalid_source_exposure_context",
     assignment,
     handoffAssignment,

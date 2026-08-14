@@ -2,6 +2,7 @@ import type { ExercisePrescriptionKnowledgeProfile } from "../../domain/exercise
 import { validateDose } from "../validation";
 import {
   PRESCRIPTION_DURATION_INTERVAL_STATUSES,
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
   PRESCRIPTION_REQUIREMENT_TARGET_DIMENSIONS,
   type PrescriptionAssignmentCompilerInput,
   type PrescriptionDurationInterval,
@@ -118,6 +119,9 @@ export function validateProductionExercisePrescriptionPlan(
     ...validatePrescriptionRestInstructions({ instructions: plan.restInstructions, blocks: plan.doseBlocks }),
     ...validatePrescriptionDurationInterval(plan.durationInterval),
   ];
+  if (!isSupportedCompilerContract(plan.compilerContract)) {
+    findings.push(finding("UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT", plan.prescriptionId));
+  }
   if (plan.prescriptionRevisionId !== plan.revisionLedger.finalRevisionId) findings.push(finding("PLAN_FINAL_REVISION_MISMATCH", plan.prescriptionId));
   if (plan.doseBlocks.length > 1 && plan.compatibilityProjection.projectedDose !== null) findings.push(finding("MULTI_BLOCK_PLAN_FLATTENED", plan.prescriptionId));
   return findings;
@@ -127,6 +131,22 @@ export function validatePrescriptionSessionCompilation(
   result: PrescriptionSessionCompilationResult,
 ): readonly ProductionPrescriptionValidationFinding[] {
   const findings: ProductionPrescriptionValidationFinding[] = [];
+  if (!isSupportedCompilerContract(result.compilerContract)) {
+    findings.push(finding("UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT", "session"));
+  }
+  for (const entry of result.assignmentResults) {
+    if (!isSupportedCompilerContract(entry.compilerContract)) {
+      findings.push(finding(
+        "UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT",
+        entry.handoffAssignment?.handoffId ?? "assignment",
+      ));
+    }
+  }
+  for (const plan of result.plans) {
+    if (!isSupportedCompilerContract(plan.compilerContract)) {
+      findings.push(finding("UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT", plan.prescriptionId));
+    }
+  }
   const assignmentIds = result.assignmentResults.flatMap((entry) => entry.handoffAssignment?.handoffId ?? []);
   const eventIds = result.sourceExposureEvents.map((entry) => entry.sourceExposureEventId);
   const prescriptionIds = result.plans.map((entry) => entry.prescriptionId);
@@ -149,6 +169,14 @@ export function validatePrescriptionSessionCompilation(
   if (result.completeSessionArgument.policyRemovedStructure) findings.push(finding("POLICY_REMOVED_ASSIGNMENT"));
   if (!result.completeSessionArgument.finalDurationSequencingDependent) findings.push(finding("SESSION_DURATION_INCORRECTLY_FINAL"));
   return findings;
+}
+
+function isSupportedCompilerContract(value: {
+  readonly contractId: string;
+  readonly contractVersion: string;
+} | null | undefined): boolean {
+  return value?.contractId === PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractId &&
+    value?.contractVersion === PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE.contractVersion;
 }
 
 function hasBlockCycle(blocks: readonly ProductionPrescriptionDoseBlock[]): boolean {

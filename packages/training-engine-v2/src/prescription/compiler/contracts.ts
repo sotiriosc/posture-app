@@ -50,6 +50,21 @@ import type {
 export const PRODUCTION_PRESCRIPTION_COMPILER_STATUS =
   "PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED" as const;
 
+export const PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_ID =
+  "PRODUCTION_PRESCRIPTION_COMPILER_KERNEL" as const;
+export const PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_VERSION = "1.0.0" as const;
+
+export interface ProductionPrescriptionCompilerContractReference {
+  readonly contractId: typeof PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_ID;
+  readonly contractVersion: typeof PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_VERSION;
+}
+
+export const PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE:
+  ProductionPrescriptionCompilerContractReference = Object.freeze({
+  contractId: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_ID,
+  contractVersion: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_VERSION,
+});
+
 export const PRODUCTION_PRESCRIPTION_COMPILATION_STATUSES = [
   "compiled",
   "blocked_by_training_readiness",
@@ -402,6 +417,7 @@ export interface ProductionPrescriptionCompatibilityProjection {
 }
 
 export interface ProductionExercisePrescriptionPlan {
+  readonly compilerContract: ProductionPrescriptionCompilerContractReference;
   readonly prescriptionId: string;
   readonly prescriptionRevisionId: string;
   readonly sourceExposureEvent: SourceExposureEventIdentity;
@@ -481,6 +497,7 @@ export interface PrescriptionAssignmentCompilerInput {
 }
 
 export interface PrescriptionAssignmentCompilationResult {
+  readonly compilerContract: ProductionPrescriptionCompilerContractReference;
   readonly status: ProductionPrescriptionCompilationStatus;
   readonly assignment: SessionExerciseAssignment | null;
   readonly handoffAssignment: SessionPrescriptionAssignmentHandoff | null;
@@ -552,6 +569,7 @@ export interface PrescriptionSupportingWorkAggregate {
 }
 
 export interface PrescriptionSessionCompilationResult {
+  readonly compilerContract: ProductionPrescriptionCompilerContractReference;
   readonly status:
     | "compiled"
     | "blocked_by_training_readiness"

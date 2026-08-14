@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BODYWEIGHT_EQUIPMENT,
   PRESCRIPTION_POLICY_V1,
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
   PRODUCTION_PRESCRIPTION_COMPILER_STATUS,
   buildTrainingReadinessTrace,
   compileSessionPrescription,
@@ -18,6 +19,21 @@ describe("production Prescription Compiler assignment boundary", () => {
       "PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED",
     );
     expect(PRESCRIPTION_POLICY_V1.activationAuthorized).toBe(false);
+  });
+
+  it("publishes one explicit version reference on every future-facing result", () => {
+    const result = compileSessionPrescription(
+      buildProductionCompilerInputForOwnerScenario(fixture),
+    );
+    expect(result.compilerContract).toEqual(
+      PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
+    );
+    expect(result.assignmentResults.every((entry) =>
+      entry.compilerContract === PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE
+    )).toBe(true);
+    expect(result.plans.every((plan) =>
+      plan.compilerContract === PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE
+    )).toBe(true);
   });
 
   it("requires an explicit available policy and rejects equal conflicts", () => {

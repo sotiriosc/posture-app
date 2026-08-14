@@ -3,6 +3,7 @@
 Generated deterministically from the production Prescription Compiler kernel.
 
 Status: `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED`.
+Contract: `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.0.0`.
 
 The pure kernel exports `compilePrescriptionAssignment` and `compileSessionPrescription`. It consumes authoritative upstream assignments and compiles Prescription-owned dose, execution, rest, load, timing, duration, and compatibility truth. It never chooses, removes, reorders, substitutes, or progresses exercises.
 

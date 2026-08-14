@@ -27,18 +27,19 @@ import {
 } from "../policies";
 import type { PrescriptionLaterality, PrescriptionSideBehavior } from "../types";
 import { buildPrescriptionCompatibilityProjection } from "./compatibilityProjection";
-import type {
-  PrescriptionAssignmentCompilationResult,
-  PrescriptionAssignmentCompilerInput,
-  PrescriptionCompilationContextFacts,
-  PrescriptionEquipmentRealization,
-  PrescriptionExecutionRequirement,
-  PrescriptionRestInstruction,
-  ProductionExercisePrescriptionPlan,
-  ProductionPrescriptionDecisionTrace,
-  ProductionPrescriptionDoseBlock,
-  PrescriptionDurationUnknownComponent,
-  ResolvedPrescriptionRequirementSet,
+import {
+  PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
+  type PrescriptionAssignmentCompilationResult,
+  type PrescriptionAssignmentCompilerInput,
+  type PrescriptionCompilationContextFacts,
+  type PrescriptionEquipmentRealization,
+  type PrescriptionExecutionRequirement,
+  type PrescriptionRestInstruction,
+  type ProductionExercisePrescriptionPlan,
+  type ProductionPrescriptionDecisionTrace,
+  type ProductionPrescriptionDoseBlock,
+  type PrescriptionDurationUnknownComponent,
+  type ResolvedPrescriptionRequirementSet,
 } from "./contracts";
 import { buildPrescriptionDurationInterval } from "./durationInterval";
 import {
@@ -335,6 +336,7 @@ export function compilePrescriptionAssignment(
   });
   const selectedRules = selectedRuleTraces(policy, uniqueRules(blockRules), input, context, selectedMode);
   const plan: ProductionExercisePrescriptionPlan = {
+    compilerContract: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
     prescriptionId,
     prescriptionRevisionId: revisionId,
     sourceExposureEvent: eventWithRevisions,
@@ -365,6 +367,7 @@ export function compilePrescriptionAssignment(
     entry.block.purpose === "developmental_work"
   )?.loadTrace ?? blocksWithoutCrossRest[0].loadTrace;
   return {
+    compilerContract: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
     status: "compiled",
     assignment: context.assignment,
     handoffAssignment: context.handoffAssignment,
@@ -1149,6 +1152,7 @@ function resultWithoutPlan(
 ): PrescriptionAssignmentCompilationResult {
   const unresolved = options.requirements?.unresolved.map((entry) => entry.requirementId) ?? [];
   return {
+    compilerContract: PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_REFERENCE,
     status: options.status,
     assignment: options.assignment,
     handoffAssignment: options.handoffAssignment,

@@ -11,6 +11,6 @@ Generated deterministically from the production Prescription Compiler kernel.
 - Catalog: `FULL_CATALOG_COVERAGE_PASSED`
 - Golden: `GOLDEN_V1_EQUIVALENCE_WITH_DOCUMENTED_REPRESENTATION_CORRECTIONS`
 - Stress: `DETERMINISTIC_STRESS_PASSED`
-- Combined kernel fingerprint: `f8a022bcefb116815f4febd376f6cd4f9abf132b31043acb0ad0b47eec27d529`
+- Combined kernel fingerprint: `91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4`
 
 Remaining dependencies are final Sequencing, post-Prescription Week validation, product-owned explicit policy selection, app integration, and performance ingestion. None is activated by this kernel.

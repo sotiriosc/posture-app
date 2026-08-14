@@ -18,4 +18,4 @@ Production statuses:
 - `invalid_prior_realization_evidence`
 - `invalid_revision_context`
 
-Successful results include a stable source event, stable Prescription lineage ID, immutable final revision, one or more ordered blocks, structured execution standards, explicit rest instructions, honest load trace, honest duration interval, compatibility projection, and structured decision trace.
+Every session result, assignment result, and plan carries the explicit Compiler contract reference. Successful results also include a stable source event, stable Prescription lineage ID, immutable final revision, one or more ordered blocks, structured execution standards, explicit rest instructions, honest load trace, honest duration interval, compatibility projection, and structured decision trace.

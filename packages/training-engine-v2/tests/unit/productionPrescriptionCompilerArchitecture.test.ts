@@ -1,56 +1,55 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const root = resolve(import.meta.dirname, "../../src/prescription");
+const repositoryRoot = resolve(import.meta.dirname, "../../../..");
+
+function productionTypeScriptFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = resolve(directory, entry.name);
+    if (entry.isDirectory()) return productionTypeScriptFiles(path);
+    return /\.(?:ts|tsx)$/.test(entry.name) ? [path] : [];
+  }).sort();
+}
+
+const compilerRoot = resolve(root, "compiler");
+const policyRoot = resolve(root, "policies");
 const productionFiles = [
-  "compiler/compatibilityProjection.ts",
-  "compiler/compilePrescriptionAssignment.ts",
-  "compiler/compileSessionPrescription.ts",
-  "compiler/contracts.ts",
-  "compiler/durationInterval.ts",
-  "compiler/executionResolution.ts",
-  "compiler/loadResolution.ts",
-  "compiler/policyResolution.ts",
-  "compiler/requirementResolution.ts",
-  "compiler/revisions.ts",
-  "compiler/sourceExposure.ts",
-  "compiler/utilities.ts",
-  "compiler/validation.ts",
-  "policies/policyContracts.ts",
-  "policies/prescriptionPolicyV1.ts",
+  ...productionTypeScriptFiles(compilerRoot),
+  ...productionTypeScriptFiles(policyRoot),
 ];
 
 describe("production Prescription Compiler architecture", () => {
   it("has no production dependency on tests, CAGT, reports, labels, or fixture tags", () => {
     const violations = productionFiles.flatMap((file) => {
-      const source = readFileSync(resolve(root, file), "utf8");
+      const source = readFileSync(file, "utf8");
       return [
         /from\s+["'][^"']*tests\//,
         /from\s+["'][^"']*cagt\//,
         /from\s+["'][^"']*report/i,
         /contextTags|fixtureTag|candidateLabel|candidateRank|Date\.now|Math\.random|randomUUID/,
-      ].filter((pattern) => pattern.test(source)).map(() => file);
+      ].filter((pattern) => pattern.test(source)).map(() =>
+        file.slice(repositoryRoot.length + 1)
+      );
     });
+    expect(productionFiles.length).toBeGreaterThan(0);
     expect(violations, "PRODUCTION_COMPILER_TEST_DEPENDENCY_VIOLATION").toEqual([]);
   });
 
   it("is not called by live program generation or app source", () => {
-    const packageRoot = resolve(import.meta.dirname, "../../../..");
+    const excludedRoots = [compilerRoot, policyRoot];
     const liveFiles = [
-      resolve(packageRoot, "engine/src/generateProgram.ts"),
-    ].filter((file) => {
-      try {
-        readFileSync(file, "utf8");
-        return true;
-      } catch {
-        return false;
-      }
-    });
-    expect(liveFiles.some((file) =>
-      /compilePrescriptionAssignment|compileSessionPrescription|PRESCRIPTION_POLICY_V1/.test(
+      ...productionTypeScriptFiles(resolve(repositoryRoot, "apps")),
+      ...productionTypeScriptFiles(resolve(repositoryRoot, "packages/engine/src")),
+      ...productionTypeScriptFiles(resolve(repositoryRoot, "packages/training-engine-v2/src")),
+    ].filter((file) => !excludedRoots.some((excluded) => file.startsWith(`${excluded}/`)));
+    const violations = liveFiles.filter((file) =>
+      /\b(?:compilePrescriptionAssignment|compileSessionPrescription|PRESCRIPTION_POLICY_V1)\b/.test(
         readFileSync(file, "utf8"),
       )
-    )).toBe(false);
+    ).map((file) => file.slice(repositoryRoot.length + 1));
+    expect(liveFiles.length).toBeGreaterThan(0);
+    expect(violations, "PRODUCTION_COMPILER_ACTIVATION_BOUNDARY_VIOLATION").toEqual([]);
   });
 });

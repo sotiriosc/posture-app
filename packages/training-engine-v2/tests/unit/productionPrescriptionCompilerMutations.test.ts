@@ -22,6 +22,33 @@ describe("production Prescription Compiler semantic mutations", () => {
     expect(new Set(PRODUCTION_PRESCRIPTION_COMPILER_MUTATIONS).size).toBe(39);
   });
 
+  it("rejects an unsupported future Compiler contract version", () => {
+    const compiled = compileSessionPrescription(buildCatalogCompilerInput(exercise));
+    const unsupported = {
+      ...compiled.compilerContract,
+      contractVersion: "2.0.0" as "1.0.0",
+    };
+    const mutated: PrescriptionSessionCompilationResult = {
+      ...compiled,
+      compilerContract: unsupported,
+      assignmentResults: compiled.assignmentResults.map((entry) => ({
+        ...entry,
+        compilerContract: unsupported,
+      })),
+      plans: compiled.plans.map((plan) => ({
+        ...plan,
+        compilerContract: unsupported,
+      })),
+    };
+    expect(validatePrescriptionSessionCompilation(mutated).map((entry) => entry.code)).toContain(
+      "UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT",
+    );
+    expect(validateProductionExercisePrescriptionPlan(
+      mutated.plans[0],
+      exercise.prescriptionKnowledge,
+    ).map((entry) => entry.code)).toContain("UNSUPPORTED_PRESCRIPTION_COMPILER_CONTRACT");
+  });
+
   it("rejects malformed block, rest, duration, and compatibility structure", () => {
     const compiled = compileSessionPrescription(buildCatalogCompilerInput(exercise));
     const plan = compiled.plans[0];
