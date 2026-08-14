@@ -56,3 +56,10 @@ Detailed gate reports: `PRESCRIPTION_NUMERIC_SOURCE_EVENT_REPORT.md`, `PRESCRIPT
 ## Prescription Policy V1 Owner Admission
 
 Final owner-policy admission evaluates frozen Gates 0-8 plus Gates 9-11, full-session coherence, independent performance, load retention, rest placement, and duration truth.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## PRESCRIPTION_CAGT_MATRIX production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

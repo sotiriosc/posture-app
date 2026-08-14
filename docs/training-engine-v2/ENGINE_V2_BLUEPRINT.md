@@ -2033,3 +2033,10 @@ The next architecture layer is now documented as design-only: one assignment cre
 ## Prescription Policy V1 Owner Admission
 
 Owner Policy V1 is admitted as authorization evidence only. Production Compiler, Week allocation, Sequencing, Longitudinal Adaptation, application integration, and UI remain future milestones.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## ENGINE_V2_BLUEPRINT production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

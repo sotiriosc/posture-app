@@ -43,3 +43,10 @@ Compiler input/output fingerprint: `e7522c01e2cfeb3ad34b3527d9952845b175463fa3c8
 ## Prescription Policy V1 Owner Admission
 
 The next Compiler may implement V1 only after separate authorization. It must preserve assignments, source events, duration unknowns, load evidence, and the no-automatic-progression boundary.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## PRESCRIPTION_COMPILER_DESIGN_CONTRACT production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

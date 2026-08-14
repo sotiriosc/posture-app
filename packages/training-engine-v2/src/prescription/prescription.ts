@@ -78,8 +78,8 @@ export function toLegacyExercisePrescription(
   };
 }
 
-function exactCountValue(target: CountTarget): number | undefined {
-  return target.kind === "exact" ? target.value : undefined;
+function exactCountValue(target: CountTarget | undefined): number | undefined {
+  return target?.kind === "exact" ? target.value : undefined;
 }
 
 function formatLegacyCountTarget(target: CountTarget): string | undefined {

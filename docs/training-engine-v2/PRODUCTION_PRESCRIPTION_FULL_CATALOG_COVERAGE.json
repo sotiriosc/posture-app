@@ -1,0 +1,22 @@
+{
+  "canonicalExerciseCount": 45,
+  "primaryModeCompiledCount": 45,
+  "reviewedAlternateModeCount": 2,
+  "reviewedAlternateModeCompiledCount": 2,
+  "doseModesObserved": [
+    "breath_cycles",
+    "distance_carry",
+    "repetition_sets",
+    "step_march",
+    "step_sets",
+    "timed_carry",
+    "timed_hold"
+  ],
+  "unsupportedModeRejectedCount": 45,
+  "missingExecutionStandardCount": 0,
+  "missingSourceEventCount": 0,
+  "duplicateBlockIdCount": 0,
+  "validationErrorCount": 0,
+  "result": "FULL_CATALOG_COVERAGE_PASSED",
+  "fingerprint": "7eb5412534201d7c1d9c333b590430fafc7db5c50850897e75ce5903b0debb55"
+}

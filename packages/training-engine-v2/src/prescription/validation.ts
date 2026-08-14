@@ -116,6 +116,7 @@ const DOSE_FIELDS: Record<(typeof DOSE_MODES)[number], readonly string[]> = {
   step_march: [
     ...DOSE_BASE_FIELDS,
     "stationary",
+    "sets",
     "steps",
     "duration",
     "alternation",

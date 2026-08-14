@@ -253,3 +253,10 @@ The V1 admission layer adds an independently locked owner composite and holdout 
 ## Prescription Policy V1 Owner Admission
 
 Prescription owner policy remains a test/developer artifact. No production dependency direction, package export, application wiring, or public API changed.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## ARCHITECTURE production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

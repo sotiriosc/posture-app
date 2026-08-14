@@ -9,3 +9,5 @@ export * from "./stressExposure";
 export * from "./trace";
 export * from "./types";
 export * from "./validation";
+export * from "./policies";
+export * from "./compiler";

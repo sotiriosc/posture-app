@@ -228,3 +228,10 @@ The domain now distinguishes one source exposure event, immutable Prescription r
 ## Prescription Policy V1 Owner Admission
 
 V1 preserves the existing Prescription, source-exposure, revision, performance, load, range, support, side, effort, tempo, duration, and block-domain vocabulary without adding prose-driven behavior.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## DOMAIN production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

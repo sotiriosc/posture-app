@@ -32,3 +32,10 @@ A downstream dose difference still cannot rescue an upstream structural failure.
 ## Prescription Policy V1 Owner Admission
 
 The owner holdout compiles 129 full sessions from production Planner, Candidate Intelligence, Composer, and handoff origins; support work remains bounded across the complete session.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## CAGT_COHERENT_SESSION_PROGRAM_REPORT production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

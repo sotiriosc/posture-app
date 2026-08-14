@@ -1,0 +1,22 @@
+{
+  "scenarioCount": 132,
+  "historicalCompiledScenarioCount": 129,
+  "productionCompiledScenarioCount": 129,
+  "statusEquivalenceCount": 132,
+  "semanticComparisonCount": 269,
+  "exactSemanticMatchCount": 97,
+  "documentedRepresentationCorrectionCount": 172,
+  "unexplainedDifferenceCount": 0,
+  "sourceEventCountDifference": 0,
+  "correctionCodes": [
+    "AUTHORITATIVE_SESSION_GOAL_CORRECTION",
+    "EXPLICIT_REST_PLACEMENT_GRADUATION",
+    "PREPARATORY_BLOCK_UNIT_CORRECTION",
+    "STRUCTURED_EXECUTION_STANDARD_GRADUATION",
+    "TYPED_ASSIGNMENT_SCOPED_REQUIREMENT_CORRECTION",
+    "TYPED_EXACT_LOAD_EVIDENCE_CORRECTION",
+    "TYPED_EXPERIENCE_AND_CAPACITY_CORRECTION"
+  ],
+  "result": "GOLDEN_V1_EQUIVALENCE_WITH_DOCUMENTED_REPRESENTATION_CORRECTIONS",
+  "fingerprint": "b6b913e1246ab4e700912bc18298751774676487235548577c6645c093c19ad4"
+}

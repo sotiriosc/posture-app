@@ -4,6 +4,14 @@ import {
   buildSessionCandidateResults,
   buildSessionPrescriptionHandoff,
   composeSessionSkeleton,
+  PRESCRIPTION_POLICY_V1_ADMISSION_SPECIFICITY_ORDER as PRODUCTION_V1_SPECIFICITY_ORDER,
+  PRESCRIPTION_POLICY_V1_ID as PRODUCTION_V1_ID,
+  PRESCRIPTION_POLICY_V1_PHILOSOPHY as PRODUCTION_V1_PHILOSOPHY,
+  PRESCRIPTION_POLICY_V1_REST_PLACEMENT as PRODUCTION_V1_REST_PLACEMENT,
+  PRESCRIPTION_POLICY_V1_REVIEWED_AT as PRODUCTION_V1_REVIEWED_AT,
+  PRESCRIPTION_POLICY_V1_REVIEWER_ID as PRODUCTION_V1_REVIEWER_ID,
+  PRESCRIPTION_POLICY_V1_RULE_MATRIX as PRODUCTION_V1_RULE_MATRIX,
+  PRESCRIPTION_POLICY_V1_VERSION as PRODUCTION_V1_VERSION,
   validatePerformanceBlockLinkage,
   type ExerciseDose,
   type ExerciseDoseMode,
@@ -15,6 +23,7 @@ import {
   type SessionNeedDependency,
   type SessionPrescriptionHandoff,
   type StructuralCapacityMode,
+  type SessionIntent,
   type TrainingOutcomeGoal,
   type TrainingRole,
 } from "../../src";
@@ -68,17 +77,16 @@ import {
   type TargetUnit,
 } from "./prescriptionPolicyTournament";
 
-export const PRESCRIPTION_POLICY_V1_ID = "PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE" as const;
-export const PRESCRIPTION_POLICY_V1_VERSION = "1.0.0" as const;
-export const PRESCRIPTION_POLICY_V1_REVIEWED_AT = "2026-08-13T15:02:00-04:00" as const;
-export const PRESCRIPTION_POLICY_V1_REVIEWER_ID = "sotiriosc" as const;
+export const PRESCRIPTION_POLICY_V1_ID = PRODUCTION_V1_ID;
+export const PRESCRIPTION_POLICY_V1_VERSION = PRODUCTION_V1_VERSION;
+export const PRESCRIPTION_POLICY_V1_REVIEWED_AT = PRODUCTION_V1_REVIEWED_AT;
+export const PRESCRIPTION_POLICY_V1_REVIEWER_ID = PRODUCTION_V1_REVIEWER_ID;
 export const PRESCRIPTION_POLICY_V1_STATE =
   "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION" as const;
 export const PRESCRIPTION_POLICY_V1_HOLDOUT_ID =
   "PRESCRIPTION_POLICY_V1_OWNER_ADMISSION_HOLDOUT" as const;
 export const PRESCRIPTION_POLICY_V1_HOLDOUT_SEED = 0x0806713;
-export const PRESCRIPTION_POLICY_V1_PHILOSOPHY =
-  "Praxis prescribes the smallest supporting dose that truthfully prepares the person, and a productive developmental dose that serves the session's actual purpose." as const;
+export const PRESCRIPTION_POLICY_V1_PHILOSOPHY = PRODUCTION_V1_PHILOSOPHY;
 
 export type PrescriptionPolicyV1Classification =
   | "PRESCRIPTION_POLICY_V1_READY_FOR_PRODUCTION_COMPILER_IMPLEMENTATION_AUTHORIZATION"
@@ -121,130 +129,9 @@ export type OwnerPerformanceObservationKind =
   | "unknown_actual_timing"
   | "no_observation";
 
-export const PRESCRIPTION_POLICY_V1_SPECIFICITY_ORDER = Object.freeze([
-  "TrainingSafety authority",
-  "hard contraindication and explicit restriction",
-  "exercise-knowledge legality",
-  "unresolved pain/response requirement",
-  "assignment section and role",
-  "selected dose mode",
-  "explicit session goal",
-  "current equipment realization",
-  "continuity/prior Prescription",
-  "experience and familiarity",
-  "structural capacity",
-  "phase applicability",
-  "broad V1 default",
-] as const);
-
-export const PRESCRIPTION_POLICY_V1_REST_PLACEMENT = Object.freeze({
-  betweenSets: {
-    preparationActivationSeconds: [15, 45],
-    mainStrengthSeconds: [180, 300],
-    secondaryStrengthSeconds: [90, 180],
-    mainHypertrophySeconds: [90, 180],
-    accessoryDirectSeconds: [60, 120],
-    specialModeSeconds: [60, 120],
-  },
-  betweenPreparatoryBlocksSeconds: [15, 45],
-  beforeDevelopmentalBlockSeconds: [60, 180],
-  betweenRoundsSeconds: [30, 60],
-  betweenTripsSeconds: [60, 180],
-  betweenSides: "only_when_exercise_knowledge_or_explicit_requirement_requires_it",
-  afterFinalBlock: "not_prescribed",
-  interExerciseTransition: "SEQUENCING_OWNED",
-  setupTime: "SEQUENCING_OWNED",
-} as const);
-
-export const PRESCRIPTION_POLICY_V1_RULE_MATRIX = Object.freeze({
-  preparation: {
-    default: "1 set; dynamic 4-8 reps, hold 10-20 seconds, breathing 3-5 cycles, or 6-10 steps/side; quality_limited",
-    scopedOverride: "2 sets only for an explicit dependency, unfamiliar task, new equipment, reviewed range/control dependency, shared dependency, or successful bounded prior evidence",
-    forbidden: "3 sets or developmental weekly credit",
-  },
-  activation: {
-    default: "1 set; dynamic 6-12 reps, hold 10-20 seconds, or 8-12 steps/side; quality_limited",
-    scopedOverride: "2 sets only for required low-fatigue control work that preserves main work and has no adverse fatigue response",
-    forbidden: "failure-oriented activation or implicit hypertrophy credit",
-  },
-  mainStrength: {
-    standard: "3 sets; 3-6 reps; 1-3 RIR; 180-300 seconds rest",
-    regression: "2 sets; 3-6 reps; 2-4 RIR; 120-240 seconds rest",
-    forbidden: "5-set default",
-  },
-  secondaryStrength: {
-    default: "2 sets; 5-10 reps; 2-3 RIR; 90-180 seconds rest",
-    scopedOverride: "3 sets only when required, weekly-prioritized, capacity-supported, non-conflicting, and non-redundant",
-  },
-  mainHypertrophy: {
-    standard: "3 sets; 6-20 reps; 1-3 RIR; 90-180 seconds rest",
-    regression: "2 sets; 6-15 reps; 2-4 RIR; 90-180 seconds rest",
-    forbidden: "five high-effort sets as default",
-  },
-  hypertrophyAccessory: {
-    default: "1-2 sets; 8-20 reps; 1-3 RIR; 60-120 seconds rest",
-    oneSet: "preferred/optional, condensed, overlapping, first exposure, or insufficient response history",
-    twoSets: "required unique value with coherent remaining capacity",
-  },
-  directAccessory: {
-    required: "2 sets; 8-20 reps; 1-3 RIR; 60-120 seconds rest",
-    preferredOptional: "1 set; 8-20 reps; 2-4 RIR; 45-90 seconds rest",
-    exactActionTruthRequired: true,
-  },
-  timedHold: {
-    preparationActivation: "1 set; 10-20 seconds; quality_limited",
-    developmental: "2 sets; 20-40 seconds; quality_limited or moderate; 60-120 seconds rest",
-    thirdSet: "future_response_led_override_only",
-  },
-  breathCycles: {
-    default: "1 round; 3-5 cycles; qualitative cadence or no cadence; no developmental credit",
-    twoRounds: "explicit required preparation/recovery responsibility or reviewed successful response with spare capacity",
-  },
-  carry: {
-    capacityMain: "3 trips; 15-30 metres or 20-40 seconds; moderate/quality_limited; 90-180 seconds rest",
-    accessory: "2 trips; 10-20 metres or 15-25 seconds; 60-120 seconds rest",
-    realization: "exactly_one_legal_mode",
-  },
-  stationaryMarch: {
-    preparationActivation: "1-2 sets; 12-20 alternating steps or 15-25 seconds; quality_limited",
-    capacityAccessory: "2 sets; 20-40 alternating steps or 20-40 seconds; moderate/quality_limited",
-    distanceClaim: false,
-  },
-  countedStep: {
-    preparationActivation: "1 set; 6-10 steps/side; quality_limited",
-    developmentalAccessory: "2 sets; 8-15 steps/side; quality_limited/moderate; 60-120 seconds rest",
-  },
-  recoveryCooldown: {
-    explicitOnly: true,
-    dose: "1 round; 3-5 breath cycles or 20-40 seconds; easy/quality_limited; no developmental credit",
-  },
-  effort: {
-    preparationActivation: "quality_limited",
-    mainStrength: "1-3 RIR standard; 2-4 RIR regression",
-    secondaryStrength: "2-3 RIR",
-    mainHypertrophy: "1-3 RIR standard; 2-4 RIR regression",
-    accessory: "1-3 RIR required; 2-4 RIR preferred/optional",
-    special: "quality_limited or moderate",
-    failureDefault: false,
-  },
-  tempo: {
-    exactPhaseTempoDefault: "not_prescribed",
-    preparationActivation: "controlled intent where legal",
-    strengthHypertrophy: "natural or controlled intent according to execution requirement",
-    power: "explosive/maximal concentric intent only from explicit legal power facts",
-  },
-  duration: {
-    universalTarget: false,
-    unknownOwners: ["repetition tempo", "breathing cadence", "locomotor pace", "step cadence", "rest placement", "Sequencing setup/transition"],
-    unknownIsNotFitOrFailure: true,
-  },
-  blockStructure: {
-    knownProductiveMain: "0-1 preparatory acclimation blocks plus one developmental block",
-    unfamiliarMain: "1-2 preparatory acclimation blocks plus one developmental block",
-    otherAssignments: "one block unless the selected rule explicitly requires another",
-    backoffDefault: false,
-  },
-} as const);
+export const PRESCRIPTION_POLICY_V1_SPECIFICITY_ORDER = PRODUCTION_V1_SPECIFICITY_ORDER;
+export const PRESCRIPTION_POLICY_V1_REST_PLACEMENT = PRODUCTION_V1_REST_PLACEMENT;
+export const PRESCRIPTION_POLICY_V1_RULE_MATRIX = PRODUCTION_V1_RULE_MATRIX;
 
 export const PRESCRIPTION_POLICY_V1_OWNER_DECISION = Object.freeze({
   sourceType: "owner_decision",
@@ -685,6 +572,7 @@ const OWNER_HOLDOUT_TEMPLATES: readonly OwnerHoldoutTemplate[] = [
 ];
 
 export interface OwnerPolicyHoldoutScenario extends PrescriptionFullSessionFixture {
+  readonly intent: SessionIntent;
   readonly experience: "novice" | "intermediate" | "advanced";
   readonly goal: TrainingOutcomeGoal;
   readonly phaseId: "phase_1" | "phase_2" | "phase_3";
@@ -788,6 +676,7 @@ export function buildPrescriptionPolicyV1OwnerHoldout(): readonly OwnerPolicyHol
       archetype: template.archetype,
       locked: true,
       sessionIntentId: intent.id,
+      intent,
       skeleton,
       handoff,
       candidateSource: "production_session_intent_planner_candidate_intelligence_composer",

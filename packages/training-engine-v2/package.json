@@ -44,6 +44,16 @@
     "test:cagt:coherent-session": "vitest --run --config vitest.config.ts tests/unit/cagtCoherentSessionProgram.test.ts",
     "test:cagt:warmup-activation": "vitest --run --config vitest.config.ts tests/unit/cagtCoherentSessionProgram.test.ts",
     "report:cagt:week-policy-v1": "node --import tsx dev/reportWeekPolicyV1.ts",
-    "report:cagt:coherent-session": "node --import tsx dev/reportWeekPolicyV1.ts"
+    "report:cagt:coherent-session": "node --import tsx dev/reportWeekPolicyV1.ts",
+    "test:prescription-compiler": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompiler.test.ts tests/unit/productionPrescriptionCompilerArchitecture.test.ts tests/unit/productionPrescriptionCompilerMutations.test.ts tests/unit/productionPrescriptionCompilerMetamorphic.test.ts",
+    "test:prescription-compiler:catalog": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerCatalog.test.ts",
+    "test:prescription-compiler:session": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompiler.test.ts tests/unit/productionPrescriptionCompilerGolden.test.ts",
+    "test:prescription-compiler:revisions": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerRevisions.test.ts",
+    "test:prescription-compiler:duration": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerDuration.test.ts",
+    "test:prescription-compiler:golden": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerGolden.test.ts",
+    "test:prescription-compiler:stress": "vitest --run --config vitest.config.ts tests/unit/productionPrescriptionCompilerStress.test.ts",
+    "report:prescription-compiler": "node --import tsx dev/reportProductionPrescriptionCompiler.ts",
+    "report:prescription-compiler:catalog": "node --import tsx dev/reportProductionPrescriptionCompiler.ts",
+    "report:prescription-compiler:stress": "node --import tsx dev/reportProductionPrescriptionCompiler.ts"
   }
 }

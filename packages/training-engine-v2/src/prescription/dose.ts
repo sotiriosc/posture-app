@@ -109,6 +109,8 @@ export interface TimedCarryDose extends DoseBase {
 export interface StepMarchDose extends DoseBase {
   readonly mode: "step_march";
   readonly stationary: true;
+  /** Production stationary-march prescriptions require an explicit set count. */
+  readonly sets?: CountTarget;
   readonly steps?: StepTarget;
   readonly duration?: TimeTarget;
   readonly alternation?: "alternating" | "same_side_repeated" | "not_applicable";

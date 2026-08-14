@@ -15,3 +15,10 @@ Each assignment now includes `timingKnowledge` with `HANDOFF_ONLY` authority: se
 The Prescription handoff remains `HANDOFF_ONLY`. The full Prescription lab consumes each `SessionPrescriptionAssignmentHandoff` as one expected source exposure event and creates no duplicate event for roles, muscles, needs, sets, or dose blocks.
 
 Composer behavior fingerprint remains `3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9`; timing handoff metadata is fingerprinted separately by the timing and full-Prescription labs.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## SESSION_COMPOSER_PRESCRIPTION_HANDOFF production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

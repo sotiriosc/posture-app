@@ -112,3 +112,10 @@ Exact next dependency: owner selection from the numeric Prescription Pareto fron
 ## Prescription Policy V1 Owner Admission
 
 Policy V1 is ready for a separately authorized production Compiler implementation. Final Sequencing and post-Prescription Week validation remain blocked.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## FULL_PRESCRIPTION_IMPLEMENTATION_READINESS production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

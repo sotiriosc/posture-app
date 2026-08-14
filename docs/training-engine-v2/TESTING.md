@@ -159,3 +159,10 @@ Full Prescription design tests are covered by `packages/training-engine-v2/tests
 ## Prescription Policy V1 Owner Admission
 
 The V1 suite covers the locked 132-scenario holdout, 121 multi-assignment sessions, all five sections, seven roles, seven dose modes, 45 exercise identities across calibration/holdout, and hard-zero causal findings.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## TESTING production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

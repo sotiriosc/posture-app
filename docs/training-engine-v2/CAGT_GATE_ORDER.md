@@ -23,3 +23,10 @@ The order is immutable and cannot be changed by a scenario.
 | 16 | Foundation evidence only; decision not implemented | Longitudinal evidence/adaptation boundary |
 
 Execution states are `PASS`, expected/justified convergence passes, rightful-owner deferral, `FAIL_STOP`, not applicable, not implemented, not reached, and shadow diagnostic only. A design pass is always `DESIGN_EVIDENCE_PASS`, never production proof.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## CAGT_GATE_ORDER production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->

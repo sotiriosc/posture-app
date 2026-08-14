@@ -99,3 +99,10 @@ Prescription CAGT fingerprint: `f00bade643d196e1e0804c5fa682d35d146fda9d7a5910a8
 ## Prescription Policy V1 Owner Admission
 
 V1 admission adds 10,032 blinded policy/scenario comparisons, 1,452 independent performance comparisons, permutation/metamorphic checks, and repeated deterministic runs.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_START -->
+
+## CAGT_GATED_STRESS_REPORT production Compiler update
+The explicit production Prescription Compiler kernel is `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTED_NOT_ACTIVATED` with `PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0` available only by explicit injection. Gate 9 is `PRODUCTION_KERNEL_AUTHORITY`; Gate 10 remains `MIXED_HANDOFF_AUTHORITY`; Gate 11 remains `FOUNDATION_AUTHORITY`. Existing generators and apps are unchanged. See `PRODUCTION_PRESCRIPTION_COMPILER_IMPLEMENTATION_READINESS.md`.
+
+<!-- PRODUCTION_PRESCRIPTION_COMPILER_END -->
