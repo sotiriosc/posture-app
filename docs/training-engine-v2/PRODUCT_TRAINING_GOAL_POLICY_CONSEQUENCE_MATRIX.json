@@ -1,0 +1,44 @@
+[
+  {
+    "goal": "strength",
+    "intendedFamily": "owner_selection_required_between_G1_G3_G4",
+    "currentFamily": "main_strength",
+    "selectionImpact": "main loadability and progression may matter",
+    "equipmentImpact": "heavy-load truth depends on realizable load and increments"
+  },
+  {
+    "goal": "hypertrophy",
+    "intendedFamily": "main_hypertrophy",
+    "currentFamily": "main_hypertrophy",
+    "selectionImpact": "volume and muscle coverage may matter",
+    "equipmentImpact": "broad loads are legal when effort and volume are realizable"
+  },
+  {
+    "goal": "general_fitness",
+    "intendedFamily": "owner_policy_required",
+    "currentFamily": "main_strength_fallthrough",
+    "selectionImpact": "do not invent a strength default",
+    "equipmentImpact": "purpose and available modalities must constrain realization"
+  },
+  {
+    "goal": "conditioning",
+    "intendedFamily": "owner_policy_required",
+    "currentFamily": "main_strength_fallthrough",
+    "selectionImpact": "capacity purpose cannot be inferred from reps alone",
+    "equipmentImpact": "modality and space are material"
+  },
+  {
+    "goal": "posture_and_movement_quality",
+    "intendedFamily": "purpose_first_or_owner_policy_required",
+    "currentFamily": "main_strength_fallthrough",
+    "selectionImpact": "movement need remains upstream truth",
+    "equipmentImpact": "support and movement legality remain material"
+  },
+  {
+    "goal": "pain_aware_return",
+    "intendedFamily": "context_modifier_not_outcome_family",
+    "currentFamily": "main_strength_fallthrough_for_legacy_main_goal",
+    "selectionImpact": "regress dose; do not diagnose",
+    "equipmentImpact": "support and tolerable loading constrain realization"
+  }
+]

@@ -211,6 +211,10 @@
     "test:product-shadow:invariance": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowActivation.test.ts tests/unit/controlledProductShadowEvidence.test.ts",
     "report:product-shadow": "node --import tsx dev/reportControlledProductShadow.ts",
     "report:product-shadow:comparison": "node --import tsx dev/reportControlledProductShadow.ts",
-    "report:product-shadow:stress": "node --import tsx dev/reportControlledProductShadow.ts"
+    "report:product-shadow:stress": "node --import tsx dev/reportControlledProductShadow.ts",
+    "test:product-training-goal-audit": "vitest --run --config vitest.config.ts tests/unit/productTrainingGoalAudit.test.ts tests/unit/productTrainingGoalReports.test.ts tests/unit/productTrainingGoalActivation.test.ts",
+    "test:product-training-goal-audit:consequences": "vitest --run --config vitest.config.ts tests/unit/productTrainingGoalAudit.test.ts",
+    "test:product-training-goal-audit:activation": "vitest --run --config vitest.config.ts tests/unit/productTrainingGoalActivation.test.ts",
+    "report:product-training-goal-audit": "node --import tsx dev/reportProductTrainingGoals.ts"
   }
 }

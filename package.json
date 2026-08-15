@@ -103,7 +103,11 @@
     "test:product-shadow:stress": "npm run test:product-shadow:stress --workspace=@praxis/training-engine-v2",
     "report:product-shadow": "npm run report:product-shadow --workspace=@praxis/training-engine-v2",
     "report:product-shadow:comparison": "npm run report:product-shadow:comparison --workspace=@praxis/training-engine-v2",
-    "report:product-shadow:stress": "npm run report:product-shadow:stress --workspace=@praxis/training-engine-v2"
+    "report:product-shadow:stress": "npm run report:product-shadow:stress --workspace=@praxis/training-engine-v2",
+    "test:product-training-goal-audit": "npm run test:product-training-goal-audit --workspace=@praxis/training-engine-v2",
+    "test:product-training-goal-audit:consequences": "npm run test:product-training-goal-audit:consequences --workspace=@praxis/training-engine-v2",
+    "test:product-training-goal-audit:activation": "npm run test:product-training-goal-audit:activation --workspace=@praxis/training-engine-v2",
+    "report:product-training-goal-audit": "npm run report:product-training-goal-audit --workspace=@praxis/training-engine-v2"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

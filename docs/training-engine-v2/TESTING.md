@@ -338,3 +338,15 @@ The explicit server-only service can validate, build, persist, and replay unappl
 - Safety: zero Product mutation, application, delivery, rendering, performed credit, or counterfactual outcome attribution.
 - Remaining dependency: `SEPARATE_PRODUCT_ACTIVATION_AUTHORIZATION`.
 <!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->
+
+<!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:START -->
+## Product Training Goal and Prescription Specificity V1 Audit
+
+- Classification: `PRODUCT_TRAINING_GOAL_AND_PRESCRIPTION_SPECIFICITY_V1_READY_FOR_OWNER_POLICY_SELECTION`.
+- Ontology: `PRODUCT_TRAINING_GOAL_ONTOLOGY_READY`.
+- Evidence: 180 design-only scenarios; 11 required hard-failure mutations rejected.
+- Current finding: non-hypertrophy main repetition-set values fall through to `main_strength`; 12 canonical primary-main exercises are directly exposed to that branch.
+- Boundary: no policy selected; zero production code, Product behavior, shadow rollout, activation, migration, or public API changes.
+- Sequence: owner-gated chunks A-H; every implementation and activation chunk remains separately authorized.
+- Remaining dependency: `OWNER_SELECTION_OF_PRODUCT_GOAL_VOCABULARY_AND_GOAL_SPECIFIC_PRESCRIPTION_POLICY`.
+<!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:END -->
