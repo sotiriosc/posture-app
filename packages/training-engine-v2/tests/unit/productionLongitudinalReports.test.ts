@@ -22,8 +22,10 @@ describe("production Longitudinal reports", () => {
     expect(PRODUCTION_LONGITUDINAL_JSON_FILES).toHaveLength(9);
     expect(Object.keys(rendered)).toHaveLength(45);
     const foundationMarker = /\n*<!-- OUTCOME_SOURCE_PERSISTENCE_FOUNDATION_V1:START -->[\s\S]*?<!-- OUTCOME_SOURCE_PERSISTENCE_FOUNDATION_V1:END -->\n*/;
+    const productionSourceMarker = /\n*<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:START -->[\s\S]*?<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:END -->\n*/;
     for (const [name, content] of Object.entries(rendered)) {
-      expect(readFileSync(resolve(docsRoot, name), "utf8").replace(foundationMarker, "\n"), name).toBe(content);
+      expect(readFileSync(resolve(docsRoot, name), "utf8").replace(foundationMarker, "\n")
+        .replace(productionSourceMarker, "\n"), name).toBe(content);
     }
   });
 

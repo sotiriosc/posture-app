@@ -13,13 +13,15 @@ describe("outcome source foundation reports", () => {
   const packageRoot = process.cwd().endsWith("packages/training-engine-v2") ? process.cwd() :
     resolve(process.cwd(), "packages/training-engine-v2");
   const docsRoot = resolve(packageRoot, "../../docs/training-engine-v2");
+  const productionMarker = /\n*<!-- PRODUCTION_OUTCOME_SOURCE_(?:PERSISTENCE|REPORT)_V1:START -->[\s\S]*?<!-- PRODUCTION_OUTCOME_SOURCE_(?:PERSISTENCE|REPORT)_V1:END -->\n*/g;
 
   it("freezes all 41 required Markdown and JSON artifacts", () => {
     const reports = buildOutcomeSourceReports();
     expect(OUTCOME_SOURCE_REPORT_FILENAMES).toHaveLength(41);
     expect(Object.keys(reports).sort()).toEqual([...OUTCOME_SOURCE_REPORT_FILENAMES].sort());
     for (const filename of OUTCOME_SOURCE_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8"), filename).toBe(reports[filename]);
+      expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(productionMarker, "\n"), filename)
+        .toBe(reports[filename]);
     }
   });
 

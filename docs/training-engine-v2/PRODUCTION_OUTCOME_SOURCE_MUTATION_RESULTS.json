@@ -1,0 +1,487 @@
+{
+  "mutationCount": 60,
+  "acceptedMutationCount": 0,
+  "rows": [
+    {
+      "mutation": "database_dependency_in_pure_engine",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.database_dependency_in_pure_engine",
+      "rejected": true,
+      "reasonCode": "REJECTED_DATABASE_DEPENDENCY_IN_PURE_ENGINE",
+      "semanticFingerprint": "fe560dada0f60bd15db20d9d7da68c496422856957e291b6bd265b2b38ec3f17"
+    },
+    {
+      "mutation": "client_import_of_server_persistence",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.client_import_of_server_persistence",
+      "rejected": true,
+      "reasonCode": "REJECTED_CLIENT_IMPORT_OF_SERVER_PERSISTENCE",
+      "semanticFingerprint": "e6790e3a54c518da1dbdfa2ed3e5cdd2fb183f5f661112ccf2feccfe58b7d726"
+    },
+    {
+      "mutation": "app_call_to_ingestion",
+      "realStructure": "recursive-activation-guard",
+      "changedPath": "production.app_call_to_ingestion",
+      "rejected": true,
+      "reasonCode": "REJECTED_APP_CALL_TO_INGESTION",
+      "semanticFingerprint": "d17a7ca48ea00a5e7c4a871de052c78ebcf8eb9c1d339b33debe047a21e22e10"
+    },
+    {
+      "mutation": "runtime_migration",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.runtime_migration",
+      "rejected": true,
+      "reasonCode": "REJECTED_RUNTIME_MIGRATION",
+      "semanticFingerprint": "64c746e363e36749658493ee28bdd387c1bcd698e3526041da03c4a91c4941ec"
+    },
+    {
+      "mutation": "migration_on_import",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.migration_on_import",
+      "rejected": true,
+      "reasonCode": "REJECTED_MIGRATION_ON_IMPORT",
+      "semanticFingerprint": "d70a2efd7976314d37736c5f7cb4d11bc0b200f9bdca0d096773cfa1e7e8ea7a"
+    },
+    {
+      "mutation": "migration_checksum_drift",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.migration_checksum_drift",
+      "rejected": true,
+      "reasonCode": "REJECTED_MIGRATION_CHECKSUM_DRIFT",
+      "semanticFingerprint": "6f564b7cdf9775f11d36ec7cf3da58d7d2edff077647ebe7edd3d8a01645ac8e"
+    },
+    {
+      "mutation": "destructive_down_migration",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.destructive_down_migration",
+      "rejected": true,
+      "reasonCode": "REJECTED_DESTRUCTIVE_DOWN_MIGRATION",
+      "semanticFingerprint": "d38874d961aa3d372e720be6764bef6262324928b97ed7fd9c250ee3941d2b48"
+    },
+    {
+      "mutation": "append_only_update",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.append_only_update",
+      "rejected": true,
+      "reasonCode": "REJECTED_APPEND_ONLY_UPDATE",
+      "semanticFingerprint": "a9b79f4ab90c314e3d04ef2ae36bdf91ca69214451fbfbd5208d2b18dbe3712d"
+    },
+    {
+      "mutation": "append_only_delete",
+      "realStructure": "postgres-schema",
+      "changedPath": "production.append_only_delete",
+      "rejected": true,
+      "reasonCode": "REJECTED_APPEND_ONLY_DELETE",
+      "semanticFingerprint": "2a9f22fc6a2eba5bc81f41b1b8a4be27f2913d5f39b2a2bf255e1d5da9d469ce"
+    },
+    {
+      "mutation": "correction_rewrites_old_row",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.correction_rewrites_old_row",
+      "rejected": true,
+      "reasonCode": "REJECTED_CORRECTION_REWRITES_OLD_ROW",
+      "semanticFingerprint": "dc3b73a9620798eec6eae790b2ff6f242cc99fcd93e22d82e53ad117a3ffd712"
+    },
+    {
+      "mutation": "duplicate_active_revision",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.duplicate_active_revision",
+      "rejected": true,
+      "reasonCode": "REJECTED_DUPLICATE_ACTIVE_REVISION",
+      "semanticFingerprint": "53c3c32574af670905e1fc4a29cf9d0da6d4e763f41a3fe135e17089f49b3f44"
+    },
+    {
+      "mutation": "active_revision_selected_by_array_order",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.active_revision_selected_by_array_order",
+      "rejected": true,
+      "reasonCode": "REJECTED_ACTIVE_REVISION_SELECTED_BY_ARRAY_ORDER",
+      "semanticFingerprint": "988d31d99ae72907cb079f636b69bf20ff8567b31999e169360965228fd9d829"
+    },
+    {
+      "mutation": "memory_only_idempotency",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.memory_only_idempotency",
+      "rejected": true,
+      "reasonCode": "REJECTED_MEMORY_ONLY_IDEMPOTENCY",
+      "semanticFingerprint": "882d8ad6f8fe6ba0d3100d69659d4542d0658ce0c734b9ae7f553dda09e0050f"
+    },
+    {
+      "mutation": "idempotency_conflict_accepted",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.idempotency_conflict_accepted",
+      "rejected": true,
+      "reasonCode": "REJECTED_IDEMPOTENCY_CONFLICT_ACCEPTED",
+      "semanticFingerprint": "394b5c895b3116cea97faf051f9483c54279fcf7258f4bc7abb32558285ba644"
+    },
+    {
+      "mutation": "duplicate_delivery_creates_revision",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.duplicate_delivery_creates_revision",
+      "rejected": true,
+      "reasonCode": "REJECTED_DUPLICATE_DELIVERY_CREATES_REVISION",
+      "semanticFingerprint": "ef4fbcc84a59e384428b922cf097fd81351c2e89c9c899454e89e4e6e9de8521"
+    },
+    {
+      "mutation": "dedup_merges_distinct_event",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.dedup_merges_distinct_event",
+      "rejected": true,
+      "reasonCode": "REJECTED_DEDUP_MERGES_DISTINCT_EVENT",
+      "semanticFingerprint": "bf39529ede73c6febec94ea9363c77303b6174580bdac6d829ee3c7a602922a7"
+    },
+    {
+      "mutation": "dedup_merges_left_right",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.dedup_merges_left_right",
+      "rejected": true,
+      "reasonCode": "REJECTED_DEDUP_MERGES_LEFT_RIGHT",
+      "semanticFingerprint": "02048877385161b433eef1aca95a5bd05de2e8558914a106b5c3fcf42e64ca71"
+    },
+    {
+      "mutation": "dedup_merges_support_context",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.dedup_merges_support_context",
+      "rejected": true,
+      "reasonCode": "REJECTED_DEDUP_MERGES_SUPPORT_CONTEXT",
+      "semanticFingerprint": "9da0a68baa205f98c46b8ff36bdcd71eeb5d3a61a669cd2fba05d425e35d7873"
+    },
+    {
+      "mutation": "free_text_engine_fact",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.free_text_engine_fact",
+      "rejected": true,
+      "reasonCode": "REJECTED_FREE_TEXT_ENGINE_FACT",
+      "semanticFingerprint": "2cbabea08a94d959f8cfc002b5ca72e561ed53d5b5c03139eac3e9fa8f1f38b0"
+    },
+    {
+      "mutation": "note_parsed_into_response",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.note_parsed_into_response",
+      "rejected": true,
+      "reasonCode": "REJECTED_NOTE_PARSED_INTO_RESPONSE",
+      "semanticFingerprint": "c7d0ecd5d49e13d2a819c7661b4df95984cf8ab41e5beae3a1b8a7f2f9688ab5"
+    },
+    {
+      "mutation": "analytics_as_authority",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.analytics_as_authority",
+      "rejected": true,
+      "reasonCode": "REJECTED_ANALYTICS_AS_AUTHORITY",
+      "semanticFingerprint": "e07e9a457f9c353ab8343a131c5596fecf36398df486c0d2c1779454a7286439"
+    },
+    {
+      "mutation": "missing_authorization_allowed",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.missing_authorization_allowed",
+      "rejected": true,
+      "reasonCode": "REJECTED_MISSING_AUTHORIZATION_ALLOWED",
+      "semanticFingerprint": "7a1c571fcbce939491d124c075968175ee65c469d0afe72b72672046e83afc08"
+    },
+    {
+      "mutation": "revoked_source_in_snapshot",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.revoked_source_in_snapshot",
+      "rejected": true,
+      "reasonCode": "REJECTED_REVOKED_SOURCE_IN_SNAPSHOT",
+      "semanticFingerprint": "6630c0758e5cbeb6545002c302c928c648e02064a47a5707a5bad21cc3a8f6c6"
+    },
+    {
+      "mutation": "lower_authority_overrides_clinician",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.lower_authority_overrides_clinician",
+      "rejected": true,
+      "reasonCode": "REJECTED_LOWER_AUTHORITY_OVERRIDES_CLINICIAN",
+      "semanticFingerprint": "e3932c10e4c409b7691bc2b2d650392b91af919af7d72b045055e1afcad4781f"
+    },
+    {
+      "mutation": "unknown_source_progression",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.unknown_source_progression",
+      "rejected": true,
+      "reasonCode": "REJECTED_UNKNOWN_SOURCE_PROGRESSION",
+      "semanticFingerprint": "223f3282556dea94f70ebce2aa72ef28f31d44346d948075c160a27528359e24"
+    },
+    {
+      "mutation": "ingestion_time_as_event_time",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.ingestion_time_as_event_time",
+      "rejected": true,
+      "reasonCode": "REJECTED_INGESTION_TIME_AS_EVENT_TIME",
+      "semanticFingerprint": "bea7cfa0787e444c69077804dec3a82ee070c91b7aa10a60b8cfd64759071062"
+    },
+    {
+      "mutation": "persisted_time_in_fingerprint",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.persisted_time_in_fingerprint",
+      "rejected": true,
+      "reasonCode": "REJECTED_PERSISTED_TIME_IN_FINGERPRINT",
+      "semanticFingerprint": "919927f14ba1112e282436491a52ffd4188504f12e632f636d6726612357265a"
+    },
+    {
+      "mutation": "future_event_used",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.future_event_used",
+      "rejected": true,
+      "reasonCode": "REJECTED_FUTURE_EVENT_USED",
+      "semanticFingerprint": "aa080ba4c30969c2ce438ccf703fc85dc06b7a662d4d51d2ff0fc9d4c36ec265"
+    },
+    {
+      "mutation": "wrong_athlete_access",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.wrong_athlete_access",
+      "rejected": true,
+      "reasonCode": "REJECTED_WRONG_ATHLETE_ACCESS",
+      "semanticFingerprint": "44e64698822c0fb49c4edaa33ef55795b3c6a8f1a2c3233458e67a8ff81c33da"
+    },
+    {
+      "mutation": "cross_athlete_snapshot",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.cross_athlete_snapshot",
+      "rejected": true,
+      "reasonCode": "REJECTED_CROSS_ATHLETE_SNAPSHOT",
+      "semanticFingerprint": "568929ac3e777305d90d10596c90057779472a03dec0a5e285a53873924f4cc8"
+    },
+    {
+      "mutation": "source_event_missing",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.source_event_missing",
+      "rejected": true,
+      "reasonCode": "REJECTED_SOURCE_EVENT_MISSING",
+      "semanticFingerprint": "b2e9bb65112ef521bd10302b113b7e973db87a8abde881a9c665da9e606c2881"
+    },
+    {
+      "mutation": "wrong_prescription_revision",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.wrong_prescription_revision",
+      "rejected": true,
+      "reasonCode": "REJECTED_WRONG_PRESCRIPTION_REVISION",
+      "semanticFingerprint": "e9db0f09b5ab0801c1934b9e42c3b4d5170364804fd7b5cbefb67db8fbef5bf1"
+    },
+    {
+      "mutation": "wrong_sequence_revision",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.wrong_sequence_revision",
+      "rejected": true,
+      "reasonCode": "REJECTED_WRONG_SEQUENCE_REVISION",
+      "semanticFingerprint": "aee9619fbbc3d2a0a0cfb6606480dc56f1df7cd08a39eddd79d72ce64eff566b"
+    },
+    {
+      "mutation": "planned_as_actual",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.planned_as_actual",
+      "rejected": true,
+      "reasonCode": "REJECTED_PLANNED_AS_ACTUAL",
+      "semanticFingerprint": "2cdce6e230b1b0eefab797f645af4ad62ded155eeb318591ce56dcf058862791"
+    },
+    {
+      "mutation": "planned_timing_as_actual",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.planned_timing_as_actual",
+      "rejected": true,
+      "reasonCode": "REJECTED_PLANNED_TIMING_AS_ACTUAL",
+      "semanticFingerprint": "cdf588e90cb895d824c19cc8d6ecb56b71afee7e8a5d8fcf417d3a95c9ccc750"
+    },
+    {
+      "mutation": "multi_block_flattening",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.multi_block_flattening",
+      "rejected": true,
+      "reasonCode": "REJECTED_MULTI_BLOCK_FLATTENING",
+      "semanticFingerprint": "8ed59cb26af2d909c1f364fb7c0337a49243855338ebecb8039b7e3e56123eae"
+    },
+    {
+      "mutation": "completed_row_per_block",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.completed_row_per_block",
+      "rejected": true,
+      "reasonCode": "REJECTED_COMPLETED_ROW_PER_BLOCK",
+      "semanticFingerprint": "73585aed105f26a78e334ecddbbaca3447c15e2917f7e89a624486da6947abc3"
+    },
+    {
+      "mutation": "completed_row_per_response",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.completed_row_per_response",
+      "rejected": true,
+      "reasonCode": "REJECTED_COMPLETED_ROW_PER_RESPONSE",
+      "semanticFingerprint": "97d85d54c196f305f8da9e3c5707d161718d7ac808ca52de1bae7e18b90afa30"
+    },
+    {
+      "mutation": "application_applied",
+      "realStructure": "recursive-activation-guard",
+      "changedPath": "production.application_applied",
+      "rejected": true,
+      "reasonCode": "REJECTED_APPLICATION_APPLIED",
+      "semanticFingerprint": "3edf4290dcad0b1ed9b1c705b7ecbb99b4a52dd9d9cbb737f4701604380d57d4"
+    },
+    {
+      "mutation": "candidate_rerun",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.candidate_rerun",
+      "rejected": true,
+      "reasonCode": "REJECTED_CANDIDATE_RERUN",
+      "semanticFingerprint": "deb2da2b9d3b5f1368816bd0b06c704e90ef3645f3b1583b365827db93cd7c93"
+    },
+    {
+      "mutation": "prescription_mutation",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.prescription_mutation",
+      "rejected": true,
+      "reasonCode": "REJECTED_PRESCRIPTION_MUTATION",
+      "semanticFingerprint": "c5778afe47e5e600efcf0dafe9a0e734aacb883535e467792d1e7720ca688ae6"
+    },
+    {
+      "mutation": "week_mutation",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.week_mutation",
+      "rejected": true,
+      "reasonCode": "REJECTED_WEEK_MUTATION",
+      "semanticFingerprint": "01eb1d863061a1518b02b6cb31efceedac64f49d213705e39dce2f54736bb958"
+    },
+    {
+      "mutation": "phase_mutation",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.phase_mutation",
+      "rejected": true,
+      "reasonCode": "REJECTED_PHASE_MUTATION",
+      "semanticFingerprint": "6b3ef649db231ee0914fbd13c9fb6470a34543ecf52415353acc0a0000caa6d0"
+    },
+    {
+      "mutation": "replay_creates_decision",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.replay_creates_decision",
+      "rejected": true,
+      "reasonCode": "REJECTED_REPLAY_CREATES_DECISION",
+      "semanticFingerprint": "d2f3c6f78a7e66cf17b5dd7210920dd5c2d88bc4be2fc39886c4f05fc15d23d6"
+    },
+    {
+      "mutation": "replay_applies_directive",
+      "realStructure": "recursive-activation-guard",
+      "changedPath": "production.replay_applies_directive",
+      "rejected": true,
+      "reasonCode": "REJECTED_REPLAY_APPLIES_DIRECTIVE",
+      "semanticFingerprint": "0113376fc8466808f3dee4321804ec715380f604dfb15cab6791e6c369cbec59"
+    },
+    {
+      "mutation": "hidden_adapter_registry",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.hidden_adapter_registry",
+      "rejected": true,
+      "reasonCode": "REJECTED_HIDDEN_ADAPTER_REGISTRY",
+      "semanticFingerprint": "6867f85db57dc1140eca713ab642d756157313619e47e25ddd4b75dc6388a23f"
+    },
+    {
+      "mutation": "hidden_policy",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.hidden_policy",
+      "rejected": true,
+      "reasonCode": "REJECTED_HIDDEN_POLICY",
+      "semanticFingerprint": "b60fc63fc924a001d3bd84534eeb66fcf0fe04adb833598e702305a1f31e8739"
+    },
+    {
+      "mutation": "hidden_database_store",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.hidden_database_store",
+      "rejected": true,
+      "reasonCode": "REJECTED_HIDDEN_DATABASE_STORE",
+      "semanticFingerprint": "2486c719df6c5cf2a5d70fed8c841a92ef38280c99feee0847d4692fb3895a62"
+    },
+    {
+      "mutation": "hidden_clock",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.hidden_clock",
+      "rejected": true,
+      "reasonCode": "REJECTED_HIDDEN_CLOCK",
+      "semanticFingerprint": "e9b5aa48ba7500ec8c1fa76041479320dd5514085a8540638664a551e06b8f76"
+    },
+    {
+      "mutation": "random_source_id",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.random_source_id",
+      "rejected": true,
+      "reasonCode": "REJECTED_RANDOM_SOURCE_ID",
+      "semanticFingerprint": "0af45a215f5d27fdc32827382cc590eab0bcf4de755068569f4d8a83f783b54a"
+    },
+    {
+      "mutation": "random_revision_id",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.random_revision_id",
+      "rejected": true,
+      "reasonCode": "REJECTED_RANDOM_REVISION_ID",
+      "semanticFingerprint": "26eed9bba56f498888d54a9ee18a13d7a3d46e98be9d7b8dd08c9c982234d708"
+    },
+    {
+      "mutation": "random_snapshot_id",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.random_snapshot_id",
+      "rejected": true,
+      "reasonCode": "REJECTED_RANDOM_SNAPSHOT_ID",
+      "semanticFingerprint": "a88ebf789ea2c1ced096642115923df5d0ea4a1a237ed3a40f163340c0e8355a"
+    },
+    {
+      "mutation": "random_directive_id",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.random_directive_id",
+      "rejected": true,
+      "reasonCode": "REJECTED_RANDOM_DIRECTIVE_ID",
+      "semanticFingerprint": "b338ec6b84c36c906d9bd3e0dd0b7bad0149a97fbe1c856b2719f074b5b4420d"
+    },
+    {
+      "mutation": "unparameterized_sql",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.unparameterized_sql",
+      "rejected": true,
+      "reasonCode": "REJECTED_UNPARAMETERIZED_SQL",
+      "semanticFingerprint": "b306f5b2f4498f76f20a147ed775c7a072cba5523dc9680e49c7eadd80a121bf"
+    },
+    {
+      "mutation": "raw_sql_error_exposed",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.raw_sql_error_exposed",
+      "rejected": true,
+      "reasonCode": "REJECTED_RAW_SQL_ERROR_EXPOSED",
+      "semanticFingerprint": "001cc6cbed66bd254681958cc1ba6e969f92928ec15df9ebe1c8f3dcd2d853e7"
+    },
+    {
+      "mutation": "missing_audit_event",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.missing_audit_event",
+      "rejected": true,
+      "reasonCode": "REJECTED_MISSING_AUDIT_EVENT",
+      "semanticFingerprint": "0e0c4368ec925043a0ae52f169049ae9e467600e72084f923442734386ee1faa"
+    },
+    {
+      "mutation": "stale_application_preconditions_ignored",
+      "realStructure": "recursive-activation-guard",
+      "changedPath": "production.stale_application_preconditions_ignored",
+      "rejected": true,
+      "reasonCode": "REJECTED_STALE_APPLICATION_PRECONDITIONS_IGNORED",
+      "semanticFingerprint": "bb2167dcc995159f96dd772c38956adfad9268965a6ea9e47c7d44ea48500b76"
+    },
+    {
+      "mutation": "week_directive_without_owner",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.week_directive_without_owner",
+      "rejected": true,
+      "reasonCode": "REJECTED_WEEK_DIRECTIVE_WITHOUT_OWNER",
+      "semanticFingerprint": "6dabefb38c19104c39b5109de061236a38499c4da36d6224d01518cc08ef974f"
+    },
+    {
+      "mutation": "production_backfill_write",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.production_backfill_write",
+      "rejected": true,
+      "reasonCode": "REJECTED_PRODUCTION_BACKFILL_WRITE",
+      "semanticFingerprint": "604f03e52d68e17041764260d98541d5e0e14fac1b081e888ed82d2ea1280321"
+    },
+    {
+      "mutation": "legacy_table_modified",
+      "realStructure": "pure-production-contract",
+      "changedPath": "production.legacy_table_modified",
+      "rejected": true,
+      "reasonCode": "REJECTED_LEGACY_TABLE_MODIFIED",
+      "semanticFingerprint": "3057554b7172f917b9153173fa5d559b1e151cca78ef94fac96926a83bd4a9ff"
+    }
+  ],
+  "fingerprint": "ff5e705e6df46a7fc94b4e1c95a1622dc6b5b85c39d89734c01ea9cc8a30c4ec"
+}

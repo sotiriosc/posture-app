@@ -132,3 +132,7 @@ Enforcement: ESLint `no-restricted-imports` (active from Phase 1 Day 3).
 | `debug/` | Dev-only audit scripts; never a consumer dependency. |
 | `mediapipePoseShim.js` | Browser-only shim; loaded dynamically, not imported. |
 | `userStore.ts`, `userStoreDb.ts`, `userStoreMemory.ts` | Used via `userRepository.ts` abstraction; not a public contract. |
+
+## Outcome Source Persistence
+
+Production outcome-source persistence is intentionally excluded from the root `@praxis/engine` barrel. Server callers must opt into `@praxis/engine/outcome-source-persistence`; that subpath exposes the injected PostgreSQL repository, explicit migration planner/runner, ingestion service, replay reads, observability port, and nonapplying adaptation persistence APIs. Importing either entrypoint runs no migration, query, snapshot build, Longitudinal evaluation, or directive application. Neither application imports the server-only subpath.

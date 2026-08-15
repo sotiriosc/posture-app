@@ -7,6 +7,41 @@ on:
     - cron: "0 7 * * *"
 
 jobs:
+  outcome-source-postgres:
+    name: Outcome source PostgreSQL integration
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: praxis_outcome_sources
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d praxis_outcome_sources"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://postgres@localhost:5432/praxis_outcome_sources
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build pure and server persistence contracts
+        run: >-
+          npm run build --workspace=@praxis/training-engine-v2 &&
+          npm run build:outcome-sources --workspace=@praxis/engine
+      - name: Run real PostgreSQL integration
+        run: npm run test:outcome-sources:postgres
+
   # ─── PR gate ──────────────────────────────────────────────────────────────
   # Runs on every pull request. Fast enough to be a blocking gate (target:
   # under 3 minutes — see Phase 6f Commit 6 / ED-6f.8 in

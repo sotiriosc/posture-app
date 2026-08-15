@@ -6,7 +6,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./outcome-sources": "./src/outcomeSources/index.ts",
+    "./adaptation-persistence": "./src/adaptationPersistence/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
@@ -153,6 +155,20 @@
     "test:cagt:outcome-sources:stress": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceStress.test.ts",
     "report:cagt:outcome-sources": "node --import tsx dev/reportOutcomeSources.ts",
     "report:cagt:outcome-sources:replay": "node --import tsx dev/reportOutcomeSources.ts",
-    "report:cagt:outcome-sources:stress": "node --import tsx dev/reportOutcomeSources.ts"
+    "report:cagt:outcome-sources:stress": "node --import tsx dev/reportOutcomeSources.ts",
+    "test:outcome-sources": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceContracts.test.ts tests/unit/productionOutcomeSourceReplayLegacy.test.ts tests/unit/productionOutcomeSourceActivation.test.ts tests/unit/productionOutcomeSourceStress.test.ts tests/unit/productionOutcomeSourceReports.test.ts tests/unit/cagtOutcomeSourceRegistryV8.test.ts",
+    "test:outcome-sources:contracts": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceContracts.test.ts",
+    "test:outcome-sources:adapters": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceContracts.test.ts -t adapter",
+    "test:outcome-sources:idempotency": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceRevisions.test.ts -t idempotency",
+    "test:outcome-sources:revisions": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceRevisions.test.ts tests/unit/productionOutcomeSourceContracts.test.ts",
+    "test:outcome-sources:snapshot": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceContracts.test.ts -t snapshot",
+    "test:outcome-sources:replay": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceReplayLegacy.test.ts -t replay",
+    "test:outcome-sources:legacy": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceReplayLegacy.test.ts -t legacy",
+    "test:outcome-sources:golden": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceReplay.test.ts tests/unit/productionOutcomeSourceStress.test.ts",
+    "test:outcome-sources:stress": "vitest --run --config vitest.config.ts tests/unit/productionOutcomeSourceStress.test.ts",
+    "report:outcome-sources": "node --import tsx dev/reportProductionOutcomeSources.ts",
+    "report:outcome-sources:legacy": "node --import tsx dev/reportProductionOutcomeSources.ts",
+    "report:outcome-sources:golden": "node --import tsx dev/reportProductionOutcomeSources.ts",
+    "report:outcome-sources:stress": "node --import tsx dev/reportProductionOutcomeSources.ts"
   }
 }

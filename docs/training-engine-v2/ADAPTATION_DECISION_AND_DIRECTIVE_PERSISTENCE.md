@@ -7,3 +7,15 @@
 This is ontology, contract, and CAGT evidence only. It creates no live adapter, migration, persistence write, event consumer, queue, directive application, Product behavior, or program mutation.
 
 State, decision, and directive revisions retain policy, source snapshot, program snapshot, owner, blockers, and unapplied state. A source correction creates a new decision revision and never rewrites an old decision.
+
+<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:START -->
+## Production Outcome Source Persistence V1
+
+- Status: `PRODUCTION_OUTCOME_SOURCE_ADAPTERS_AND_APPEND_ONLY_PERSISTENCE_IMPLEMENTED_NOT_ACTIVATED`.
+- Gate 11: `PRODUCTION_KERNEL_AUTHORITY` under `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@8.0.0`.
+- Pure owner: `packages/training-engine-v2`; server owner: `packages/engine`.
+- Schema: 24 physical tables, 22 append-only tables, 29 indexes.
+- Evidence: 180 controlled, 360 holdout, 5000 replay stress, zero semantic golden mismatches.
+- Activation remains zero; existing legacy stores and `generateProgram` are unchanged.
+- Next dependency: `PRODUCTION_WEEK_PLANNER_AND_WEEK_ALLOCATION_COMPOSER_AUTHORIZATION`.
+<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:END -->

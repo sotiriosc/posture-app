@@ -288,7 +288,11 @@ export function outcomeSourceActivationGuards() {
     !path.includes("/adaptationPersistence/"));
   const appFiles = recursiveFiles(resolve(workspaceRoot, "apps")).filter((path) => /\.(?:ts|tsx|js|jsx)$/.test(path));
   const migrationFiles = recursiveFiles(workspaceRoot).filter((path) =>
-    /(?:migrations?|schema)/i.test(path) && /outcome.?source|adaptation.?persistence/i.test(path));
+    /(?:migrations?|schema)/i.test(path) && /outcome.?source|adaptation.?persistence/i.test(path) &&
+    !path.includes("/node_modules/") &&
+    !path.includes("/packages/engine/src/outcomeSourcePersistence/") &&
+    !path.includes("/packages/engine/migrations/outcome-sources/") &&
+    !path.includes("/docs/training-engine-v2/PRODUCTION_OUTCOME_SOURCE_"));
   const read = (paths: readonly string[]) => paths.map((path) => ({ path, content: readFileSync(path, "utf8") }));
   const production = read(productionFiles);
   const apps = read(appFiles);

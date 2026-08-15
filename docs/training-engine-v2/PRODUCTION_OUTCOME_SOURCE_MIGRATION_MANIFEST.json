@@ -1,0 +1,22 @@
+{
+  "contractId": "PRODUCTION_OUTCOME_SOURCE_PERSISTENCE",
+  "contractVersion": "1.0.0",
+  "manifestVersion": "1.0.0",
+  "historyTable": "praxis_schema_migrations",
+  "forwardFixOnly": true,
+  "automaticExecution": false,
+  "migrations": [
+    {
+      "migrationId": "001_outcome_source_persistence_v1",
+      "version": "1.0.0",
+      "checksum": "d45434f59e56a97cdb9f4dfbf751bb973379e05be05f95cb2cd1a9c43daf4ed3",
+      "description": "Create inactive append-only outcome source and adaptation persistence schema",
+      "dependency": null,
+      "transactional": true,
+      "filename": "001_outcome_source_persistence_v1.sql",
+      "provenance": [
+        "owner-authorization:PRODUCTION_OUTCOME_SOURCE_ADAPTERS_AND_APPEND_ONLY_PERSISTENCE_IMPLEMENTATION_NOT_ACTIVATION"
+      ]
+    }
+  ]
+}

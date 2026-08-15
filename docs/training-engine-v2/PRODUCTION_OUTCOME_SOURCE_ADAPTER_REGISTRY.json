@@ -1,0 +1,164 @@
+[
+  {
+    "adapterId": "production-exercise-performance",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "exercise_performance",
+    "payloadSchema": "production-performance-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sourceExposureEventId",
+      "sessionId",
+      "prescriptionId",
+      "prescriptionRevisionId",
+      "sequencePlanId",
+      "sequenceRevisionId"
+    ]
+  },
+  {
+    "adapterId": "production-block-performance",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "block_performance",
+    "payloadSchema": "production-performance-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sourceExposureEventId",
+      "sessionId",
+      "prescriptionId",
+      "prescriptionRevisionId",
+      "sequencePlanId",
+      "sequenceRevisionId"
+    ]
+  },
+  {
+    "adapterId": "production-session-completion",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "session_completion",
+    "payloadSchema": "production-adherence-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sessionId"
+    ]
+  },
+  {
+    "adapterId": "production-exercise-substitution",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "exercise_substitution",
+    "payloadSchema": "production-substitution-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sourceExposureEventId",
+      "sessionId",
+      "prescriptionRevisionId",
+      "sequenceRevisionId"
+    ]
+  },
+  {
+    "adapterId": "production-training-response",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "training_response",
+    "payloadSchema": "production-response-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sourceExposureEventId"
+    ]
+  },
+  {
+    "adapterId": "production-pain-or-discomfort-report",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "pain_or_discomfort_report",
+    "payloadSchema": "production-response-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sourceExposureEventId"
+    ]
+  },
+  {
+    "adapterId": "production-recovery-readiness",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "recovery_readiness",
+    "payloadSchema": "production-recovery-readiness-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-adherence",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "adherence",
+    "payloadSchema": "production-adherence-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": [
+      "sessionId"
+    ]
+  },
+  {
+    "adapterId": "production-training-safety",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "training_safety",
+    "payloadSchema": "production-safety-restriction-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-clinician-restriction",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "clinician_restriction",
+    "payloadSchema": "production-safety-restriction-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-coach-review",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "coach_review",
+    "payloadSchema": "production-reviewed-report-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-equipment-snapshot",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "equipment_snapshot",
+    "payloadSchema": "production-equipment-environment-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-environment-constraint",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "environment_constraint",
+    "payloadSchema": "production-equipment-environment-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-external-training-load",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "external_training_load",
+    "payloadSchema": "production-external-load-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  },
+  {
+    "adapterId": "production-athlete-report",
+    "adapterVersion": "1.0.0",
+    "sourceCategory": "athlete_report",
+    "payloadSchema": "production-reviewed-report-payload@1.0.0",
+    "decisionUseDefault": "pending",
+    "freeTextPolicy": "reject",
+    "requiredLineage": []
+  }
+]

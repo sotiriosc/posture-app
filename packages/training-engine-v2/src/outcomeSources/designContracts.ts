@@ -395,6 +395,12 @@ function lineageReasons(ledger: OutcomeSourceRecordRevisionLedger): readonly str
   return uniqueSorted(reasons);
 }
 
+export function validateOutcomeSourceRecordRevisionLedger(
+  ledger: OutcomeSourceRecordRevisionLedger,
+): readonly string[] {
+  return lineageReasons(ledger);
+}
+
 function semanticRevisionContent(record: NormalizedOutcomeSourceRecord): string {
   return contentFingerprint({ category: record.sourceCategory, facts: record.structuredFacts,
     unknowns: record.explicitUnknowns, eventTime: record.eventTime, appliesThroughTime: record.appliesThroughTime,

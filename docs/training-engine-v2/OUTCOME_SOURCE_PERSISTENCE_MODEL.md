@@ -30,3 +30,15 @@ Current mutable JSONB/IndexedDB snapshots cannot preserve source corrections or 
 - `audit_event`
 
 No table, migration, write, ORM, or alternate infrastructure is implemented.
+
+<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:START -->
+## Production Outcome Source Persistence V1
+
+- Status: `PRODUCTION_OUTCOME_SOURCE_ADAPTERS_AND_APPEND_ONLY_PERSISTENCE_IMPLEMENTED_NOT_ACTIVATED`.
+- Gate 11: `PRODUCTION_KERNEL_AUTHORITY` under `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@8.0.0`.
+- Pure owner: `packages/training-engine-v2`; server owner: `packages/engine`.
+- Schema: 24 physical tables, 22 append-only tables, 29 indexes.
+- Evidence: 180 controlled, 360 holdout, 5000 replay stress, zero semantic golden mismatches.
+- Activation remains zero; existing legacy stores and `generateProgram` are unchanged.
+- Next dependency: `PRODUCTION_WEEK_PLANNER_AND_WEEK_ALLOCATION_COMPOSER_AUTHORIZATION`.
+<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:END -->
