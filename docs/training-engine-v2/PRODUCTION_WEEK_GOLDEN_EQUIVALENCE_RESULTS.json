@@ -1,0 +1,14 @@
+{
+  "historicalWeekScenarioCount": 19,
+  "historicalProductHorizonScenarioCount": 23,
+  "weekPolicyV1HoldoutCount": 40,
+  "completeAdmissionPipelineCount": 95,
+  "coherentSessionProgramScenarioCount": 38,
+  "objectiveCount": 1,
+  "reservationCount": 2,
+  "materializedDirective": true,
+  "gate13ProjectionCompatible": true,
+  "expectedRepresentationChangesOnly": true,
+  "unexplainedSemanticDifferences": [],
+  "fingerprint": "d974ad7f42092c979ce27244eb27c728aa602d48d1b98796e7e3fa6ec56ac51b"
+}

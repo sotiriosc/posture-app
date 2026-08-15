@@ -1,0 +1,8 @@
+{
+  "mutationCount": 64,
+  "structuralMutationCount": 64,
+  "rejectedCount": 64,
+  "noRescueAttempts": 1000,
+  "acceptedRescues": 0,
+  "nameBasedRejections": 0
+}

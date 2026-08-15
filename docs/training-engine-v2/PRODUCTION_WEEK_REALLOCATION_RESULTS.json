@@ -1,0 +1,7 @@
+{
+  "scenarios": 60,
+  "stress": 1000,
+  "completedHistoryPreserved": true,
+  "missedWorkDoublingCount": 0,
+  "applicationCount": 0
+}

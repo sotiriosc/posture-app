@@ -1,0 +1,8 @@
+{
+  "exactSearchComparisons": 5000,
+  "boundedSearchComparisons": 5000,
+  "hiddenBudgetCount": 0,
+  "fixedSeedCount": 0,
+  "greedyFallbackCount": 0,
+  "onLimit": "search_inconclusive"
+}

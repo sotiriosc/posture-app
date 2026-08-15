@@ -49,7 +49,22 @@
     "report:outcome-sources": "npm run report:outcome-sources --workspace=@praxis/training-engine-v2",
     "report:outcome-sources:legacy": "npm run report:outcome-sources:legacy --workspace=@praxis/training-engine-v2",
     "report:outcome-sources:golden": "npm run report:outcome-sources:golden --workspace=@praxis/training-engine-v2",
-    "report:outcome-sources:stress": "npm run report:outcome-sources:stress --workspace=@praxis/training-engine-v2"
+    "report:outcome-sources:stress": "npm run report:outcome-sources:stress --workspace=@praxis/training-engine-v2",
+    "test:week-planner": "npm run test:week-planner --workspace=@praxis/training-engine-v2",
+    "test:week-planner:contracts": "npm run test:week-planner:contracts --workspace=@praxis/training-engine-v2",
+    "test:week-planner:policy": "npm run test:week-planner:policy --workspace=@praxis/training-engine-v2",
+    "test:week-planner:intent": "npm run test:week-planner:intent --workspace=@praxis/training-engine-v2",
+    "test:week-planner:allocation": "npm run test:week-planner:allocation --workspace=@praxis/training-engine-v2",
+    "test:week-planner:oracle": "npm run test:week-planner:oracle --workspace=@praxis/training-engine-v2",
+    "test:week-planner:search": "npm run test:week-planner:search --workspace=@praxis/training-engine-v2",
+    "test:week-planner:materialization": "npm run test:week-planner:materialization --workspace=@praxis/training-engine-v2",
+    "test:week-planner:reallocation": "npm run test:week-planner:reallocation --workspace=@praxis/training-engine-v2",
+    "test:week-planner:golden": "npm run test:week-planner:golden --workspace=@praxis/training-engine-v2",
+    "test:week-planner:holdout": "npm run test:week-planner:holdout --workspace=@praxis/training-engine-v2",
+    "test:week-planner:stress": "npm run test:week-planner:stress --workspace=@praxis/training-engine-v2",
+    "report:week-planner": "npm run report:week-planner --workspace=@praxis/training-engine-v2",
+    "report:week-planner:golden": "npm run report:week-planner:golden --workspace=@praxis/training-engine-v2",
+    "report:week-planner:stress": "npm run report:week-planner:stress --workspace=@praxis/training-engine-v2"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

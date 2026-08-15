@@ -16,6 +16,7 @@ import { CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V8 } from "./effectiveAuthorityRegist
 import { digest } from "./signatures";
 import { productionOutcomeSourceEvidenceSummary } from "../helpers/productionOutcomeSourceEvidence";
 import { runOutcomeSourceGoldenEquivalence } from "../helpers/outcomeSourceDesignLab";
+import { productionWeekDocumentationMarker } from "./productionWeekDocumentation";
 
 export const PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES = Object.freeze([
   "PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_IMPLEMENTATION_AUDIT.md",
@@ -226,8 +227,12 @@ function focus(filename: string): string {
 
 export function buildProductionOutcomeSourceMarkdownReports() {
   const report = buildProductionOutcomeSourceImplementationReport();
-  return Object.fromEntries(PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES.map((filename) => [filename,
-    `# ${title(filename)}\n\n- Classification: \`${report.classification}\`\n- Ontology: \`${report.ontologyAuditClassification}\`\n- Status: \`${report.implementationStatus}\`\n- Activation: \`NOT_ACTIVATED\`\n- Contracts: \`PRODUCTION_OUTCOME_SOURCE_INGESTION@1.0.0\`, \`PRODUCTION_OUTCOME_SOURCE_PERSISTENCE@1.0.0\`, \`PRODUCTION_OUTCOME_SOURCE_REPLAY@1.0.0\`, \`PRODUCTION_ADAPTATION_PERSISTENCE@1.0.0\`\n\n${focus(filename)}\n\n## Evidence\n\n- Controlled: ${report.evidence.controlled.scenarioCount}; foundation holdout: ${report.evidence.foundationHoldoutCount}.\n- Pure stress: ${report.evidence.stress.result}; PostgreSQL stress executes in the isolated PR service job.\n- Golden comparisons: ${report.golden.comparisonCount}; semantic mismatches: ${report.golden.semanticMismatchCount}.\n- Production adapter contracts: ${report.productionAdapterContractCount}; Product mappings: ${report.productNativeMappingCount}; live app mappings: 0.\n- Physical tables: ${report.schema.physicalTableCount}; append-only tables: ${report.schema.appendOnlyTableCount}; indexes: ${report.schema.indexCount}.\n\n## Permanent boundary\n\nNo app wiring, automatic migration, production database access, production backfill, automatic snapshot/evaluation, directive application, Product mutation, UI change, or activation is included.\n`])) as
+  return Object.fromEntries(PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES.map((filename) => {
+    const weekHandoff = filename === "PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_FUTURE_INTEGRATION.md" ?
+      `\n${productionWeekDocumentationMarker()}\n` : "";
+    return [filename,
+      `# ${title(filename)}\n\n- Classification: \`${report.classification}\`\n- Ontology: \`${report.ontologyAuditClassification}\`\n- Status: \`${report.implementationStatus}\`\n- Activation: \`NOT_ACTIVATED\`\n- Contracts: \`PRODUCTION_OUTCOME_SOURCE_INGESTION@1.0.0\`, \`PRODUCTION_OUTCOME_SOURCE_PERSISTENCE@1.0.0\`, \`PRODUCTION_OUTCOME_SOURCE_REPLAY@1.0.0\`, \`PRODUCTION_ADAPTATION_PERSISTENCE@1.0.0\`\n\n${focus(filename)}\n\n## Evidence\n\n- Controlled: ${report.evidence.controlled.scenarioCount}; foundation holdout: ${report.evidence.foundationHoldoutCount}.\n- Pure stress: ${report.evidence.stress.result}; PostgreSQL stress executes in the isolated PR service job.\n- Golden comparisons: ${report.golden.comparisonCount}; semantic mismatches: ${report.golden.semanticMismatchCount}.\n- Production adapter contracts: ${report.productionAdapterContractCount}; Product mappings: ${report.productNativeMappingCount}; live app mappings: 0.\n- Physical tables: ${report.schema.physicalTableCount}; append-only tables: ${report.schema.appendOnlyTableCount}; indexes: ${report.schema.indexCount}.\n\n## Permanent boundary\n\nNo app wiring, automatic migration, production database access, production backfill, automatic snapshot/evaluation, directive application, Product mutation, UI change, or activation is included.\n${weekHandoff}`];
+  })) as
     Record<typeof PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES[number], string>;
 }
 

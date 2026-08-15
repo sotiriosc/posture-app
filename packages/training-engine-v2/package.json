@@ -7,13 +7,14 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./week-planning": "./src/weekPlanning/index.ts",
     "./outcome-sources": "./src/outcomeSources/index.ts",
     "./adaptation-persistence": "./src/adaptationPersistence/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
     "engine:v2:lab": "node --import tsx dev/manualCandidateLab.ts",
-    "test": "vitest --run --config vitest.config.ts",
+    "test": "vitest --run --config vitest.config.ts --maxWorkers=4",
     "test:cagt": "vitest --run --config vitest.config.ts tests/unit/cagtCore.test.ts tests/unit/cagtAdaptersAndCohorts.test.ts",
     "test:cagt:stress": "vitest --run --config vitest.config.ts tests/unit/cagtStress.test.ts",
     "report:cagt": "node --import tsx dev/reportCagt.ts",
@@ -169,6 +170,21 @@
     "report:outcome-sources": "node --import tsx dev/reportProductionOutcomeSources.ts",
     "report:outcome-sources:legacy": "node --import tsx dev/reportProductionOutcomeSources.ts",
     "report:outcome-sources:golden": "node --import tsx dev/reportProductionOutcomeSources.ts",
-    "report:outcome-sources:stress": "node --import tsx dev/reportProductionOutcomeSources.ts"
+    "report:outcome-sources:stress": "node --import tsx dev/reportProductionOutcomeSources.ts",
+    "test:week-planner": "vitest --run --config vitest.config.ts tests/unit/productionWeekContracts.test.ts tests/unit/productionWeeklyIntentPlanner.test.ts tests/unit/productionWeekAllocation.test.ts tests/unit/productionWeekMaterializationReallocation.test.ts tests/unit/productionWeekMutationsMetamorphic.test.ts tests/unit/productionWeekHoldout.test.ts tests/unit/productionWeekStress.test.ts tests/unit/productionWeekActivation.test.ts tests/unit/productionWeekReports.test.ts tests/unit/cagtWeekRegistryV9.test.ts",
+    "test:week-planner:contracts": "vitest --run --config vitest.config.ts tests/unit/productionWeekContracts.test.ts tests/unit/cagtWeekRegistryV9.test.ts tests/unit/productionWeekActivation.test.ts",
+    "test:week-planner:policy": "vitest --run --config vitest.config.ts tests/unit/productionWeekContracts.test.ts tests/unit/productionWeeklyIntentPlanner.test.ts",
+    "test:week-planner:intent": "vitest --run --config vitest.config.ts tests/unit/productionWeeklyIntentPlanner.test.ts",
+    "test:week-planner:allocation": "vitest --run --config vitest.config.ts tests/unit/productionWeekAllocation.test.ts",
+    "test:week-planner:oracle": "vitest --run --config vitest.config.ts tests/unit/productionWeekAllocation.test.ts -t oracle",
+    "test:week-planner:search": "vitest --run --config vitest.config.ts tests/unit/productionWeekAllocation.test.ts -t search",
+    "test:week-planner:materialization": "vitest --run --config vitest.config.ts tests/unit/productionWeekMaterializationReallocation.test.ts -t Materializer",
+    "test:week-planner:reallocation": "vitest --run --config vitest.config.ts tests/unit/productionWeekMaterializationReallocation.test.ts -t reallocation",
+    "test:week-planner:golden": "vitest --run --config vitest.config.ts tests/unit/productionWeekHoldout.test.ts -t historical",
+    "test:week-planner:holdout": "vitest --run --config vitest.config.ts tests/unit/productionWeekHoldout.test.ts",
+    "test:week-planner:stress": "vitest --run --config vitest.config.ts tests/unit/productionWeekStress.test.ts",
+    "report:week-planner": "node --import tsx dev/reportProductionWeekPlanning.ts",
+    "report:week-planner:golden": "node --import tsx dev/reportProductionWeekPlanning.ts",
+    "report:week-planner:stress": "node --import tsx dev/reportProductionWeekPlanning.ts"
   }
 }

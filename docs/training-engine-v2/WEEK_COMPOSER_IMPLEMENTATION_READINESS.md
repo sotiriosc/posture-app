@@ -46,3 +46,14 @@ The later owner decision selects a new V1 causal core rather than B1: S2/H1/D1/A
 
 Design admission: `POST_PRESCRIPTION_WEEK_VALIDATION_V1_READY_FOR_PRODUCTION_KERNEL_IMPLEMENTATION_AUTHORIZATION`. Gate 13 authority is `POST_PRESCRIPTION_WEEK_VALIDATION_DESIGN_EVIDENCE`; Gates 14-15 remain `NOT_IMPLEMENTED` and Gate 16 remains `FOUNDATION_ONLY`. The three-ledger invariant, source-event uniqueness, final Prescription/Sequence revisions, objective provenance, contribution truth, dose-lane separation, planned stress/duration/spacing, and no-downstream-rescue behavior are admitted as design evidence only. No production validator, Week activation, app wiring, Performance ingestion, or Longitudinal behavior exists. Combined design fingerprint: `6beea85cca5cfb73343c1ae7b6705ba6a9be4a6b82c737d09945357f6563fb82`.
 <!-- POST_PRESCRIPTION_WEEK_VALIDATION_V1:END -->
+
+<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:START -->
+## Production Week Planner And Allocation V1
+
+PRODUCTION_WEEK_PLANNER_AND_WEEK_ALLOCATION_COMPOSER_IMPLEMENTED_NOT_ACTIVATED. The pure Planner, allocation Composer, materializer, reallocation proposal kernel,
+canonical Week Policy V1, Gate 13 projection, and CAGT Registry V9 are implemented and exported but inactive.
+No Product Horizon call, calendar read, persistence write, plan application, deload construction, or Product behavior is active.
+Exact next dependency: `ADAPTATION_APPLICATION_ORCHESTRATION_V1_AUTHORIZATION`.
+
+Combined fingerprint: `4f3fd80ed3fee29cb12c88ef6dea38b6e5f70777ac4718391daa8e7548527387`.
+<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:END -->
