@@ -139,6 +139,20 @@
     "test:longitudinal-adaptation:stress": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalStress.test.ts",
     "report:longitudinal-adaptation": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts",
     "report:longitudinal-adaptation:golden": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts",
-    "report:longitudinal-adaptation:stress": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts"
+    "report:longitudinal-adaptation:stress": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts",
+    "test:cagt:outcome-sources": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceContracts.test.ts tests/unit/cagtOutcomeSourceRevisions.test.ts tests/unit/cagtOutcomeSourceAdapters.test.ts tests/unit/cagtOutcomeSourceReplay.test.ts tests/unit/cagtOutcomeSourceCohorts.test.ts tests/unit/cagtOutcomeSourceReports.test.ts",
+    "test:cagt:outcome-sources:contracts": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceContracts.test.ts",
+    "test:cagt:outcome-sources:idempotency": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceRevisions.test.ts -t idempotency",
+    "test:cagt:outcome-sources:revisions": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceRevisions.test.ts",
+    "test:cagt:outcome-sources:performance": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceAdapters.test.ts -t Performance",
+    "test:cagt:outcome-sources:response": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceAdapters.test.ts -t Response",
+    "test:cagt:outcome-sources:authorization": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceAdapters.test.ts -t authorization",
+    "test:cagt:outcome-sources:replay": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceReplay.test.ts",
+    "test:cagt:outcome-sources:application-handoff": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceAdapters.test.ts -t handoff",
+    "test:cagt:outcome-sources:holdout": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceCohorts.test.ts",
+    "test:cagt:outcome-sources:stress": "vitest --run --config vitest.config.ts tests/unit/cagtOutcomeSourceStress.test.ts",
+    "report:cagt:outcome-sources": "node --import tsx dev/reportOutcomeSources.ts",
+    "report:cagt:outcome-sources:replay": "node --import tsx dev/reportOutcomeSources.ts",
+    "report:cagt:outcome-sources:stress": "node --import tsx dev/reportOutcomeSources.ts"
   }
 }

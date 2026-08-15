@@ -1,0 +1,326 @@
+{
+  "classification": "OUTCOME_SOURCE_AND_ADAPTATION_PERSISTENCE_FOUNDATION_V1_READY_FOR_PRODUCTION_IMPLEMENTATION_AUTHORIZATION",
+  "ontologyAuditClassification": "TARGETED_OUTCOME_SOURCE_AND_PERSISTENCE_DOMAIN_FIXES_REQUIRED",
+  "designStatus": "OUTCOME_SOURCE_AND_ADAPTATION_PERSISTENCE_FOUNDATION_DESIGN_EVIDENCE_NOT_RUNTIME",
+  "activationStatus": "NOT_ACTIVATED",
+  "foundationContract": {
+    "contractId": "OUTCOME_SOURCE_AND_ADAPTATION_PERSISTENCE_FOUNDATION",
+    "contractVersion": "1.0.0"
+  },
+  "authorityRegistry": {
+    "registryId": "CAGT_EFFECTIVE_AUTHORITY_REGISTRY",
+    "version": "7.0.0"
+  },
+  "currentPersistenceStack": {
+    "database": "PostgreSQL via pg and DATABASE_URL",
+    "serverModel": "runtime CREATE TABLE IF NOT EXISTS plus JSONB ON CONFLICT DO UPDATE snapshots",
+    "clientModel": "IndexedDB/localStorage with authenticated cloud snapshot sync",
+    "retryModel": "browser localStorage queue with ordered backoff; transport-only",
+    "migrationFramework": "none found for training snapshots",
+    "futureDirection": "retain PostgreSQL; add owner-authorized append-only schema and explicit transactions later"
+  },
+  "currentProductSourceInventory": [
+    {
+      "record": "ExerciseLog",
+      "classification": "RAW_PRODUCT_INPUT_ONLY",
+      "finding": "Mutable aggregate mixes planned and actual fields and has no block/source/revision lineage."
+    },
+    {
+      "record": "SessionRecord",
+      "classification": "RAW_PRODUCT_INPUT_ONLY",
+      "finding": "Completion and response fields are mutable Product truth, not normalized source authority."
+    },
+    {
+      "record": "SessionFeedback",
+      "classification": "RAW_PRODUCT_INPUT_ONLY",
+      "finding": "Structured selections may be adapted later; note fields remain inert."
+    },
+    {
+      "record": "LogPrefs",
+      "classification": "RAW_PRODUCT_INPUT_ONLY",
+      "finding": "Substitution and feedback preferences require an authenticated adapter."
+    },
+    {
+      "record": "Questionnaire",
+      "classification": "RAW_PRODUCT_INPUT_ONLY",
+      "finding": "Equipment/readiness inputs require effective-time and authorization semantics."
+    },
+    {
+      "record": "TrainingSnapshot cloud patch",
+      "classification": "TRANSPORT_ONLY",
+      "finding": "Offline retry and four-second request dedupe are not semantic source idempotency."
+    },
+    {
+      "record": "analytics/telemetry event",
+      "classification": "ANALYTICS_ONLY",
+      "finding": "Never Performance, health, Safety, or adaptation authority."
+    },
+    {
+      "record": "coach/user/free-text notes",
+      "classification": "FREE_TEXT_ONLY",
+      "finding": "Display/audit context only; behavior requires structured confirmation."
+    }
+  ],
+  "currentProductSourceCounts": {
+    "plannedActualMixing": 1,
+    "multiBlockFlattening": 1,
+    "stableSourceEventLinkage": 0,
+    "prescriptionRevisionLinkage": 0,
+    "sequenceRevisionLinkage": 0,
+    "explicitEventTime": 2,
+    "explicitIngestionTime": 0,
+    "semanticIdempotency": 0,
+    "immutableRevisionHistory": 0
+  },
+  "ownerBoundaries": {
+    "productInput": [
+      "capture",
+      "authentication",
+      "display",
+      "raw retention reference"
+    ],
+    "sourceAdapter": [
+      "schema validation",
+      "closed normalization",
+      "identity",
+      "provenance"
+    ],
+    "sourcePersistence": [
+      "immutable revisions",
+      "idempotency",
+      "active pointers",
+      "audit"
+    ],
+    "trainingSafety": [
+      "explicit safety authority"
+    ],
+    "responseReceiver": [
+      "response applicability",
+      "tolerance",
+      "symptom course"
+    ],
+    "longitudinal": [
+      "snapshot consumption",
+      "decision",
+      "unapplied directive"
+    ],
+    "candidateComposer": [
+      "replacement/rotation candidate rerun after authorization"
+    ],
+    "prescription": [
+      "authorized local prescription realization"
+    ],
+    "week": [
+      "future reallocation/deload realization"
+    ],
+    "phaseContinuity": [
+      "phase review"
+    ],
+    "applicationOrchestration": [
+      "future preconditioned rightful-owner mutation"
+    ],
+    "privacyRetention": [
+      "permission",
+      "retention",
+      "deletion/anonymization",
+      "export",
+      "access"
+    ]
+  },
+  "controlled": {
+    "scenarioCount": 158,
+    "failureCount": 0,
+    "fingerprint": "cd7f92f03a9c8298ad382ba26ebb145fa612b7d1fcc43a671adaae566cf6dce0"
+  },
+  "fixedShell": {
+    "cohortCount": 40,
+    "failureCount": 0,
+    "fingerprint": "9b8eabd9e6133c723dfcc8b299715d25f68cf9e37cf2428b06a3ece31fd4d29d"
+  },
+  "holdout": {
+    "total": 360,
+    "completeReplay": 240,
+    "performance": 80,
+    "response": 60,
+    "adherence": 40,
+    "recovery": 40,
+    "safetyClinician": 25,
+    "equipmentEnvironment": 25,
+    "externalLoad": 20,
+    "correction": 50,
+    "authorizationPrivacy": 40,
+    "application": 35,
+    "exerciseIdentities": 45,
+    "doseModes": 7,
+    "sections": 5,
+    "actionClasses": 14,
+    "manifestFingerprint": "ad1b43a81b19d3e81d0e8d7de2b37777f169511017c81f8bade5c06fa68a8054",
+    "failureCount": 0,
+    "fingerprint": "9872cba4aed7124a0190aa3f1f08b7699855bef2137d05e421f536172b48dcc4"
+  },
+  "replay": {
+    "replayHistoryCount": 240,
+    "duplicateDecisionCount": 0,
+    "applicationCount": 0,
+    "failureCount": 0,
+    "fingerprint": "02e038a2fec0dec3d39ff82b3734b0788b444b57d362271d1fd394b548c79089"
+  },
+  "golden": {
+    "comparisonCount": 530,
+    "controlledCount": 130,
+    "fixedShellCount": 40,
+    "holdoutCount": 360,
+    "semanticMismatchCount": 0,
+    "result": "OUTCOME_SOURCE_LONGITUDINAL_GOLDEN_EQUIVALENCE_PASS",
+    "fingerprint": "e140bc6eb98f34e50acb2504244c93bdd8086804b27ac80e5fb9413dbbcd7af0"
+  },
+  "mutations": {
+    "mutationCount": 47,
+    "acceptedMutationCount": 0,
+    "fingerprint": "e7e9173ca1f93df8978adc94e8f86d1952dddcc8a0099dc09faa0a84caaa05f6"
+  },
+  "metamorphic": {
+    "invariantCaseCount": 16,
+    "materialResponseCaseCount": 15,
+    "failureCount": 0,
+    "fingerprint": "4d0d4caabf4b60fdf2b4fba2733ad37d33897d3667bb4e238cd3c7300af66ceb"
+  },
+  "applicationHandoff": {
+    "caseCount": 35,
+    "appliedStateCount": 0,
+    "failureCount": 0
+  },
+  "stress": {
+    "ingestionValidationCount": 10000,
+    "idempotencyComparisonCount": 10000,
+    "dedupComparisonCount": 10000,
+    "activeRevisionSelectionCount": 10000,
+    "snapshotBuildCount": 10000,
+    "deterministicReplayCount": 5000,
+    "correctionChainCount": 1000,
+    "authorizationRevocationRebuildCount": 1000,
+    "multiBlockNormalizationCount": 1000,
+    "longitudinalGoldenComparisonCount": 1000,
+    "directiveHandoffValidationCount": 1000,
+    "stalePreconditionValidationCount": 1000,
+    "noRescueMutationCount": 1000,
+    "hiddenClockReadCount": 0,
+    "randomOutputCount": 0,
+    "failureCount": 0,
+    "result": "OUTCOME_SOURCE_AND_PERSISTENCE_DETERMINISTIC_STRESS_PASS",
+    "fingerprint": "7314f0fbd58b6701bd27d585391964106560b39f69598586f9df8add45936925"
+  },
+  "activation": {
+    "checks": {
+      "appDesignImportCount": 0,
+      "appSourceAdapterCallCount": 0,
+      "liveEventConsumerCount": 0,
+      "databaseMigrationCount": 0,
+      "persistenceWriteCount": 0,
+      "queueJobRegistrationCount": 0,
+      "generateProgramCallCount": 0,
+      "automaticLongitudinalInvocationCount": 0,
+      "implicitSourceAdapterSelectionCount": 0,
+      "implicitPolicySelectionCount": 0,
+      "directiveApplicationCount": 0,
+      "candidateComposerRerunCount": 0,
+      "prescriptionMutationCount": 0,
+      "weekMutationCount": 0,
+      "phaseMutationCount": 0,
+      "uiImportCount": 0,
+      "environmentActivationCount": 0,
+      "importTimeSideEffectCount": 0
+    },
+    "failureCount": 0,
+    "livePerformanceAdapterCount": 0,
+    "liveResponseAdapterCount": 0,
+    "liveAdherenceAdapterCount": 0,
+    "liveRecoveryAdapterCount": 0,
+    "liveClinicianAdapterCount": 0,
+    "liveEquipmentAdapterCount": 0,
+    "liveExternalLoadAdapterCount": 0,
+    "databaseMigrationCount": 0,
+    "persistenceWriteCount": 0,
+    "directiveApplicationCount": 0,
+    "candidateComposerRerunCount": 0,
+    "prescriptionMutationCount": 0,
+    "weekMutationCount": 0,
+    "phaseMutationCount": 0,
+    "result": "OUTCOME_SOURCE_FOUNDATION_NOT_ACTIVATED",
+    "fingerprint": "7326e906008ca211d3fa57bf469628dd745ebabc5e667717e07a366cf646b601"
+  },
+  "upstreamFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "weekPolicyV1": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db",
+    "prescriptionTiming": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "fullPrescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "prescriptionPolicyV1": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8",
+    "productionPrescriptionCompiler": "91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4",
+    "historicalCagt": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+    "finalSequencingDesign": "71fcb88e231e2953d508e0a1d6389fed98ca0f6af5a67592cdb56bb3ce563f42",
+    "productionFinalSequencing": "30a483fe5ef80c27da776ea71f7912a412420ff00d86e2e9525f97a4473c0686",
+    "postPrescriptionWeekDesign": "6beea85cca5cfb73343c1ae7b6705ba6a9be4a6b82c737d09945357f6563fb82",
+    "productionPostPrescriptionWeek": "c4d87d526f87dddbb9ded6b642c5b8b51dedec7d8aa6e052751bc27149f85951",
+    "gate14": "ca12131efdc1fc1a8253bbfa8586be705b6e8bf68384366566eda13dcab8bee6",
+    "gate14Holdout": "e6ce4f2ff891892d01d7dd5373c32cfa5610e85e68ed19b75a1004757214acda",
+    "gate15Design": "9b5602fbbfe5f9f32537bff8c07b434e8cb7528f62513a97d6c823d0cba3f3fc",
+    "gate15Holdout": "9d4c6fe5b46612e34a798beee89f0c6e83992df516ebdbdc37fe28b47aa7f293",
+    "productionPhaseContinuity": "39236671808d605a53258351b58b081a64231b8c4fd6dee4125501e68e9bd232",
+    "productionPhaseContinuityGolden": "b0e6f7bd1605c7de9d85a16f0bb5c65cd2784d23d4f64d9d5d894bda4b92a635",
+    "productionLongitudinalKernel": "8827a14a2e06dc0c6ddd8902852337946babdca501c81119324b420a69917581"
+  },
+  "foundationFingerprints": {
+    "repositoryOntologyAudit": "10768ad198d630eea804b432973773af7ab2b190d3444d7c314f0bfdc57859b0",
+    "ownerBoundaries": "a6a81df9e0741ba82b218ea3e4acb275911104e4e453bcbc740bc741c9bc2871",
+    "foundationContract": "ec10cf13dce04adcf14bb47e824827f744e4afa320c990995e2b9b97b82b7992",
+    "registryV7": "1fec6b451e92aff8344ae60c3e6752a485cbd51a8458230955e3f65550dedcdf",
+    "sourceCategories": "0d8e1c7ec380eead72da47b4163bc1554a5dbb32a584ecd09eba17bca98e52bc",
+    "rawEnvelope": "3d1e01588d6ecdc0397da32f311b9f8af150b38cfd87257e863b8cf913e5e04c",
+    "normalizedRecord": "592e384c75833c4f2c47351e507e6b68fe6ecaf5cdbf6331e4be7b8c7c5c6207",
+    "sourceIdentity": "badd6e448e70bc56fceb42d9c5b8cbf7a4a9b3aeba70a43841698484e71fee5e",
+    "revisionLedger": "afc5c337850f432ca4b57e7f665a74b7cbecc2d2fdf512c1d8667f25c58f4393",
+    "activeRevisionSelection": "e536c483cc0bfe89b3cae186b4de1c5770050e3316dceb127be2d4d1c3fe2c00",
+    "idempotency": "5925fed4c26fab247edd1c89c98a0c15b46990d62efd5dfabdcb78715968e707",
+    "deduplication": "fdee8940a04719098d4bbee2a0f4bca16719b7ff8857a6217fc9ad270390ffd0",
+    "correctionSupersessionWithdrawal": "b6a14eb83e507dfbbf34f5f198b9d97340b621460c85a590c64bb3b1935d52d6",
+    "timeSemantics": "2ffab55d561a2d0128da1e31e6800b9019e596ee2291caa65996f94ca0089cb6",
+    "sourceAuthority": "18e7665b49c73b64bd2e8b3221d448e2f931a1569ab95b352a3700e03fb83424",
+    "decisionUseBoundary": "c75282e22b1ea427a67dd55118b6a360eba44780ceac457df4466b1c7ea5a32d",
+    "privacyDataMinimization": "86f6a76e6bcd385148f3ab788ccda10d6454c2ea54c24afdb3b160636b5f85e8",
+    "freeTextBoundary": "50dc1dd89d587ce2307ade0ceaf9881f055f42185323278761b4e27f85260723",
+    "performanceAdapter": "0c289115a9e341679fb2348de0e73a095efe1371c4dcf83647e3dc7f69ca634c",
+    "responseAdapter": "e6246a85464d5e7856650636da38a2c8d3aa1f4bd0205218086581a613a2ce61",
+    "adherenceAdapter": "341c8ce48e88157d671bdf80602682405766b0621047af87bf6f2753555d6bfb",
+    "recoveryReadinessAdapter": "b037c77e6b43860b4f10d9c2aa48bdbfefe68bad2273d80d18cf5086565c86bd",
+    "safetyClinicianAdapter": "88a2bd6fdcfce56b7fd0a92fd20e5364fc224dbc41d9bf247cdb30a469efe6c7",
+    "equipmentEnvironmentAdapter": "a4891bcb8a0874c6205a7c92c4c149bce271a4322d3156137a9ed1543aacf65d",
+    "externalLoadAdapter": "aca1327874c988a2d11156e1879c6d9c649731942ac6e01973c984e0ce34c13a",
+    "sourceSnapshot": "0a7115ea2afb53485776b8eb9335a2ee620af25276c49f26cc977b03d234d255",
+    "snapshotBuilder": "5ad0a4102d3002b26e15d8a09a423179cb45131b81621d12ec64b6d3f87b0f52",
+    "replay": "87af6bd5127fa4e19aaaffbda8aa065e8c8cdf88033572fcd250f2308bb5f978",
+    "persistenceModel": "5e40fab368711e339e2f65a08c724e0debbcb66e7ca17cfc8167bccfdd2ec6a3",
+    "transactionBoundaries": "70b23e730eb14499fc39034e4b344d03bba5ff1872895e7066418b831da6703d",
+    "decisionDirectivePersistence": "7566f873b5bba3a5c993eb20f22ff1faa5eee752b4d3706d5a5e43d16867e19a",
+    "applicationHandoff": "d88b053bd4c4f5cbfd889618f535fe87e08f15285f097f39eb9dd0bc6639595a",
+    "ownerRouting": "05ee65311f9ea7766007ba8d47d92fa6f6d4c4515ff75680b38e9bc6b9b87f37",
+    "applicationPreconditions": "e56923a5ac65fda548a6c6addac0ce9b11f067617221cf9dafaeb09b5200eca0",
+    "applicationStates": "bcfe6881e88310b060c163ebf6b109da539a6c0382e8c8db2df0e7c79f8d3c46",
+    "auditRollbackSeam": "03cf31c3d371d3752cd93d175defd6d65361aa9b04525cad3decb2f887fd1178",
+    "gate11Order": "4a9a49d0e52596ed94c403211c6e3b5dbbeaeebe5d272f74ecd60403de6f1f5d",
+    "goldenEquivalence": "f852b1ca8146f9af8c502f9cc2bd4ca0b7c7047b34242d8e3fe6201645454e20",
+    "controlledScenarios": "47899a744301cd4c37a865d5502c6335d2ad4387ff71fc81ab3c112ed675c752",
+    "cohort": "98f4ea9a0b072e566b90f84fb6b36a680f08f835df262b60f36c55e505b742ef",
+    "holdoutManifest": "3f2c4d68571e72e69ac7bd80ca32772e43f68499d6e9e600ad3193ac0e480bd9",
+    "holdoutResults": "f349ab214483715654a82589489bcfaf1b2da5290421b307c2cf75317e61bbf5",
+    "mutations": "737dbb2305aaceb954837504111aa8692902fc019f395e9da08326f25d4b3f96",
+    "metamorphicResults": "dacdf66990fedf182053b8723f4d8d6c9d40dc981daf3cc7abbbfc24dc6cc642",
+    "stress": "4dfc11093ad57b01309733ef16b287a86cfd71b30e174262b543a5f44fc3f21b",
+    "activationGuards": "53cbff2f354b29a5add6862b429afcf679c9e67c48b5c6674fa8d1c4768590b2",
+    "readiness": "1c05c206e47f40b9b9ad5e370f5d907f46bff8057babbc0f4ed49098ad289ce9",
+    "combinedSourcePersistenceFoundation": "6c01be42865a7ab8e815ffa03be491f7eb02a9364096b6c311067c7727ec48f2"
+  },
+  "nextDependency": "OWNER_AUTHORIZATION_FOR_PRODUCTION_OUTCOME_SOURCE_ADAPTERS_AND_APPEND_ONLY_PERSISTENCE_IMPLEMENTATION"
+}

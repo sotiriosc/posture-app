@@ -17,9 +17,10 @@ describe("Gate 16 reports", () => {
     const packageRoot = process.cwd().endsWith("packages/training-engine-v2") ? process.cwd() :
       resolve(process.cwd(), "packages/training-engine-v2");
     const productionMarker = /\n*<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:START -->[\s\S]*?<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:END -->\n*/;
+    const foundationMarker = /\n*<!-- OUTCOME_SOURCE_PERSISTENCE_FOUNDATION_V1:START -->[\s\S]*?<!-- OUTCOME_SOURCE_PERSISTENCE_FOUNDATION_V1:END -->\n*/;
     for (const filename of LONGITUDINAL_ADAPTATION_REPORT_FILENAMES) {
       const actual = readFileSync(resolve(packageRoot, "../../docs/training-engine-v2", filename), "utf8")
-        .replace(productionMarker, "\n");
+        .replace(productionMarker, "\n").replace(foundationMarker, "\n");
       expect(actual, filename)
         .toBe(reports[filename]);
     }
