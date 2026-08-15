@@ -23,6 +23,6 @@ Product labels are approved direction only. Toning remains unexposed under T0, w
 
 The contract is inert and has no compiler, Week, Candidate/Composer, Product Shadow, app, or public root import. Current Product options, mappings, resolver fallthrough, numeric policies, and rollout are unchanged. No policy resolution or Product activation is authorized.
 
-Combined B1 fingerprint: `e379675e791e3dcf326475b463804e99ab2d243556e8ea3a481d53a93668b15e`.
+Combined B1 fingerprint: `68d3a1d29ef24786c7e3225d396bd10d42a475a504008fe26e20a3b253006f99`.
 
 Next dependency: `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTATION_AUTHORIZATION`.

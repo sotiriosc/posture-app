@@ -362,6 +362,28 @@ Audit fingerprint:
 
 `0606f9cd19d73e8cf683080c3b71fad1af7eb19d0c873a2361e294cde3be27fb`
 
+## Chunk B1 — Canonical owner-policy contracts
+
+- **Status:** completed
+- **Implementation commit:** `f12db89ba01aadd3abe9633e7f1961c1dd274290`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Contract:** `PRODUCT_TRAINING_GOAL_ARCHITECTURE_POLICY_V1_LAYERED_PURPOSE_FIRST@1.0.0`
+- **Owner approval:** layered goal model and G4 purpose-first + G1 fail-closed direction
+- **Production behavior changed:** no
+- **Product behavior changed:** no
+- **Product Shadow mapping changed:** no
+- **Public Product API changed:** no
+- **Activation:** not authorized
+- **Tests:** owner policy/selection, ledger, mutation, metamorphic, CAGT, report, and activation guards passed 15/15; Product Training Goal audit regressions passed 10/10; complete Training Engine V2 suite passed 1,044/1,044 across 199 files; root Vitest passed 1,016/1,016 across 138 files; Training Engine V2 TypeScript, consumer production, gyms production, scoped ESLint, deterministic report regeneration, and staged diff checks passed
+- **CAGT:** architecture-only convergence passed 9/9 scenarios with zero artificial runtime differences; semantic mutations rejected 31/31; metamorphic checks passed 17/17
+- **Contract fingerprint:** `d0f65c147de6916ef3429191e1a066786545961dd012841c499a3292a957d749`
+- **Ledger pre-closure fingerprint:** `f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457`
+- **Owner-decision report fingerprint:** `4afdd7c816436d8a96086f85ca51a01e8704ef9fdb86bd89152c7cddc6d6b4ea`
+- **Combined B1 architecture-admission fingerprint:** `e379675e791e3dcf326475b463804e99ab2d243556e8ea3a481d53a93668b15e`
+- **Remaining limitations:** the current Prescription resolver and five-class non-hypertrophy-to-strength fallthrough remain unchanged and visibly open for Chunk B2
+- **Rollback boundary:** remove the inert contracts, generated owner reports, and bounded ledger links without changing runtime behavior
+- **Next dependency:** `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTATION_AUTHORIZATION`
+
 ## C. Owner architecture selection
 
 Approved direction:
@@ -387,16 +409,6 @@ This approval is architectural only. It does not authorize behavior changes.
 ---
 
 # Future Work
-
-## Chunk B1 — Record canonical owner policy contracts
-
-- Add versioned owner-decision contracts for the layered goal model.
-- Add the canonical Product vocabulary decision.
-- Add primary/secondary goal semantics.
-- Add pain/context and training-mode separation.
-- Add G4 + G1 architecture.
-- Add explicit unsupported-scope statuses.
-- Preserve all current behavior.
 
 ## Chunk B2 — Correct the engine Prescription resolver
 

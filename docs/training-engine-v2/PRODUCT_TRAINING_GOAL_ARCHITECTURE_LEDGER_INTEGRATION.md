@@ -5,9 +5,9 @@
 - Seed location: `packages/training-engine-v2/docs/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md`.
 - Canonical path: [`docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md`](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md).
 - Initial normalized seed SHA-256: `f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457`.
-- Current canonical ledger SHA-256: `f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457`.
+- Current canonical ledger SHA-256: `703789a5808b052f328f34277a91358494c941b6930ffbfa18a08fc5ea01b88a`.
 - Duplicate ledger count: 0.
-- Current B1 state: `future`.
+- Current B1 state: `completed`.
 - Final architecture state: `INCOMPLETE_FUTURE_WORK_REMAINS`.
 
 ## Authority and references
