@@ -25,10 +25,11 @@ describe("production Longitudinal reports", () => {
     const productionSourceMarker = /\n*<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:START -->[\s\S]*?<!-- PRODUCTION_OUTCOME_SOURCE_PERSISTENCE_V1:END -->\n*/;
     const productionWeekMarker = /\n*<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:START -->[\s\S]*?<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:END -->\n*/;
     const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/;
+    const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/;
     for (const [name, content] of Object.entries(rendered)) {
       expect(readFileSync(resolve(docsRoot, name), "utf8").replace(foundationMarker, "\n")
         .replace(productionSourceMarker, "\n").replace(productionWeekMarker, "\n")
-        .replace(orchestrationMarker, "\n"), name).toBe(content);
+        .replace(orchestrationMarker, "\n").replace(productShadowMarker, "\n"), name).toBe(content);
     }
   });
 

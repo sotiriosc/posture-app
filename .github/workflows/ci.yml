@@ -8,7 +8,7 @@ on:
 
 jobs:
   outcome-source-postgres:
-    name: Outcome source and orchestration PostgreSQL integration
+    name: Outcome source, orchestration, and Product shadow PostgreSQL integration
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     services:
@@ -39,11 +39,14 @@ jobs:
         run: >-
           npm run build --workspace=@praxis/training-engine-v2 &&
           npm run build:outcome-sources --workspace=@praxis/engine &&
-          npm run build:application-orchestration --workspace=@praxis/engine
+          npm run build:application-orchestration --workspace=@praxis/engine &&
+          npm run build:product-shadow --workspace=@praxis/engine
       - name: Run real Outcome Source PostgreSQL integration
         run: npm run test:outcome-sources:postgres
       - name: Run real orchestration PostgreSQL integration
         run: npm run test:application-orchestration:postgres
+      - name: Run real controlled Product shadow PostgreSQL integration
+        run: npm run test:product-shadow:postgres
 
   # ─── PR gate ──────────────────────────────────────────────────────────────
   # Runs on every pull request. Fast enough to be a blocking gate (target:
@@ -78,6 +81,9 @@ jobs:
       # `test:critical` in package.json for the exact file list.
       - name: Critical engine tests
         run: npm run test:critical
+
+      - name: Controlled Product shadow default-off gate
+        run: npm run test:product-shadow
 
       # ── Playwright smoke: first-run happy path + per-account isolation,
       # for both apps. Blocking per bloom-plan Phase 6f Commit 6.

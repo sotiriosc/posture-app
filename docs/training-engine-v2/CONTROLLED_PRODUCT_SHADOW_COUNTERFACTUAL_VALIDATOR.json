@@ -1,0 +1,10 @@
+{
+  "hardRejectsProgramPerformanceMisattribution": true,
+  "hardRejectsPrescriptionMisattribution": true,
+  "hardRejectsSequenceMisattribution": true,
+  "hardRejectsToleranceCredit": true,
+  "hardRejectsAdaptationCredit": true,
+  "hardRejectsOutcomeSuperiority": true,
+  "performanceCreditCount": 0,
+  "attributionCount": 0
+}

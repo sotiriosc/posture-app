@@ -99,3 +99,4 @@ export * from "./baselineMetricCopy";
 export * from "./macroCalculatorInputs";
 export * from "./metrics/operatorMetrics";
 export * from "./adminUserAllowlist";
+export * from "./controlledProductShadow";

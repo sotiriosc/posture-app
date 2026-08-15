@@ -1,0 +1,872 @@
+[
+  {
+    "mutationId": "default_evaluate",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "all_users_mode",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "percentage_rollout",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "random_rollout",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "signed_out_evaluation",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "plan_tier_eligibility",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pain_eligibility",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "admin_allowlist_reuse",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "adaptive_flag_reuse",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "client_selected_eligibility",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "client_selected_user",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pure_engine_environment_access",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "raw_questionnaire_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "raw_program_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "raw_session_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "raw_log_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pain_payload_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "notes_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "auth_token_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "v2_input_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "expected_v2_output_trigger",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "trigger_before_sync",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_failure_changes_sync",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_offline_queue",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "visible_shadow_error",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "route_returns_artifacts",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "client_anchor_override",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "title_selects_program",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "array_position_selects_program",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "deleted_program_selected",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "stale_snapshot_current",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "missing_entity_ignored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "later_snapshot_rewrite",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "browser_data_server_truth",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "update_time_semantic_only",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "free_text_parsed",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pain_diagnosis",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pain_sixth_goal",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "athletic_to_strength",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "athletic_to_conditioning",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "maintain_progresses",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "rehab_creates_session",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "rehab_overrides_goal",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "phase_creates_goal",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "goal_creates_exercise",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "bands_imply_anchor",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "dumbbells_imply_bench",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "gym_implies_all",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "wall_inferred",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "chair_inferred",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "loaded_gait_inferred",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "increments_invented",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "equipment_label_parsed",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "unknown_as_absent",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "unknown_as_full_gym",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "dates_invented",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "weekdays_invented",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "free_windows_invented",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "order_as_elapsed_time",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "minutes_invented",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "legacy_duration_as_availability",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "unknown_duration_fit",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "profile_default_confirmed",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "fixed_split_authority",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "fuzzy_exercise_name",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "muscle_only_match",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "movement_only_match",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "duplicate_alias",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "legacy_exercise_promoted",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "second_v2_catalog",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_id_overwritten",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "v2_id_written_legacy",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "mapping_gap_omitted",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "hidden_week_policy",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "hidden_session_oracle",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "hidden_prescription_policy",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "greedy_fallback",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "search_inconclusive_valid",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "incomplete_prescription_complete",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "incomplete_sequence_complete",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "gate_13_skipped",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "over_budget_executable",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "generic_warmup",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "generic_activation",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "optional_filler",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "candidate_rank_week_score",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_program_delivered",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_program_active",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_program_completed",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_log_shadow_event",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_log_shadow_prescription",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_session_shadow_sequence",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_tolerance",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_adaptation_credit",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_outcome_shadow_progression",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "outcome_superiority",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "injury_prevention_claim",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "pain_reduction_claim",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "restricted_evidence_progresses",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "one_pain_log_replaces",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "missing_lineage_ignored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "planned_as_actual",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "prescribed_as_actual",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "multi_block_flattening",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "application_true",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "product_mutation_true",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "week_mutation_true",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "phase_mutation_true",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "replacement_applied",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "deload_built",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "safety_bypass",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "weighted_better_score",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "difference_quota",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "same_program_failure",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "same_exercise_failure",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "same_reps_failure",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "cosmetic_personalization",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "downstream_rescue",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "ambiguous_alignment_guessed",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "artifacts_fabricated",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "difference_automatically_correct",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "raw_snapshot_stored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "email_stored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "notes_stored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "photo_stored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "auth_token_stored",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "cross_user_read",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "append_only_updated",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "append_only_deleted",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "retry_duplicate",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "conflict_accepted",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "replay_latest_adapters",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "replay_product_mutation",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "erasure_omits_tables",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "shadow_in_product_snapshot",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "generate_program_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "legacy_save_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "route_waits_for_shadow",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "save_fails_with_shadow",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "navigation_waits",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "ui_displays_shadow",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "adaptive_preview_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "current_program_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "program_progress_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  },
+  {
+    "mutationId": "offline_queue_changes",
+    "actualSemanticStructureChanged": true,
+    "expectedRejected": true,
+    "rejectedByName": false
+  }
+]

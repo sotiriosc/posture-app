@@ -8,17 +8,31 @@
   "exports": {
     ".": "./src/index.ts",
     "./outcome-source-persistence": "./src/outcomeSourcePersistence/index.ts",
-    "./adaptation-application-orchestration": "./src/adaptationApplicationOrchestration/index.ts"
+    "./adaptation-application-orchestration": "./src/adaptationApplicationOrchestration/index.ts",
+    "./controlled-product-shadow": "./src/controlledProductShadow/index.ts"
   },
   "scripts": {
     "build:outcome-sources": "tsc -p tsconfig.outcome-sources.json --noEmit",
     "build:application-orchestration": "tsc -p tsconfig.application-orchestration.json --noEmit",
+    "build:product-shadow": "tsc -p tsconfig.product-shadow.json --noEmit",
     "db:outcome-sources:migrations:plan": "node --import tsx src/outcomeSourcePersistence/cli.ts plan",
     "db:outcome-sources:migrate": "node --import tsx src/outcomeSourcePersistence/cli.ts apply",
     "test:outcome-sources:repository": "vitest --run --config vitest.config.ts tests/unit/outcomeSourcePostgresRepository.test.ts",
     "test:outcome-sources:postgres": "vitest --run --config vitest.config.ts tests/integration/outcomeSourcePostgres.integration.test.ts",
     "test:application-orchestration:persistence": "vitest --run --config vitest.config.ts tests/unit/adaptationApplicationOrchestrationService.test.ts",
-    "test:application-orchestration:postgres": "vitest --run --config vitest.config.ts tests/integration/adaptationApplicationOrchestrationPostgres.integration.test.ts"
+    "test:application-orchestration:postgres": "vitest --run --config vitest.config.ts tests/integration/adaptationApplicationOrchestrationPostgres.integration.test.ts",
+    "test:product-shadow": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts tests/unit/controlledProductShadowTriggerClient.test.ts",
+    "test:product-shadow:rollout": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t rollout",
+    "test:product-shadow:trigger": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowTriggerClient.test.ts tests/unit/controlledProductShadowService.test.ts -t trigger",
+    "test:product-shadow:Product-adapters": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t maps",
+    "test:product-shadow:goal-equipment-mapping": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t maps",
+    "test:product-shadow:exercise-map": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t maps",
+    "test:product-shadow:horizon": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t maps",
+    "test:product-shadow:v2-pipeline": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t stage",
+    "test:product-shadow:persistence": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts",
+    "test:product-shadow:replay": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t replay",
+    "test:product-shadow:e2e": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowTriggerClient.test.ts",
+    "test:product-shadow:postgres": "vitest --run --config vitest.config.ts tests/integration/controlledProductShadowPostgres.integration.test.ts"
   },
   "dependencies": {
     "@praxis/training-engine-v2": "0.0.1",

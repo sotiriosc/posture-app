@@ -395,6 +395,7 @@ function recursiveFiles(root: string): readonly string[] {
   if (!existsSync(root)) return [];
   const values: string[] = [];
   for (const name of readdirSync(root)) {
+    if ([".next", "node_modules", "test-results", "playwright-report"].includes(name)) continue;
     const path = resolve(root, name);
     if (statSync(path).isDirectory()) values.push(...recursiveFiles(path));
     else values.push(path);

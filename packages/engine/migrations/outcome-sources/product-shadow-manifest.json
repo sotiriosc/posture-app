@@ -1,0 +1,24 @@
+{
+  "contractId": "CONTROLLED_PRODUCT_SHADOW_INTEGRATION",
+  "contractVersion": "1.0.0",
+  "manifestVersion": "1.0.0",
+  "historyTable": "praxis_schema_migrations",
+  "forwardFixOnly": true,
+  "automaticExecution": false,
+  "migrations": [
+    {
+      "migrationId": "003_controlled_product_shadow_integration_v1",
+      "version": "1.0.0",
+      "checksum": "78b9fe2241bef8b4efd2116b4d96361600a46e13379889e5dd3b5384032d4cfb",
+      "description": "Append-only controlled Product shadow trigger, run, comparison, failure, audit, and replay evidence",
+      "dependency": null,
+      "transactional": true,
+      "filename": "003_controlled_product_shadow_integration_v1.sql",
+      "provenance": [
+        "controlled-product-shadow:forward-only-v1",
+        "legacy-product-tables:unchanged",
+        "automatic-execution:false"
+      ]
+    }
+  ]
+}

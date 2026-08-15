@@ -22,8 +22,10 @@ describe("adaptation application orchestration reports", () => {
     const json = buildApplicationOrchestrationJsonReports();
     expect(APPLICATION_ORCHESTRATION_REPORT_FILENAMES).toHaveLength(34);
     expect(APPLICATION_ORCHESTRATION_JSON_FILENAMES).toHaveLength(14);
+    const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/g;
     for (const filename of APPLICATION_ORCHESTRATION_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(markdown[filename]);
+      expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(productShadowMarker, "\n"))
+        .toBe(markdown[filename]);
     }
     for (const filename of APPLICATION_ORCHESTRATION_JSON_FILENAMES) {
       expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(json[filename]);

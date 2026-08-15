@@ -23,8 +23,10 @@ describe("production Week reports", () => {
     expect(PRODUCTION_WEEK_REPORT_FILENAMES).toHaveLength(37);
     expect(PRODUCTION_WEEK_JSON_FILENAMES).toHaveLength(12);
     const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/g;
+    const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/g;
     for (const filename of PRODUCTION_WEEK_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n"))
+      expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n")
+        .replace(productShadowMarker, "\n"))
         .toBe(markdown[filename]);
     }
     for (const filename of PRODUCTION_WEEK_JSON_FILENAMES) {

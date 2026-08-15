@@ -1,0 +1,27 @@
+{
+  "goals": {
+    "Improve posture": "posture_and_movement_quality",
+    "Reduce pain": "posture_and_movement_quality+pain_aware_return_non_diagnostic",
+    "General fitness": "general_fitness",
+    "Athletic performance": "under_specified",
+    "unknown": "mapping_required"
+  },
+  "trainingIntent": {
+    "build": "developmental",
+    "maintain": "policy_required",
+    "rehab": "pain_aware_return_non_diagnostic"
+  },
+  "experience": {
+    "Beginner": "beginner",
+    "Intermediate": "intermediate",
+    "Advanced": "advanced",
+    "unknown": "mapping_required"
+  },
+  "equipment": {
+    "none": "bodyweight",
+    "bands": "band_type_and_anchor_unknown",
+    "dumbbells": "dumbbells_without_bench",
+    "gym": "capability_bundle_required",
+    "unknown": "mapping_required"
+  }
+}

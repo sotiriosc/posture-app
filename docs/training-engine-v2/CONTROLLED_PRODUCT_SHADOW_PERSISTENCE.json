@@ -1,0 +1,27 @@
+{
+  "migrationId": "003_controlled_product_shadow_integration_v1@1.0.0",
+  "automaticExecution": false,
+  "productionApplied": false,
+  "forwardOnly": true,
+  "tableCount": 9,
+  "legacyProductTableAlterationCount": 0,
+  "appendOnly": true,
+  "oneTransactionPerRun": true,
+  "advisoryLock": true,
+  "databaseBackedIdempotency": true,
+  "athleteScopedReads": true,
+  "eraseByAthlete": true,
+  "purgeBeforeTime": true,
+  "automaticRetentionCount": 0,
+  "tables": [
+    "controlled_product_shadow_triggers",
+    "controlled_product_shadow_runs",
+    "controlled_product_shadow_product_snapshots",
+    "controlled_product_shadow_legacy_program_projections",
+    "controlled_product_shadow_v2_artifact_references",
+    "controlled_product_shadow_comparisons",
+    "controlled_product_shadow_failures",
+    "controlled_product_shadow_audit_events",
+    "controlled_product_shadow_supersessions"
+  ]
+}

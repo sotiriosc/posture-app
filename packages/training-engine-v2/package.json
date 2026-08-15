@@ -9,7 +9,8 @@
     ".": "./src/index.ts",
     "./week-planning": "./src/weekPlanning/index.ts",
     "./outcome-sources": "./src/outcomeSources/index.ts",
-    "./adaptation-persistence": "./src/adaptationPersistence/index.ts"
+    "./adaptation-persistence": "./src/adaptationPersistence/index.ts",
+    "./product-shadow": "./src/productShadow/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
@@ -200,6 +201,16 @@
     "test:application-orchestration:stress": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationEvidence.test.ts -t stress",
     "report:application-orchestration": "node --import tsx dev/reportApplicationOrchestration.ts",
     "report:application-orchestration:golden": "node --import tsx dev/reportApplicationOrchestration.ts",
-    "report:application-orchestration:stress": "node --import tsx dev/reportApplicationOrchestration.ts"
+    "report:application-orchestration:stress": "node --import tsx dev/reportApplicationOrchestration.ts",
+    "test:product-shadow": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowPure.test.ts tests/unit/cagtControlledProductShadowRegistryV11.test.ts tests/unit/controlledProductShadowEvidence.test.ts tests/unit/controlledProductShadowReports.test.ts tests/unit/controlledProductShadowActivation.test.ts",
+    "test:product-shadow:contracts": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowPure.test.ts tests/unit/cagtControlledProductShadowRegistryV11.test.ts",
+    "test:product-shadow:counterfactual": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowPure.test.ts -t counterfactual",
+    "test:product-shadow:comparison": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowPure.test.ts -t difference",
+    "test:product-shadow:holdout": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowEvidence.test.ts -t holdout",
+    "test:product-shadow:stress": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowEvidence.test.ts -t stress",
+    "test:product-shadow:invariance": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowActivation.test.ts tests/unit/controlledProductShadowEvidence.test.ts",
+    "report:product-shadow": "node --import tsx dev/reportControlledProductShadow.ts",
+    "report:product-shadow:comparison": "node --import tsx dev/reportControlledProductShadow.ts",
+    "report:product-shadow:stress": "node --import tsx dev/reportControlledProductShadow.ts"
   }
 }
