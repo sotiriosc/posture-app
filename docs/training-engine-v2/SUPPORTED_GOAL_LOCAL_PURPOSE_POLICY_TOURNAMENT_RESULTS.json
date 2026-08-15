@@ -1,0 +1,21 @@
+{
+  "selected": [
+    "SH1",
+    "MQ1",
+    "ME1",
+    "MQF2",
+    "MEF2"
+  ],
+  "frontier": [
+    "SH1",
+    "SH3",
+    "MQ1",
+    "MQ2",
+    "ME1",
+    "ME2",
+    "MQF2",
+    "MEF2"
+  ],
+  "hardFailures": 0,
+  "weightedScoreUsed": false
+}

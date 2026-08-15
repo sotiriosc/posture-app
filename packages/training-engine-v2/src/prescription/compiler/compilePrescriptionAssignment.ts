@@ -16,15 +16,11 @@ import type {
   TempoPrescription,
 } from "../executionStandard";
 import type { LoadTarget } from "../load";
-import {
-  findPrescriptionPolicyDoseRule,
-  type PrescriptionPolicyRuleVariant,
-  type PrescriptionPolicyUseCase,
-  type ProductionPrescriptionPolicy,
-  type ProductionPrescriptionPolicyRule,
-  type RejectedPrescriptionPolicyRuleTrace,
-  type ResolvedPrescriptionPolicyRuleTrace,
-} from "../policies";
+import type { PrescriptionPolicyRuleVariant, PrescriptionPolicyUseCase,
+  ProductionPrescriptionPolicy, RejectedPrescriptionPolicyRuleTrace,
+  ResolvedPrescriptionPolicyRuleTrace } from "../policies";
+import type { PrescriptionPolicyUseCaseV2, ProductionPrescriptionPolicyRuleV2,
+  ProductionPrescriptionPolicyV2 } from "../policiesV2";
 import type { PrescriptionLaterality, PrescriptionSideBehavior } from "../types";
 import { buildPrescriptionCompatibilityProjection } from "./compatibilityProjection";
 import {
@@ -87,10 +83,18 @@ export function compilePrescriptionAssignment(
   return compilePrescriptionAssignmentWithResolvedUseCase(input, null);
 }
 
+export interface ResolvedUseCaseCompilerOptions {
+  readonly policyOverride?: ProductionPrescriptionPolicyV2;
+  readonly variantOverride?: PrescriptionPolicyRuleVariant;
+  readonly blockPurposeOverride?: readonly ProductionPrescriptionDoseBlock["purpose"][];
+  readonly policyTrace?: readonly string[];
+}
+
 /** Internal shared numeric compiler core. A non-null use case bypasses the V1.0 compatibility resolver. */
 export function compilePrescriptionAssignmentWithResolvedUseCase(
   input: PrescriptionAssignmentCompilerInput,
-  resolvedUseCase: PrescriptionPolicyUseCase | null,
+  resolvedUseCase: PrescriptionPolicyUseCaseV2 | null,
+  options: ResolvedUseCaseCompilerOptions = {},
 ): PrescriptionAssignmentCompilationResult {
   const contextResult = resolveAssignmentContext(input);
   if (!contextResult.context) {
@@ -120,10 +124,13 @@ export function compilePrescriptionAssignmentWithResolvedUseCase(
     });
   }
 
-  const policyResolution = resolvePrescriptionPolicy({
-    policy: input.policy,
-    availablePolicies: input.availablePolicies,
-  });
+  const policyResolution = options.policyOverride ? {
+    status: "resolved" as const,
+    policy: options.policyOverride,
+    trace: options.policyTrace ?? Object.freeze([
+      `PRESCRIPTION_POLICY_RESOLVED:${options.policyOverride.policyId}@${options.policyOverride.version}`,
+    ]),
+  } : resolvePrescriptionPolicy({ policy: input.policy, availablePolicies: input.availablePolicies });
   if (!policyResolution.policy) {
     const unresolvedPolicyStatus = policyResolution.status === "resolved"
       ? "prescription_policy_unavailable" as const
@@ -232,8 +239,8 @@ export function compilePrescriptionAssignmentWithResolvedUseCase(
     });
   }
   const useCase = resolvedUseCase ?? resolveUseCase(input, context, selectedMode);
-  const variant = resolveRuleVariant(input, useCase);
-  const selectedRule = findPrescriptionPolicyDoseRule({
+  const variant = options.variantOverride ?? resolveRuleVariant(input, useCase);
+  const selectedRule = findInternalPrescriptionPolicyDoseRule({
     policy,
     useCase,
     doseMode: selectedMode,
@@ -282,10 +289,11 @@ export function compilePrescriptionAssignmentWithResolvedUseCase(
       prescriptionRevisionId: revision.prescriptionRevisionId,
     })),
   };
-  const blockPurposes = resolveBlockPurposes(input.context, useCase, selectedMode);
+  const blockPurposes = options.blockPurposeOverride ??
+    resolveBlockPurposes(input.context, useCase, selectedMode);
   const blockRules = blockPurposes.map((purpose) =>
     purpose === "preparatory_acclimation"
-      ? findPrescriptionPolicyDoseRule({
+      ? findInternalPrescriptionPolicyDoseRule({
         policy,
         useCase: "preparation",
         doseMode: "repetition_sets",
@@ -551,7 +559,7 @@ function regression(context: PrescriptionCompilationContextFacts): boolean {
 
 function resolveRuleVariant(
   input: PrescriptionAssignmentCompilerInput,
-  useCase: PrescriptionPolicyUseCase,
+  useCase: PrescriptionPolicyUseCaseV2,
 ): PrescriptionPolicyRuleVariant {
   const context = input.context;
   switch (useCase) {
@@ -610,7 +618,7 @@ function resolveRuleVariant(
 
 function resolveBlockPurposes(
   context: PrescriptionCompilationContextFacts,
-  useCase: PrescriptionPolicyUseCase,
+  useCase: PrescriptionPolicyUseCaseV2,
   mode: ExerciseDoseMode,
 ): readonly ProductionPrescriptionDoseBlock["purpose"][] {
   if (useCase === "recovery_cooldown") return ["recovery_or_downregulation"];
@@ -729,7 +737,7 @@ function buildBlock(input: {
   readonly purpose: ProductionPrescriptionDoseBlock["purpose"];
   readonly index: number;
   readonly priorPurpose: ProductionPrescriptionDoseBlock["purpose"] | null;
-  readonly rule: ProductionPrescriptionPolicyRule;
+  readonly rule: ProductionPrescriptionPolicyRuleV2;
   readonly selectedMode: ExerciseDoseMode;
   readonly modifiers: ModifierValues;
   readonly equipmentRealization: PrescriptionEquipmentRealization;
@@ -824,7 +832,7 @@ function buildBlock(input: {
 
 function doseFromRule(input: {
   readonly mode: ExerciseDoseMode;
-  readonly rule: ProductionPrescriptionPolicyRule;
+  readonly rule: ProductionPrescriptionPolicyRuleV2;
   readonly effort: EffortTarget;
   readonly tempo: TempoPrescription | undefined;
   readonly modifiers: ModifierValues;
@@ -1076,8 +1084,8 @@ function contribution(
 }
 
 function selectedRuleTraces(
-  policy: ProductionPrescriptionPolicy,
-  rules: readonly ProductionPrescriptionPolicyRule[],
+  policy: InternalProductionPrescriptionPolicy,
+  rules: readonly ProductionPrescriptionPolicyRuleV2[],
   input: PrescriptionAssignmentCompilerInput,
   context: AssignmentContext,
   selectedMode: ExerciseDoseMode,
@@ -1101,9 +1109,9 @@ function selectedRuleTraces(
 }
 
 function rejectedRuleTraces(
-  policy: ProductionPrescriptionPolicy,
-  selected: readonly ProductionPrescriptionPolicyRule[],
-  useCase: PrescriptionPolicyUseCase,
+  policy: InternalProductionPrescriptionPolicy,
+  selected: readonly ProductionPrescriptionPolicyRuleV2[],
+  useCase: PrescriptionPolicyUseCaseV2,
   mode: ExerciseDoseMode,
   variant: PrescriptionPolicyRuleVariant,
 ): readonly RejectedPrescriptionPolicyRuleTrace[] {
@@ -1122,9 +1130,24 @@ function rejectedRuleTraces(
 }
 
 function uniqueRules(
-  rules: readonly ProductionPrescriptionPolicyRule[],
-): readonly ProductionPrescriptionPolicyRule[] {
+  rules: readonly ProductionPrescriptionPolicyRuleV2[],
+): readonly ProductionPrescriptionPolicyRuleV2[] {
   return [...new Map(rules.map((rule) => [rule.ruleId, rule])).values()];
+}
+
+type InternalProductionPrescriptionPolicy = ProductionPrescriptionPolicy | ProductionPrescriptionPolicyV2;
+
+function findInternalPrescriptionPolicyDoseRule(input: {
+  readonly policy: InternalProductionPrescriptionPolicy;
+  readonly useCase: PrescriptionPolicyUseCaseV2;
+  readonly doseMode: ExerciseDoseMode;
+  readonly variant: PrescriptionPolicyRuleVariant;
+}): ProductionPrescriptionPolicyRuleV2 | null {
+  return input.policy.rules.find((candidate) =>
+    candidate.applicability.useCase === input.useCase &&
+    candidate.applicability.doseMode === input.doseMode &&
+    candidate.applicability.variant === input.variant
+  ) as ProductionPrescriptionPolicyRuleV2 | undefined ?? null;
 }
 
 function tempoKind(dose: ExerciseDose): string {

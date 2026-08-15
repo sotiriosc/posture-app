@@ -1,0 +1,116 @@
+{
+  "dispositions": [
+    {
+      "localPurpose": "strength_development",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_STRENGTH_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "hypertrophy_development",
+      "disposition": "supported_new_policy",
+      "reasonCode": "MAIN_ACCESSORY_UNCHANGED_SECONDARY_SH1_ADDED",
+      "productionRuleCount": 1
+    },
+    {
+      "localPurpose": "direct_development",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_DIRECT_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "capacity_development",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_LOCAL_CAPACITY_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "movement_quality_development",
+      "disposition": "supported_new_policy",
+      "reasonCode": "BOUNDED_REPETITION_QUALITY_PRACTICE_MQ1",
+      "productionRuleCount": 3
+    },
+    {
+      "localPurpose": "muscular_endurance_development",
+      "disposition": "supported_new_policy",
+      "reasonCode": "BOUNDED_LOCAL_REPETITION_ENDURANCE_ME1",
+      "productionRuleCount": 3
+    },
+    {
+      "localPurpose": "technique_or_control",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_TECHNIQUE_CONTROL_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "preparation",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_PREPARATION_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "activation",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_ACTIVATION_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "recovery",
+      "disposition": "supported_core",
+      "reasonCode": "EXISTING_RECOVERY_RULES_UNCHANGED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "systemic_conditioning_development",
+      "disposition": "deferred",
+      "reasonCode": "SYSTEMIC_CONDITIONING_POLICY_REQUIRED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "power_development",
+      "disposition": "deferred",
+      "reasonCode": "POWER_DEVELOPMENT_POLICY_REQUIRED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "maintenance",
+      "disposition": "deferred",
+      "reasonCode": "MAINTENANCE_WEEK_AND_LONGITUDINAL_POLICY_REQUIRED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "return_or_rebuild",
+      "disposition": "future_realization",
+      "reasonCode": "RETURN_OR_REBUILD_REALIZATION_POLICY_REQUIRED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "toning",
+      "disposition": "outside_prescription_ownership",
+      "reasonCode": "NO_TONING_PHYSIOLOGY",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "body_composition",
+      "disposition": "outside_prescription_ownership",
+      "reasonCode": "SEPARATE_PRODUCT_PROFILE_OWNER_REQUIRED",
+      "productionRuleCount": 0
+    },
+    {
+      "localPurpose": "nutrition",
+      "disposition": "outside_prescription_ownership",
+      "reasonCode": "SEPARATE_NUTRITION_OWNER_REQUIRED",
+      "productionRuleCount": 0
+    }
+  ],
+  "productionRuleCount": 7,
+  "powerRuleCount": 0,
+  "systemicConditioningRuleCount": 0,
+  "maintenanceRuleCount": 0,
+  "returnRebuildRuleCount": 0,
+  "productActivationAuthorized": false,
+  "gatePolicy": {
+    "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_PURPOSE",
+    "version": "1.1.0"
+  }
+}

@@ -19,6 +19,8 @@
     "test:cagt": "vitest --run --config vitest.config.ts tests/unit/cagtCore.test.ts tests/unit/cagtAdaptersAndCohorts.test.ts",
     "test:cagt:stress": "vitest --run --config vitest.config.ts tests/unit/cagtStress.test.ts",
     "report:cagt": "node --import tsx dev/reportCagt.ts",
+    "report:supported-goal-purpose": "node --import tsx dev/reportSupportedGoalLocalPurpose.ts",
+    "test:supported-goal-purpose": "vitest --run --config vitest.config.ts tests/unit/supportedGoalLocalPurposePolicy.test.ts tests/unit/supportedGoalLocalPurposeReports.test.ts",
     "test:cagt:week-policy": "vitest --run --config vitest.config.ts tests/unit/cagtWeekPolicyTournament.test.ts",
     "test:cagt:week-policy:holdout": "vitest --run --config vitest.config.ts tests/unit/cagtWeekPolicyHoldout.test.ts",
     "test:cagt:week-policy:stress": "vitest --run --config vitest.config.ts tests/unit/cagtWeekPolicyStress.test.ts",

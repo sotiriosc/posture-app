@@ -95,7 +95,8 @@ function activationEvidence() {
   const apps = recursiveSource(resolve(workspaceRoot, "apps"));
   const weekSource = recursiveSource(resolve(packageRoot, "src/weekValidation"));
   const otherEngineSource = readdirSync(resolve(packageRoot, "src"), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && entry.name !== "weekValidation")
+    .filter((entry) => entry.isDirectory() &&
+      entry.name !== "weekValidation" && entry.name !== "weekValidationV1_1")
     .map((entry) => recursiveSource(resolve(packageRoot, "src", entry.name))).join("\n");
   const count = (source: string, value: string): number => source.split(value).length - 1;
   return {

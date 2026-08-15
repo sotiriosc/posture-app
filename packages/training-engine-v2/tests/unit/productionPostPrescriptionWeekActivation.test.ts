@@ -17,7 +17,8 @@ describe("production post-Prescription Week activation guards", () => {
     const productionSource = recursiveSource(resolve(process.cwd(), "src"));
     const weekValidationSource = recursiveSource(resolve(process.cwd(), "src/weekValidation"));
     const orchestrationSource = readdirSync(resolve(process.cwd(), "src"), { withFileTypes: true })
-      .filter((entry) => entry.isDirectory() && entry.name !== "weekValidation")
+      .filter((entry) => entry.isDirectory() &&
+        entry.name !== "weekValidation" && entry.name !== "weekValidationV1_1")
       .map((entry) => recursiveSource(resolve(process.cwd(), "src", entry.name))).join("\n");
     const rootIndex = readFileSync(resolve(process.cwd(), "src/index.ts"), "utf8");
     const weekIndex = readFileSync(resolve(process.cwd(), "src/weekValidation/index.ts"), "utf8");

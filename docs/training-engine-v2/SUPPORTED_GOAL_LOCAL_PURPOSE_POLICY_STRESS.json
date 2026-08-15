@@ -1,0 +1,23 @@
+{
+  "evaluationTime": "2026-08-15T18:30:00-04:00",
+  "counts": {
+    "goalPurposeCompatibility": 10000,
+    "weekFamilyFrequency": 10000,
+    "purposeResolutions": 10000,
+    "numericRuleResolutions": 10000,
+    "compilerV1_2": 8000,
+    "gate13V1_1": 5000,
+    "movementQuality": 3000,
+    "muscularEndurance": 3000,
+    "secondaryHypertrophy": 2000,
+    "sharedAssignmentMultiGoal": 2000,
+    "policyCandidateTournament": 1000,
+    "deferredPower": 1000,
+    "deferredSystemic": 1000,
+    "maintenanceReturn": 1000,
+    "noRescueMutations": 1000,
+    "productShadowFreeze": 1000,
+    "repeatedDeterministicExecutions": 1000
+  },
+  "failures": []
+}

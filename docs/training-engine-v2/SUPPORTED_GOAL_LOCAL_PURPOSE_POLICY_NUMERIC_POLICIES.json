@@ -1,0 +1,319 @@
+{
+  "inheritedRuleCount": 41,
+  "inheritedByReference": true,
+  "addedRules": [
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:secondary_hypertrophy.SH1",
+      "kind": "dose_rule",
+      "specificityLevel": "explicit_session_goal",
+      "applicability": {
+        "useCase": "secondary_hypertrophy",
+        "doseMode": "repetition_sets",
+        "variant": "default"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "exact",
+          "value": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 6,
+          "max": 15,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "rir",
+          "target": {
+            "kind": "range",
+            "min": 2,
+            "max": 3
+          }
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 90,
+          "max": 180,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:secondary_hypertrophy.SH1"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:movement_quality_main.MQ1.standard",
+      "kind": "dose_rule",
+      "specificityLevel": "explicit_session_goal",
+      "applicability": {
+        "useCase": "movement_quality_main",
+        "doseMode": "repetition_sets",
+        "variant": "standard"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "exact",
+          "value": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 5,
+          "max": 10,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "quality_limited",
+          "requiredCriterionIds": [
+            "b3:movement-quality:explicit-execution-criteria",
+            "b3:movement-quality:stop-on-quality-loss"
+          ],
+          "description": "Stop the set when the explicit execution criteria are no longer met."
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 60,
+          "max": 120,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:movement_quality_main.MQ1.standard"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:movement_quality_main.MQ1.regression",
+      "kind": "dose_rule",
+      "specificityLevel": "experience_and_familiarity",
+      "applicability": {
+        "useCase": "movement_quality_main",
+        "doseMode": "repetition_sets",
+        "variant": "regression"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "range",
+          "min": 1,
+          "max": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 4,
+          "max": 8,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "quality_limited",
+          "requiredCriterionIds": [
+            "b3:movement-quality:explicit-execution-criteria",
+            "b3:movement-quality:stop-on-quality-loss"
+          ],
+          "description": "Stop the set when the explicit execution criteria are no longer met."
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 60,
+          "max": 120,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:movement_quality_main.MQ1.regression"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:movement_quality_accessory.MQ1",
+      "kind": "dose_rule",
+      "specificityLevel": "explicit_session_goal",
+      "applicability": {
+        "useCase": "movement_quality_accessory",
+        "doseMode": "repetition_sets",
+        "variant": "default"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "range",
+          "min": 1,
+          "max": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 6,
+          "max": 12,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "quality_limited",
+          "requiredCriterionIds": [
+            "b3:movement-quality:explicit-execution-criteria",
+            "b3:movement-quality:stop-on-quality-loss"
+          ],
+          "description": "Stop the set when the explicit execution criteria are no longer met."
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 45,
+          "max": 90,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:movement_quality_accessory.MQ1"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:muscular_endurance_main.ME1.standard",
+      "kind": "dose_rule",
+      "specificityLevel": "explicit_session_goal",
+      "applicability": {
+        "useCase": "muscular_endurance_main",
+        "doseMode": "repetition_sets",
+        "variant": "standard"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "range",
+          "min": 2,
+          "max": 3,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 15,
+          "max": 25,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "rir",
+          "target": {
+            "kind": "range",
+            "min": 1,
+            "max": 3
+          }
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 30,
+          "max": 90,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:muscular_endurance_main.ME1.standard"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:muscular_endurance_main.ME1.regression",
+      "kind": "dose_rule",
+      "specificityLevel": "experience_and_familiarity",
+      "applicability": {
+        "useCase": "muscular_endurance_main",
+        "doseMode": "repetition_sets",
+        "variant": "regression"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "range",
+          "min": 1,
+          "max": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 12,
+          "max": 20,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "rir",
+          "target": {
+            "kind": "range",
+            "min": 2,
+            "max": 4
+          }
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 45,
+          "max": 90,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:muscular_endurance_main.ME1.regression"
+      }
+    },
+    {
+      "ruleId": "PRESCRIPTION_POLICY_V2:muscular_endurance_accessory.ME1",
+      "kind": "dose_rule",
+      "specificityLevel": "explicit_session_goal",
+      "applicability": {
+        "useCase": "muscular_endurance_accessory",
+        "doseMode": "repetition_sets",
+        "variant": "default"
+      },
+      "value": {
+        "unit": "sets",
+        "count": {
+          "kind": "range",
+          "min": 1,
+          "max": 2,
+          "unit": "count"
+        },
+        "repetitions": {
+          "kind": "range",
+          "min": 15,
+          "max": 25,
+          "unit": "count"
+        },
+        "effort": {
+          "kind": "rir",
+          "target": {
+            "kind": "range",
+            "min": 1,
+            "max": 4
+          }
+        },
+        "betweenUnitsRest": {
+          "kind": "range",
+          "min": 30,
+          "max": 75,
+          "unit": "seconds"
+        }
+      },
+      "overrideOfRuleIds": [],
+      "conflictsWithRuleIds": [],
+      "provenance": {
+        "source": "policy",
+        "sourceRef": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0:muscular_endurance_accessory.ME1"
+      }
+    }
+  ]
+}

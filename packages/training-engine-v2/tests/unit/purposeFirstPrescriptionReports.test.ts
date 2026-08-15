@@ -15,6 +15,10 @@ const workspaceRoot = process.cwd().endsWith("packages/training-engine-v2") ?
   resolve(process.cwd(), "../..") : process.cwd();
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
 
+function withoutSupportedPurposeAddendum(content: string): string {
+  return content.replace(/\n\n<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n?$/, "");
+}
+
 describe("Purpose-first Prescription deterministic reports", () => {
   it("persists all 29 Markdown and 13 deterministic JSON artifacts exactly", () => {
     const markdown = buildPurposeFirstMarkdownReports(workspaceRoot);
@@ -22,7 +26,8 @@ describe("Purpose-first Prescription deterministic reports", () => {
     expect(Object.keys(markdown)).toEqual([...PURPOSE_FIRST_PRESCRIPTION_REPORT_FILENAMES]);
     expect(Object.keys(json)).toEqual([...PURPOSE_FIRST_PRESCRIPTION_JSON_FILENAMES]);
     for (const filename of PURPOSE_FIRST_PRESCRIPTION_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(markdown[filename]);
+      expect(withoutSupportedPurposeAddendum(readFileSync(resolve(docsRoot, filename), "utf8")))
+        .toBe(markdown[filename]);
     }
     for (const filename of PURPOSE_FIRST_PRESCRIPTION_JSON_FILENAMES) {
       expect(() => JSON.parse(json[filename])).not.toThrow();

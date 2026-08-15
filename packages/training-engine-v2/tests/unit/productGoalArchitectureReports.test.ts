@@ -18,7 +18,9 @@ const workspaceRoot = process.cwd().endsWith("packages/training-engine-v2") ?
   resolve(process.cwd(), "../..") : process.cwd();
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
 const purposeFirstMarker = /\n*<!-- PURPOSE_FIRST_PRESCRIPTION_RESOLVER_V1:START -->[\s\S]*?<!-- PURPOSE_FIRST_PRESCRIPTION_RESOLVER_V1:END -->\n?/;
-const withoutPurposeFirstMarker = (value: string) => value.replace(purposeFirstMarker, "\n");
+const supportedPurposeMarker = /\n*<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n?/;
+const withoutPurposeFirstMarker = (value: string) => value.replace(purposeFirstMarker, "\n")
+  .replace(supportedPurposeMarker, "\n");
 
 describe("Product goal architecture deterministic reports", () => {
   it("builds and persists three Markdown and two JSON artifacts exactly", () => {

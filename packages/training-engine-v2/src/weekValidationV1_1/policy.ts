@@ -1,0 +1,34 @@
+import type { PrescriptionPurposeContributionLane } from "../prescription/compilerV1_2";
+import type { PrescriptionLocalPurpose } from "../prescription/purposeResolution";
+
+export const POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_1 = Object.freeze({
+  reference: Object.freeze({
+    policyId: "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_PURPOSE",
+    version: "1.1.0",
+  }),
+  state: "reviewed_not_activated",
+  laneByPurpose: Object.freeze({
+    strength_development: "strength_development_candidate",
+    hypertrophy_development: "hypertrophy_development_candidate",
+    direct_development: "direct_development_candidate",
+    movement_quality_development: "movement_quality_practice_candidate",
+    muscular_endurance_development: "muscular_endurance_development_candidate",
+    capacity_development: "local_capacity_development_candidate",
+    preparation: "preparation_support_only",
+    activation: "activation_support_only",
+    technique_or_control: "technique_control_observation_only",
+    recovery: "recovery_support_only",
+    systemic_conditioning_development: "unknown_requires_review",
+    power_development: "unknown_requires_review",
+    unknown: "unknown_requires_review",
+  } satisfies Readonly<Record<PrescriptionLocalPurpose, PrescriptionPurposeContributionLane>>),
+  onePrimaryLanePerBlock: true,
+  multipleObjectiveViewsPerSourceEvent: true,
+  duplicateDoseAllowed: false,
+  generalFitnessDirectCredit: false,
+  systemicConditioningInferenceAllowed: false,
+  completedPerformanceClaimAllowed: false,
+  adaptationClaimAllowed: false,
+  automaticSelection: false,
+  productionActivation: false,
+});
