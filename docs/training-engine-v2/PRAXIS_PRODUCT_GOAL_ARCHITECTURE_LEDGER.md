@@ -1,8 +1,8 @@
 # Praxis Product Goal & Prescription Architecture Ledger
 
-**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_IMPLEMENTATION_PENDING`  
+**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_B3_COMPLETE_FUTURE_WORK_REMAINS`  
 **Last verified audit commit:** `3708876ea48dab6f38d641cb67d05da95351245c`  
-**Last completed implementation commit:** `50f57a948158583e3bc15d224969365202444163`  
+**Last completed implementation commit:** `0b26b78f67c9f929d106a4c068b1bcdb26401505`  
 **PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
 **Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
 **V2 application state:** `NOT_ACTIVATED`
@@ -420,6 +420,50 @@ Audit fingerprint:
 - **Rollback boundary:** remove the explicit V1.1 and purpose-resolution APIs, Registry V12 metadata, tests, and reports without changing V1.0 or Product behavior
 - **Next dependency:** `SUPPORTED_GOAL_AND_LOCAL_PURPOSE_PRESCRIPTION_POLICY_V1_ADMISSION_AUTHORIZATION`
 
+## Chunk B3 — Supported goal and local-purpose policies
+
+- **Status:** completed and proven
+- **Implementation commit:** `0b26b78f67c9f929d106a4c068b1bcdb26401505`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Goal/local-purpose policy:** `SUPPORTED_GOAL_AND_LOCAL_PURPOSE_POLICY@1.0.0`
+- **Compatibility policy:** `GOAL_LOCAL_PURPOSE_COMPATIBILITY_POLICY_V1@1.0.0`
+- **Implementation-status projection:** `PRODUCT_GOAL_ARCHITECTURE_IMPLEMENTATION_STATUS@1.0.0`; the B1 owner-decision snapshot and fingerprint remain frozen
+- **Resolver policy:** `PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1_SUPPORTED_CORE@1.1.0`
+- **Numeric Prescription policy:** `PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE@2.0.0`
+- **Compiler:** `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.2.0`
+- **Purpose contribution:** `PRESCRIPTION_PURPOSE_CONTRIBUTION@1.0.0`
+- **Week policy:** `PRODUCTION_WEEK_POLICY_V2_PURPOSE_SPECIFIC_CORE@2.0.0`
+- **Week contracts:** Planner, Composer, and Materializer `1.1.0`, explicit-call future-only
+- **Gate 13 validator:** `PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_KERNEL@1.1.0`
+- **CAGT Registry:** `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@13.0.0`; historical gate order and authority remain unchanged; Gate 1, Gate 9, and Gate 13 record only explicit future-version calls
+- **Existing supported core:** every V1 strength, main/accessory hypertrophy, direct, capacity, preparation, activation, recovery, and technique/control numeric rule is retained unchanged by object reference; V1 numeric rule changes: 0
+- **Secondary hypertrophy:** admitted through distinct `secondary_hypertrophy`; selected candidate `SH1` is 2 sets, 6-15 repetitions, RIR 2-3, and 90-180 seconds rest; it does not borrow secondary-strength, main-hypertrophy, or accessory-hypertrophy rules
+- **Movement quality:** bounded repetition-set quality practice admitted through `movement_quality_main` and `movement_quality_accessory`; selected candidate `MQ1`; quality-limited effort and stop-on-quality-loss are explicit; posture correction, pain reduction, clinical outcome, strength credit, hypertrophy credit, and completed-adaptation claims remain prohibited
+- **Local muscular endurance:** bounded repetition-set local endurance admitted through `muscular_endurance_main` and `muscular_endurance_accessory`; selected candidate `ME1`; systemic conditioning, cardio, toning, fat loss, and implicit strength/hypertrophy credit remain prohibited
+- **Week family/purpose ownership:** added only `movement_quality` / `movement_quality_development` and `muscular_endurance` / `muscular_endurance_development`; selected frequency candidates `MQF2` and `MEF2`; required 1/2/3, preferred 0/1/2, optional 0/1/1; optional bloat count: 0
+- **Purpose propagation:** exact `localPrescriptionPurpose` and authority are retained through weekly priority, objective, reservation, materialization, SessionNeed provenance, purpose evidence, Prescription handoff, V1.2 plan, and Gate 13 contribution lane; existing selection behavior changed: no
+- **Goal compatibility:** outcome goals validate explicit local purpose but never create it; general fitness requires an explicit purpose bundle; posture/movement quality has no universal dose; conditioning may observe local endurance/capacity but does not prove systemic scope; pain-aware context modifies requirements but never creates purpose
+- **Primary/secondary/cross-goal behavior:** one primary local purpose owns one assignment dose; supporting relationships are trace-only; equal rightful primary conflicts fail closed; blended use cases: 0; duplicate source events: 0; fractional coefficients: 0
+- **Purpose-contribution lanes:** eleven closed lanes; exactly one primary lane per block; one source event may expose multiple linked objective views without duplicate dose or completed-performance/adaptation claims
+- **Systemic conditioning:** `DEFERRED` as `SYSTEMIC_CONDITIONING_POLICY_REQUIRED`; modality, intensity, pace, interval, duration, recovery, external-load, and Product-input owners are missing; production rules: 0
+- **Power:** `DEFERRED` as `POWER_DEVELOPMENT_POLICY_REQUIRED`; per-exercise explosive legality, ballistic/velocity truth, load realization, equipment, and Product follow-up are missing; production rules: 0
+- **Maintenance:** `DEFERRED` as `MAINTENANCE_WEEK_AND_LONGITUDINAL_POLICY_REQUIRED`; prior productive Prescription, population/context, Week frequency/volume, and continuity owners are required; production rules: 0
+- **Return/rebuild:** `DEFERRED` to B4 as `RETURN_OR_REBUILD_REALIZATION_POLICY_REQUIRED`; equipment, experience, familiarity, absence duration, pain-aware context, support/range/side, prior load, and starting volume remain unrealized; production rules: 0
+- **Toning/body composition/nutrition:** outside local Prescription purpose ownership; toning is not physiology, body composition requires a Product/profile owner, and nutrition requires a nutrition owner
+- **Product Shadow:** remains pinned to `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.0.0`; frozen combined fingerprint `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; migration count: 0; semantic change count: 0; rollout changed: no
+- **Product and production invariance:** Product mapping changed: no; Product UI/options changed: no; Questionnaire changed: no; `generateProgram` changed: no; delivered Program changed: no; persistence/database changed: no; Application Orchestration migration count: 0; V2 activation: not authorized
+- **Controlled evidence:** 315 scenarios and an 84-case fixed-shell cohort cover admitted/deferred purposes, all 45 exercise identities, seven dose modes, five sections, seven roles, canonical goals, relationship types, constrained horizons, duration truth, and no-rescue cases
+- **Locked holdout:** 540 scenarios, including 380 genuine V1.2, 180 Week V2, 180 Gate 13 V1.1, and 120 historical golden cases; fingerprint `58ff0da567011fc82e8e33d5a0284aebd53c9328d1c2953b57514769a4fc2abd`
+- **Mutations/metamorphic evidence:** 45/45 semantic mutations rejected; 21/21 metamorphic checks passed; no accepted downstream rescue
+- **Stress:** 10,000 goal-purpose, 10,000 Week, 10,000 resolver, 10,000 numeric, 8,000 Compiler V1.2, 5,000 Gate 13 V1.1, 3,000 movement-quality, 3,000 local-endurance, 2,000 secondary-hypertrophy, 2,000 multi-goal, and required 1,000-case candidate/deferred/no-rescue/Shadow loops passed with zero failures and explicit time
+- **Tests:** B3 policy/report tests passed 15/15; complete Training Engine V2 suite passed 1,084/1,084 across 208 files; root Vitest passed 1,016/1,016 across 138 files; historical B1/B2, Week V1, Prescription V1, Compiler V1.0/V1.1, Sequencing, Gate 13 V1.0, Gate 14, Phase, Longitudinal, Outcome Source, Orchestration, and Product Shadow regressions passed; Training Engine V2 TypeScript, consumer production, gyms production, scoped ESLint, deterministic reports, and diff checks passed; PostgreSQL jobs exited cleanly and skipped because no local database was configured
+- **Fingerprints:** goal-purpose policy `0e17c1387aeb471fce62d884a0b52acc4b546e3d9631311f2f1f286015734991`; compatibility `b9be691d97a310acfff7af9a96e36d4c99a6196afadff9c77c0a614a12767957`; Resolver V1.1 `383e331e697bed3324351e499993d06d2b16ae7f9037c20760b20b284a143299`; Prescription Policy V2 `563f1bdba429403edc8e87963d0b007ed83ab9e75dfe33bd584134126a676177`; Week V2 `52ba9b79772e9cc1f420f608cb428f23c391b9ecce9efaa421922b443a9f7d87`; Registry V13 `7c51269633f86faebb83d0c333dde7935b9317661a8cd2b5d137161fd89d5e5f`
+- **Ledger pre-closure fingerprint:** `bdec75c79f6726dab62cda954292db10bfc5ecf1aa3046f2d1cc465792a41868`
+- **Combined B3 fingerprint:** `22b6e85c6d8cbe2cfd054cece695da21ba07adc6766bebb81cd1ab45757566b6`
+- **Remaining limitations:** B4 realization, Chunk C Product Shadow migration, Product inputs/UI, systemic conditioning, power, maintenance, return/rebuild, body composition, nutrition, owner delivery, and broader activation remain open
+- **Rollback boundary:** revert the B3 ledger closure, then remove explicit future-only V1.1/V1.2/V2 APIs, Registry V13 metadata, evidence, reports, and bounded links; V1.0/V1.1 current behavior and Product remain unchanged
+- **Next dependency:** `EQUIPMENT_EXPERIENCE_AND_CONTEXT_SPECIFIC_PRESCRIPTION_REALIZATION_V1_AUTHORIZATION`
+
 ## C. Owner architecture selection
 
 Approved direction:
@@ -448,23 +492,7 @@ This approval is architectural only. It does not authorize behavior changes.
 
 Exact next dependency:
 
-`SUPPORTED_GOAL_AND_LOCAL_PURPOSE_PRESCRIPTION_POLICY_V1_ADMISSION_AUTHORIZATION`
-
-## Chunk B3 — Admit supported goal/purpose policies
-
-At minimum review and implement separately:
-
-- strength;
-- hypertrophy;
-- general-fitness supported core;
-- posture/movement-quality supported core;
-- muscular endurance;
-- conditioning;
-- power;
-- hybrid primary/secondary behavior;
-- maintain and return/rebuild modes.
-
-Do not admit a policy without evidence, consequences, and owner approval.
+`EQUIPMENT_EXPERIENCE_AND_CONTEXT_SPECIFIC_PRESCRIPTION_REALIZATION_V1_AUTHORIZATION`
 
 ## Chunk B4 — Equipment-, experience-, and context-specific realization
 
@@ -586,7 +614,7 @@ These remain visible so they are not forgotten:
 
 The following remain incomplete until implemented, verified, and separately authorized:
 
-- approved purpose policies beyond current strength/hypertrophy;
+- equipment-, experience-, and context-specific B4 realization;
 - Product goal mapping updates;
 - Product goal UI;
 - primary/secondary goal UI;
@@ -596,7 +624,7 @@ The following remain incomplete until implemented, verified, and separately auth
 - nutrition owner;
 - power policy;
 - conditioning policy;
-- muscular-endurance policy;
+- systemic-conditioning receiver and modality policy;
 - Product Shadow evidence for the new mappings;
 - owner-account V2 delivery;
 - general Product activation.
