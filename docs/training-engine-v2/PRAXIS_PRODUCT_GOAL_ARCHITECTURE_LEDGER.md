@@ -2,6 +2,7 @@
 
 **Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_IMPLEMENTATION_PENDING`  
 **Last verified audit commit:** `3708876ea48dab6f38d641cb67d05da95351245c`  
+**Last completed implementation commit:** `50f57a948158583e3bc15d224969365202444163`  
 **PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
 **Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
 **V2 application state:** `NOT_ACTIVATED`
@@ -384,6 +385,41 @@ Audit fingerprint:
 - **Rollback boundary:** remove the inert contracts, generated owner reports, and bounded ledger links without changing runtime behavior
 - **Next dependency:** `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTATION_AUTHORIZATION`
 
+## Chunk B2 — Purpose-first goal-specific Prescription resolver
+
+- **Status:** completed and proven
+- **Implementation commit:** `50f57a948158583e3bc15d224969365202444163`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Resolver contract:** `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER@1.0.0`
+- **Resolver policy:** `PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1_PURPOSE_FIRST_FAIL_CLOSED@1.0.0`
+- **Purpose evidence:** `PRESCRIPTION_PURPOSE_EVIDENCE_SNAPSHOT@1.0.0`
+- **Compiler:** `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.1.0`
+- **V1.0 disposition:** frozen historical compatibility, not Product activation authority
+- **Architecture:** G4 purpose-first + G1 fail-closed; local purpose precedes bounded outcome-goal context; structural role and section validate placement but do not invent physiology
+- **Intentional V2 behavior change:** V1.1 returns typed purpose/policy-required states for unsupported or missing purpose instead of falling through to strength
+- **Current V1.0 behavior changed:** no; 100/100 supported V1.0/V1.1 golden pairs retained equivalent dose, rest, effort, timing, load, block, and source-event semantics
+- **Product behavior changed:** no
+- **Product Shadow changed:** no; it remains explicitly pinned to V1.0 and default-off
+- **Product mapping changed:** no
+- **Product UI changed:** no
+- **Activation:** not authorized
+- **Numeric Prescription Policy V1 values changed:** no
+- **Week/Candidate/Composer decisions changed:** no
+- **Lineage:** exact Week objective -> reserved responsibility -> allocated objective -> SessionNeed -> assignment -> Prescription handoff projection, plus an explicit standalone owner source
+- **CAGT Registry:** `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@12.0.0`; historical gate order/authorities preserved; Gate 9 future supported authority records V1.1; Product activation remains unauthorized
+- **Controlled evidence:** 241/241 scenarios passed; all 45 exercise identities, seven dose modes, five sections, and seven roles covered
+- **Fallthrough evidence:** V1.0 replay preserved and all 60 audited V1.1 fallthrough cells failed closed
+- **Holdout:** 380/380 passed, including 370 genuine V1.1 compiler calls and 100 V1.0/V1.1 golden pairs; fingerprint `6e9f0ac20879ec3a3a5a7d9d056cad3b2684512fda2660499680e384648f5611`
+- **Adversarial evidence:** 50/50 semantic mutations rejected; 16/16 metamorphic invariants and 11/11 material responses passed; zero accepted downstream rescues
+- **Stress:** deterministic required-count snapshot, lineage, resolver, role/section, purpose/mode, golden, fail-closed, shared-assignment, multi-goal, equal-primary-conflict, no-rescue, and V1.0 replay loops passed with zero failures; fingerprint `e0880ce355f7004f8489313d5636b27f4703d5622bc591d053330ceac57a2ff7`
+- **Tests:** purpose-first contracts/compiler/evidence/CAGT/reports/activation passed 25/25; complete Training Engine V2 suite passed 1,069/1,069 across 206 files; root Vitest passed 1,016/1,016 across 138 files; historical compiler, Prescription Policy V1, Week, Application Orchestration, Product Shadow, Product Goal Architecture, Training Engine V2 TypeScript, consumer production, gyms production, scoped ESLint, deterministic report regeneration, and staged diff checks passed
+- **Upstream fingerprints:** Candidate, Planner, Composer, Week, Prescription Policy V1, V1.0 compiler, Sequencing, post-Prescription Week, Gate 14, Phase Continuity, Longitudinal Adaptation, Outcome Source, Orchestration, Product Shadow, Product Goal Audit, and B1 fingerprints remain recorded unchanged in deterministic B2 evidence
+- **Ledger pre-closure fingerprint:** `703789a5808b052f328f34277a91358494c941b6930ffbfa18a08fc5ea01b88a`
+- **Combined B2 implementation fingerprint:** `535e29b43aebdd761d1a31f74843a52b4331a53dcdafde678775169f1a7e2d1c`
+- **Remaining limitations:** B3 purpose-policy gaps remain; Product Shadow is still pinned to V1.0; no Product/UI/activation migration is authorized
+- **Rollback boundary:** remove the explicit V1.1 and purpose-resolution APIs, Registry V12 metadata, tests, and reports without changing V1.0 or Product behavior
+- **Next dependency:** `SUPPORTED_GOAL_AND_LOCAL_PURPOSE_PRESCRIPTION_POLICY_V1_ADMISSION_AUTHORIZATION`
+
 ## C. Owner architecture selection
 
 Approved direction:
@@ -410,13 +446,9 @@ This approval is architectural only. It does not authorize behavior changes.
 
 # Future Work
 
-## Chunk B2 — Correct the engine Prescription resolver
+Exact next dependency:
 
-- Remove the accidental non-hypertrophy-to-strength fallthrough.
-- Implement purpose-first use-case resolution.
-- Fail closed when no reviewed policy exists.
-- Keep the Product and Product Shadow unchanged.
-- Add deterministic CAGT coverage.
+`SUPPORTED_GOAL_AND_LOCAL_PURPOSE_PRESCRIPTION_POLICY_V1_ADMISSION_AUTHORIZATION`
 
 ## Chunk B3 — Admit supported goal/purpose policies
 
@@ -554,7 +586,6 @@ These remain visible so they are not forgotten:
 
 The following remain incomplete until implemented, verified, and separately authorized:
 
-- goal-specific engine resolver;
 - approved purpose policies beyond current strength/hypertrophy;
 - Product goal mapping updates;
 - Product goal UI;
