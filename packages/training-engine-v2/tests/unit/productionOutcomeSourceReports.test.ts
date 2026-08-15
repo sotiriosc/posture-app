@@ -14,12 +14,13 @@ const docsRoot = resolve(__dirname, "../../../../docs/training-engine-v2");
 
 describe("production outcome source reports", () => {
   it("emits every required deterministic report", () => {
+    const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/g;
     const markdown = buildProductionOutcomeSourceMarkdownReports();
     const json = buildProductionOutcomeSourceJsonReports();
     expect(PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES).toHaveLength(40);
     expect(PRODUCTION_OUTCOME_SOURCE_JSON_FILENAMES).toHaveLength(14);
     for (const filename of PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES) {
-      const persisted = readFileSync(resolve(docsRoot, filename), "utf8");
+      const persisted = readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n");
       if (filename === "PRODUCTION_OUTCOME_SOURCE_SNAPSHOT.md") {
         expect(persisted).toContain(markdown[filename].trim());
         expect(persisted).toContain("FOUNDATION_DESIGN_EVIDENCE_NOT_RUNTIME");

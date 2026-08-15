@@ -15,6 +15,7 @@ describe("outcome source foundation reports", () => {
   const docsRoot = resolve(packageRoot, "../../docs/training-engine-v2");
   const productionMarker = /\n*<!-- PRODUCTION_OUTCOME_SOURCE_(?:PERSISTENCE|REPORT)_V1:START -->[\s\S]*?<!-- PRODUCTION_OUTCOME_SOURCE_(?:PERSISTENCE|REPORT)_V1:END -->\n*/g;
   const productionWeekMarker = /\n*<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:START -->[\s\S]*?<!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:END -->\n*/g;
+  const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/g;
 
   it("freezes all 41 required Markdown and JSON artifacts", () => {
     const reports = buildOutcomeSourceReports();
@@ -22,7 +23,7 @@ describe("outcome source foundation reports", () => {
     expect(Object.keys(reports).sort()).toEqual([...OUTCOME_SOURCE_REPORT_FILENAMES].sort());
     for (const filename of OUTCOME_SOURCE_REPORT_FILENAMES) {
       expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(productionMarker, "\n")
-        .replace(productionWeekMarker, "\n"), filename)
+        .replace(productionWeekMarker, "\n").replace(orchestrationMarker, "\n"), filename)
         .toBe(reports[filename]);
     }
   });

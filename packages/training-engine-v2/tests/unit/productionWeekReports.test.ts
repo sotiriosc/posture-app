@@ -22,8 +22,10 @@ describe("production Week reports", () => {
     const json = buildProductionWeekJsonReports();
     expect(PRODUCTION_WEEK_REPORT_FILENAMES).toHaveLength(37);
     expect(PRODUCTION_WEEK_JSON_FILENAMES).toHaveLength(12);
+    const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/g;
     for (const filename of PRODUCTION_WEEK_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(markdown[filename]);
+      expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n"))
+        .toBe(markdown[filename]);
     }
     for (const filename of PRODUCTION_WEEK_JSON_FILENAMES) {
       expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(json[filename]);

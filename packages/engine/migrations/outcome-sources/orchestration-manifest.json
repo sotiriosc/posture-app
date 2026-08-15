@@ -1,0 +1,23 @@
+{
+  "contractId": "ADAPTATION_APPLICATION_ORCHESTRATION_PERSISTENCE",
+  "contractVersion": "1.0.0",
+  "manifestVersion": "1.0.0",
+  "historyTable": "praxis_schema_migrations",
+  "forwardFixOnly": true,
+  "automaticExecution": false,
+  "requiresContract": "PRODUCTION_OUTCOME_SOURCE_PERSISTENCE@1.0.0",
+  "migrations": [
+    {
+      "migrationId": "002_adaptation_application_orchestration_v1",
+      "version": "1.0.0",
+      "checksum": "55e98f85d852485e91602578647cddbfc7ffa29553b588fa17fe151309496977",
+      "description": "Create inactive append-only adaptation application orchestration shadow schema",
+      "dependency": null,
+      "transactional": true,
+      "filename": "002_adaptation_application_orchestration_v1.sql",
+      "provenance": [
+        "owner-authorization:ADAPTATION_APPLICATION_ORCHESTRATION_V1_IMPLEMENTATION_NOT_PRODUCT_ACTIVATION"
+      ]
+    }
+  ]
+}

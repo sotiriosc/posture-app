@@ -2180,3 +2180,20 @@ Exact next dependency: `ADAPTATION_APPLICATION_ORCHESTRATION_V1_AUTHORIZATION`.
 
 Combined fingerprint: `4f3fd80ed3fee29cb12c88ef6dea38b6e5f70777ac4718391daa8e7548527387`.
 <!-- PRODUCTION_WEEK_PLANNER_AND_ALLOCATION_V1:END -->
+
+<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->
+## Adaptation Application Orchestration V1
+
+- Status: `ADAPTATION_APPLICATION_ORCHESTRATION_V1_IMPLEMENTED_NOT_ACTIVATED`
+- Activation: `NOT_ACTIVATED`
+- Classification: `ADAPTATION_APPLICATION_ORCHESTRATION_V1_READY_FOR_CONTROLLED_PRODUCT_SHADOW_INTEGRATION_AUTHORIZATION`
+- Contract: `ADAPTATION_APPLICATION_ORCHESTRATION@1.0.0`
+- Authority: `PRODUCTION_KERNEL_AUTHORITY_NOT_PRODUCT_RUNTIME` (post-Gate 16)
+- Persistence: `002_adaptation_application_orchestration_v1@1.0.0`, explicit and never automatic
+- Product/app wiring: zero
+- Application applied count: zero
+- Combined fingerprint: `a88a493e1553badb4f8cada551ee9d8357d21c4e04872c852bc60058769f8aca`
+- Exact next dependency: `CONTROLLED_PRODUCT_SHADOW_INTEGRATION_AUTHORIZATION`
+
+The explicit server-only service can validate, build, persist, and replay unapplied shadow candidates through caller-supplied owner ports. Controlled Product shadow integration and all live Product confirmation/application remain unimplemented.
+<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->

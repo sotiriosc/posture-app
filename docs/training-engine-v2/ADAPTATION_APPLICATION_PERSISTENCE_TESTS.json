@@ -1,0 +1,18 @@
+{
+  "migrationId": "002_adaptation_application_orchestration_v1@1.0.0",
+  "tables": [
+    "adaptation_application_orchestration_runs",
+    "adaptation_application_precondition_snapshots",
+    "adaptation_application_owner_results",
+    "adaptation_application_shadow_candidates",
+    "adaptation_application_validation_results",
+    "adaptation_application_orchestration_attempts"
+  ],
+  "appendOnly": true,
+  "oneTransaction": true,
+  "databaseBackedIdempotency": true,
+  "advisoryTransactionLock": true,
+  "staleRecheckBeforePersistence": true,
+  "appliedStateCount": 0,
+  "automaticMigrationCount": 0
+}

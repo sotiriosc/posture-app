@@ -6,6 +6,7 @@ export * from "./eligibility";
 export * from "./optimizerContracts";
 export * from "./outcomeSources";
 export * from "./adaptationPersistence";
+export * from "./applicationOrchestration";
 export * from "./pipelineObservability";
 export * from "./phaseSuitability";
 export * from "./phaseContinuity";

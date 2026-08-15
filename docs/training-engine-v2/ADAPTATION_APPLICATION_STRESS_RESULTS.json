@@ -1,0 +1,22 @@
+{
+  "preconditionEvaluations": 10000,
+  "routingEvaluations": 10000,
+  "ownerResultValidations": 10000,
+  "localityValidations": 10000,
+  "shadowCandidateBuilds": 5000,
+  "prescriptionOwnerProposals": 2000,
+  "candidateComposerPipelines": 2000,
+  "weekOrchestrations": 2000,
+  "phaseOrchestrations": 1000,
+  "safetyOrchestrations": 1000,
+  "affectedSessionRebuilds": 2000,
+  "gate13Revalidations": 2000,
+  "persistenceTransactions": 1000,
+  "concurrentIdempotentPairs": 1000,
+  "replayComparisons": 1000,
+  "stalePreconditionMutations": 1000,
+  "noRescueMutations": 1000,
+  "repeatedRunsDeterministic": true,
+  "failures": [],
+  "fingerprint": "2e87a5231357f602393cd0ff7b1e6e5e67df7548966e7fcc17862658f615bcda"
+}

@@ -23,8 +23,11 @@ export function validateProductionLongitudinalApplicationCandidate(
       candidate.applicationOwner !== productionLongitudinalApplicationOwner(directive.action)) {
     reasons.push("LONGITUDINAL_WRONG_APPLICATION_OWNER");
   }
-  if (candidate.changedTargetIds.some((id) => id !== directive.targetId) || candidate.phaseMutationClaimed ||
-      candidate.weekReallocationClaimed) reasons.push("LONGITUDINAL_ACTION_SCOPE_EXCEEDED");
+  if (candidate.changedTargetIds.some((id) => id !== directive.targetId) ||
+      (candidate.phaseMutationClaimed && directive.action !== "phase_review") ||
+      (candidate.weekReallocationClaimed && directive.action !== "week_reallocation_review")) {
+    reasons.push("LONGITUDINAL_ACTION_SCOPE_EXCEEDED");
+  }
   if (directive.action === "keep_current" && candidate.changedTargetIds.length > 0) {
     reasons.push("LONGITUDINAL_ACTION_SCOPE_EXCEEDED");
   }

@@ -185,6 +185,21 @@
     "test:week-planner:stress": "vitest --run --config vitest.config.ts tests/unit/productionWeekStress.test.ts",
     "report:week-planner": "node --import tsx dev/reportProductionWeekPlanning.ts",
     "report:week-planner:golden": "node --import tsx dev/reportProductionWeekPlanning.ts",
-    "report:week-planner:stress": "node --import tsx dev/reportProductionWeekPlanning.ts"
+    "report:week-planner:stress": "node --import tsx dev/reportProductionWeekPlanning.ts",
+    "test:application-orchestration": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationContracts.test.ts tests/unit/applicationOrchestrationPreconditions.test.ts tests/unit/applicationOrchestrationOwners.test.ts tests/unit/applicationOrchestrationKernel.test.ts tests/unit/applicationOrchestrationEvidence.test.ts tests/unit/applicationOrchestrationActivation.test.ts tests/unit/applicationOrchestrationReports.test.ts tests/unit/cagtApplicationOrchestrationRegistryV10.test.ts",
+    "test:application-orchestration:contracts": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationContracts.test.ts tests/unit/cagtApplicationOrchestrationRegistryV10.test.ts",
+    "test:application-orchestration:owners": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationOwners.test.ts",
+    "test:application-orchestration:preconditions": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationPreconditions.test.ts",
+    "test:application-orchestration:prescription": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationOwners.test.ts -t Prescription",
+    "test:application-orchestration:candidate-composer": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationKernel.test.ts -t downstream",
+    "test:application-orchestration:week": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationOwners.test.ts -t Week",
+    "test:application-orchestration:phase-safety": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationOwners.test.ts -t Safety",
+    "test:application-orchestration:downstream": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationKernel.test.ts tests/unit/applicationOrchestrationOwners.test.ts",
+    "test:application-orchestration:golden": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationEvidence.test.ts",
+    "test:application-orchestration:holdout": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationEvidence.test.ts -t holdout",
+    "test:application-orchestration:stress": "vitest --run --config vitest.config.ts tests/unit/applicationOrchestrationEvidence.test.ts -t stress",
+    "report:application-orchestration": "node --import tsx dev/reportApplicationOrchestration.ts",
+    "report:application-orchestration:golden": "node --import tsx dev/reportApplicationOrchestration.ts",
+    "report:application-orchestration:stress": "node --import tsx dev/reportApplicationOrchestration.ts"
   }
 }

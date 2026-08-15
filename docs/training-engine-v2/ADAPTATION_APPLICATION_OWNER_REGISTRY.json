@@ -1,0 +1,193 @@
+{
+  "registryReference": {
+    "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_REGISTRY",
+    "contractVersion": "1.0.0"
+  },
+  "entries": [
+    {
+      "owner": "prescription",
+      "ownerContract": {
+        "contractId": "PRODUCTION_PRESCRIPTION_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "progress_prescription_axis",
+        "regress_prescription_axis",
+        "prescription_modification_review"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": true,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "candidate_intelligence_and_composer",
+      "ownerContract": {
+        "contractId": "PRODUCTION_CANDIDATE_COMPOSER_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "reopen_candidate_selection_for_replacement",
+        "reopen_candidate_selection_for_bounded_rotation"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": true,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "week",
+      "ownerContract": {
+        "contractId": "PRODUCTION_WEEK_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "week_reallocation_review",
+        "deload_review"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": false,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "phase_continuity",
+      "ownerContract": {
+        "contractId": "PRODUCTION_PHASE_CONTINUITY_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "phase_review"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": false,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "training_safety",
+      "ownerContract": {
+        "contractId": "PRODUCTION_TRAINING_SAFETY_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "external_safety_review"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": false,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "product_application",
+      "ownerContract": {
+        "contractId": "PRODUCTION_PRODUCT_HUMAN_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "keep_current",
+        "repeat_for_confirmation",
+        "hold_current_prescription"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": false,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    },
+    {
+      "owner": "human_owner_review",
+      "ownerContract": {
+        "contractId": "PRODUCTION_PRODUCT_HUMAN_APPLICATION_OWNER_PORT",
+        "contractVersion": "1.0.0"
+      },
+      "supportedActions": [
+        "owner_review_required",
+        "no_action_insufficient_evidence"
+      ],
+      "availability": "available",
+      "proposedResultContract": {
+        "contractId": "PRODUCTION_ADAPTATION_APPLICATION_OWNER_RESULT",
+        "contractVersion": "1.0.0"
+      },
+      "requiredPolicyReferences": [],
+      "requiredCurrentRevisionKeys": [
+        "sourceSnapshotRevisionId",
+        "programSnapshotRevisionId"
+      ],
+      "canBuildProgramCandidate": false,
+      "canApplyLiveMutation": false,
+      "provenance": [
+        "fixture:explicit-owner-registry"
+      ]
+    }
+  ],
+  "provenance": [
+    "fixture:explicit-owner-registry-injection"
+  ]
+}
