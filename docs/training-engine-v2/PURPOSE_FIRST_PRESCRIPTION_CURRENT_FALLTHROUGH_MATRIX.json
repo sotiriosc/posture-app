@@ -1,0 +1,602 @@
+[
+  {
+    "corrected": true,
+    "exerciseId": "push-up",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:push-up",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-bench-press",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:dumbbell-bench-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-chest-press",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:machine-chest-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "chest-supported-dumbbell-row",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:chest-supported-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "one-arm-dumbbell-row",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:one-arm-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-row",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:machine-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "seated-cable-row",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:seated-cable-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-shoulder-press",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:dumbbell-shoulder-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "lat-pulldown",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:lat-pulldown",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "goblet-squat",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:goblet-squat",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "leg-press",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:leg-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "goalContext": "general_fitness",
+    "scenarioId": "fallthrough:general_fitness:dumbbell-romanian-deadlift",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "push-up",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:push-up",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-bench-press",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:dumbbell-bench-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-chest-press",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:machine-chest-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "chest-supported-dumbbell-row",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:chest-supported-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "one-arm-dumbbell-row",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:one-arm-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-row",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:machine-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "seated-cable-row",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:seated-cable-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-shoulder-press",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:dumbbell-shoulder-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "lat-pulldown",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:lat-pulldown",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "goblet-squat",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:goblet-squat",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "leg-press",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:leg-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "goalContext": "conditioning",
+    "scenarioId": "fallthrough:conditioning:dumbbell-romanian-deadlift",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "push-up",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:push-up",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-bench-press",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:dumbbell-bench-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-chest-press",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:machine-chest-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "chest-supported-dumbbell-row",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:chest-supported-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "one-arm-dumbbell-row",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:one-arm-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-row",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:machine-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "seated-cable-row",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:seated-cable-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-shoulder-press",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:dumbbell-shoulder-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "lat-pulldown",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:lat-pulldown",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "goblet-squat",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:goblet-squat",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "leg-press",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:leg-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "goalContext": "posture_and_movement_quality",
+    "scenarioId": "fallthrough:posture_and_movement_quality:dumbbell-romanian-deadlift",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "push-up",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:push-up",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-bench-press",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:dumbbell-bench-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-chest-press",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:machine-chest-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "chest-supported-dumbbell-row",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:chest-supported-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "one-arm-dumbbell-row",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:one-arm-dumbbell-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-row",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:machine-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "seated-cable-row",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:seated-cable-row",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-shoulder-press",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:dumbbell-shoulder-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "lat-pulldown",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:lat-pulldown",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "goblet-squat",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:goblet-squat",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "leg-press",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:leg-press",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "goalContext": "pain_aware_legacy",
+    "scenarioId": "fallthrough:pain_aware_legacy:dumbbell-romanian-deadlift",
+    "v1_1Status": "prescription_purpose_required",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "push-up",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:push-up",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-bench-press",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:dumbbell-bench-press",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-chest-press",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:machine-chest-press",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "chest-supported-dumbbell-row",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:chest-supported-dumbbell-row",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "one-arm-dumbbell-row",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:one-arm-dumbbell-row",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "machine-row",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:machine-row",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "seated-cable-row",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:seated-cable-row",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-shoulder-press",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:dumbbell-shoulder-press",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "lat-pulldown",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:lat-pulldown",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "goblet-squat",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:goblet-squat",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "leg-press",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:leg-press",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  },
+  {
+    "corrected": true,
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "goalContext": "unknown_legacy",
+    "scenarioId": "fallthrough:unknown_legacy:dumbbell-romanian-deadlift",
+    "v1_1Status": "prescription_purpose_lineage_invalid",
+    "v1_1UseCase": null,
+    "v1Status": "compiled",
+    "v1UseCase": "main_strength"
+  }
+]

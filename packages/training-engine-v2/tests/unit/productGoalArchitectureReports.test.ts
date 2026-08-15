@@ -17,6 +17,8 @@ import {
 const workspaceRoot = process.cwd().endsWith("packages/training-engine-v2") ?
   resolve(process.cwd(), "../..") : process.cwd();
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
+const purposeFirstMarker = /\n*<!-- PURPOSE_FIRST_PRESCRIPTION_RESOLVER_V1:START -->[\s\S]*?<!-- PURPOSE_FIRST_PRESCRIPTION_RESOLVER_V1:END -->\n?/;
+const withoutPurposeFirstMarker = (value: string) => value.replace(purposeFirstMarker, "\n");
 
 describe("Product goal architecture deterministic reports", () => {
   it("builds and persists three Markdown and two JSON artifacts exactly", () => {
@@ -25,7 +27,8 @@ describe("Product goal architecture deterministic reports", () => {
     expect(Object.keys(markdown)).toEqual([...PRODUCT_GOAL_ARCHITECTURE_REPORT_FILENAMES]);
     expect(Object.keys(json)).toEqual([...PRODUCT_GOAL_ARCHITECTURE_JSON_FILENAMES]);
     for (const filename of PRODUCT_GOAL_ARCHITECTURE_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(markdown[filename]);
+      expect(withoutPurposeFirstMarker(readFileSync(resolve(docsRoot, filename), "utf8")))
+        .toBe(markdown[filename]);
     }
     for (const filename of PRODUCT_GOAL_ARCHITECTURE_JSON_FILENAMES) {
       expect(() => JSON.parse(json[filename])).not.toThrow();

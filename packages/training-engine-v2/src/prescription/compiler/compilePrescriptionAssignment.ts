@@ -84,6 +84,14 @@ interface ModifierValues {
 export function compilePrescriptionAssignment(
   input: PrescriptionAssignmentCompilerInput,
 ): PrescriptionAssignmentCompilationResult {
+  return compilePrescriptionAssignmentWithResolvedUseCase(input, null);
+}
+
+/** Internal shared numeric compiler core. A non-null use case bypasses the V1.0 compatibility resolver. */
+export function compilePrescriptionAssignmentWithResolvedUseCase(
+  input: PrescriptionAssignmentCompilerInput,
+  resolvedUseCase: PrescriptionPolicyUseCase | null,
+): PrescriptionAssignmentCompilationResult {
   const contextResult = resolveAssignmentContext(input);
   if (!contextResult.context) {
     return resultWithoutPlan(input, {
@@ -223,7 +231,7 @@ export function compilePrescriptionAssignment(
       policyTrace: policyResolution.trace,
     });
   }
-  const useCase = resolveUseCase(input, context, selectedMode);
+  const useCase = resolvedUseCase ?? resolveUseCase(input, context, selectedMode);
   const variant = resolveRuleVariant(input, useCase);
   const selectedRule = findPrescriptionPolicyDoseRule({
     policy,

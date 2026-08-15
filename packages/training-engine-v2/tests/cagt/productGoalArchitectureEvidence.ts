@@ -131,7 +131,7 @@ const MUTATIONS: readonly MutationDefinition[] = Object.freeze([
     context.ledger = context.ledger.replace("# Future Work", "# Removed Work");
   } },
   { id: "M06_B2_REMOVED", domain: "ledger", apply: (context) => {
-    context.ledger = context.ledger.replace("## Chunk B2 \u2014 Correct the engine Prescription resolver", "## Removed B2");
+    context.ledger = context.ledger.replace(/^## Chunk B2 \u2014 .*$/m, "## Removed B2");
   } },
   { id: "M07_PRODUCT_VOCABULARY_CHANGED", domain: "policy", apply: ({ policy }) => {
     vocabularyEntry(policy, "get_stronger").displayDirection = "Become powerful";

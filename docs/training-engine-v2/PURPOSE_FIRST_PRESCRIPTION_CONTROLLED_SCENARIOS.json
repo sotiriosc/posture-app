@@ -1,0 +1,2412 @@
+[
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "push-up",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:valid_v1_1_contract",
+    "selectedUseCase": "main_strength",
+    "variant": "valid_v1_1_contract"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "push-up",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:v1_0_compatibility_call",
+    "selectedUseCase": null,
+    "variant": "v1_0_compatibility_call"
+  },
+  {
+    "actualStatus": "unsupported_compiler_contract",
+    "exerciseId": "push-up",
+    "expectedStatus": "unsupported_compiler_contract",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:unsupported_compiler_version",
+    "selectedUseCase": null,
+    "variant": "unsupported_compiler_version"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:missing_resolver_policy",
+    "selectedUseCase": null,
+    "variant": "missing_resolver_policy"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_unavailable",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_policy_unavailable",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:unavailable_resolver_policy",
+    "selectedUseCase": null,
+    "variant": "unavailable_resolver_policy"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_conflict",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_policy_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:resolver_policy_conflict",
+    "selectedUseCase": null,
+    "variant": "resolver_policy_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:missing_purpose_snapshot",
+    "selectedUseCase": null,
+    "variant": "missing_purpose_snapshot"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:stale_purpose_snapshot",
+    "selectedUseCase": null,
+    "variant": "stale_purpose_snapshot"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:wrong_athlete",
+    "selectedUseCase": null,
+    "variant": "wrong_athlete"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:wrong_session_intent",
+    "selectedUseCase": null,
+    "variant": "wrong_session_intent"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:wrong_assignment_handoff",
+    "selectedUseCase": null,
+    "variant": "wrong_assignment_handoff"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:missing_session_need",
+    "selectedUseCase": null,
+    "variant": "missing_session_need"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:missing_weekly_objective",
+    "selectedUseCase": null,
+    "variant": "missing_weekly_objective"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:wrong_reservation",
+    "selectedUseCase": null,
+    "variant": "wrong_reservation"
+  },
+  {
+    "actualStatus": "prescription_purpose_lineage_invalid",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_lineage_invalid",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:future_evaluation_evidence",
+    "selectedUseCase": null,
+    "variant": "future_evaluation_evidence"
+  },
+  {
+    "actualStatus": "prescription_policy_rule_unavailable",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_policy_rule_unavailable",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:contract:missing_numeric_rule",
+    "selectedUseCase": "main_strength",
+    "variant": "missing_numeric_rule"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "ninety-ninety-breathing",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:ninety-ninety-breathing:supported",
+    "selectedUseCase": "recovery_cooldown",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "ninety-ninety-breathing",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:ninety-ninety-breathing:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "ninety-ninety-breathing",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:ninety-ninety-breathing:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "ninety-ninety-breathing",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:ninety-ninety-breathing:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "ninety-ninety-breathing",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:ninety-ninety-breathing:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "serratus-wall-slide",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:serratus-wall-slide:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "serratus-wall-slide",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:serratus-wall-slide:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "serratus-wall-slide",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:serratus-wall-slide:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "serratus-wall-slide",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:serratus-wall-slide:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "serratus-wall-slide",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:serratus-wall-slide:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dead-bug",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dead-bug:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dead-bug",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dead-bug:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dead-bug",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dead-bug:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dead-bug",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dead-bug:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dead-bug",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dead-bug:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "push-up",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:push-up:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:push-up:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:push-up:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:push-up:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "push-up",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:push-up:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dumbbell-bench-press",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-bench-press:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-bench-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-bench-press:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dumbbell-bench-press",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-bench-press:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dumbbell-bench-press",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-bench-press:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-bench-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-bench-press:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "machine-chest-press",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-chest-press:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-chest-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-chest-press:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "machine-chest-press",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-chest-press:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "machine-chest-press",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-chest-press:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-chest-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-chest-press:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "cable-chest-fly",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-chest-fly:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-chest-fly",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-chest-fly:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "cable-chest-fly",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-chest-fly:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "cable-chest-fly",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-chest-fly:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-chest-fly",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-chest-fly:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:chest-supported-dumbbell-row:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:chest-supported-dumbbell-row:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:chest-supported-dumbbell-row:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:chest-supported-dumbbell-row:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:chest-supported-dumbbell-row:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "one-arm-dumbbell-row",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:one-arm-dumbbell-row:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "one-arm-dumbbell-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:one-arm-dumbbell-row:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "one-arm-dumbbell-row",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:one-arm-dumbbell-row:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "one-arm-dumbbell-row",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:one-arm-dumbbell-row:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "one-arm-dumbbell-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:one-arm-dumbbell-row:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "machine-row",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-row:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-row:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "machine-row",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-row:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "machine-row",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-row:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-row:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "seated-cable-row",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:seated-cable-row:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "seated-cable-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:seated-cable-row:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "seated-cable-row",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:seated-cable-row:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "seated-cable-row",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:seated-cable-row:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "seated-cable-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:seated-cable-row:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "band-row",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-row:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-row:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "band-row",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-row:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "band-row",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-row:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-row",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-row:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dumbbell-shoulder-press",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-shoulder-press:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-shoulder-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-shoulder-press:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dumbbell-shoulder-press",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-shoulder-press:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dumbbell-shoulder-press",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-shoulder-press:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-shoulder-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-shoulder-press:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "lat-pulldown",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lat-pulldown:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "lat-pulldown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lat-pulldown:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "lat-pulldown",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lat-pulldown:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "lat-pulldown",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lat-pulldown:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "lat-pulldown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lat-pulldown:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "band-lat-pulldown",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-lat-pulldown:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-lat-pulldown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-lat-pulldown:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "band-lat-pulldown",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-lat-pulldown:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "band-lat-pulldown",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-lat-pulldown:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-lat-pulldown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-lat-pulldown:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "goblet-squat",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:goblet-squat:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "goblet-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:goblet-squat:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "goblet-squat",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:goblet-squat:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "goblet-squat",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:goblet-squat:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "goblet-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:goblet-squat:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "leg-press",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:leg-press:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "leg-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:leg-press:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "leg-press",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:leg-press:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "leg-press",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:leg-press:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "leg-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:leg-press:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "bodyweight-box-squat",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-box-squat:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "bodyweight-box-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-box-squat:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "bodyweight-box-squat",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-box-squat:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "bodyweight-box-squat",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-box-squat:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "bodyweight-box-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-box-squat:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-romanian-deadlift:supported",
+    "selectedUseCase": "main_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-romanian-deadlift:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-romanian-deadlift:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-romanian-deadlift:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-romanian-deadlift:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "cable-pull-through",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-pull-through:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-pull-through",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-pull-through:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "cable-pull-through",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-pull-through:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "cable-pull-through",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-pull-through:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-pull-through",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-pull-through:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "split-squat",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:split-squat:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "split-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:split-squat:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "split-squat",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:split-squat:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "split-squat",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:split-squat:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "split-squat",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:split-squat:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "step-up",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:step-up:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "step-up",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:step-up:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "step-up",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:step-up:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "step-up",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:step-up:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "step-up",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:step-up:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "lying-leg-curl",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lying-leg-curl:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "lying-leg-curl",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lying-leg-curl:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "lying-leg-curl",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lying-leg-curl:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "lying-leg-curl",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lying-leg-curl:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "lying-leg-curl",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:lying-leg-curl:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "glute-bridge",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:glute-bridge:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "glute-bridge",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:glute-bridge:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "glute-bridge",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:glute-bridge:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "glute-bridge",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:glute-bridge:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "glute-bridge",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:glute-bridge:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dumbbell-lateral-raise",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-lateral-raise:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-lateral-raise",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-lateral-raise:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dumbbell-lateral-raise",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-lateral-raise:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dumbbell-lateral-raise",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-lateral-raise:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-lateral-raise",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-lateral-raise:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "reverse-pec-deck",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:reverse-pec-deck:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "reverse-pec-deck",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:reverse-pec-deck:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "reverse-pec-deck",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:reverse-pec-deck:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "reverse-pec-deck",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:reverse-pec-deck:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "reverse-pec-deck",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:reverse-pec-deck:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "band-face-pull",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-face-pull:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-face-pull",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-face-pull:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "band-face-pull",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-face-pull:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "band-face-pull",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-face-pull:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "band-face-pull",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:band-face-pull:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "dumbbell-curl",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-curl:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-curl",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-curl:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "dumbbell-curl",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-curl:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "dumbbell-curl",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-curl:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "dumbbell-curl",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:dumbbell-curl:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "cable-triceps-pressdown",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-triceps-pressdown:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-triceps-pressdown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-triceps-pressdown:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "cable-triceps-pressdown",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-triceps-pressdown:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "cable-triceps-pressdown",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-triceps-pressdown:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "cable-triceps-pressdown",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:cable-triceps-pressdown:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "pallof-press",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:pallof-press:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "pallof-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:pallof-press:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "pallof-press",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:pallof-press:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "pallof-press",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:pallof-press:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "pallof-press",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:pallof-press:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "forearm-plank",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-plank:supported",
+    "selectedUseCase": "timed_hold",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "forearm-plank",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-plank:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "forearm-plank",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-plank:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "forearm-plank",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-plank:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "forearm-plank",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-plank:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "forearm-side-plank",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-side-plank:supported",
+    "selectedUseCase": "timed_hold",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "forearm-side-plank",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-side-plank:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "forearm-side-plank",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-side-plank:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "forearm-side-plank",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-side-plank:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "forearm-side-plank",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:forearm-side-plank:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "machine-abdominal-crunch",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-abdominal-crunch:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-abdominal-crunch",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-abdominal-crunch:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "machine-abdominal-crunch",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-abdominal-crunch:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "machine-abdominal-crunch",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-abdominal-crunch:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "machine-abdominal-crunch",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:machine-abdominal-crunch:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:half-kneeling-high-to-low-cable-chop:supported",
+    "selectedUseCase": "secondary_strength",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:half-kneeling-high-to-low-cable-chop:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:half-kneeling-high-to-low-cable-chop:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:half-kneeling-high-to-low-cable-chop:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:half-kneeling-high-to-low-cable-chop:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "farmer-carry",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:farmer-carry:supported",
+    "selectedUseCase": "accessory_carry",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "farmer-carry",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:farmer-carry:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "farmer-carry",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:farmer-carry:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "farmer-carry",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:farmer-carry:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "farmer-carry",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:farmer-carry:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "suitcase-carry",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:suitcase-carry:supported",
+    "selectedUseCase": "accessory_carry",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "suitcase-carry",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:suitcase-carry:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "suitcase-carry",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:suitcase-carry:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "suitcase-carry",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:suitcase-carry:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "suitcase-carry",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:suitcase-carry:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "wall-supported-suitcase-march",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-supported-suitcase-march:supported",
+    "selectedUseCase": "developmental_stationary_march",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "wall-supported-suitcase-march",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-supported-suitcase-march:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "wall-supported-suitcase-march",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-supported-suitcase-march:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "wall-supported-suitcase-march",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-supported-suitcase-march:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "wall-supported-suitcase-march",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-supported-suitcase-march:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "standing-calf-raise",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:standing-calf-raise:supported",
+    "selectedUseCase": "direct_accessory",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "standing-calf-raise",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:standing-calf-raise:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "standing-calf-raise",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:standing-calf-raise:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "standing-calf-raise",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:standing-calf-raise:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "standing-calf-raise",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:standing-calf-raise:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "side-lying-hip-adduction",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-hip-adduction:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "side-lying-hip-adduction",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-hip-adduction:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "side-lying-hip-adduction",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-hip-adduction:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "side-lying-hip-adduction",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-hip-adduction:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "side-lying-hip-adduction",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-hip-adduction:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "loop-band-lateral-walk",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:loop-band-lateral-walk:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "loop-band-lateral-walk",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:loop-band-lateral-walk:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "loop-band-lateral-walk",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:loop-band-lateral-walk:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "loop-band-lateral-walk",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:loop-band-lateral-walk:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "loop-band-lateral-walk",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:loop-band-lateral-walk:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-dumbbell-external-rotation:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-dumbbell-external-rotation:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-dumbbell-external-rotation:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-dumbbell-external-rotation:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:side-lying-dumbbell-external-rotation:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "supine-hamstring-walkout",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:supine-hamstring-walkout:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "supine-hamstring-walkout",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:supine-hamstring-walkout:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "supine-hamstring-walkout",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:supine-hamstring-walkout:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "supine-hamstring-walkout",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:supine-hamstring-walkout:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "supine-hamstring-walkout",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:supine-hamstring-walkout:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-ankle-dorsiflexion-rock:supported",
+    "selectedUseCase": "preparation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-ankle-dorsiflexion-rock:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-ankle-dorsiflexion-rock:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-ankle-dorsiflexion-rock:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:wall-ankle-dorsiflexion-rock:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-hip-hinge-rehearsal:supported",
+    "selectedUseCase": "activation",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-hip-hinge-rehearsal:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-hip-hinge-rehearsal:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-hip-hinge-rehearsal:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:bodyweight-hip-hinge-rehearsal:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  },
+  {
+    "actualStatus": "compiled",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expectedStatus": "compiled",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:single-leg-balance-rehearsal:supported",
+    "selectedUseCase": "timed_hold",
+    "variant": "supported"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:single-leg-balance-rehearsal:missing",
+    "selectedUseCase": null,
+    "variant": "missing"
+  },
+  {
+    "actualStatus": "prescription_purpose_policy_required",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expectedStatus": "prescription_purpose_policy_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:single-leg-balance-rehearsal:unsupported_future",
+    "selectedUseCase": null,
+    "variant": "unsupported_future"
+  },
+  {
+    "actualStatus": "prescription_purpose_conflict",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expectedStatus": "prescription_purpose_conflict",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:single-leg-balance-rehearsal:equal_primary_conflict",
+    "selectedUseCase": null,
+    "variant": "equal_primary_conflict"
+  },
+  {
+    "actualStatus": "prescription_purpose_required",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expectedStatus": "prescription_purpose_required",
+    "fallbackApplied": false,
+    "passed": true,
+    "scenarioId": "controlled:single-leg-balance-rehearsal:global_goal_only",
+    "selectedUseCase": null,
+    "variant": "global_goal_only"
+  }
+]

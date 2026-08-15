@@ -1,0 +1,18 @@
+[
+  {
+    "purpose": "movement_quality_development",
+    "status": "prescription_purpose_policy_required"
+  },
+  {
+    "purpose": "muscular_endurance_development",
+    "status": "prescription_purpose_policy_required"
+  },
+  {
+    "purpose": "systemic_conditioning_development",
+    "status": "prescription_purpose_policy_required"
+  },
+  {
+    "purpose": "power_development",
+    "status": "prescription_purpose_policy_required"
+  }
+]

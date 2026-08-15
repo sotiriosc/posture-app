@@ -1,0 +1,116 @@
+{
+  "invariantFailureCount": 0,
+  "invariants": [
+    {
+      "id": "purpose_requirement_array_order",
+      "passed": true
+    },
+    {
+      "id": "source_evidence_order",
+      "passed": true
+    },
+    {
+      "id": "provenance_order",
+      "passed": true
+    },
+    {
+      "id": "session_need_array_order_with_explicit_ids",
+      "passed": true
+    },
+    {
+      "id": "assignment_evidence_order",
+      "passed": true
+    },
+    {
+      "id": "weekly_objective_array_order_with_priority",
+      "passed": true
+    },
+    {
+      "id": "goal_relationship_order",
+      "passed": true
+    },
+    {
+      "id": "product_labels",
+      "passed": true
+    },
+    {
+      "id": "display_names",
+      "passed": true
+    },
+    {
+      "id": "explanation_prose",
+      "passed": true
+    },
+    {
+      "id": "exercise_catalog_order",
+      "passed": true
+    },
+    {
+      "id": "candidate_rank_after_selection",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_pain",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_assessment",
+      "passed": true
+    },
+    {
+      "id": "nonsemantic_exact_id_mapping",
+      "passed": true
+    },
+    {
+      "id": "v1_0_compatibility_replay_order",
+      "passed": true
+    }
+  ],
+  "materialResponseFailureCount": 0,
+  "materialResponses": [
+    {
+      "id": "local_purpose",
+      "passed": true
+    },
+    {
+      "id": "primary_supporting_authority",
+      "passed": true
+    },
+    {
+      "id": "weekly_objective_family",
+      "passed": true
+    },
+    {
+      "id": "weekly_objective_purpose",
+      "passed": true
+    },
+    {
+      "id": "goal_relationship",
+      "passed": true
+    },
+    {
+      "id": "section",
+      "passed": true
+    },
+    {
+      "id": "role",
+      "passed": true
+    },
+    {
+      "id": "selected_legal_dose_mode",
+      "passed": true
+    },
+    {
+      "id": "exercise_knowledge_legality",
+      "passed": true
+    },
+    {
+      "id": "resolver_policy_version",
+      "passed": true
+    },
+    {
+      "id": "purpose_policy_availability",
+      "passed": true
+    }
+  ]
+}

@@ -14,9 +14,13 @@ function productionTypeScriptFiles(directory: string): string[] {
 }
 
 const compilerRoot = resolve(root, "compiler");
+const compilerV1_1Root = resolve(root, "compilerV1_1");
+const purposeResolutionRoot = resolve(root, "purposeResolution");
 const policyRoot = resolve(root, "policies");
 const productionFiles = [
   ...productionTypeScriptFiles(compilerRoot),
+  ...productionTypeScriptFiles(compilerV1_1Root),
+  ...productionTypeScriptFiles(purposeResolutionRoot),
   ...productionTypeScriptFiles(policyRoot),
 ];
 
@@ -38,7 +42,7 @@ describe("production Prescription Compiler architecture", () => {
   });
 
   it("is not called by live program generation or app source", () => {
-    const excludedRoots = [compilerRoot, policyRoot];
+    const excludedRoots = [compilerRoot, compilerV1_1Root, purposeResolutionRoot, policyRoot];
     const liveFiles = [
       ...productionTypeScriptFiles(resolve(repositoryRoot, "apps")),
       ...productionTypeScriptFiles(resolve(repositoryRoot, "packages/engine/src")),

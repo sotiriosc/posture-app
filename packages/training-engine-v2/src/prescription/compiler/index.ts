@@ -1,5 +1,5 @@
 export * from "./compatibilityProjection";
-export * from "./compilePrescriptionAssignment";
+export { compilePrescriptionAssignment } from "./compilePrescriptionAssignment";
 export * from "./compileSessionPrescription";
 export * from "./contracts";
 export * from "./durationInterval";

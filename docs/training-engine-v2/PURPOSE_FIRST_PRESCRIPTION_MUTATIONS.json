@@ -1,0 +1,404 @@
+[
+  {
+    "id": "global_goal_before_local_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:global_goal_before_local_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "non_hypertrophy_defaults_to_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:non_hypertrophy_defaults_to_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "secondary_strength_role_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:secondary_strength_role_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "primary_strength_role_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:primary_strength_role_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "hypertrophy_accessory_role_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:hypertrophy_accessory_role_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "main_section_creates_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:main_section_creates_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "accessory_section_creates_hypertrophy",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:accessory_section_creates_hypertrophy"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "product_label_parsed",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:product_label_parsed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "reason_code_parsed",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:reason_code_parsed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "explanation_parsed",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:explanation_parsed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "exercise_name_parsed",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:exercise_name_parsed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "muscle_name_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:muscle_name_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "candidate_score_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:candidate_score_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "candidate_rank_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:candidate_rank_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "phase_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:phase_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "pain_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:pain_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "training_mode_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:training_mode_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "equipment_creates_purpose",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:equipment_creates_purpose"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "missing_purpose_falls_through",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:missing_purpose_falls_through"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "unsupported_purpose_borrows_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:unsupported_purpose_borrows_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "unsupported_purpose_borrows_hypertrophy",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:unsupported_purpose_borrows_hypertrophy"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "secondary_hypertrophy_borrows_secondary_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:secondary_hypertrophy_borrows_secondary_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "power_borrows_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:power_borrows_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "muscular_endurance_borrows_hypertrophy",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:muscular_endurance_borrows_hypertrophy"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "conditioning_borrows_capacity",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:conditioning_borrows_capacity"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "movement_quality_borrows_strength",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:movement_quality_borrows_strength"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "toning_added",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:toning_added"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "body_composition_added",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:body_composition_added"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "nutrition_added",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:nutrition_added"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "equal_primary_resolved_by_array_order",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:equal_primary_resolved_by_array_order"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "optional_overrides_required",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:optional_overrides_required"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "cross_goal_overrides_primary",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:cross_goal_overrides_primary"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "two_dose_blocks_for_two_purposes",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:two_dose_blocks_for_two_purposes"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "two_source_events_for_one_assignment",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:two_source_events_for_one_assignment"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "purpose_overrides_illegal_mode",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:purpose_overrides_illegal_mode"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "purpose_invents_load",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:purpose_invents_load"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "purpose_invents_tempo",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:purpose_invents_tempo"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "purpose_invents_rest",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:purpose_invents_rest"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "purpose_changes_numeric_values",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:purpose_changes_numeric_values"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "missing_rule_reported_as_unsupported_mode",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:missing_rule_reported_as_unsupported_mode"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "v1_0_behavior_changed",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:v1_0_behavior_changed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "product_shadow_imports_v1_1",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:product_shadow_imports_v1_1"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "product_shadow_status_changes",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:product_shadow_status_changes"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "orchestration_imports_v1_1",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:orchestration_imports_v1_1"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "product_mapping_changes",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:product_mapping_changes"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "product_ui_changes",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:product_ui_changes"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "generate_program_changes",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:generate_program_changes"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "ledger_b2_completed_before_tests",
+    "issueCount": 1,
+    "issues": [
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:ledger_b2_completed_before_tests"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "b3_removed",
+    "issueCount": 2,
+    "issues": [
+      "B3_MUST_REMAIN_OPEN",
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:b3_removed"
+    ],
+    "result": "REJECTED"
+  },
+  {
+    "id": "final_ledger_marked_completed",
+    "issueCount": 2,
+    "issues": [
+      "FINAL_LEDGER_COMPLETION_PREMATURE",
+      "PROHIBITED_PURPOSE_RESOLVER_BEHAVIOR:final_ledger_marked_completed"
+    ],
+    "result": "REJECTED"
+  }
+]

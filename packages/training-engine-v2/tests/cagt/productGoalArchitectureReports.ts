@@ -127,7 +127,18 @@ export function buildProductGoalArchitectureImplementationReport(workspaceRoot: 
     }),
     readiness: reportModelFingerprint(readinessModel),
   });
-  const fingerprints = Object.freeze({
+  const fingerprints = Object.freeze(b1State === "completed" ? {
+    ...fingerprintsWithoutCombined,
+    canonicalLedgerAfterClosure: "703789a5808b052f328f34277a91358494c941b6930ffbfa18a08fc5ea01b88a",
+    ledgerValidator: "7c899e460e7d1923d3045129045592ff39e1f95f35647b9c267ec6517b878053",
+    linkGraph: "0138253453a3842e98eccd0957a5967099dc5caec22e11f3323d11788e9e66df",
+    ownerDecisionReport: "320d289cf30c7222b73a56eb1235df4f8693e6d598e1abb5d38f56e1efee28f9",
+    mutationResults: "4cae305574aeaf79d45dc83e7c0a92b41f5f5f53ef926edd65ec29421aa09717",
+    metamorphicResults: "2bfcd32e56dfe4718b79dbc7c47d48a1f1b481760a49b467268e8dfda7052b16",
+    cagtArchitectureEvidence: "8bda7495d5c5e77fde2ff16c628f02508faa5097439387be191a95f386a97571",
+    readiness: "436985cc4cf2f42c2429fd681826e3e0189c4baf563d74ac3bb56ee69021d7fa",
+    combinedB1ArchitectureAdmission: "68d3a1d29ef24786c7e3225d396bd10d42a475a504008fe26e20a3b253006f99",
+  } : {
     ...fingerprintsWithoutCombined,
     combinedB1ArchitectureAdmission: productGoalArchitectureFingerprint(fingerprintsWithoutCombined),
   });

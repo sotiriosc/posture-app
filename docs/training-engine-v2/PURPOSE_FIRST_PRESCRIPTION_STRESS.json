@@ -1,0 +1,19 @@
+{
+  "counts": {
+    "equalPrimaryConflictEvaluations": 1000,
+    "lineageValidations": 10000,
+    "multiGoalEvaluations": 2000,
+    "noRescueMutations": 1000,
+    "purposeModeEvaluations": 10000,
+    "purposeResolutions": 10000,
+    "roleSectionEvaluations": 10000,
+    "sharedAssignmentEvaluations": 2000,
+    "snapshotBuilds": 10000,
+    "supportedGoldenComparisons": 5000,
+    "unsupportedPurposeEvaluations": 5000,
+    "v1CompatibilityReplays": 1000
+  },
+  "deterministicReplay": true,
+  "failureCount": 0,
+  "fingerprint": "e0880ce355f7004f8489313d5636b27f4703d5622bc591d053330ceac57a2ff7"
+}

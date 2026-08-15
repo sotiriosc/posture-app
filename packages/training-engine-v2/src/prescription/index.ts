@@ -11,3 +11,5 @@ export * from "./types";
 export * from "./validation";
 export * from "./policies";
 export * from "./compiler";
+export * from "./compilerV1_1";
+export * from "./purposeResolution";

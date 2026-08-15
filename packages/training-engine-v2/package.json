@@ -221,6 +221,12 @@
     "test:product-goal-architecture:ledger": "vitest --run --config vitest.config.ts tests/unit/productGoalArchitectureLedger.test.ts tests/unit/productGoalArchitectureReports.test.ts",
     "test:product-goal-architecture:mutations": "vitest --run --config vitest.config.ts tests/unit/productGoalArchitectureEvidence.test.ts",
     "test:product-goal-architecture:activation": "vitest --run --config vitest.config.ts tests/unit/productGoalArchitectureActivation.test.ts",
-    "report:product-goal-architecture": "node --import tsx dev/reportProductGoalArchitecture.ts"
+    "report:product-goal-architecture": "node --import tsx dev/reportProductGoalArchitecture.ts",
+    "test:purpose-first-prescription": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionContracts.test.ts tests/unit/purposeFirstPrescriptionEvidence.test.ts tests/unit/purposeFirstPrescriptionCompiler.test.ts tests/unit/purposeFirstPrescriptionCagt.test.ts tests/unit/cagtPurposeFirstPrescriptionRegistryV12.test.ts tests/unit/purposeFirstPrescriptionReports.test.ts tests/unit/purposeFirstPrescriptionActivation.test.ts",
+    "test:purpose-first-prescription:contracts": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionContracts.test.ts tests/unit/purposeFirstPrescriptionEvidence.test.ts",
+    "test:purpose-first-prescription:compiler": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCompiler.test.ts",
+    "test:purpose-first-prescription:cagt": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCagt.test.ts tests/unit/cagtPurposeFirstPrescriptionRegistryV12.test.ts",
+    "test:purpose-first-prescription:stress": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCagt.test.ts -t stress",
+    "report:purpose-first-prescription": "node --import tsx dev/reportPurposeFirstPrescriptionResolver.ts"
   }
 }
