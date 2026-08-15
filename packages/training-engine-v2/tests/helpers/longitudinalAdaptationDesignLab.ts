@@ -272,7 +272,7 @@ export function longitudinalAdaptationActivationGuards() {
     liveAdherenceIngestionCount: count([...production, ...apps], /ingestLongitudinalAdherence\s*\(/),
     uiImportCount: count(ui, /longitudinalAdaptation/),
     productionLongitudinalExportCount: count(production.filter((entry) => entry.path.endsWith("src/index.ts")),
-      /longitudinalAdaptation/),
+      /runLongitudinalAdaptationGate16/),
     phaseApplicationCount: count([...production, ...apps], /applyLongitudinalPhaseMutation\s*\(/),
     weekReallocationCount: count([...production, ...apps], /applyLongitudinalWeekReallocation\s*\(/),
     automaticActionCount: count([...production, ...apps], /automaticLongitudinal(?:Progression|Regression|Replacement|Rotation|Deload)/),

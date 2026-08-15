@@ -16,8 +16,11 @@ describe("Gate 16 reports", () => {
     expect(Object.keys(reports).sort()).toEqual([...LONGITUDINAL_ADAPTATION_REPORT_FILENAMES].sort());
     const packageRoot = process.cwd().endsWith("packages/training-engine-v2") ? process.cwd() :
       resolve(process.cwd(), "packages/training-engine-v2");
+    const productionMarker = /\n*<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:START -->[\s\S]*?<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:END -->\n*/;
     for (const filename of LONGITUDINAL_ADAPTATION_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(packageRoot, "../../docs/training-engine-v2", filename), "utf8"), filename)
+      const actual = readFileSync(resolve(packageRoot, "../../docs/training-engine-v2", filename), "utf8")
+        .replace(productionMarker, "\n");
+      expect(actual, filename)
         .toBe(reports[filename]);
     }
   });

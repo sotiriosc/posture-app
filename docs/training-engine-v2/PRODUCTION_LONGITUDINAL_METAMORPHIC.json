@@ -1,0 +1,153 @@
+{
+  "invariantCaseCount": 24,
+  "materialResponseCaseCount": 24,
+  "failureCount": 0,
+  "rows": [
+    {
+      "scenarioId": "longitudinal-holdout-001",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-002",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-003",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-004",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-005",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-006",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-007",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-008",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-009",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-010",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-011",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-012",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-013",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-014",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-015",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-016",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-017",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-018",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-019",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-020",
+      "passed": true,
+      "baselineFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a",
+      "reorderedFingerprint": "9d41766ab67ecee127133a37a97e160c688310deb4ebdf9647fc8f6ca479783a"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-021",
+      "passed": true,
+      "baselineFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03",
+      "reorderedFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-022",
+      "passed": true,
+      "baselineFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03",
+      "reorderedFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-023",
+      "passed": true,
+      "baselineFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03",
+      "reorderedFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03"
+    },
+    {
+      "scenarioId": "longitudinal-holdout-024",
+      "passed": true,
+      "baselineFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03",
+      "reorderedFingerprint": "c0368f19d1db6343a117374e4edf5df62fe7ad8091dc8a4c90d831a85602af03"
+    }
+  ],
+  "fingerprint": "92df3f80f51bf49d0ea18b99ea78c66511431d09ad89e0cd8974ed5cca3cd2b1",
+  "result": "PRODUCTION_LONGITUDINAL_ADAPTATION_METAMORPHIC_PASS"
+}

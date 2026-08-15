@@ -7,6 +7,7 @@ export * from "./optimizerContracts";
 export * from "./pipelineObservability";
 export * from "./phaseSuitability";
 export * from "./phaseContinuity";
+export * from "./longitudinalAdaptation";
 export * from "./prescription";
 export * from "./prescriptionProgression";
 export * from "./reasonCodes";

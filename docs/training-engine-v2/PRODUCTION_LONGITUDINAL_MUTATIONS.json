@@ -1,0 +1,8 @@
+{
+  "mutationCaseCount": 130,
+  "semanticFailureCaseCount": 16,
+  "missingRequiredMutationCount": 0,
+  "mismatchCount": 0,
+  "fingerprint": "2e55691246ee2f316fc6a15284d25852ff48fefef4eff8c33f2b2131145e5de5",
+  "result": "PRODUCTION_LONGITUDINAL_ADAPTATION_MUTATION_MATRIX_PASS"
+}

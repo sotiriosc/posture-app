@@ -1,0 +1,19 @@
+{
+  "reasonCodes": [],
+  "revisionTrace": [
+    {
+      "sourceRecordId": "production-longitudinal-source:016c22c0713c7d3c",
+      "activeRevisionId": "production-longitudinal-source-revision:d94bdb914c049a3d",
+      "historicalRevisionIds": [],
+      "valid": true,
+      "reasonCodes": []
+    },
+    {
+      "sourceRecordId": "production-longitudinal-source:e058df673750df0b",
+      "activeRevisionId": "production-longitudinal-source-revision:2a4db03dcf3cbc71",
+      "historicalRevisionIds": [],
+      "valid": true,
+      "reasonCodes": []
+    }
+  ]
+}

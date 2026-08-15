@@ -419,7 +419,9 @@ export function phaseContinuityActivationGuards() {
   const tooling = read(gate15ToolFiles);
   const checks = Object.freeze({
     appGate15ImportCount: apps.filter((entry) => /phaseContinuity|phase-continuity|Gate15/.test(entry.content)).length,
-    productionGate15ImportCount: production.filter((entry) => /phaseContinuity\/|phaseContinuityGate15/.test(entry.content)).length,
+    productionGate15ImportCount: production.filter((entry) =>
+      /import\s+(?!type\b)[^;]*from\s+["'][^"']*phaseContinuity\//.test(entry.content) ||
+      /phaseContinuityGate15\s*\(/.test(entry.content)).length,
     publicIndexExportCount: production.filter((entry) => entry.path.endsWith("src/index.ts") &&
       /phaseContinuity\/designContracts/.test(entry.content)).length,
     generateProgramCallCount: tooling.filter((entry) => /generateProgram\s*\(/.test(entry.content)).length,

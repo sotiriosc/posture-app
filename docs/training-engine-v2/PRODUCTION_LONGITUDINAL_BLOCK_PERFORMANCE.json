@@ -1,0 +1,9 @@
+{
+  "valid": true,
+  "eventCompletionState": "completed_as_planned",
+  "orphanBlockResultCount": 0,
+  "plannedAsActualCount": 0,
+  "prescribedTimingAsActualCount": 0,
+  "multiBlockFlatteningCount": 0,
+  "reasonCodes": []
+}

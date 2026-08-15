@@ -42,3 +42,19 @@ Production kernel; live Performance/adherence/recovery adapters; persistence; pr
 - gate15Holdout: `9d4c6fe5b46612e34a798beee89f0c6e83992df516ebdbdc37fe28b47aa7f293`
 - productionPhaseContinuity: `39236671808d605a53258351b58b081a64231b8c4fd6dee4125501e68e9bd232`
 - productionPhaseContinuityGolden: `b0e6f7bd1605c7de9d85a16f0bb5c65cd2784d23d4f64d9d5d894bda4b92a635`
+
+<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:START -->
+## Production Longitudinal Adaptation Kernel V1
+
+- Status: `PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_IMPLEMENTED_NOT_ACTIVATED`
+- Classification: `PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_READY_FOR_OUTCOME_SOURCE_AND_APPLICATION_INTEGRATION_AUTHORIZATION`
+- Activation: `NOT_ACTIVATED`
+- Contract: `PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL@1.0.0`
+- Policy and caller-supplied outcome sources are explicit; no live adapter or default is selected.
+- Decisions remain unapplied; program, Prescription, replacement, rotation, deload, Week, and Phase mutation flags are false.
+- Registry V6 records Gate 16 production-kernel authority; production code imports no CAGT registry.
+- Golden equivalence: `PRODUCTION_LONGITUDINAL_ADAPTATION_GOLDEN_EQUIVALENCE_PASS` across 130 controlled, 40 shell, and 360 holdout cases.
+- Stress: `PRODUCTION_LONGITUDINAL_ADAPTATION_DETERMINISTIC_STRESS_PASS` across 10000 evaluations.
+- Combined fingerprint: `8827a14a2e06dc0c6ddd8902852337946babdca501c81119324b420a69917581`
+- Exact next dependency: `OWNER_AUTHORIZATION_FOR_PRODUCTION_OUTCOME_SOURCE_ADAPTERS_PERSISTENCE_AND_ADAPTATION_APPLICATION_ORCHESTRATION`.
+<!-- PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL_V1:END -->

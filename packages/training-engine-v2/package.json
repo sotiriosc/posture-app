@@ -123,6 +123,22 @@
     "test:cagt:longitudinal-adaptation:stress": "vitest --run --config vitest.config.ts tests/unit/cagtLongitudinalAdaptationStress.test.ts",
     "report:cagt:longitudinal-adaptation": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts",
     "report:cagt:longitudinal-adaptation:actions": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts",
-    "report:cagt:longitudinal-adaptation:stress": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts"
+    "report:cagt:longitudinal-adaptation:stress": "node --import tsx dev/reportLongitudinalAdaptationCagt.ts",
+    "test:longitudinal-adaptation": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalContracts.test.ts tests/unit/productionLongitudinalPolicy.test.ts tests/unit/productionLongitudinalSources.test.ts tests/unit/productionLongitudinalBlockPerformance.test.ts tests/unit/productionLongitudinalLedgerEvidence.test.ts tests/unit/productionLongitudinalActions.test.ts tests/unit/productionLongitudinalReplacementApplication.test.ts tests/unit/productionLongitudinalRevisions.test.ts tests/unit/productionLongitudinalGolden.test.ts tests/unit/productionLongitudinalMutations.test.ts tests/unit/productionLongitudinalActivation.test.ts tests/unit/productionLongitudinalStress.test.ts tests/unit/productionLongitudinalReports.test.ts",
+    "test:longitudinal-adaptation:contracts": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalContracts.test.ts tests/unit/productionLongitudinalActivation.test.ts",
+    "test:longitudinal-adaptation:policy": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalPolicy.test.ts",
+    "test:longitudinal-adaptation:sources": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalSources.test.ts",
+    "test:longitudinal-adaptation:block-performance": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalBlockPerformance.test.ts",
+    "test:longitudinal-adaptation:ledger": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalLedgerEvidence.test.ts",
+    "test:longitudinal-adaptation:evidence": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalLedgerEvidence.test.ts tests/unit/productionLongitudinalMutations.test.ts",
+    "test:longitudinal-adaptation:progression": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalActions.test.ts",
+    "test:longitudinal-adaptation:replacement": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalReplacementApplication.test.ts",
+    "test:longitudinal-adaptation:application": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalReplacementApplication.test.ts tests/unit/productionLongitudinalActivation.test.ts",
+    "test:longitudinal-adaptation:revisions": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalSources.test.ts tests/unit/productionLongitudinalRevisions.test.ts",
+    "test:longitudinal-adaptation:golden": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalGolden.test.ts",
+    "test:longitudinal-adaptation:stress": "vitest --run --config vitest.config.ts tests/unit/productionLongitudinalStress.test.ts",
+    "report:longitudinal-adaptation": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts",
+    "report:longitudinal-adaptation:golden": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts",
+    "report:longitudinal-adaptation:stress": "node --import tsx dev/reportProductionLongitudinalAdaptation.ts"
   }
 }

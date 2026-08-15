@@ -1,0 +1,13 @@
+{
+  "productionPolicyReference": {
+    "policyId": "LONGITUDINAL_ADAPTATION_POLICY_V1_STABLE_RESPONSE_LED",
+    "version": "1.0.0"
+  },
+  "designProjectionReference": {
+    "policyId": "LONGITUDINAL_ADAPTATION_POLICY_V1_STABLE_RESPONSE_LED",
+    "version": "1.0.0"
+  },
+  "philosophyEquivalent": true,
+  "duplicateLivePolicyCount": 0,
+  "result": "PRODUCTION_LONGITUDINAL_POLICY_V1_MIGRATION_PASS"
+}
