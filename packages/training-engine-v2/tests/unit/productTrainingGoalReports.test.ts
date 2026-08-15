@@ -13,6 +13,8 @@ import {
 const workspaceRoot = process.cwd().endsWith("packages/training-engine-v2") ?
   resolve(process.cwd(), "../..") : process.cwd();
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
+const architectureMarker = /\n*<!-- PRODUCT_GOAL_ARCHITECTURE_LEDGER_V1:START -->[\s\S]*?<!-- PRODUCT_GOAL_ARCHITECTURE_LEDGER_V1:END -->\n?/;
+const withoutArchitectureMarker = (value: string) => value.replace(architectureMarker, "\n");
 
 describe("Product training goal deterministic reports", () => {
   it("builds and persists all 18 Markdown and six JSON artifacts", () => {
@@ -21,7 +23,8 @@ describe("Product training goal deterministic reports", () => {
     expect(Object.keys(markdown)).toEqual([...PRODUCT_TRAINING_GOAL_REPORT_FILENAMES]);
     expect(Object.keys(json)).toEqual([...PRODUCT_TRAINING_GOAL_JSON_FILENAMES]);
     for (const filename of PRODUCT_TRAINING_GOAL_REPORT_FILENAMES) {
-      expect(readFileSync(resolve(docsRoot, filename), "utf8")).toBe(markdown[filename]);
+      expect(withoutArchitectureMarker(readFileSync(resolve(docsRoot, filename), "utf8")))
+        .toBe(markdown[filename]);
       expect(markdown[filename]).toContain("Production/Product/shadow rollout changed: `NO/NO/NO`");
     }
     for (const filename of PRODUCT_TRAINING_GOAL_JSON_FILENAMES) {

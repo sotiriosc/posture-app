@@ -1,0 +1,331 @@
+{
+  "policyReference": {
+    "contractId": "PRODUCT_TRAINING_GOAL_ARCHITECTURE_POLICY_V1_LAYERED_PURPOSE_FIRST",
+    "contractVersion": "1.0.0",
+    "contractReference": "PRODUCT_TRAINING_GOAL_ARCHITECTURE_POLICY_V1_LAYERED_PURPOSE_FIRST@1.0.0"
+  },
+  "status": "OWNER_SELECTED_ARCHITECTURE_NOT_EXECUTABLE_POLICY",
+  "executable": false,
+  "canonicalLedger": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+  "authority": "OWNER_APPROVED_ARCHITECTURE_ENCODED_INERTLY",
+  "canonicalOutcomeGoals": [
+    "strength",
+    "hypertrophy",
+    "general_fitness",
+    "conditioning",
+    "posture_and_movement_quality"
+  ],
+  "closedVocabularies": {
+    "productLabels": [
+      "get_stronger",
+      "build_muscle",
+      "improve_fitness_and_stamina",
+      "improve_posture_and_movement",
+      "improve_athletic_performance"
+    ],
+    "goalPriorities": [
+      "primary",
+      "secondary"
+    ],
+    "trainingModes": [
+      "develop",
+      "maintain",
+      "return_or_rebuild"
+    ],
+    "mappingStates": [
+      "approved_direction_not_implemented",
+      "exact_candidate_mapping",
+      "structured_follow_up_required",
+      "owner_policy_required",
+      "future_owner_required",
+      "intentionally_not_exposed",
+      "unsupported"
+    ],
+    "purposePolicyStates": [
+      "currently_supported",
+      "future_policy_required",
+      "context_only",
+      "Product_follow_up_required",
+      "body_composition_owner_required",
+      "nutrition_owner_required"
+    ],
+    "activationStates": [
+      "not_implemented",
+      "shadow_only_future",
+      "owner_account_future",
+      "general_activation_future",
+      "rejected"
+    ],
+    "chunkStates": [
+      "completed_inert",
+      "future_authorization_required",
+      "future_owner_policy_required",
+      "future_evidence_required",
+      "future_default_off_only",
+      "future_counterfactual_only",
+      "future_owner_input_required",
+      "separate_authorization_required"
+    ]
+  },
+  "productVocabulary": [
+    {
+      "label": "get_stronger",
+      "displayDirection": "Get stronger",
+      "candidateOutcome": "strength",
+      "mappingState": "exact_candidate_mapping",
+      "currentProductOption": false,
+      "runtimeMappingImplemented": false,
+      "activationState": "not_implemented"
+    },
+    {
+      "label": "build_muscle",
+      "displayDirection": "Build muscle",
+      "candidateOutcome": "hypertrophy",
+      "mappingState": "exact_candidate_mapping",
+      "currentProductOption": false,
+      "runtimeMappingImplemented": false,
+      "activationState": "not_implemented"
+    },
+    {
+      "label": "improve_fitness_and_stamina",
+      "displayDirection": "Improve fitness and stamina",
+      "candidateOutcome": null,
+      "mappingState": "owner_policy_required",
+      "currentProductOption": false,
+      "runtimeMappingImplemented": false,
+      "activationState": "not_implemented"
+    },
+    {
+      "label": "improve_posture_and_movement",
+      "displayDirection": "Improve posture and movement",
+      "candidateOutcome": "posture_and_movement_quality",
+      "mappingState": "exact_candidate_mapping",
+      "currentProductOption": false,
+      "runtimeMappingImplemented": false,
+      "activationState": "not_implemented"
+    },
+    {
+      "label": "improve_athletic_performance",
+      "displayDirection": "Improve athletic performance",
+      "candidateOutcome": null,
+      "mappingState": "structured_follow_up_required",
+      "currentProductOption": false,
+      "runtimeMappingImplemented": false,
+      "activationState": "not_implemented"
+    }
+  ],
+  "goalPriority": {
+    "primaryGoalCount": 1,
+    "secondaryGoalMinimum": 0,
+    "secondaryGoalMaximum": 1,
+    "ordered": true,
+    "sameGoalMayOccupyBothPriorities": false,
+    "equalPriorityBagAllowed": false
+  },
+  "programmingContext": {
+    "separateFromOutcome": true,
+    "painAwareReturnIsContextOnly": true,
+    "painIsDiagnostic": false,
+    "examples": [
+      "pain_aware_return",
+      "return_after_absence",
+      "explicit_restriction",
+      "successful_re_exposure"
+    ]
+  },
+  "trainingMode": {
+    "separateFromOutcome": true,
+    "values": [
+      "develop",
+      "maintain",
+      "return_or_rebuild"
+    ],
+    "currentBuildMeaning": "developmental_progression_not_outcome",
+    "maintainPolicyState": "future_policy_required",
+    "returnOrRebuildPolicyState": "future_policy_required"
+  },
+  "prescriptionResolution": {
+    "selectedArchitecture": "G4_PURPOSE_FIRST_PLUS_G1_FAIL_CLOSED",
+    "purposeFirstOrder": [
+      "weekly_objective",
+      "session_need",
+      "assignment_role",
+      "section",
+      "exercise_knowledge",
+      "legal_dose_mode",
+      "equipment_realization",
+      "experience_familiarity_safety_response_context",
+      "outcome_goal_as_bounded_context"
+    ],
+    "outcomeGoalRole": "bounded_context_after_local_ownership_and_realization",
+    "missingPolicyBehavior": "fail_closed",
+    "missingPolicyResults": [
+      "POLICY_REQUIRED",
+      "UNSUPPORTED_SCOPE"
+    ],
+    "strengthFallthroughAllowed": false,
+    "executableResolverImplemented": false
+  },
+  "purposeLanes": {
+    "values": [
+      "strength_development",
+      "hypertrophy_development",
+      "power_development",
+      "muscular_endurance",
+      "local_capacity",
+      "systemic_conditioning",
+      "movement_quality",
+      "technique",
+      "preparation",
+      "activation",
+      "recovery"
+    ],
+    "currentlyReviewed": [
+      "strength_development",
+      "hypertrophy_development",
+      "local_capacity",
+      "preparation",
+      "activation",
+      "recovery"
+    ],
+    "futurePolicyRequired": [
+      "power_development",
+      "muscular_endurance",
+      "systemic_conditioning",
+      "movement_quality",
+      "technique"
+    ]
+  },
+  "strengthBoundary": {
+    "mayFavor": [
+      "sufficiently_loadable_main_work",
+      "stable_repeatable_movement_skill",
+      "lower_repetitions_where_truthful",
+      "longer_rest_where_required",
+      "evidence_led_legal_progression",
+      "main_work_early"
+    ],
+    "mustNotForce": [
+      "universal_3_to_6_repetitions",
+      "low_reps_for_unsuitable_identities",
+      "barbell_only_selection",
+      "beginner_maximal_loading",
+      "pain_aware_maximal_loading",
+      "identical_equipment_prescriptions",
+      "automatic_progression"
+    ]
+  },
+  "hypertrophyBoundary": {
+    "mayFavor": [
+      "sufficient_developmental_volume",
+      "broad_legal_repetition_ranges",
+      "sufficient_effort",
+      "enough_rest_to_preserve_useful_work",
+      "stable_target_ownership",
+      "unique_value_direct_or_accessory_work"
+    ],
+    "doesNotRequire": [
+      "only_8_to_12_repetitions",
+      "short_rest",
+      "failure",
+      "mandatory_slow_tempo",
+      "soreness",
+      "exercise_churn"
+    ]
+  },
+  "adjacentBoundaries": {
+    "generalFitness": "coherent_responsibility_bundle_not_universal_rep_range",
+    "muscularEndurance": "local_fatigue_resistance_not_systemic_conditioning",
+    "conditioning": "systemic_or_broader_work_capacity_future_policy_required",
+    "power": "explicit_future_developmental_purpose_and_policy_required",
+    "athleticPerformance": "structured_product_follow_up_required_no_silent_mapping"
+  },
+  "toningLanguage": {
+    "canonicalOutcome": false,
+    "initialState": "T0_INTENTIONALLY_NOT_EXPOSED",
+    "futurePreferredState": "T2_STRUCTURED_CLARIFICATION",
+    "clarificationOptions": [
+      "more_muscle",
+      "lower_body_fat",
+      "greater_endurance",
+      "combination"
+    ],
+    "directHighRepsShortRestResolutionAllowed": false
+  },
+  "bodyComposition": {
+    "owner": "SEPARATE_PRODUCT_OR_PROFILE_OWNER_REQUIRED",
+    "prescriptionOwnerAllowed": false,
+    "intentExamples": [
+      "lose_body_fat",
+      "build_or_preserve_muscle",
+      "both"
+    ]
+  },
+  "nutrition": {
+    "owner": "SEPARATE_NUTRITION_OWNER_REQUIRED",
+    "prescriptionOwnerAllowed": false,
+    "fatLossPromiseFromRepRangeAllowed": false
+  },
+  "activation": {
+    "productMappingChanged": false,
+    "productUiChanged": false,
+    "shadowMappingChanged": false,
+    "shadowRolloutChanged": false,
+    "v2Activated": false,
+    "publicProductApiChanged": false,
+    "currentState": "not_implemented"
+  },
+  "stagedImplementation": [
+    {
+      "chunk": "B1",
+      "scope": "canonical_owner_policy_contracts",
+      "state": "completed_inert"
+    },
+    {
+      "chunk": "B2",
+      "scope": "purpose_first_prescription_resolver",
+      "state": "future_authorization_required"
+    },
+    {
+      "chunk": "B3",
+      "scope": "supported_goal_and_purpose_policies",
+      "state": "future_owner_policy_required"
+    },
+    {
+      "chunk": "B4",
+      "scope": "equipment_experience_context_realization",
+      "state": "future_evidence_required"
+    },
+    {
+      "chunk": "C",
+      "scope": "controlled_product_shadow_mapping",
+      "state": "future_default_off_only"
+    },
+    {
+      "chunk": "D",
+      "scope": "goal_specific_shadow_evidence",
+      "state": "future_counterfactual_only"
+    },
+    {
+      "chunk": "E",
+      "scope": "owner_screenshot_surface_review",
+      "state": "future_owner_input_required"
+    },
+    {
+      "chunk": "F",
+      "scope": "one_inactive_product_option",
+      "state": "future_authorization_required"
+    },
+    {
+      "chunk": "G",
+      "scope": "owner_account_delivery",
+      "state": "separate_authorization_required"
+    },
+    {
+      "chunk": "H",
+      "scope": "broader_product_activation",
+      "state": "separate_authorization_required"
+    }
+  ],
+  "nextDependency": "PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTATION_AUTHORIZATION"
+}

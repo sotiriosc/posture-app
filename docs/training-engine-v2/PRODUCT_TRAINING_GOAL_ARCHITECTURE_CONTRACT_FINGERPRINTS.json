@@ -1,0 +1,418 @@
+{
+  "initialLedgerLocation": "packages/training-engine-v2/docs/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+  "canonicalLedgerPath": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+  "fingerprints": {
+    "initialLedgerSeed": "f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457",
+    "canonicalLedgerBeforeClosure": "f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457",
+    "canonicalLedgerAfterClosure": "f72a901280feed39a5afced9e5f9b008d75776d01a5a2434e733a31526bd3457",
+    "ownerPolicyContract": "d0f65c147de6916ef3429191e1a066786545961dd012841c499a3292a957d749",
+    "productVocabulary": "1a7dff613af1b7f4f467c4be5edbb8066087f0809638f397b1e276a649a33292",
+    "primarySecondaryPolicy": "cfff197d8ea92b9eb66c4f059acef0c5fe901612cae6d708b4b7c74c271a46af",
+    "programmingContextPolicy": "55126211b8ec5fbd19de471c25a020a0db10061d4db7b00285d19dbfc4ac8f2c",
+    "trainingModePolicy": "ab880d8c1f7179eb55176aa26ea9a821dabf438c776c52bf1233ae4813f0e2f4",
+    "purposeFirstArchitecture": "90d8f965d7b7634c97fce46eee2e5a281d9ea3459f1581a8f2bd5f229c75019a",
+    "failClosedArchitecture": "745ed0c3848f9ba72e7cdc0d51e479634e752d2d0560290d83b32de64b3a0da6",
+    "strengthBoundary": "30f6fcacddb5827eafd863ea9560db10df7cda2f022837f073b6e627a3325098",
+    "hypertrophyBoundary": "54b1bdb97c00727b2a2af92adfe2376044e91a34b5e3c50fe794e335b7bf5aa8",
+    "toningPolicy": "73f85ef1578534a17005e73b64a683fe8e9491b1b5bd015ca1ca25172118a0ef",
+    "bodyCompositionBoundary": "a724f99e8b08857e828a1051f1bb26fa7e4f35155bc82b0ab5915a23e20e1da2",
+    "nutritionBoundary": "73652c27944addff57156cf560556da98208be7fbb8f45c87087f3219f82559a",
+    "futurePurposeLanes": "a19938a540412e8437c5720d36b79b747a52c9c093cc425114c40abb43dcc95b",
+    "activationState": "f3aa99243ffce7a5cd218bde091e651d77eea8218bf6738fb49da7caa2d0879d",
+    "generatedPolicyJson": "f0e998501c111bc2d954ff0fc21e7806259f6579d9d6779e2580a191f93c0b8c",
+    "ledgerValidator": "4f521c9764488c53efea48c61c24e090d7e235082d08d83ce62382e130734f8a",
+    "linkGraph": "0138253453a3842e98eccd0957a5967099dc5caec22e11f3323d11788e9e66df",
+    "ownerDecisionReport": "4afdd7c816436d8a96086f85ca51a01e8704ef9fdb86bd89152c7cddc6d6b4ea",
+    "mutationResults": "4cae305574aeaf79d45dc83e7c0a92b41f5f5f53ef926edd65ec29421aa09717",
+    "metamorphicResults": "2bfcd32e56dfe4718b79dbc7c47d48a1f1b481760a49b467268e8dfda7052b16",
+    "cagtArchitectureEvidence": "8bda7495d5c5e77fde2ff16c628f02508faa5097439387be191a95f386a97571",
+    "readiness": "64892f4fc81e7b747d654cd57f137fb61e2d4b607766cfbd5149ccc78dceb123",
+    "combinedB1ArchitectureAdmission": "e379675e791e3dcf326475b463804e99ab2d243556e8ea3a481d53a93668b15e"
+  },
+  "upstream": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "weekPolicyV1": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db",
+    "prescriptionTiming": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "prescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "prescriptionPolicyV1": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8",
+    "productionPrescriptionCompiler": "91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4",
+    "productionWeek": "4f3fd80ed3fee29cb12c88ef6dea38b6e5f70777ac4718391daa8e7548527387",
+    "productionLongitudinal": "8827a14a2e06dc0c6ddd8902852337946babdca501c81119324b420a69917581",
+    "applicationOrchestration": "a88a493e1553badb4f8cada551ee9d8357d21c4e04872c852bc60058769f8aca",
+    "controlledProductShadow": "fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c",
+    "productTrainingGoalAudit": "0606f9cd19d73e8cf683080c3b71fad1af7eb19d0c873a2361e294cde3be27fb"
+  },
+  "policyValidation": [],
+  "ledgerValidation": [],
+  "sourceGuardValidation": [],
+  "mutations": [
+    {
+      "id": "M01_SECOND_CANONICAL_LEDGER",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "ARCHITECTURE_LEDGER_UNIQUENESS_OR_PATH_INVALID"
+      ]
+    },
+    {
+      "id": "M02_LEDGER_OUTSIDE_CANONICAL_PATH",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "ARCHITECTURE_LEDGER_UNIQUENESS_OR_PATH_INVALID"
+      ]
+    },
+    {
+      "id": "M03_MISSING_LEDGER_HEADING",
+      "domain": "ledger",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "LEDGER_REQUIRED_HEADING_INVALID:# Owner-Approved Architecture Direction"
+      ]
+    },
+    {
+      "id": "M04_LEDGER_PREMATURELY_COMPLETED",
+      "domain": "ledger",
+      "result": "REJECTED",
+      "issueCount": 2,
+      "issues": [
+        "LEDGER_FINAL_STATE_PREMATURELY_COMPLETED",
+        "LEDGER_INCOMPLETE_FINAL_STATE_REQUIRED"
+      ]
+    },
+    {
+      "id": "M05_FUTURE_WORK_REMOVED",
+      "domain": "ledger",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "LEDGER_REQUIRED_HEADING_INVALID:# Future Work"
+      ]
+    },
+    {
+      "id": "M06_B2_REMOVED",
+      "domain": "ledger",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "LEDGER_FUTURE_CHUNK_MISSING:B2"
+      ]
+    },
+    {
+      "id": "M07_PRODUCT_VOCABULARY_CHANGED",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_PRODUCT_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M08_STRENGTH_REMOVED",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_CANONICAL_OUTCOME_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M09_HYPERTROPHY_REMOVED",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_CANONICAL_OUTCOME_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M10_PAIN_PROMOTED_TO_OUTCOME",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_CANONICAL_OUTCOME_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M11_MAINTAIN_PROMOTED_TO_OUTCOME",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_CANONICAL_OUTCOME_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M12_TONING_PROMOTED_TO_OUTCOME",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_CANONICAL_OUTCOME_VOCABULARY_INVALID"
+      ]
+    },
+    {
+      "id": "M13_ATHLETIC_MAPPED_TO_STRENGTH",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_FOLLOW_UP_BOUNDARY_INVALID"
+      ]
+    },
+    {
+      "id": "M14_ATHLETIC_MAPPED_TO_CONDITIONING",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_FOLLOW_UP_BOUNDARY_INVALID"
+      ]
+    },
+    {
+      "id": "M15_FITNESS_COLLAPSED_TO_CONDITIONING",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_FOLLOW_UP_BOUNDARY_INVALID"
+      ]
+    },
+    {
+      "id": "M16_BODY_COMPOSITION_OWNED_BY_PRESCRIPTION",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_BODY_COMPOSITION_OWNER_INVALID"
+      ]
+    },
+    {
+      "id": "M17_NUTRITION_OWNED_BY_PRESCRIPTION",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_NUTRITION_OWNER_INVALID"
+      ]
+    },
+    {
+      "id": "M18_G4_ORDER_CHANGED",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_G4_G1_RESOLUTION_INVALID"
+      ]
+    },
+    {
+      "id": "M19_G1_FAIL_CLOSED_REMOVED",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_G4_G1_RESOLUTION_INVALID"
+      ]
+    },
+    {
+      "id": "M20_MISSING_POLICY_FALLS_TO_STRENGTH",
+      "domain": "policy",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "PRODUCT_GOAL_ARCHITECTURE_G4_G1_RESOLUTION_INVALID"
+      ]
+    },
+    {
+      "id": "M21_POLICY_OBJECT_DUPLICATED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "ARCHITECTURE_POLICY_OBJECT_DUPLICATED"
+      ]
+    },
+    {
+      "id": "M22_PRODUCT_MAPPING_CHANGED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_CHANGE_REJECTED:productMappingChangeCount"
+      ]
+    },
+    {
+      "id": "M23_PRODUCT_UI_CHANGED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_CHANGE_REJECTED:productUiChangeCount"
+      ]
+    },
+    {
+      "id": "M24_CURRENT_RESOLVER_CHANGED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_CHANGE_REJECTED:resolveUseCaseChangeCount"
+      ]
+    },
+    {
+      "id": "M25_CURRENT_FALLTHROUGH_HIDDEN",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "CURRENT_COMPILER_FALLTHROUGH_AUDIT_HIDDEN_OR_CHANGED"
+      ]
+    },
+    {
+      "id": "M26_RUNTIME_IMPORT_ADDED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_IMPORT_REJECTED:runtimeImportCount"
+      ]
+    },
+    {
+      "id": "M27_PRODUCT_SHADOW_IMPORT_ADDED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_IMPORT_REJECTED:productShadowImportCount"
+      ]
+    },
+    {
+      "id": "M28_APP_IMPORT_ADDED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_IMPORT_REJECTED:appImportCount"
+      ]
+    },
+    {
+      "id": "M29_ROOT_BEHAVIOR_IMPORT_ADDED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_IMPORT_REJECTED:rootBehaviorImportCount"
+      ]
+    },
+    {
+      "id": "M30_PUBLIC_API_CHANGED",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "RUNTIME_CHANGE_REJECTED:publicProductApiChangeCount"
+      ]
+    },
+    {
+      "id": "M31_FINAL_COMPLETION_NOTE_MARKED_COMPLETE",
+      "domain": "source_guard",
+      "result": "REJECTED",
+      "issueCount": 1,
+      "issues": [
+        "FINAL_LEDGER_COMPLETION_PREMATURE"
+      ]
+    }
+  ],
+  "metamorphic": {
+    "invariants": [
+      {
+        "id": "I01_LEDGER_LINK_ORDER",
+        "passed": true
+      },
+      {
+        "id": "I02_DOCUMENT_REFERENCE_ORDER",
+        "passed": true
+      },
+      {
+        "id": "I03_POLICY_PROPERTY_ORDER",
+        "passed": true
+      },
+      {
+        "id": "I04_PROVENANCE_ORDER",
+        "passed": true
+      },
+      {
+        "id": "I05_DISPLAY_PROSE_OUTSIDE_MARKERS",
+        "passed": true
+      },
+      {
+        "id": "I06_UNRELATED_PRODUCT_COPY",
+        "passed": true
+      },
+      {
+        "id": "I07_SOURCE_FILE_ORDER",
+        "passed": true
+      },
+      {
+        "id": "I08_LINE_ENDING_NORMALIZATION",
+        "passed": true
+      },
+      {
+        "id": "I09_NONSEMANTIC_REPORT_TIMESTAMP",
+        "passed": true
+      }
+    ],
+    "materialResponses": [
+      {
+        "id": "R01_PRODUCT_VOCABULARY",
+        "passed": true
+      },
+      {
+        "id": "R02_PRIORITY_SEMANTICS",
+        "passed": true
+      },
+      {
+        "id": "R03_CONTEXT_OWNERSHIP",
+        "passed": true
+      },
+      {
+        "id": "R04_G4_ORDER",
+        "passed": true
+      },
+      {
+        "id": "R05_G1_STATUS",
+        "passed": true
+      },
+      {
+        "id": "R06_TONING_POLICY",
+        "passed": true
+      },
+      {
+        "id": "R07_BODY_COMPOSITION_OWNER",
+        "passed": true
+      },
+      {
+        "id": "R08_ACTIVATION_STATE",
+        "passed": true
+      }
+    ],
+    "invariantFailureCount": 0,
+    "materialResponseFailureCount": 0
+  },
+  "cagt": {
+    "result": "ARCHITECTURE_ONLY_CONVERGENCE_ALL_CAUSAL_BOUNDARIES_PRESERVED",
+    "scenarioCount": 9,
+    "passedScenarioCount": 9,
+    "artificialRuntimeDifferenceCount": 0,
+    "downstreamNumericalRescueCount": 0,
+    "executableResolverCount": 0,
+    "nextDependency": "PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTATION_AUTHORIZATION"
+  }
+}

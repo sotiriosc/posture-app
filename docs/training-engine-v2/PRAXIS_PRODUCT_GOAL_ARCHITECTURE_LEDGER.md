@@ -1,0 +1,634 @@
+# Praxis Product Goal & Prescription Architecture Ledger
+
+**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_IMPLEMENTATION_PENDING`  
+**Last verified audit commit:** `3708876ea48dab6f38d641cb67d05da95351245c`  
+**PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
+**Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
+**V2 application state:** `NOT_ACTIVATED`
+
+## Purpose
+
+This ledger is the single canonical architecture note for Product training-goal vocabulary, goal-to-engine mapping, purpose-specific Prescription, and the staged path to Product activation.
+
+It exists so future work does not have to reconstruct decisions from old prompts, chat messages, reports, or PR history.
+
+Rules:
+
+1. Completed work is recorded under **Completed and Proven**.
+2. Approved architecture that has not been implemented remains under **Future Work**.
+3. When a task is completed, move it from Future Work to Completed and record:
+   - commit SHA;
+   - contract/policy version;
+   - fingerprints;
+   - tests and CAGT evidence;
+   - activation state;
+   - any intentionally deferred scope.
+4. Do not rewrite or delete historical decisions.
+5. Do not mark this ledger complete merely because code compiles.
+6. Product activation always requires separate owner authorization.
+
+---
+
+# Owner-Approved Architecture Direction
+
+## Layered goal model
+
+Praxis must distinguish the following owners rather than treating one Product label as a universal rep-range selector.
+
+### 1. Outcome goal
+
+What the user ultimately wants to improve.
+
+Initial plain-language Product direction:
+
+- **Get stronger**
+- **Build muscle**
+- **Improve fitness and stamina**
+- **Improve posture and movement**
+- **Improve athletic performance** — requires a structured follow-up rather than a silent mapping
+
+Canonical engine goals remain:
+
+- `strength`
+- `hypertrophy`
+- `general_fitness`
+- `conditioning`
+- `posture_and_movement_quality`
+
+### 2. Primary and secondary goal priority
+
+The Product should eventually support:
+
+- one primary outcome goal;
+- one optional secondary outcome goal.
+
+Primary and secondary priorities must affect weekly responsibility and local exercise purpose without simply combining every possible stimulus or bloating the Week.
+
+Examples:
+
+- strength primary + hypertrophy secondary;
+- hypertrophy primary + strength secondary;
+- posture/movement primary + strength secondary;
+- fitness primary + muscle secondary.
+
+### 3. Programming context
+
+Programming context changes how the goal is pursued but does not replace the outcome goal.
+
+Examples:
+
+- `pain_aware_return`
+- return after absence;
+- maintain;
+- rebuild/familiarize;
+- explicit restriction;
+- successful re-exposure.
+
+Pain or limitations must eventually be collected separately from the primary outcome goal.
+
+Example:
+
+```text
+Primary goal: Get stronger
+Context: I have pain or limitations the plan must work around
+```
+
+Pain remains non-diagnostic and cannot create a universal corrective circuit.
+
+### 4. Local developmental purpose
+
+The local assignment purpose owns the exercise Prescription.
+
+Examples:
+
+- maximal/general strength development;
+- hypertrophy development;
+- power development;
+- muscular endurance;
+- local capacity;
+- systemic conditioning;
+- technique/skill;
+- preparation;
+- activation;
+- recovery.
+
+A global goal may influence purpose selection and policy applicability, but it must not stamp one universal dose onto every exercise.
+
+### 5. Body-composition intent
+
+Appearance, fat loss, and definition require a separate Product/profile owner.
+
+Possible future structured intent:
+
+- lose body fat;
+- build or preserve muscle;
+- both.
+
+Resistance training may support body composition, but the engine must not encode fat loss or “definition” as a high-repetition Prescription.
+
+### 6. Nutrition owner
+
+Nutrition and energy-balance support require a separate nutrition owner.
+
+The training engine must not promise:
+
+- localized fat loss;
+- body-fat reduction from rep range alone;
+- “toning” from short rest;
+- a physique outcome without the required broader inputs.
+
+### 7. Constraints and realization truth
+
+The realized Prescription must respect:
+
+- exact equipment;
+- load ceiling and increment availability;
+- support surfaces;
+- range;
+- side/laterality;
+- skill/familiarity;
+- experience;
+- Safety;
+- response history;
+- available time and structural capacity.
+
+A strength goal does not authorize invented heavy equipment or maximal loading.
+
+### 8. Evidence over time
+
+Longitudinal Adaptation remains evidence-led.
+
+Completed evidence may support:
+
+- keep;
+- repeat for confirmation;
+- hold;
+- local Prescription review;
+- progression of one legal axis;
+- regression of one legal axis;
+- replacement review;
+- bounded rotation review;
+- Week review;
+- Phase review;
+- Safety review.
+
+No calendar-only progression, automatic replacement, novelty quota, automatic deload, or global regeneration.
+
+---
+
+# Owner-Approved Prescription Resolution Direction
+
+## Selected architecture
+
+Use:
+
+```text
+G4 purpose-first resolution
++
+G1 fail-closed unsupported-policy guard
+```
+
+### G4 — Purpose first
+
+Resolve the local Prescription from:
+
+```text
+allocated weekly objective
+→ SessionNeed
+→ assignment role
+→ section
+→ exercise knowledge
+→ legal dose mode
+→ equipment realization
+→ experience / familiarity / Safety / response context
+→ global outcome goal as bounded context
+```
+
+### G1 — Fail closed
+
+When no reviewed policy exists for the resolved purpose/context:
+
+```text
+return POLICY_REQUIRED or UNSUPPORTED_SCOPE
+```
+
+Do not fall through to strength merely because the goal is not hypertrophy.
+
+## Permanent Prescription principles
+
+### Strength
+
+Strength should generally favor:
+
+- sufficiently loadable and stable main work;
+- lower repetition ranges where the exercise and equipment make them truthful;
+- longer recovery where necessary to preserve force and technique;
+- repeated skill exposure;
+- legal progression from completed evidence;
+- important strength work early in the session.
+
+Strength must not force:
+
+- 3–6 reps for every exercise;
+- low reps on mobility, preparation, activation, cuff, breathing, or other unsuitable work;
+- barbell-only programs;
+- maximal loading for beginners or pain-aware return;
+- identical dosing across equipment settings;
+- automatic progression.
+
+### Hypertrophy
+
+Hypertrophy should generally favor:
+
+- sufficient developmental volume;
+- broad legal repetition ranges;
+- sufficient effort;
+- enough rest to preserve productive work;
+- stable target ownership;
+- direct/accessory work only where it adds unique value.
+
+Hypertrophy must not require:
+
+- only 8–12 reps;
+- short rest;
+- failure;
+- slow tempo;
+- soreness;
+- exercise churn.
+
+### General fitness
+
+General fitness should be expressed through a coherent bundle of weekly and session responsibilities.
+
+It should not have one universal rep range.
+
+### Conditioning and muscular endurance
+
+These must remain distinct:
+
+- muscular endurance: local fatigue resistance;
+- systemic conditioning: broader cardiorespiratory/work-capacity demand.
+
+Do not call carries or local capacity complete systemic conditioning without an approved receiver and modality policy.
+
+### Power / explosiveness
+
+Power requires a future explicit developmental purpose before broad Athletic Performance can map to it.
+
+Power is not merely “strength with fewer reps.”
+
+### Posture and movement quality
+
+Posture/movement quality should influence:
+
+- weekly responsibilities;
+- movement purposes;
+- exercise context;
+- execution and progression.
+
+It should not have one universal dose family or create a generic corrective circuit.
+
+### “Toning” / definition
+
+Initial Product decision:
+
+```text
+T0 — Do not expose “toning” as a Product goal.
+```
+
+Future preferred clarification:
+
+```text
+T2 — Ask whether the user primarily means:
+- more muscle;
+- lower body fat;
+- greater endurance;
+- a combination.
+```
+
+“Toning” must never become:
+
+```text
+high reps + short rest
+```
+
+---
+
+# Completed and Proven
+
+## A. Engine and infrastructure foundation
+
+- Candidate Intelligence is implemented and tested.
+- Session Intent Planner is implemented.
+- Session Composer is implemented.
+- Prescription design and production compiler are implemented but inactive.
+- Final Sequencing is implemented but inactive.
+- Post-Prescription Week Validation is implemented but inactive.
+- Phase Continuity is implemented but inactive.
+- Longitudinal Adaptation is implemented but inactive.
+- Outcome Source contracts, append-only revisions, PostgreSQL persistence, and replay are implemented but inactive.
+- Production Week Planner, Allocation Composer, materializer, and remaining-Week reallocation are implemented but inactive.
+- Adaptation Application Orchestration is implemented but inactive.
+- Controlled Product Shadow Integration is implemented, default-off, internal-allowlist-only, and nonauthoritative.
+
+## B. Goal audit
+
+Completed at commit:
+
+`3708876ea48dab6f38d641cb67d05da95351245c`
+
+Proven:
+
+- `strength` is a canonical V2 goal.
+- `hypertrophy` is a canonical V2 goal.
+- `general_fitness`, `conditioning`, and `posture_and_movement_quality` are canonical goals.
+- `pain_aware_return` is a programming context, not an outcome goal.
+- Product currently exposes neither Build Strength nor Build Muscle.
+- Product Athletic Performance is under-specified.
+- Product `trainingIntent=build` means developmental progression, not strength or hypertrophy.
+- Current strength and hypertrophy Prescription families are materially distinct.
+- Current non-hypertrophy main repetition-set fallthrough to `main_strength` is overbroad and accidental.
+- Five goal/context classes and twelve main exercises are affected.
+- Short rest is not required for hypertrophy.
+- Failure is not universally required.
+- No mandatory tempo exists.
+- “Toning” is not a distinct resistance-training adaptation.
+- Equipment-specific strength realization must remain truthful.
+- Warm-up and activation remain dependency-owned.
+- Artificial uniqueness count remained zero.
+- No Product, production, API, or shadow behavior changed during the audit.
+
+Audit fingerprint:
+
+`0606f9cd19d73e8cf683080c3b71fad1af7eb19d0c873a2361e294cde3be27fb`
+
+## C. Owner architecture selection
+
+Approved direction:
+
+- modified plain-language V2 Product vocabulary;
+- one primary + optional secondary goal;
+- pain/limitations as separate context;
+- training mode separate from outcome;
+- G4 purpose-first resolution;
+- G1 fail-closed unsupported-policy behavior;
+- T0 initially for toning;
+- T2 clarification later;
+- body-composition and nutrition as separate owners;
+- future explicit power;
+- separate muscular endurance and systemic conditioning;
+- general strength by default, with future specific-lift goals;
+- goal-specific success evidence;
+- screenshot-guided, small-chunk Product work;
+- no giant activation.
+
+This approval is architectural only. It does not authorize behavior changes.
+
+---
+
+# Future Work
+
+## Chunk B1 — Record canonical owner policy contracts
+
+- Add versioned owner-decision contracts for the layered goal model.
+- Add the canonical Product vocabulary decision.
+- Add primary/secondary goal semantics.
+- Add pain/context and training-mode separation.
+- Add G4 + G1 architecture.
+- Add explicit unsupported-scope statuses.
+- Preserve all current behavior.
+
+## Chunk B2 — Correct the engine Prescription resolver
+
+- Remove the accidental non-hypertrophy-to-strength fallthrough.
+- Implement purpose-first use-case resolution.
+- Fail closed when no reviewed policy exists.
+- Keep the Product and Product Shadow unchanged.
+- Add deterministic CAGT coverage.
+
+## Chunk B3 — Admit supported goal/purpose policies
+
+At minimum review and implement separately:
+
+- strength;
+- hypertrophy;
+- general-fitness supported core;
+- posture/movement-quality supported core;
+- muscular endurance;
+- conditioning;
+- power;
+- hybrid primary/secondary behavior;
+- maintain and return/rebuild modes.
+
+Do not admit a policy without evidence, consequences, and owner approval.
+
+## Chunk B4 — Equipment-, experience-, and context-specific realization
+
+Prove:
+
+- full-gym strength;
+- machine strength;
+- dumbbell-limited strength;
+- bodyweight strength;
+- band strength;
+- beginner calibration;
+- advanced specificity;
+- pain-aware return;
+- unknown prior load;
+- time-constrained behavior;
+- support/range/side constraints.
+
+## Chunk C — Extend Controlled Product Shadow mapping
+
+Default off.
+
+Add shadow-only mappings for the selected vocabulary.
+
+No user-visible output.
+
+No Product mutation.
+
+No V2 outcome attribution.
+
+## Chunk D — Run goal-specific shadow evidence
+
+Run same-shell cohorts for:
+
+- strength;
+- hypertrophy;
+- general fitness;
+- posture/movement quality;
+- pain-aware context;
+- primary + secondary goals;
+- equipment settings;
+- time constraints;
+- experience;
+- relevant and irrelevant pain.
+
+Measure rightful differences and justified convergence.
+
+## Chunk E — Screenshot-guided Product design
+
+Owner supplies the current Product screen.
+
+Review only one surface at a time.
+
+For each surface:
+
+- capture current state;
+- identify exact fields and mappings;
+- design the minimum change;
+- preserve rollback;
+- test mobile/desktop/accessibility;
+- verify no unrelated UI or behavior changed.
+
+## Chunk F — Add one inactive Product option
+
+- Behind an explicit inactive feature control.
+- No ordinary-user rollout.
+- No automatic mapping.
+- No general activation.
+- Product screenshot review required first.
+
+## Chunk G — Controlled owner-account delivery
+
+Separate authorization.
+
+- owner/internal account only;
+- explicit confirmation;
+- monitoring;
+- legacy fallback;
+- rollback;
+- no broad rollout.
+
+## Chunk H — Broader Product activation
+
+Separate authorization only after:
+
+- shadow evidence;
+- Product-owned missing inputs;
+- full contracts;
+- monitoring;
+- rollback;
+- support;
+- privacy/legal review;
+- user communication;
+- final end-to-end validation.
+
+## Future extension lanes
+
+These remain visible so they are not forgotten:
+
+- explicit power/explosiveness purpose;
+- specific-lift strength goals;
+- muscular endurance versus systemic conditioning;
+- body-composition intent;
+- nutrition integration;
+- maintenance policy;
+- return/rebuild policy;
+- wearable/cardio evidence;
+- goal-specific success measures;
+- sport-specific preparation;
+- Product follow-up for Athletic Performance;
+- Product follow-up for tone/definition;
+- Product availability/minutes;
+- exact equipment capability collection;
+- canonical Knowledge Layer explanations;
+- Coaching Rail and Praxis Library presentation.
+
+---
+
+# Explicitly Not Complete Yet
+
+The following remain incomplete until implemented, verified, and separately authorized:
+
+- goal-specific engine resolver;
+- approved purpose policies beyond current strength/hypertrophy;
+- Product goal mapping updates;
+- Product goal UI;
+- primary/secondary goal UI;
+- pain/context UI separation;
+- training-mode UI;
+- body-composition owner;
+- nutrition owner;
+- power policy;
+- conditioning policy;
+- muscular-endurance policy;
+- Product Shadow evidence for the new mappings;
+- owner-account V2 delivery;
+- general Product activation.
+
+---
+
+# Architecture Completion Rules
+
+A Future Work item may move to Completed only when its note records:
+
+- exact commit SHA;
+- exact contract/policy version;
+- owner approval;
+- production/shadow/activation state;
+- tests;
+- CAGT result;
+- fingerprints;
+- observed behavior;
+- remaining limitations;
+- rollback boundary;
+- next dependency.
+
+A deferred item may leave Future Work only when the owner explicitly records:
+
+- `DEFERRED`,
+- reason,
+- rightful future owner,
+- activation consequence.
+
+A rejected item may leave Future Work only when the owner explicitly records:
+
+- `REJECTED`,
+- reason,
+- evidence,
+- replacement architecture where applicable.
+
+---
+
+# Final Completion Note
+
+**Current state:** `INCOMPLETE_FUTURE_WORK_REMAINS`
+
+Do not mark this architecture complete until every Future Work item has been:
+
+1. implemented and verified;
+2. explicitly deferred by the owner with a recorded reason and future owner; or
+3. explicitly rejected by the owner with a recorded reason.
+
+When all tasks are met, replace the current-state line above with:
+
+```text
+COMPLETED
+```
+
+and append the following final ledger:
+
+```text
+Completion date:
+Final commit SHA:
+Final PR / merge commit:
+Final contract and policy versions:
+Final production fingerprints:
+Final Product vocabulary:
+Final engine mapping:
+Final supported goal/purpose matrix:
+Final Product activation scope:
+Final shadow and owner-account evidence:
+Final tests and CAGT evidence:
+Final monitoring and rollback state:
+Intentionally deferred work:
+Rejected work and reasons:
+Known limitations:
+Next architecture domain:
+```
+
+The final completion note must not say “complete” while any unsupported goal is
+silently falling through, any Product label is ambiguously mapped, any required
+policy is missing, or any activation dependency remains unresolved.

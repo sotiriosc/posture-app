@@ -350,3 +350,11 @@ The explicit server-only service can validate, build, persist, and replay unappl
 - Sequence: owner-gated chunks A-H; every implementation and activation chunk remains separately authorized.
 - Remaining dependency: `OWNER_SELECTION_OF_PRODUCT_GOAL_VOCABULARY_AND_GOAL_SPECIFIC_PRESCRIPTION_POLICY`.
 <!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:END -->
+
+<!-- PRODUCT_GOAL_ARCHITECTURE_LEDGER_V1:START -->
+## Product Goal Architecture Ledger
+
+The [Praxis Product Goal Architecture Ledger](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md) is the canonical owner-approved architecture record for Product vocabulary, ordered goal priority, context/mode separation, purpose-first Prescription direction, owner boundaries, staged integration, and completion tracking. This document remains purpose-specific and does not duplicate or override that ledger.
+
+The admitted contract is inert, unexported from the package root, and non-executable. Current Product, compiler, Week, Candidate/Composer, Shadow, and activation behavior remains unchanged. B2 and every later chunk require separate authorization.
+<!-- PRODUCT_GOAL_ARCHITECTURE_LEDGER_V1:END -->

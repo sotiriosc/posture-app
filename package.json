@@ -107,7 +107,13 @@
     "test:product-training-goal-audit": "npm run test:product-training-goal-audit --workspace=@praxis/training-engine-v2",
     "test:product-training-goal-audit:consequences": "npm run test:product-training-goal-audit:consequences --workspace=@praxis/training-engine-v2",
     "test:product-training-goal-audit:activation": "npm run test:product-training-goal-audit:activation --workspace=@praxis/training-engine-v2",
-    "report:product-training-goal-audit": "npm run report:product-training-goal-audit --workspace=@praxis/training-engine-v2"
+    "report:product-training-goal-audit": "npm run report:product-training-goal-audit --workspace=@praxis/training-engine-v2",
+    "test:product-goal-architecture": "npm run test:product-goal-architecture --workspace=@praxis/training-engine-v2",
+    "test:product-goal-architecture:contracts": "npm run test:product-goal-architecture:contracts --workspace=@praxis/training-engine-v2",
+    "test:product-goal-architecture:ledger": "npm run test:product-goal-architecture:ledger --workspace=@praxis/training-engine-v2",
+    "test:product-goal-architecture:mutations": "npm run test:product-goal-architecture:mutations --workspace=@praxis/training-engine-v2",
+    "test:product-goal-architecture:activation": "npm run test:product-goal-architecture:activation --workspace=@praxis/training-engine-v2",
+    "report:product-goal-architecture": "npm run report:product-goal-architecture --workspace=@praxis/training-engine-v2"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",
