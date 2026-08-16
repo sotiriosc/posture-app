@@ -1,0 +1,1517 @@
+[
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "name": "90/90 Breathing",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "ninety-ninety-breathing",
+      "summary": "Supine breathing drill for ribcage and pelvis position.",
+      "coachingFocus": [
+        "Exhale fully",
+        "Keep ribs stacked over pelvis"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "name": "Serratus Wall Slide",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "serratus-wall-slide",
+      "summary": "Wall-supported scapular upward-rotation and serratus control drill.",
+      "coachingFocus": [
+        "Reach without shrugging",
+        "Keep ribs quiet"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dead-bug",
+    "name": "Dead Bug",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dead-bug",
+      "summary": "Supine anti-extension core drill.",
+      "coachingFocus": [
+        "Move limbs without losing spine position"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "push-up",
+    "name": "Push-Up",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "push-up",
+      "summary": "Bodyweight horizontal push.",
+      "coachingFocus": [
+        "Press the floor away",
+        "Keep trunk organized"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "name": "Dumbbell Bench Press",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dumbbell-bench-press",
+      "summary": "Bench-supported horizontal press with external loading.",
+      "coachingFocus": [
+        "Control the bottom range",
+        "Press without shoulder glide"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "name": "Machine Chest Press",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "machine-chest-press",
+      "summary": "Machine-guided horizontal press.",
+      "coachingFocus": [
+        "Set seat to comfortable shoulder path"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "name": "Cable Chest Fly",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "cable-chest-fly",
+      "summary": "Cable chest isolation with adjustable line of pull.",
+      "coachingFocus": [
+        "Keep range shoulder-friendly",
+        "Move through chest, not front shoulder"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "name": "Chest-Supported Dumbbell Row",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "summary": "Bench-supported horizontal pull with low lumbar stabilization demand.",
+      "coachingFocus": [
+        "Pull elbows toward hips",
+        "Keep chest supported"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "name": "One-Arm Dumbbell Row",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "one-arm-dumbbell-row",
+      "summary": "Unsupported or lightly supported dumbbell horizontal pull with more trunk demand.",
+      "coachingFocus": [
+        "Support as needed",
+        "Keep torso position steady"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "machine-row",
+    "name": "Machine Row",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "machine-row",
+      "summary": "Machine-based horizontal pull with machine-specific path and fit constraints.",
+      "coachingFocus": [
+        "Set pad height cleanly",
+        "Pull without neck tension"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "name": "Seated Cable Row",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "seated-cable-row",
+      "summary": "Cable-anchored horizontal pull with setup-dependent line of pull.",
+      "coachingFocus": [
+        "Own the reach",
+        "Finish with shoulder blades moving cleanly"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "band-row",
+    "name": "Band Row",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "band-row",
+      "summary": "Anchored-band horizontal pull.",
+      "coachingFocus": [
+        "Anchor securely",
+        "Pull without rib flare"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "name": "Dumbbell Shoulder Press",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dumbbell-shoulder-press",
+      "summary": "External-load vertical push.",
+      "coachingFocus": [
+        "Press in pain-free range",
+        "Avoid leaning back"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "name": "Lat Pulldown",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "lat-pulldown",
+      "summary": "Machine/cable vertical pull.",
+      "coachingFocus": [
+        "Pull elbows down",
+        "Avoid neck tension"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "name": "Band Lat Pulldown",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "band-lat-pulldown",
+      "summary": "High-anchor band vertical pull.",
+      "coachingFocus": [
+        "Use a secure high anchor",
+        "Keep ribs stacked"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "name": "Goblet Squat",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "goblet-squat",
+      "summary": "Dumbbell-loaded squat pattern.",
+      "coachingFocus": [
+        "Use range you can own",
+        "Keep pressure through whole foot"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "leg-press",
+    "name": "Leg Press",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "leg-press",
+      "summary": "Machine-guided bilateral squat pattern.",
+      "coachingFocus": [
+        "Control depth",
+        "Do not chase load past owned range"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "name": "Bodyweight Box Squat",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "bodyweight-box-squat",
+      "summary": "Supported squat pattern to a box.",
+      "coachingFocus": [
+        "Sit to a consistent target",
+        "Stand with whole-foot pressure"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "name": "Dumbbell Romanian Deadlift",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "summary": "Loaded hinge emphasizing hamstrings and glutes.",
+      "coachingFocus": [
+        "Hips back",
+        "Keep load close",
+        "Stop before spine position changes"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "name": "Cable Pull-Through",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "cable-pull-through",
+      "summary": "Cable hinge pattern with posterior loading.",
+      "coachingFocus": [
+        "Let hips move back",
+        "Finish tall without overextending"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "split-squat",
+    "name": "Split Squat",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "split-squat",
+      "summary": "Unilateral lower-body squat pattern.",
+      "coachingFocus": [
+        "Use support if balance dominates",
+        "Own depth before load"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "step-up",
+    "name": "Step-Up",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "step-up",
+      "summary": "Unilateral lower-body step pattern.",
+      "coachingFocus": [
+        "Control the descent",
+        "Match box height to owned range"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "name": "Lying Leg Curl",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "lying-leg-curl",
+      "summary": "Machine hamstring knee-flexion isolation.",
+      "coachingFocus": [
+        "Control the return",
+        "Keep hips settled"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "name": "Glute Bridge",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "glute-bridge",
+      "summary": "Supine hip-extension glute exercise.",
+      "coachingFocus": [
+        "Finish with glutes, not low back"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "name": "Dumbbell Lateral Raise",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dumbbell-lateral-raise",
+      "summary": "Dumbbell side-delt isolation.",
+      "coachingFocus": [
+        "Lead with elbows softly",
+        "Stay in comfortable range"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "name": "Reverse Pec Deck",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "reverse-pec-deck",
+      "summary": "Machine-supported rear-delt and upper-back isolation.",
+      "coachingFocus": [
+        "Move shoulder blades and rear delts, not neck"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "name": "Band Face Pull",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "band-face-pull",
+      "summary": "Anchored-band rear-delt and scapular-control exercise.",
+      "coachingFocus": [
+        "Pull toward face without shrugging"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "name": "Dumbbell Curl",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "dumbbell-curl",
+      "summary": "Dumbbell elbow-flexion accessory.",
+      "coachingFocus": [
+        "Control the lowering",
+        "Do not swing"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "name": "Cable Triceps Pressdown",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "cable-triceps-pressdown",
+      "summary": "Cable elbow-extension accessory.",
+      "coachingFocus": [
+        "Keep upper arm still",
+        "Finish without shoulder roll"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "pallof-press",
+    "name": "Pallof Press",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "pallof-press",
+      "summary": "Anti-rotation core press using cable or anchored band.",
+      "coachingFocus": [
+        "Resist rotation",
+        "Stay tall without rib flare"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "name": "Forearm Plank",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "forearm-plank",
+      "summary": "Stationary forearm-supported anti-extension trunk exercise.",
+      "coachingFocus": [
+        "Keep ribs and pelvis organized",
+        "Press through the forearms"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "name": "Forearm Side Plank",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "forearm-side-plank",
+      "summary": "Forearm-supported side plank for anti-lateral-flexion control.",
+      "coachingFocus": [
+        "Keep a long side line",
+        "Press through the forearm"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "name": "Machine Abdominal Crunch",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "machine-abdominal-crunch",
+      "summary": "Machine-guided controlled trunk-flexion exercise.",
+      "coachingFocus": [
+        "Flex through the trunk with control",
+        "Return without dropping the stack"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "name": "Half-Kneeling High-to-Low Cable Chop",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "summary": "Half-kneeling high-cable controlled trunk-rotation exercise.",
+      "coachingFocus": [
+        "Rotate through the trunk with control",
+        "Follow the high-to-low path"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "name": "Farmer Carry",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "farmer-carry",
+      "summary": "Bilateral one-implement-per-hand loaded walking carry.",
+      "coachingFocus": [
+        "Walk tall with quiet implements",
+        "Use controlled turns and set-downs"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "name": "Suitcase Carry",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "suitcase-carry",
+      "summary": "Unilateral side-specific loaded walking carry.",
+      "coachingFocus": [
+        "Stay tall over each step",
+        "Keep the load side controlled"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "main_or_frequent_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "name": "Wall-Supported Suitcase March",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "wall-supported-suitcase-march",
+      "summary": "Stationary alternating loaded march with opposite-hand wall support.",
+      "coachingFocus": [
+        "Use light wall support",
+        "March without drifting toward the load"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "name": "Standing Calf Raise",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "standing-calf-raise",
+      "summary": "Equipment-neutral standing ankle plantar-flexion accessory exercise.",
+      "coachingFocus": [
+        "Rise through the ball of the foot",
+        "Control the full return"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "name": "Side-Lying Hip Adduction",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "side-lying-hip-adduction",
+      "summary": "Floor-supported direct hip-adduction accessory exercise.",
+      "coachingFocus": [
+        "Lift with the inner thigh",
+        "Keep the pelvis stacked"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "name": "Loop-Band Lateral Walk",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "realization_override_required",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "loop-band-lateral-walk",
+      "summary": "Standing lateral stepping against unanchored loop-band resistance.",
+      "coachingFocus": [
+        "Step without letting the knees collapse",
+        "Keep steady band tension"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required.",
+      "At least one known realization boundary requires a differences-only Knowledge override review."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "realization_complexity",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "name": "Side-Lying Dumbbell External Rotation",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "summary": "Supported direct shoulder external-rotation accessory exercise.",
+      "coachingFocus": [
+        "Rotate from the shoulder",
+        "Keep the elbow position quiet"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "name": "Supine Hamstring Walkout",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "supine-hamstring-walkout",
+      "summary": "Floor-supported bridge-position heel walkout for direct hamstring work.",
+      "coachingFocus": [
+        "Keep the hips controlled",
+        "Walk only as far as you can own"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "name": "Wall Ankle Dorsiflexion Rock",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "summary": "Wall-referenced ankle dorsiflexion preparation exercise.",
+      "coachingFocus": [
+        "Guide the knee forward over the foot",
+        "Keep the heel grounded"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "name": "Bodyweight Hip-Hinge Rehearsal",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "summary": "Unloaded standing hip-hinge pattern preparation.",
+      "coachingFocus": [
+        "Send the hips back",
+        "Keep the trunk organized"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "name": "Single-Leg Balance Rehearsal",
+    "statuses": [
+      "compact_fallback_only",
+      "missing_focus",
+      "missing_cues",
+      "missing_setup",
+      "missing_during",
+      "missing_pattern",
+      "missing_watch_for",
+      "provenance_required"
+    ],
+    "currentFallback": {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "summary": "Stationary single-leg stance-control preparation with prescription-modifiable support.",
+      "coachingFocus": [
+        "Use only the support you need",
+        "Keep the stance side controlled"
+      ]
+    },
+    "exactBlockers": [
+      "Canonical focus, cues, setup, during, pattern, and watchFor facts have not been curated.",
+      "Existing summary and coachingFocus remain frozen compact fallbacks and are not promoted into accepted facts.",
+      "Fact-level provenance is required."
+    ],
+    "prioritySignals": [
+      "supporting_selection",
+      "pain_context_relevance",
+      "single_reviewed_identity_path",
+      "workout_card_visible"
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "contractId": "PRAXIS_EXERCISE_KNOWLEDGE_CORE",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_KNOWLEDGE_ENTRY",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_KNOWLEDGE_FACT",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+    "contractVersion": "1.0.0"
+  },
+  {
+    "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+    "contractVersion": "1.0.0"
+  }
+]

@@ -239,6 +239,10 @@
     "test:purpose-first-prescription:stress": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCagt.test.ts -t stress",
     "report:purpose-first-prescription": "node --import tsx dev/reportPurposeFirstPrescriptionResolver.ts",
     "report:equipment-experience-context": "node --import tsx dev/reportEquipmentExperienceContext.ts",
-    "test:equipment-experience-context": "vitest --run --config vitest.config.ts tests/unit/equipmentExperienceContextRealization.test.ts tests/unit/equipmentExperienceContextReports.test.ts tests/unit/equipmentExperienceContextActivation.test.ts"
+    "test:equipment-experience-context": "vitest --run --config vitest.config.ts tests/unit/equipmentExperienceContextRealization.test.ts tests/unit/equipmentExperienceContextReports.test.ts tests/unit/equipmentExperienceContextActivation.test.ts",
+    "test:package-r-knowledge-foundation": "vitest --run --config vitest.config.ts tests/unit/packageRKnowledgeFoundation.test.ts",
+    "report:package-r-knowledge-foundation": "node --import tsx dev/reportPackageRKnowledgeFoundation.ts",
+    "generate:exercise-coaching-fallbacks": "node --import tsx dev/generateExerciseCoachingFallbacks.ts --write",
+    "check:exercise-coaching-fallbacks": "node --import tsx dev/generateExerciseCoachingFallbacks.ts --check"
   }
 }

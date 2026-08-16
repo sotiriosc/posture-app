@@ -123,7 +123,10 @@
     "test:goal-specific-product-shadow-evidence": "npm run test:goal-specific-product-shadow-evidence --workspace=@praxis/engine",
     "report:goal-specific-product-shadow-evidence": "npm run report:goal-specific-product-shadow-evidence --workspace=@praxis/engine",
     "test:post-chunk-d-boundary-repair": "npm run test:post-chunk-d-boundary-repair --workspace=@praxis/engine",
-    "report:post-chunk-d-boundary-repair": "npm run report:post-chunk-d-boundary-repair --workspace=@praxis/engine"
+    "report:post-chunk-d-boundary-repair": "npm run report:post-chunk-d-boundary-repair --workspace=@praxis/engine",
+    "test:knowledge-core": "npm test --workspace=@praxis/knowledge-core",
+    "test:package-r-knowledge-foundation": "npm run test:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2",
+    "report:package-r-knowledge-foundation": "npm run report:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

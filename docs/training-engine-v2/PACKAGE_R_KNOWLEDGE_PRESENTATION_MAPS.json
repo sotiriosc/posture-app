@@ -1,0 +1,250 @@
+[
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-floor-press",
+    "focus": "dumbbell-floor-press.focus.floor-bounded-press",
+    "cues": [
+      "dumbbell-floor-press.cue.wrist-over-elbow",
+      "dumbbell-floor-press.cue.steady-base",
+      "dumbbell-floor-press.cue.controlled-touch"
+    ],
+    "setup": [
+      "dumbbell-floor-press.setup.supine-floor",
+      "dumbbell-floor-press.setup.feet-supported",
+      "dumbbell-floor-press.equipment.no-bench"
+    ],
+    "during": [
+      "dumbbell-floor-press.during.vertical-forearms",
+      "dumbbell-floor-press.during.bounded-range",
+      "dumbbell-floor-press.during.finish-controlled"
+    ],
+    "pattern": [
+      "dumbbell-floor-press.pattern.horizontal-press"
+    ],
+    "watchFor": [
+      "dumbbell-floor-press.watch.elbows-drifting",
+      "dumbbell-floor-press.watch.bouncing",
+      "dumbbell-floor-press.watch.unstable-finish"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-triceps-extension",
+    "focus": "dumbbell-triceps-extension.focus.elbow-extension",
+    "cues": [
+      "dumbbell-triceps-extension.cue.secure-grip",
+      "dumbbell-triceps-extension.cue.ribs-stacked",
+      "dumbbell-triceps-extension.cue.smooth-turnaround"
+    ],
+    "setup": [
+      "dumbbell-triceps-extension.setup.standing-overhead",
+      "dumbbell-triceps-extension.setup.elbow-path",
+      "dumbbell-triceps-extension.equipment.single-dumbbell"
+    ],
+    "during": [
+      "dumbbell-triceps-extension.during.elbows-drive",
+      "dumbbell-triceps-extension.during.range-owned",
+      "dumbbell-triceps-extension.during.safe-finish"
+    ],
+    "pattern": [
+      "dumbbell-triceps-extension.pattern.direct-extension"
+    ],
+    "watchFor": [
+      "dumbbell-triceps-extension.watch.torso-extension",
+      "dumbbell-triceps-extension.watch.elbow-path-change",
+      "dumbbell-triceps-extension.watch.grip-shift"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "focus": "bent-over-dumbbell-reverse-fly.focus.rear-delt-arc",
+    "cues": [
+      "bent-over-dumbbell-reverse-fly.cue.soft-elbows",
+      "bent-over-dumbbell-reverse-fly.cue.steady-hinge",
+      "bent-over-dumbbell-reverse-fly.cue.light-enough"
+    ],
+    "setup": [
+      "bent-over-dumbbell-reverse-fly.setup.hinge",
+      "bent-over-dumbbell-reverse-fly.setup.arms-below",
+      "bent-over-dumbbell-reverse-fly.equipment.pair-space"
+    ],
+    "during": [
+      "bent-over-dumbbell-reverse-fly.during.horizontal-abduction",
+      "bent-over-dumbbell-reverse-fly.during.controlled-lower",
+      "bent-over-dumbbell-reverse-fly.during.range"
+    ],
+    "pattern": [
+      "bent-over-dumbbell-reverse-fly.pattern.rear-delt-accessory"
+    ],
+    "watchFor": [
+      "bent-over-dumbbell-reverse-fly.watch.rowing",
+      "bent-over-dumbbell-reverse-fly.watch.trunk-swing",
+      "bent-over-dumbbell-reverse-fly.watch.shoulder-shrug"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-hip-abduction",
+    "focus": "side-lying-hip-abduction.focus.lateral-lift",
+    "cues": [
+      "side-lying-hip-abduction.cue.long-leg",
+      "side-lying-hip-abduction.cue.toes-forward",
+      "side-lying-hip-abduction.cue.quiet-waist"
+    ],
+    "setup": [
+      "side-lying-hip-abduction.setup.side-lying",
+      "side-lying-hip-abduction.setup.lower-leg",
+      "side-lying-hip-abduction.equipment.floor-bodyweight"
+    ],
+    "during": [
+      "side-lying-hip-abduction.during.abduct",
+      "side-lying-hip-abduction.during.control-return",
+      "side-lying-hip-abduction.during.side-owned"
+    ],
+    "pattern": [
+      "side-lying-hip-abduction.pattern.floor-abduction"
+    ],
+    "watchFor": [
+      "side-lying-hip-abduction.watch.pelvis-roll",
+      "side-lying-hip-abduction.watch.trunk-sidebend",
+      "side-lying-hip-abduction.watch.toe-turn"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bird-dog",
+    "focus": "bird-dog.focus.contralateral-reach",
+    "cues": [
+      "bird-dog.cue.push-floor",
+      "bird-dog.cue.reach-long",
+      "bird-dog.cue.quiet-pelvis"
+    ],
+    "setup": [
+      "bird-dog.setup.quadruped",
+      "bird-dog.setup.stack",
+      "bird-dog.equipment.floor"
+    ],
+    "during": [
+      "bird-dog.during.opposite-limbs",
+      "bird-dog.during.return",
+      "bird-dog.during.side-explicit"
+    ],
+    "pattern": [
+      "bird-dog.pattern.contralateral-trunk"
+    ],
+    "watchFor": [
+      "bird-dog.watch.trunk-rotation",
+      "bird-dog.watch.lumbar-extension",
+      "bird-dog.watch.rushed-switch"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-biceps-curl",
+    "focus": "band-biceps-curl.focus.elbow-flexion",
+    "cues": [
+      "band-biceps-curl.cue.stand-on-band",
+      "band-biceps-curl.cue.wrists-neutral",
+      "band-biceps-curl.cue.control-return"
+    ],
+    "setup": [
+      "band-biceps-curl.setup.tube-under-feet",
+      "band-biceps-curl.setup.handle-grip",
+      "band-biceps-curl.equipment.self-anchor"
+    ],
+    "during": [
+      "band-biceps-curl.during.flex",
+      "band-biceps-curl.during.lower",
+      "band-biceps-curl.during.no-kg"
+    ],
+    "pattern": [
+      "band-biceps-curl.pattern.anchorless-curl"
+    ],
+    "watchFor": [
+      "band-biceps-curl.watch.foot-slip",
+      "band-biceps-curl.watch.torso-swing",
+      "band-biceps-curl.watch.upper-arm-drift"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-shoulder-press",
+    "focus": "machine-shoulder-press.focus.guided-press",
+    "cues": [
+      "machine-shoulder-press.cue.back-supported",
+      "machine-shoulder-press.cue.wrists-stacked",
+      "machine-shoulder-press.cue.smooth-path"
+    ],
+    "setup": [
+      "machine-shoulder-press.setup.adjust-seat",
+      "machine-shoulder-press.setup.select-load",
+      "machine-shoulder-press.equipment.exact-machine"
+    ],
+    "during": [
+      "machine-shoulder-press.during.press",
+      "machine-shoulder-press.during.return",
+      "machine-shoulder-press.during.finish"
+    ],
+    "pattern": [
+      "machine-shoulder-press.pattern.supported-vertical-push"
+    ],
+    "watchFor": [
+      "machine-shoulder-press.watch.seat-mismatch",
+      "machine-shoulder-press.watch.back-lift",
+      "machine-shoulder-press.watch.machine-stops"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-leg-extension",
+    "focus": "machine-leg-extension.focus.knee-extension",
+    "cues": [
+      "machine-leg-extension.cue.seat-contact",
+      "machine-leg-extension.cue.pad-position",
+      "machine-leg-extension.cue.control-return"
+    ],
+    "setup": [
+      "machine-leg-extension.setup.adjust-axis",
+      "machine-leg-extension.setup.pad-load",
+      "machine-leg-extension.equipment.exact-machine"
+    ],
+    "during": [
+      "machine-leg-extension.during.extend",
+      "machine-leg-extension.during.return",
+      "machine-leg-extension.during.finish"
+    ],
+    "pattern": [
+      "machine-leg-extension.pattern.direct-knee-extension"
+    ],
+    "watchFor": [
+      "machine-leg-extension.watch.hip-lift",
+      "machine-leg-extension.watch.pad-shift",
+      "machine-leg-extension.watch.stack-impact"
+    ]
+  }
+]
