@@ -10,7 +10,7 @@ This wave adds canonical teaching facts for the 15 trunk, carry, preparation, an
 
 | Exercise | Facts | Six categories | Realization review | Compact fallback |
 | --- | ---: | --- | --- | --- |
-| pallof-press | 15 | complete | cable and mid-band setup differences added | byte-equivalent |
+| pallof-press | 16 | complete | cable and mid-band setup differences added | byte-equivalent |
 | forearm-plank | 13 | complete | knee-supported lever differences added | byte-equivalent |
 | forearm-side-plank | 13 | complete | bent-knee support differences added | byte-equivalent |
 | machine-abdominal-crunch | 11 | complete | exact machine only | byte-equivalent |
@@ -29,7 +29,7 @@ This wave adds canonical teaching facts for the 15 trunk, carry, preparation, an
 ## Evidence
 
 - Entries: 15
-- Accepted facts: 186
+- Accepted facts: 187
 - Differences-only overrides: 11
 - Missing mandatory categories: 0
 - Missing provenance: 0

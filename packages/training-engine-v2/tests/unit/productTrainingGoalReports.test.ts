@@ -23,11 +23,12 @@ const productGoalContextMarker = /\n*<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->
 const inactiveProductGoalMarker = /\n*<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->[\s\S]*?<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->\n?/;
 const preG1Marker = /\n*<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->[\s\S]*?<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->\n?/;
 const preG2Marker = /\n*<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->[\s\S]*?<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->\n?/;
+const preG2KMarker = /\n*<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->[\s\S]*?<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->\n?/;
 const withoutLinkedMarkers = (value: string) => value.replace(architectureMarker, "\n")
   .replace(purposeFirstMarker, "\n").replace(supportedPurposeMarker, "\n").replace(b4Marker, "\n")
   .replace(goalRealizationMarker, "\n").replace(goalSpecificEvidenceMarker, "\n")
   .replace(productGoalContextMarker, "\n").replace(inactiveProductGoalMarker, "\n")
-  .replace(preG1Marker, "\n").replace(preG2Marker, "\n");
+  .replace(preG1Marker, "\n").replace(preG2Marker, "\n").replace(preG2KMarker, "\n");
 
 describe("Product training goal deterministic reports", () => {
   it("builds and persists all 18 Markdown and six JSON artifacts", () => {

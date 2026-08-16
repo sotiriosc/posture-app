@@ -532,3 +532,13 @@ Canonical educational facts live in a private pure package. Candidate, Composer,
 Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
 
 <!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->
+
+## Pre-G2K - Canonical production Knowledge registry
+
+The pure Knowledge package now exposes one deterministic 53-entry production registry assembled from reviewable wave modules plus the semantically frozen Package R module. Fact references drive every compact fallback. Engine decision modules and Product apps do not import Knowledge prose.
+
+Combined Pre-G2K fingerprint: `400ca72d6572af9bdec78140e7e5aadfae334e79c38ba0cc0f9a354a5ca71593`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->

@@ -12,6 +12,7 @@ export * from "./entries/trunkCarriesAndSupport";
 export * from "./entries/shared";
 export * from "./compactProjection";
 export * from "./validation";
+export * from "./registry";
 
 export const PACKAGE_R_KNOWLEDGE_CORE: PraxisExerciseKnowledgeCore = Object.freeze({
   contract: KNOWLEDGE_CORE_CONTRACT,

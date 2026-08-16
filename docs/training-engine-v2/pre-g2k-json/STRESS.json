@@ -1,0 +1,19 @@
+{
+  "clinicalBoundaryAttacks": 5000,
+  "coachingRailCompatibilityEvaluations": 3000,
+  "deterministicRepeatedRuns": 3,
+  "engineConflictEvaluations": 5000,
+  "factValidations": 20000,
+  "failureCount": 0,
+  "fallbackEquivalenceComparisons": 10000,
+  "fallbackGenerations": 10000,
+  "libraryCompatibilityEvaluations": 3000,
+  "noRescueMutations": 1000,
+  "packageRFreezeComparisons": 2000,
+  "presentationMapValidations": 20000,
+  "productShadowInvarianceComparisons": 2000,
+  "provenanceValidations": 15000,
+  "realizationOverrideValidations": 10000,
+  "registryValidations": 10000,
+  "staleGenerationAttacks": 1000
+}

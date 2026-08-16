@@ -43,6 +43,26 @@ export const KNOWLEDGE_CURATION_WAVE_CONTRACT = Object.freeze({
   contractVersion: "1.0.0",
 } as const);
 
+export const CURRENT_45_KNOWLEDGE_COMPLETION_CONTRACT = Object.freeze({
+  contractId: "CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETION",
+  contractVersion: "1.0.0",
+} as const);
+
+export const PRODUCTION_KNOWLEDGE_REGISTRY_CONTRACT = Object.freeze({
+  contractId: "PRODUCTION_53_EXERCISE_KNOWLEDGE_REGISTRY",
+  contractVersion: "1.0.0",
+} as const);
+
+export const LEGACY_FALLBACK_EQUIVALENCE_CONTRACT = Object.freeze({
+  contractId: "EXERCISE_KNOWLEDGE_LEGACY_FALLBACK_EQUIVALENCE",
+  contractVersion: "1.0.0",
+} as const);
+
+export const PRODUCTION_KNOWLEDGE_REVIEW_LEDGER_CONTRACT = Object.freeze({
+  contractId: "PRODUCTION_EXERCISE_KNOWLEDGE_REVIEW_LEDGER",
+  contractVersion: "1.0.0",
+} as const);
+
 export type KnowledgeContractReference =
   | typeof KNOWLEDGE_CORE_CONTRACT
   | typeof KNOWLEDGE_ENTRY_CONTRACT
@@ -52,7 +72,11 @@ export type KnowledgeContractReference =
   | typeof KNOWLEDGE_PROVENANCE_CONTRACT
   | typeof COMPACT_FALLBACK_PROJECTION_CONTRACT
   | typeof KNOWLEDGE_COMPLETENESS_AUDIT_CONTRACT
-  | typeof KNOWLEDGE_CURATION_WAVE_CONTRACT;
+  | typeof KNOWLEDGE_CURATION_WAVE_CONTRACT
+  | typeof CURRENT_45_KNOWLEDGE_COMPLETION_CONTRACT
+  | typeof PRODUCTION_KNOWLEDGE_REGISTRY_CONTRACT
+  | typeof LEGACY_FALLBACK_EQUIVALENCE_CONTRACT
+  | typeof PRODUCTION_KNOWLEDGE_REVIEW_LEDGER_CONTRACT;
 
 export const KNOWLEDGE_FACT_KINDS = [
   "setup_instruction",

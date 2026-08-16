@@ -40,6 +40,7 @@ export interface CuratedEntrySpec {
   readonly setup: readonly CuratedFactText[];
   readonly during: readonly CuratedFactText[];
   readonly pattern: string;
+  readonly mechanicsFacts?: readonly CuratedFactText[];
   readonly watchFor: readonly CuratedFactText[];
   readonly compactCoachingRefs: readonly ("focus" | `cue.${number}`)[];
   readonly overrides?: readonly CuratedOverrideSpec[];
@@ -115,6 +116,7 @@ export function defineCuratedEntry(spec: CuratedEntrySpec): ExerciseKnowledgeEnt
     ...spec.setup.map((fact, index) => ({ suffix: `setup.${index + 1}`, kind: fact.kind ?? defaultKind.setup, statement: fact.statement, compact: fact.compact, category: "setup" as const, source: fact.source })),
     ...spec.during.map((fact, index) => ({ suffix: `during.${index + 1}`, kind: fact.kind ?? defaultKind.during, statement: fact.statement, compact: fact.compact, category: "during" as const, source: fact.source })),
     { suffix: "pattern", kind: "movement_pattern", statement: spec.pattern, compact: spec.legacySummary, category: "pattern" },
+    ...(spec.mechanicsFacts ?? []).map((fact, index) => ({ suffix: `mechanics.${index + 1}`, kind: "mechanics_explanation" as const, statement: fact.statement, compact: fact.compact, category: "pattern" as const, source: fact.source })),
     ...spec.watchFor.map((fact, index) => ({ suffix: `watch.${index + 1}`, kind: fact.kind ?? defaultKind.watchFor, statement: fact.statement, compact: fact.compact, category: "watchFor" as const, source: fact.source })),
     ...(spec.overrides ?? []).flatMap((override) => override.facts.map((fact) => ({
       suffix: `realization.${override.id}.${fact.suffix}`,

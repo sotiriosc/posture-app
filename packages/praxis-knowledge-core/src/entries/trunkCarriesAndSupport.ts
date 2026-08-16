@@ -11,6 +11,7 @@ export const TRUNK_CARRY_SUPPORT_KNOWLEDGE_ENTRIES = Object.freeze([
     setup: [fact("Set a cable or securely anchored band near torso height and stand side-on to it."), fact("Choose the prescribed stance and take the handle at the center of the torso."), fact("The load must come from an explicit cable or anchored-band capability; this is not a chest press.", { kind: "equipment_boundary", source: "equipment" })],
     during: [fact("Press the hands away while keeping the torso oriented forward."), fact("Bring the hands back under control before changing sides or leaving the stance.")],
     pattern: "A Pallof press is a side-on cable or band anti-rotation task in which arm reach lengthens the trunk-control lever.",
+    mechanicsFacts: [fact("Moving the hands farther from the torso lengthens the lever while the anchor continues to pull from the side.")],
     watchFor: [fact("Watch for the torso turning toward the anchor as the arms extend."), fact("Watch for the stance shifting to escape the line of pull.")],
     compactCoachingRefs: ["focus", "cue.1"], overrides: [
       { id: "cable", realizationId: "cable-stack", facts: [

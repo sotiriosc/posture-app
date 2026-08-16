@@ -450,3 +450,13 @@ Package R evidence includes 424 controlled scenarios, 400 fixed-shell cases, a 7
 Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
 
 <!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->
+
+## Pre-G2K - Current production Knowledge completion
+
+Pre-G2K evidence covers 684 controlled scenarios, 720 fixed-shell cohort cases, a locked 954-case holdout, 60 rejected semantic mutations, 21 passed metamorphic relations, and the required deterministic stress floors. It also checks the frozen Package R fingerprints, exact 45/53 sets, all category references, provenance, realization dispositions, fallback equivalence, stale generation, engine conflicts, claim boundaries, and runtime import guards.
+
+Combined Pre-G2K fingerprint: `400ca72d6572af9bdec78140e7e5aadfae334e79c38ba0cc0f9a354a5ca71593`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->

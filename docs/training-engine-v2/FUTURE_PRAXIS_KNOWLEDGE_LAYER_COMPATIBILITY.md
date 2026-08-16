@@ -99,3 +99,13 @@ Pre-G2 implements the pure `@praxis/knowledge-core` data boundary for the select
 Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
 
 <!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->
+
+## Pre-G2K - Complete production Knowledge registry
+
+`@praxis/knowledge-core` now owns accepted focus, cues, setup, during, pattern, and watch-for facts for all 53 production exercise identities. Current `summary` and `coachingFocus` values are deterministic compact projections; they are no longer hand-maintained catalog copy. Coaching Rail and Library adapters can resolve structured references later, but no UI, route, article, media, CMS, network, or database layer is implemented here.
+
+Combined Pre-G2K fingerprint: `400ca72d6572af9bdec78140e7e5aadfae334e79c38ba0cc0f9a354a5ca71593`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->

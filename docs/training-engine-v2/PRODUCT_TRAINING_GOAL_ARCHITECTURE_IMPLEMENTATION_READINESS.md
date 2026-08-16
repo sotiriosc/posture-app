@@ -188,3 +188,13 @@ Pre-G2 admits Package R and its canonical Knowledge core without Product activat
 Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
 
 <!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->
+
+## Pre-G2K - Production Knowledge completeness
+
+Pre-G2K completes one reusable educational source for all 53 production identities. Knowledge remains outside Candidate, Composer, Week, Prescription, Sequencing, Product Shadow, and Product runtime decisions. The next architecture dependency is the separately authorized Full/Lighter/Recovery V2 bridge.
+
+Combined Pre-G2K fingerprint: `400ca72d6572af9bdec78140e7e5aadfae334e79c38ba0cc0f9a354a5ca71593`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
+
+<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->
