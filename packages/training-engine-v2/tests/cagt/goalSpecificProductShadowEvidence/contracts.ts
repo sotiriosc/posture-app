@@ -1,5 +1,17 @@
-import type { ProductShadowB1B4Stage } from
-  "../../../../engine/src/controlledProductShadowGoalRealization/contracts";
+export type GoalSpecificProductShadowStage =
+  | "week_source"
+  | "weekly_intent"
+  | "week_allocation"
+  | "planning_context"
+  | "session_intent"
+  | "candidate_intelligence"
+  | "session_composer"
+  | "prescription"
+  | "final_sequence"
+  | "gate_13"
+  | "phase_snapshot"
+  | "longitudinal"
+  | "application_orchestration";
 
 export const GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_REFERENCE = Object.freeze({
   contractId: "GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE",
@@ -118,7 +130,7 @@ export interface GoalSpecificArtifactReference {
   readonly contractVersion: string;
   readonly athleteId: string;
   readonly scenarioId: string;
-  readonly stage: ProductShadowB1B4Stage | "mapping" | "gate_14" | "evidence";
+  readonly stage: GoalSpecificProductShadowStage | "mapping" | "gate_14" | "evidence";
   readonly sourceLineage: readonly string[];
   readonly counterfactualOnly: true;
 }
@@ -129,7 +141,7 @@ export interface GoalSpecificStoredArtifact<T = unknown> extends GoalSpecificArt
 }
 
 export interface GoalSpecificStageAuthenticityEntry {
-  readonly stage: ProductShadowB1B4Stage;
+  readonly stage: GoalSpecificProductShadowStage;
   readonly contractId: string;
   readonly contractVersion: string;
   readonly productionKernel: string;
@@ -179,8 +191,8 @@ export interface GoalSpecificEvidenceRunSummary {
   readonly mappingFingerprint: string;
   readonly terminalClass: GoalSpecificTerminalClass;
   readonly pipelineStatus: string;
-  readonly completedStages: readonly ProductShadowB1B4Stage[];
-  readonly firstStoppedStage: ProductShadowB1B4Stage | null;
+  readonly completedStages: readonly GoalSpecificProductShadowStage[];
+  readonly firstStoppedStage: GoalSpecificProductShadowStage | null;
   readonly artifactReferences: readonly GoalSpecificArtifactReference[];
   readonly fullProgramSnapshotId: string | null;
   readonly gate13Status: string;

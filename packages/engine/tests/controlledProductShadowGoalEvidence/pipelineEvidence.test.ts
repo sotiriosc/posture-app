@@ -9,7 +9,7 @@ import {
   GOAL_SPECIFIC_PRODUCT_SHADOW_JSON_FILENAMES,
   GOAL_SPECIFIC_PRODUCT_SHADOW_MARKDOWN_FILENAMES,
   buildGoalSpecificProductShadowMarkdownReports,
-} from "../../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports";
+} from "./reportAssembly";
 import { runGoalSpecificProductShadowEvidenceSuite } from "./evidenceSuite";
 
 const workspaceRoot = resolve(process.cwd().endsWith("packages/engine") ? process.cwd() :

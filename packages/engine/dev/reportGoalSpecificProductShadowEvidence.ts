@@ -8,7 +8,7 @@ import {
   buildGoalSpecificProductShadowMarkdownReports,
   buildGoalSpecificProductShadowReport,
   goalSpecificProductShadowDocumentationMarker,
-} from "../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports";
+} from "../tests/controlledProductShadowGoalEvidence/reportAssembly";
 
 async function main() {
   const workspaceRoot = process.cwd().endsWith("packages/engine") ? resolve(process.cwd(), "../..") :

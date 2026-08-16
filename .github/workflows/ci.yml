@@ -40,7 +40,8 @@ jobs:
           npm run build --workspace=@praxis/training-engine-v2 &&
           npm run build:outcome-sources --workspace=@praxis/engine &&
           npm run build:application-orchestration --workspace=@praxis/engine &&
-          npm run build:product-shadow --workspace=@praxis/engine
+          npm run build:product-shadow --workspace=@praxis/engine &&
+          npm run build:goal-specific-evidence --workspace=@praxis/engine
       - name: Run real Outcome Source PostgreSQL integration
         run: npm run test:outcome-sources:postgres
       - name: Run real orchestration PostgreSQL integration
@@ -70,6 +71,7 @@ jobs:
       # ── Boundary lint (R2/R3/R4) ──────────────────────────────────────────
       - name: Boundary lint
         run: >-
+          npm run validate:pure-server-boundary --workspace=@praxis/training-engine-v2 &&
           npx eslint
           packages/engine/src
           apps/consumer/src

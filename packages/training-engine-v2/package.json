@@ -14,7 +14,10 @@
     "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json --noEmit",
+    "build": "npm run validate:pure-server-boundary && npm run typecheck:production && npm run typecheck:test-dev",
+    "validate:pure-server-boundary": "node --import tsx dev/validatePureServerBoundary.ts",
+    "typecheck:production": "tsc -p tsconfig.production.json --noEmit --incremental false",
+    "typecheck:test-dev": "tsc -p tsconfig.test-dev.json --noEmit --incremental false",
     "engine:v2:lab": "node --import tsx dev/manualCandidateLab.ts",
     "test": "vitest --run --config vitest.config.ts --maxWorkers=4",
     "test:cagt": "vitest --run --config vitest.config.ts tests/unit/cagtCore.test.ts tests/unit/cagtAdaptersAndCohorts.test.ts",

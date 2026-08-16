@@ -2,28 +2,30 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   evidenceDigest,
-} from "../../../../engine/tests/controlledProductShadowGoalEvidence/artifactStore";
+} from "./artifactStore";
 import {
   PRODUCT_INPUT_NECESSITY_MATRIX,
-} from "../../../../engine/tests/controlledProductShadowGoalEvidence/futureGoalFixtures";
+} from "./futureGoalFixtures";
 import {
   runGoalSpecificProductShadowEvidenceSuite,
-} from "../../../../engine/tests/controlledProductShadowGoalEvidence/evidenceSuite";
+} from "./evidenceSuite";
 import {
   GOAL_SPECIFIC_STAGE_AUTHENTICITY_MANIFEST,
-} from "../../../../engine/tests/controlledProductShadowGoalEvidence/genuineStagePorts";
+} from "./genuineStagePorts";
 import {
   CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V16,
   validateCagtEffectiveAuthorityRegistryV16,
-} from "./cagt";
-import { GOAL_SPECIFIC_EVIDENCE_CONTRACTS } from "./contracts";
-import { GOAL_SPECIFIC_CAUSAL_PAIR_MATRIX } from "./pairManifest";
+} from "../../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/cagt";
+import { GOAL_SPECIFIC_EVIDENCE_CONTRACTS } from
+  "../../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/contracts";
+import { GOAL_SPECIFIC_CAUSAL_PAIR_MATRIX } from
+  "../../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/pairManifest";
 import {
   GOAL_SPECIFIC_CONTROLLED_SCENARIOS,
   GOAL_SPECIFIC_FIXED_SHELL_SCENARIOS,
   GOAL_SPECIFIC_HOLDOUT_MANIFEST,
   GOAL_SPECIFIC_HOLDOUT_SCENARIOS,
-} from "./scenarioManifest";
+} from "../../../training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/scenarioManifest";
 
 export const GOAL_SPECIFIC_PRODUCT_SHADOW_MARKDOWN_FILENAMES = Object.freeze([
   "GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_ONTOLOGY_AUDIT.md",
