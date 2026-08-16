@@ -1,8 +1,8 @@
 # Praxis Product Goal & Prescription Architecture Ledger
 
-**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_CHUNK_F_COMPLETE_FUTURE_WORK_REMAINS`  
-**Last verified audit commit:** `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`  
-**Last completed implementation commit:** `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`  
+**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_PRE_G2_COMPLETE_PRE_G2K_HARD_BLOCKER_FUTURE_WORK_REMAINS`  
+**Last verified audit commit:** `c2fa1dbf49aa05cf0b609aa901a25b97d78f5cf2`  
+**Last completed implementation commit:** `c2fa1dbf49aa05cf0b609aa901a25b97d78f5cf2`  
 **PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
 **Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
 **V2 application state:** `NOT_ACTIVATED`
@@ -725,14 +725,44 @@ Exact next dependency:
 - **Rollback boundary:** revert this ledger-only closure, then revert curation commit `c48a092a65fad4e26fc23bc8e08ac600aaed1af9`; no production row, Product data, migration, or runtime rollback is required
 - **Next dependency:** `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`
 
-## Pre-G2 — Owner-approved production exercise-catalog expansion
+## Pre-G2 — Home-first mixed production catalog and Knowledge core
 
-- **Status:** open
+- **Status:** completed and proven; `HOME_FIRST_MIXED_EXERCISE_CATALOG_EXPANSION_AND_KNOWLEDGE_CORE_V1_IMPLEMENTED_NOT_PRODUCT_ACTIVATED`
+- **Owner authorization:** `HOME_FIRST_MIXED_EXERCISE_CATALOG_EXPANSION_AND_CANONICAL_KNOWLEDGE_CORE_V1_IMPLEMENTATION`
+- **Owner-selected package:** `PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1`; prioritize familiar, comfortable no-bench dumbbell and simple bodyweight home training, add two common supported gym identities, preserve exact advanced-home familiarity, and exclude unresolved apparatus, anchor, barbell, power, conditioning, and advanced-technique scope
+- **Knowledge timing:** `KNOWLEDGE_CORE_CURATION_REQUIRED_WITH_EACH_PRODUCTION_ROW`
+- **Knowledge implementation commit:** `de0f807a157cbdb42deac8f2da50b9ade2c9e11b`
+- **Production admission commit:** `c2fa1dbf49aa05cf0b609aa901a25b97d78f5cf2`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD as this ledger-only commit
+- **Classification:** `HOME_FIRST_MIXED_EXERCISE_CATALOG_EXPANSION_AND_KNOWLEDGE_CORE_V1_READY_FOR_CURRENT_CATALOG_KNOWLEDGE_COMPLETENESS_AUTHORIZATION`
+- **Catalog transition:** 45 to 53 rows and 45 to 53 unique canonical IDs; eight additions, zero unselected additions, zero duplicate IDs, and zero Library-specific IDs. Catalog source SHA-256 moved from `a7c69bae80c58b346d2e907387dd16ecd0f3f33f797b0aa239be5401df4d887d` to `07524767c3f305e416d30dfeaa5b05cf758f607a03801e6876cc678bdf4cfa32`
+- **Selected IDs:** `dumbbell-floor-press`, `dumbbell-triceps-extension`, `bent-over-dumbbell-reverse-fly`, `side-lying-hip-abduction`, `bird-dog`, `band-biceps-curl`, `machine-shoulder-press`, and `machine-leg-extension`
+- **Knowledge package:** private pure `@praxis/knowledge-core` at `packages/praxis-knowledge-core`; it owns canonical facts and presentation maps but is not an engine decision dependency and does not create a second exercise catalog
+- **Knowledge contracts:** `PRAXIS_EXERCISE_KNOWLEDGE_CORE@1.0.0`, `EXERCISE_KNOWLEDGE_ENTRY@1.0.0`, `EXERCISE_KNOWLEDGE_FACT@1.0.0`, `EXERCISE_KNOWLEDGE_PRESENTATION_MAP@1.0.0`, `EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE@1.0.0`, `EXERCISE_KNOWLEDGE_PROVENANCE@1.0.0`, and `EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION@1.0.0`
+- **Knowledge completeness:** all eight entries have complete focus, cues, setup, during, pattern, and watchFor presentations over 112 canonical facts; diagnosis claims, treatment claims, duplicate facts, orphan facts, and missing presentation references: 0
+- **Realization knowledge:** two differences-only overrides cover one-dumbbell Floor Press and alternating Bird Dog without duplicating whole entries; related mechanics remain references and related pain topics remain non-diagnostic
+- **Generated compact fallback:** `packages/training-engine-v2/src/data/generatedExerciseCoachingFallbacks.ts`; generated/validated from canonical Knowledge with zero stale or hand-edited rows. Compact-projection fingerprint: `4f5115a6193e63466e25b4bd637fb4c77fbf933bb454998e4b479d9d14ceb493`
+- **Home comfort:** `HOME_COMFORT_PRODUCTION_PROFILE@1.0.0` covers all 53 rows and `HOME_COMFORT_PRODUCTION_SELECTION_POLICY@1.0.0` applies only after Safety, legality, purpose/coverage, pain/response truth, dependencies, and exact productive familiarity. Home-equals-beginner, Safety overrides, legality overrides, stable-anchor displacement, novelty quota, and variety quota: 0
+- **Current 45 Knowledge audit:** read-only `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_AUDIT@1.0.0`; complete 0, compact-fallback-only 45, missing focus/cues/setup/during/pattern/watchFor 45 each, realization-override-required 17, provenance-required 45, semantic conflicts 0, and Pre-G2K blockers 45. Existing compact fallback behavior remains frozen
+- **Candidate and Composer consequences:** legal Package R rows participate through decision metadata; home comfort is a deterministic tie preference only where a Package R candidate is compared, while historical 45-row evidence replays against the explicit pre-Package-R view. Knowledge prose changes ranking and numeric policy by zero
+- **Week and Prescription consequences:** every selected row has repetition-set Prescription knowledge, explicit phase abstention, stress/mechanics/progression/transition review, and deterministic downstream evidence; no generic warm-up, generic activation, optional bloat, duplicate session identity, accepted downstream rescue, or wrong-layer effect was introduced
+- **Product and activation boundary:** Product Shadow, current Product UI, goal options, Get stronger visibility, Questionnaire, `generateProgram`, consumer/gyms runtime Knowledge imports, Coaching Rail, Library UI/routes, CMS/network/database integration, Full/Lighter/Recovery, owner delivery, and Product activation changes: 0
+- **Evidence:** ontology `HOME_FIRST_MIXED_CATALOG_KNOWLEDGE_ONTOLOGY_READY`; 424 controlled scenarios, 400 fixed-shell cohort cases, frozen 742-case holdout, 52/52 semantic mutations rejected, 23/23 metamorphic checks passed, and all deterministic stress minima passed. Knowledge 6/6, Package R 15/15, complete Training Engine V2 1,154/1,154, root Vitest 1,045/1,045, consumer 55/55, gyms 25/25, critical engine 318/318, Product Shadow 30/30, both production builds, both browser invariance specs, pure/engine TypeScript, scoped ESLint with zero errors, stale generation, deterministic double regeneration, and diff checks passed
+- **PostgreSQL boundary:** all three required commands were invoked; nine local integration tests skipped because this workspace has no PostgreSQL tooling or `TEST_DATABASE_URL`. The required PostgreSQL 16 PR job remains authoritative and must pass before final reporting
+- **Fingerprints:** Knowledge foundation `e044bba680ce4f864b3de2e92c87e0410dd0d16ceb986266608f1440c3355f1e`; selected IDs `ecf2fbe0fabd82333833c5365a2d0dfc5856f485dbe07f8a9666dc35237c1e40`; selected rows `10039d698ac47b48f8bc4a5b88457bf4cf99847c403bfd29204be22eec01ae4c`; Knowledge entries `f813e143858d2675cd14ccbd251222473b763b4f5afefb9c9f0c89442ac53092`; home profiles `1b73328fc9519f7a7f1a38fcd3aca4d32669d111a7a2a0693081454c95bda1d3`; controlled scenarios `dc9931ad257b4f4c98762efb55baf9ad88736eb77e4fc84956710debadb2a88a`; holdout `c135ba6a08e35ffd2559b4df4de12000836726ffbfc4bdd63f6ca02c628f6c16`; activation guards `063907ddc5236d2d1b99784a833d0ddb75d9a518e66de432bc6dffabb6b0336c`; combined Pre-G2 `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`
+- **Preserved upstream fingerprints:** ledger before Pre-G2 `aa74fe20846b5b9fe79d813134ce8b0dd1a0e8f2b0094a8fbc7088d5e7a665f3`; Pre-G1 combined `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`; Pre-G1 holdout `7d0bc84fbb99d556c49cf1f4ce5eca3d86c14b52f597f3b7d5a7e68a425e0306`; historical Product Shadow `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; Chunk F `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`; Chunk E `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`
+- **Limitations:** the current 45 still lack canonical Knowledge cores; anchorless full horizontal pull, dumbbell-only vertical pull, and bodyweight vertical pull remain unsupported; unresolved identity/equipment decisions and every explicitly deferred Package R candidate remain open. Pre-G3, G, and H are not authorized
+- **Rollback boundary:** revert this ledger-only closure, then revert production admission `c2fa1dbf49aa05cf0b609aa901a25b97d78f5cf2` and Knowledge foundation `de0f807a157cbdb42deac8f2da50b9ade2c9e11b` together; restore the explicit 45-row baseline view and remove generated Package R fallbacks without changing Product data or routes
+- **Next dependency:** `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`
+
+## Pre-G2K — Current production catalog Knowledge completeness
+
+- **Status:** open; hard blocker before Pre-G3 and G
 - **Authorization:** not granted
-- **Required owner decision:** select an exact candidate tranche, same-identity metadata scope, explicit limitations, equipment capabilities, and unresolved identity dispositions
-- **Required future work:** complete production-quality Knowledge/mechanics/stress/receiver/Prescription curation for every selected row, add rows only under separate authorization, calibrate Candidate/Composer behavior, and rerun all catalog, engine, Product Shadow, Product, browser, PostgreSQL, and PR gates
-- **Current selection:** none; production catalog remains exactly 45 rows and 45 unique IDs
-- **Delivery consequence:** G cannot begin until Pre-G2 is implemented, proven, and closed by a separate ledger commit
+- **Current scope:** complete the canonical Knowledge core, provenance, and reviewed realization overrides for the original 45 production identities without changing their exercise IDs or silently expanding the catalog
+- **Current blocker count:** 45
+- **Delivery consequence:** Pre-G3 and G may not begin until Pre-G2K is implemented, proven, and closed by a separate ledger commit
+- **Exact next dependency:** `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`
 
 ## Pre-G3 — Full / Lighter / Recovery V2 day-of practice-options bridge
 
@@ -804,7 +834,7 @@ The following remain incomplete until implemented, verified, and separately auth
 - power policy;
 - conditioning policy;
 - systemic-conditioning receiver and modality policy;
-- owner-approved production exercise-catalog expansion (Pre-G2);
+- current 45 exercise Knowledge completeness (Pre-G2K);
 - Full / Lighter / Recovery V2 day-of practice-options bridge (Pre-G3);
 - Product Shadow evidence for the new mappings;
 - owner-account V2 delivery;
