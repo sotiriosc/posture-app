@@ -634,18 +634,39 @@ Exact next dependency:
 
 ## Chunk E — Screenshot-guided Product design
 
-Owner supplies the current Product screen.
-
-Review only one surface at a time.
-
-For each surface:
-
-- capture current state;
-- identify exact fields and mappings;
-- design the minimum change;
-- preserve rollback;
-- test mobile/desktop/accessibility;
-- verify no unrelated UI or behavior changed.
+- **Status:** completed and proven
+- **Implementation commit:** `9b8699f3f4a6af615841bdf09f5f00f38c2f5a71`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD as this ledger-only commit
+- **Combined status:** `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_COMPLETED_NO_UI_CHANGE`
+- **Classification:** `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_READY_FOR_ONE_INACTIVE_PRODUCT_GOAL_OPTION_AUTHORIZATION`
+- **Selected surface:** consumer Product Step 2 `/questionnaire`, owned by `apps/consumer/src/components/QuestionnaireForm.tsx`; no other Product surface was redesigned
+- **Screenshot observation contract:** `OWNER_SUPPLIED_PRODUCT_SCREENSHOT_OBSERVATION_CORPUS@1.0.0`; the owner declared 13 logical images, while the local workspace exposed eight untracked PNG binaries: five verified Product composites, one partial Product/development composite, and two unrelated development views
+- **Screenshot disposition:** owner screenshot binaries committed: 0; owner personal data committed: 0; pixel payloads copied to reports: 0; desktop Product observations were verified from five composites, while owner-reported mobile coverage was not independently identifiable in the local binary inventory and current-head mobile renders were used for implementation review
+- **Current-head render baseline:** 22 synthetic states at 320, 360, 390, 1024, and 1440 px: 18 consumer and four gyms, including every current goal, every consumer training mode, all equipment choices, dirty confirmation, active-session warning, ordinary gyms, and buyer-demo locked equipment; horizontal-overflow and fixed-control-overlap findings: 0
+- **Screenshot/code/render drift:** four targeted discrepancies remain explicit: screenshot Knees versus no branch questionnaire Knees; owner-reported expanded resistance-band detail versus no branch band-detail control; declared mobile crops versus no independently identifiable local mobile binaries; and consumer training-mode controls versus no gyms training-mode controls. Current signature omission of `trainingIntent` and legacy gym capability expansion are separately recorded ownership/compatibility risks
+- **Visual invariants:** preserve the current photographic shell, restrained dark translucent surfaces, teal selected state and CTA, compact constrained column, familiar fixed Info/Menu controls, current confirmation hierarchy, and consumer/gyms brand treatment; no new design system or hard-coded palette is authorized
+- **Desktop/mobile design:** one responsive page, constrained desktop column, one-column 320-390 px flow, inline conditional disclosure, wrapped labels, CTA in document flow, and reserved bottom safe space; no side-panel follow-up, giant questionnaire, horizontal scrolling, or multi-page wizard
+- **Accessibility:** design contract covers keyboard operation, fieldset/legend and explicit-label semantics, visible focus, error association, 44-by-44 px touch targets, text scaling, 200% zoom, reduced motion, high-contrast review, logical screen-reader order, and fixed-control collision avoidance; current-render findings are not a WCAG conformance claim
+- **Eventual information architecture:** `primary_goal`, conditional goal focus, optional secondary-goal disclosure, pain/limitations context, training mode, days per week, session minutes only when exact feasibility requires them, coarse experience, equipment environment, conditional exact capability, submit; ordinary supported completion remains under 60 seconds
+- **Owner-selected design:** Option A, retaining a compact primary-goal control and exposing only the legally necessary inline follow-up; Chunk F does not reorder current fields
+- **First inactive Product option:** `get_stronger` / Get stronger / canonical outcome `strength` / state `future_inactive_internal`; ordinary consumer, gyms, and buyer-demo visibility remain false
+- **Primary goal and follow-up:** one primary outcome owns the program intent; General fitness requires an explicit fitness/stamina focus and Athletic Performance requires an explicit performance focus rather than silent strength or power defaults
+- **Pain/context separation:** future pain and limitations are programming context, not a primary outcome, diagnosis, or generic corrective-circuit owner; legacy Reduce pain loads unchanged and migrates only through explicit reviewed confirmation, never on read
+- **Training mode:** future copy is Develop, Maintain, and Return/rebuild; mode cannot create or override the primary outcome. Current Build copy remains an audited semantic risk because it can sound like a strength outcome
+- **Secondary goal:** optional, collapsed, non-duplicative, and unable to override the primary; Chunk F implementation count: 0
+- **Schedule, experience, and equipment:** days remain required; minutes remain conditional and unimplemented; coarse experience cannot infer exact load; equipment begins with environment and discloses band, dumbbell, or gym capability only when legality requires it. Full gym implies every capability: 0; exact load is not an initial universal requirement, and self-selected calibration may substitute where legal
+- **Product profile and signature:** `PRODUCT_TRAINING_PROFILE_V2_DESIGN@2.0.0-design-only` and `QUESTIONNAIRE_SIGNATURE_V2_DESIGN@2.0.0-design-only` use canonical semantic ownership; production exports, persistence changes, and current-signature changes: 0
+- **Legacy compatibility:** all existing goal, mode, equipment, and experience values remain readable; migration-on-read: 0; regeneration-on-read: 0; current dirty-confirmation, cancellation, and active-session warning behavior remains unchanged
+- **Consumer/gyms parity:** consumer-first scope is explicit; gyms differences and buyer-demo equipment locking are documented rather than inferred from consumer screenshots; gyms runtime changes: 0
+- **Chunk F handoff:** `ONE_INACTIVE_GET_STRONGER_PRODUCT_OPTION_V1_IMPLEMENTATION_HANDOFF@1.0.0`; an explicit preview harness may render/select a structured inactive value, but ordinary-route visibility, persistence, current signature changes, `generateProgram`, current-route Product Shadow, V2 output, and non-preview submission are prohibited and fail closed
+- **Product/UI/runtime changes:** consumer QuestionnaireForm runtime changes: 0; gyms QuestionnaireForm runtime changes: 0; questionnaire-page runtime changes: 0; Product option, copy, pain-option, equipment-option, band-detail, `QuestionnaireData`, signature, persistence, `generateProgram`, current route/trigger/rollout, Product Shadow current-route call, V2 output, Product mutation, application, and Product activation changes: 0
+- **Evidence:** 31 Markdown and 15 deterministic JSON reports; 11/11 focused tests; 29/29 semantic design mutations rejected; 21/21 metamorphic relations passed; 22/22 current render states passed; complete Training Engine V2 1,122/1,122; Product Goal Architecture 15/15; Product goal audit 10/10; historical Product Shadow 30/30; Chunk D 9/9; root engine 1,045 passed with nine local PostgreSQL skips; pure and Engine TypeScript, consumer/gyms builds, browser invariance, scoped ESLint, JSON parsing, deterministic double regeneration, and diff guards passed
+- **PostgreSQL boundary:** local Outcome Source 1, orchestration 2, and Product Shadow 6 integration tests skipped because local PostgreSQL tooling is unavailable; the required PostgreSQL 16 CI job remains authoritative and must pass before final reporting
+- **Fingerprints:** owner screenshot corpus `a08df071d8021be642badf35de9ca923ecb7aa09f2bf9232a16a97e0fd212b10`; current render baseline `0d4cd4838ccdb14310fe2fab9413a238ac2d995b1d15dbb3141f57e13ae48326`; drift audit `eebb5b389cbd48c13ca9426eb5f08427a5ab863a1bf43f45c68178a792f1bdfd`; information architecture `693453722ccfe07674645fdb4029b07423dce22144e788aeeb37c4e9582a04b6`; F handoff `d33b05c84cbbbb47d07be893349844635df43aaca3428c1585ef8c1562b1a9ed`; report corpus `4b59ed72f987e9f1a6668734052e6d0651fd5e7953529f33f9f7760095ab0bae`; combined Chunk E `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`
+- **Preserved upstream fingerprints:** historical Product Shadow `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; Chunk C `01f3a6a9b1eb6ef28d33876c5cb00d3b01948cad90cf7939ac1d072ffa071a9d`; Chunk D `dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464`; post-Chunk-D maintenance `39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb`
+- **Unresolved drift and limitations:** Knees, reported band detail, local mobile-crop inventory, gyms training-mode parity, current `trainingIntent` signature identity, legacy gym capability overstatement, power/systemic-conditioning/sport policy, maintenance and broader Return/rebuild delivery, live owner-account evidence, and activation remain open; F, G, and H are not completed
+- **Rollback boundary:** revert this ledger-only closure, then revert implementation commit `9b8699f3f4a6af615841bdf09f5f00f38c2f5a71`; current Product routes, UI, persistence, generation, Product Shadow behavior, and delivered legacy output remain unchanged
+- **Next dependency:** `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`
 
 ## Chunk F — Add one inactive Product option
 
