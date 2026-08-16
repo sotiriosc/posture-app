@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   CONTROLLED_CANDIDATE_SCENARIOS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   TRUNK_MECHANICS_FUNCTIONS,
   runCandidateRankingLab,
   type CandidateRankingResult,

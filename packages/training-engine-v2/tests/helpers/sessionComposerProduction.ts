@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   CONTROLLED_CANDIDATE_SCENARIOS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   PRODUCTION_SESSION_SEARCH_POLICY,
   buildSessionPrescriptionHandoff,
   buildSessionSequencingInput,
@@ -10,6 +10,7 @@ import {
   composeSessionSkeletonExhaustive,
   deriveCanonicalCompositionFacts,
   evaluatePostPrescriptionDuration,
+  rankCandidateRequest,
   validateSessionCandidateResults,
   validateSessionIntent,
   type CandidatePainExecutionReadiness,
@@ -238,7 +239,14 @@ export function buildResults(
   intent: SessionIntent,
   request: CandidateRequest = baseRequest,
 ): Readonly<Record<string, CandidateRankingResult>> {
-  return buildSessionCandidateResults(intent, productionContext(request));
+  const currentResults = buildSessionCandidateResults(intent, productionContext(request));
+  return Object.freeze(Object.fromEntries(Object.entries(currentResults).map(([needId, result]) => [
+    needId,
+    rankCandidateRequest({
+      ...result.request,
+      candidatePool: REFERENCE_EXERCISES,
+    }),
+  ])));
 }
 
 export function trimResults(

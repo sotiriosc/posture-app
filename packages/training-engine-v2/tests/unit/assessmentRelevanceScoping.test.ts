@@ -6,7 +6,7 @@ import {
   FULL_GYM_EQUIPMENT,
   getControlledCandidateScenario,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   runCandidateRankingLab,
   THREE_PHASE_FOUNDATION,
   type AssessmentSignal,

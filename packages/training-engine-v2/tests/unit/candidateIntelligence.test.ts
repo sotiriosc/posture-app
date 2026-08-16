@@ -7,7 +7,7 @@ import {
   getControlledCandidateScenario,
   HARD_ELIGIBILITY_COMPONENTS,
   EMPTY_TRAINING_HISTORY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildHorizontalRowSelectionTrace,
   evaluateHardEligibility,
   runCandidateRankingLab,

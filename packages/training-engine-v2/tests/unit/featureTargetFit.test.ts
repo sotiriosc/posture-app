@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   FULL_GYM_EQUIPMENT,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   calculateAssessmentRelevanceTraces,
   deriveAlignmentPriorities,

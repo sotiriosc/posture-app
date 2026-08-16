@@ -4,7 +4,7 @@ import { join } from "node:path";
 import {
   CONTROLLED_CANDIDATE_SCENARIOS,
   GOLDEN_PERSONAS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   deriveAlignmentPriorities,
   runCandidateRankingLab,

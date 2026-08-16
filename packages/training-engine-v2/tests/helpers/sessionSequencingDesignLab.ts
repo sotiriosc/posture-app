@@ -1,7 +1,7 @@
 import {
   EXERCISE_DOSE_MODES,
   FULL_GYM_EQUIPMENT,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildSessionSequencingInput,
 } from "../../src";
 import type {

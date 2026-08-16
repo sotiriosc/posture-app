@@ -38,3 +38,13 @@ Package ID: `H`. Comparative curation only; not selected. New-row proposal count
 | Risk | Medium: handling/band/support metadata and receiver purity. |
 
 Fingerprint: `5d54029697cb5a0ce2cd12d72c0a86e57eaeee2c93be65c9d90bbce9c4bd7af7`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+Historical Package H was not admitted as a package. Package R selects six reviewed home capabilities; every other Package H candidate remains deferred.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

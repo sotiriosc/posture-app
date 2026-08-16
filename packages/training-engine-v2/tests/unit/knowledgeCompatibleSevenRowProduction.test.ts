@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildCandidatePainMatchTrace,
   buildExerciseStressProfile,
   CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN_POLICY,

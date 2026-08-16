@@ -1,0 +1,1047 @@
+[
+  {
+    "id": "dumbbell-floor-press",
+    "name": "Dumbbell Floor Press",
+    "family": "upper_push",
+    "movementRoles": [
+      "horizontal_push"
+    ],
+    "actionFunctions": [
+      "shoulder_horizontal_adduction",
+      "elbow_extension"
+    ],
+    "trainingRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "chest",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "triceps",
+        "relationship": "key_secondary_target"
+      },
+      {
+        "muscle": "front_delts",
+        "relationship": "key_secondary_target"
+      }
+    ],
+    "bodyRegions": [
+      "shoulder",
+      "elbow",
+      "wrist"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "dumbbells-and-floor-space",
+        "label": "One or two dumbbells with floor space",
+        "allOf": [
+          "dumbbells",
+          "floor_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "main",
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [
+      {
+        "tag": "horizontal_pressing",
+        "source": "joint_stress",
+        "exposureScope": "intrinsic",
+        "sideScope": "bilateral_or_systemic",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "Horizontal pressing is intrinsic; range, laterality, load, and volume remain realization or Prescription facts."
+            ]
+          }
+        ],
+        "notes": "Horizontal pressing is intrinsic; range, laterality, load, and volume remain realization or Prescription facts."
+      }
+    ],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "dumbbell-bench-press",
+        "direction": "progression",
+        "classification": "context_dependent",
+        "purposes": [
+          "increase_loadability",
+          "change_resistance_path",
+          "equipment_transition",
+          "stimulus_shift"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "A bench press changes support and available bottom range; it is not an automatic continuation.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "dumbbell-floor-press",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "high",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "moderate",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "low",
+      "firstSessionComfortDisposition": "excellent",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "dumbbell-floor-press",
+      "summary": "Floor-supported horizontal press with a bounded lowering range.",
+      "coachingFocus": [
+        "Press up from a floor-bounded bottom position",
+        "Stack wrists over elbows"
+      ],
+      "sourceFactIds": [
+        "dumbbell-floor-press.pattern.horizontal-press",
+        "dumbbell-floor-press.focus.floor-bounded-press",
+        "dumbbell-floor-press.cue.wrist-over-elbow"
+      ]
+    }
+  },
+  {
+    "id": "dumbbell-triceps-extension",
+    "name": "Dumbbell Triceps Extension",
+    "family": "arm_accessory",
+    "movementRoles": [
+      "accessory"
+    ],
+    "actionFunctions": [
+      "elbow_extension"
+    ],
+    "trainingRoles": [
+      "hypertrophy_accessory"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "triceps",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "front_delts",
+        "relationship": "stabilizer_or_contextual_contributor"
+      },
+      {
+        "muscle": "trunk",
+        "relationship": "stabilizer_or_contextual_contributor"
+      }
+    ],
+    "bodyRegions": [
+      "shoulder",
+      "elbow",
+      "wrist"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "dumbbells-and-stable-standing-space",
+        "label": "Dumbbells and stable loaded standing space",
+        "allOf": [
+          "dumbbells",
+          "stable_loaded_standing_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 1,
+    "sections": [
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [
+      {
+        "tag": "overhead_pressing",
+        "source": "joint_stress",
+        "exposureScope": "intrinsic",
+        "sideScope": "bilateral_or_systemic",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "The admitted realization uses an overhead upper-arm position; load, range, and volume remain Prescription-modifiable."
+            ]
+          }
+        ],
+        "notes": "The admitted realization uses an overhead upper-arm position; load, range, and volume remain Prescription-modifiable."
+      }
+    ],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "cable-triceps-pressdown",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "change_resistance_path",
+          "equipment_transition",
+          "feature_shift"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Cable pressdown changes shoulder position, anchor, and resistance path and is never automatic.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "dumbbell-triceps-extension",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "high",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "moderate",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "low",
+      "stopRestartClarity": "moderate",
+      "equipmentAmbiguity": "low",
+      "firstSessionComfortDisposition": "good",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "dumbbell-triceps-extension",
+      "summary": "Direct elbow-extension accessory using one overhead dumbbell.",
+      "coachingFocus": [
+        "Extend at the elbows with a steady upper-arm path",
+        "Keep a secure two-hand grip"
+      ],
+      "sourceFactIds": [
+        "dumbbell-triceps-extension.pattern.direct-extension",
+        "dumbbell-triceps-extension.focus.elbow-extension",
+        "dumbbell-triceps-extension.cue.secure-grip"
+      ]
+    }
+  },
+  {
+    "id": "bent-over-dumbbell-reverse-fly",
+    "name": "Bent-Over Dumbbell Reverse Fly",
+    "family": "delt_accessory",
+    "movementRoles": [
+      "accessory"
+    ],
+    "actionFunctions": [
+      "shoulder_horizontal_abduction"
+    ],
+    "trainingRoles": [
+      "hypertrophy_accessory"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "rear_delts",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "upper_back",
+        "relationship": "stabilizer_or_contextual_contributor"
+      },
+      {
+        "muscle": "trunk",
+        "relationship": "stabilizer_or_contextual_contributor"
+      }
+    ],
+    "bodyRegions": [
+      "shoulder",
+      "thoracic_spine",
+      "lumbar_spine"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "dumbbell-pair-and-stable-standing-space",
+        "label": "Dumbbell pair and stable loaded standing space",
+        "allOf": [
+          "dumbbell_pair",
+          "stable_loaded_standing_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [
+      {
+        "tag": "loaded_hinge",
+        "source": "joint_stress",
+        "exposureScope": "variant_dependent",
+        "sideScope": "bilateral_or_systemic",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "The unsupported bent-over position creates hinge demand; implement load and range determine realized exposure."
+            ]
+          }
+        ],
+        "notes": "The unsupported bent-over position creates hinge demand; implement load and range determine realized exposure."
+      }
+    ],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "reverse-pec-deck",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "increase_support",
+          "change_resistance_path",
+          "equipment_transition",
+          "stimulus_shift"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Reverse pec deck changes support and path; it does not make this exercise a pull.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "bent-over-dumbbell-reverse-fly",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "moderate",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "low",
+      "balanceStabilityBurden": "moderate",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "low",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "low",
+      "firstSessionComfortDisposition": "possible",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "bent-over-dumbbell-reverse-fly",
+      "summary": "Bent-over rear-delt horizontal-abduction accessory, not a row.",
+      "coachingFocus": [
+        "Sweep the arms outward without rowing",
+        "Keep a soft fixed elbow"
+      ],
+      "sourceFactIds": [
+        "bent-over-dumbbell-reverse-fly.pattern.rear-delt-accessory",
+        "bent-over-dumbbell-reverse-fly.focus.rear-delt-arc",
+        "bent-over-dumbbell-reverse-fly.cue.soft-elbows"
+      ]
+    }
+  },
+  {
+    "id": "side-lying-hip-abduction",
+    "name": "Side-Lying Hip Abduction",
+    "family": "hip_accessory",
+    "movementRoles": [
+      "accessory"
+    ],
+    "actionFunctions": [
+      "hip_abduction"
+    ],
+    "trainingRoles": [
+      "hypertrophy_accessory"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "hip_abductors",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "glutes",
+        "relationship": "key_secondary_target"
+      },
+      {
+        "muscle": "trunk",
+        "relationship": "stabilizer_or_contextual_contributor"
+      }
+    ],
+    "bodyRegions": [
+      "hip",
+      "pelvis"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "bodyweight-floor",
+        "label": "Bodyweight with floor space",
+        "allOf": [
+          "bodyweight",
+          "floor_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "loop-band-lateral-walk",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "increase_stability_demand",
+          "increase_coordination_demand",
+          "change_resistance_path",
+          "feature_shift"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Lateral walking changes support, coordination, and task identity and is not an automatic progression.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "side-lying-hip-abduction",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "moderate",
+      "setupComplexity": "low",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "moderate",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "low",
+      "firstSessionComfortDisposition": "excellent",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "side-lying-hip-abduction",
+      "summary": "Floor-supported bodyweight hip abduction for the top leg.",
+      "coachingFocus": [
+        "Lift from the hip with the pelvis stacked",
+        "Keep the top leg long"
+      ],
+      "sourceFactIds": [
+        "side-lying-hip-abduction.pattern.floor-abduction",
+        "side-lying-hip-abduction.focus.lateral-lift",
+        "side-lying-hip-abduction.cue.long-leg"
+      ]
+    }
+  },
+  {
+    "id": "bird-dog",
+    "name": "Bird Dog",
+    "family": "core_control",
+    "movementRoles": [
+      "anti_extension_core",
+      "anti_rotation_core"
+    ],
+    "actionFunctions": [],
+    "trainingRoles": [
+      "activation",
+      "capacity"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "trunk",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "glutes",
+        "relationship": "stabilizer_or_contextual_contributor"
+      },
+      {
+        "muscle": "serratus",
+        "relationship": "stabilizer_or_contextual_contributor"
+      }
+    ],
+    "bodyRegions": [
+      "lumbar_spine",
+      "pelvis",
+      "shoulder",
+      "wrist",
+      "knee"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "bodyweight-floor",
+        "label": "Bodyweight with floor space",
+        "allOf": [
+          "bodyweight",
+          "floor_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "activation",
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [
+      {
+        "tag": "upper_limb_support_loading",
+        "source": "joint_stress",
+        "exposureScope": "intrinsic",
+        "sideScope": "bilateral_or_systemic",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "Quadruped hand support intrinsically loads upper-limb support contacts."
+            ]
+          }
+        ],
+        "notes": "Quadruped hand support intrinsically loads upper-limb support contacts."
+      },
+      {
+        "tag": "long_lever_core",
+        "source": "joint_stress",
+        "exposureScope": "variant_dependent",
+        "sideScope": "prescription_side",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "Reach length determines realized long-lever exposure and remains Prescription-modifiable."
+            ]
+          }
+        ],
+        "notes": "Reach length determines realized long-lever exposure and remains Prescription-modifiable."
+      }
+    ],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "range",
+      "tempo",
+      "lever",
+      "coordination"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "dead-bug",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "increase_support",
+          "change_resistance_path",
+          "stimulus_shift"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Dead Bug changes support and coordination orientation; neither task automatically replaces the other.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "bird-dog",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "high",
+      "setupComplexity": "low",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "high",
+      "transitionComplexity": "moderate",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "low",
+      "firstSessionComfortDisposition": "good",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "bird-dog",
+      "summary": "Quadruped contralateral trunk-control task.",
+      "coachingFocus": [
+        "Reach opposite limbs without shifting the trunk",
+        "Press the support points down"
+      ],
+      "sourceFactIds": [
+        "bird-dog.pattern.contralateral-trunk",
+        "bird-dog.focus.contralateral-reach",
+        "bird-dog.cue.push-floor"
+      ]
+    }
+  },
+  {
+    "id": "band-biceps-curl",
+    "name": "Band Biceps Curl",
+    "family": "arm_accessory",
+    "movementRoles": [
+      "accessory"
+    ],
+    "actionFunctions": [
+      "elbow_flexion"
+    ],
+    "trainingRoles": [
+      "hypertrophy_accessory"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "biceps",
+        "relationship": "primary_target"
+      }
+    ],
+    "bodyRegions": [
+      "elbow",
+      "wrist"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "self-anchored-tube-band",
+        "label": "Tube band with handles and stable under-foot self-anchor space",
+        "allOf": [
+          "tube_band",
+          "stable_loaded_standing_space"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "range",
+      "tempo",
+      "effort"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "dumbbell-curl",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "increase_loadability",
+          "change_resistance_path",
+          "equipment_transition"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Dumbbell Curl changes resistance path and load representation; it is not an automatic progression.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "band-biceps-curl",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "high",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "low",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "low",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "moderate",
+      "firstSessionComfortDisposition": "good",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "band-biceps-curl",
+      "summary": "Self-anchored band elbow-flexion accessory.",
+      "coachingFocus": [
+        "Bend the elbows with steady upper arms",
+        "Keep the band secure underfoot"
+      ],
+      "sourceFactIds": [
+        "band-biceps-curl.pattern.anchorless-curl",
+        "band-biceps-curl.focus.elbow-flexion",
+        "band-biceps-curl.cue.stand-on-band"
+      ]
+    }
+  },
+  {
+    "id": "machine-shoulder-press",
+    "name": "Machine Shoulder Press",
+    "family": "upper_push",
+    "movementRoles": [
+      "vertical_push"
+    ],
+    "actionFunctions": [
+      "shoulder_abduction",
+      "elbow_extension",
+      "scapular_upward_rotation"
+    ],
+    "trainingRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "front_delts",
+        "relationship": "primary_target"
+      },
+      {
+        "muscle": "triceps",
+        "relationship": "key_secondary_target"
+      },
+      {
+        "muscle": "side_delts",
+        "relationship": "key_secondary_target"
+      },
+      {
+        "muscle": "serratus",
+        "relationship": "stabilizer_or_contextual_contributor"
+      }
+    ],
+    "bodyRegions": [
+      "shoulder",
+      "elbow"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "machine-shoulder_press",
+        "label": "Exact shoulder press machine",
+        "allOf": [
+          "selectorized_machine"
+        ],
+        "machineIds": [
+          "shoulder_press"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 1,
+    "sections": [
+      "main",
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [
+      {
+        "tag": "overhead_pressing",
+        "source": "joint_stress",
+        "exposureScope": "intrinsic",
+        "sideScope": "bilateral_or_systemic",
+        "reviewStatus": "accepted",
+        "provenance": [
+          {
+            "source": "owner_decision",
+            "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+            "evidenceBasis": [
+              "The supported machine path is overhead pressing; geometry, range, and dose remain machine or Prescription facts."
+            ]
+          }
+        ],
+        "notes": "The supported machine path is overhead pressing; geometry, range, and dose remain machine or Prescription facts."
+      }
+    ],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "dumbbell-shoulder-press",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "reduce_support",
+          "increase_stability_demand",
+          "increase_coordination_demand",
+          "change_resistance_path",
+          "equipment_transition"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Dumbbell Shoulder Press changes support and path freedom and is not automatically harder or safer.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "machine-shoulder-press",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "moderate",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "high",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "low",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "high",
+      "firstSessionComfortDisposition": "poor",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "machine-shoulder-press",
+      "summary": "Supported machine-guided vertical push.",
+      "coachingFocus": [
+        "Press through the guided path from a stable setup",
+        "Stay connected to the back support"
+      ],
+      "sourceFactIds": [
+        "machine-shoulder-press.pattern.supported-vertical-push",
+        "machine-shoulder-press.focus.guided-press",
+        "machine-shoulder-press.cue.back-supported"
+      ]
+    }
+  },
+  {
+    "id": "machine-leg-extension",
+    "name": "Machine Leg Extension",
+    "family": "quad_accessory",
+    "movementRoles": [
+      "accessory"
+    ],
+    "actionFunctions": [
+      "knee_extension"
+    ],
+    "trainingRoles": [
+      "hypertrophy_accessory"
+    ],
+    "muscleContributions": [
+      {
+        "muscle": "quads",
+        "relationship": "primary_target"
+      }
+    ],
+    "bodyRegions": [
+      "knee"
+    ],
+    "equipmentRequirements": [
+      {
+        "id": "machine-leg_extension",
+        "label": "Exact leg extension machine",
+        "allOf": [
+          "selectorized_machine"
+        ],
+        "machineIds": [
+          "leg_extension"
+        ]
+      }
+    ],
+    "optionalEquipment": [],
+    "hardPrerequisiteCount": 0,
+    "sections": [
+      "accessory"
+    ],
+    "phaseDisposition": "explicit_abstention",
+    "stressAnnotations": [],
+    "primaryDoseMode": "repetition_sets",
+    "legalDoseModes": [
+      "repetition_sets"
+    ],
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "transitionRelationships": [
+      {
+        "targetExerciseId": "leg-press",
+        "direction": "lateral",
+        "classification": "context_dependent",
+        "purposes": [
+          "feature_shift",
+          "stimulus_shift",
+          "equipment_transition"
+        ],
+        "reviewStatus": "accepted",
+        "notes": "Leg Press changes to a multi-joint knee-dominant task; Machine Leg Extension never satisfies squat ownership.",
+        "provenance": [
+          "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md"
+        ]
+      }
+    ],
+    "homeComfortProfile": {
+      "contract": {
+        "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "machine-leg-extension",
+      "status": "accepted",
+      "recognitionFamiliarityExpectation": "moderate",
+      "setupComplexity": "moderate",
+      "environmentalAnchorDependence": "high",
+      "supportConfidence": "high",
+      "balanceStabilityBurden": "low",
+      "coordinationBurden": "moderate",
+      "transitionComplexity": "low",
+      "stopRestartClarity": "high",
+      "equipmentAmbiguity": "high",
+      "firstSessionComfortDisposition": "poor",
+      "provenance": [
+        "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+        "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+      ]
+    },
+    "generatedFallback": {
+      "contract": {
+        "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+        "contractVersion": "1.0.0"
+      },
+      "exerciseId": "machine-leg-extension",
+      "summary": "Supported direct knee-extension accessory, not a squat.",
+      "coachingFocus": [
+        "Extend the knees from a stable machine setup",
+        "Stay connected to the seat"
+      ],
+      "sourceFactIds": [
+        "machine-leg-extension.pattern.direct-knee-extension",
+        "machine-leg-extension.focus.knee-extension",
+        "machine-leg-extension.cue.seat-contact"
+      ]
+    }
+  }
+]

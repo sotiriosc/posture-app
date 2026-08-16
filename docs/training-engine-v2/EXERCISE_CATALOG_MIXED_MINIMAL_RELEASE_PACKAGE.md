@@ -37,3 +37,13 @@ Package ID: `M`. Comparative curation only; not selected. New-row proposal count
 | Risk | Medium: narrower blast radius but leaves known direct-arm/pull gaps. |
 
 Fingerprint: `1b3539a3c48b0da6194b6218c7a9178256b36fecb481123d2525ac8876ec4ae8`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+Historical Package M informed the owner decision but was not admitted verbatim. Atomic Package R is the sole Pre-G2 selection.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

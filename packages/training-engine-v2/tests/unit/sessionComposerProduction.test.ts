@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   CONTROLLED_CANDIDATE_SCENARIOS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   SESSION_SECTIONS,
   buildSessionPrescriptionHandoff,
   buildSessionSequencingInput,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import {
   CONTROLLED_PRODUCT_SHADOW_CONTROLLED_SCENARIOS,

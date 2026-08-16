@@ -1,0 +1,29 @@
+{
+  "rightfulImprovements": [
+    "home:no-bench-external-load-horizontal-push",
+    "home:direct-dumbbell-triceps",
+    "home:anchorless-dumbbell-rear-delt",
+    "home:floor-supported-hip-abduction",
+    "home:quadruped-trunk-control",
+    "home:anchorless-band-elbow-flexion",
+    "gym:supported-vertical-push",
+    "gym:direct-knee-extension"
+  ],
+  "explicitNonImprovements": [
+    "anchorless-full-horizontal-pull",
+    "dumbbell-only-vertical-pull",
+    "bodyweight-vertical-pull-without-apparatus",
+    "barbell-specific-strength",
+    "power",
+    "systemic-conditioning",
+    "assisted-pull-up",
+    "cable-hip",
+    "seated-calf"
+  ],
+  "falsePoolMemberships": {
+    "reverseFlyHorizontalPull": false,
+    "bandCurlPull": false,
+    "machineLegExtensionSquat": false,
+    "birdDogBackPainDefault": false
+  }
+}

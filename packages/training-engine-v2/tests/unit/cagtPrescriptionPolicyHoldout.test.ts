@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { REFERENCE_EXERCISES } from "../../src";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import {
   EXPECTED_PRESCRIPTION_NUMERIC_TOURNAMENT_FINGERPRINTS,
   PRESCRIPTION_NUMERIC_COMPOSITE_CANDIDATES,

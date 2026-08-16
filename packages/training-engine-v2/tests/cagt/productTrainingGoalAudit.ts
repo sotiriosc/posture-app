@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 
 export const PRODUCT_TRAINING_GOAL_CLASSIFICATION =
   "PRODUCT_TRAINING_GOAL_AND_PRESCRIPTION_SPECIFICITY_V1_READY_FOR_OWNER_POLICY_SELECTION" as const;

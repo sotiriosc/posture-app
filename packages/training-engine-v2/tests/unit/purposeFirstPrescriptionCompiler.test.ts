@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   EXERCISE_DOSE_MODES,
   PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   compilePrescriptionAssignmentV1_1,
   compileSessionPrescriptionV1_1,
   validatePrescriptionCompilerResultV1_1,

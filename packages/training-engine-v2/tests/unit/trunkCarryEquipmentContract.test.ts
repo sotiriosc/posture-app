@@ -11,7 +11,7 @@ import {
   LOOP_BANDS_ONLY_EQUIPMENT,
   MACHINE_IDS,
   MIXED_HOME_EQUIPMENT,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildEquipmentCapabilitySnapshot,
   evaluateEquipmentRequirement,
   hasEquipmentCapability,

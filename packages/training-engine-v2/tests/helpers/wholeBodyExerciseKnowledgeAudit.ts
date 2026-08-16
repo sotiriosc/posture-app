@@ -11,7 +11,7 @@ import {
   LOOP_BANDS_ONLY_EQUIPMENT,
   MIXED_HOME_EQUIPMENT,
   MUSCLE_GROUPS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   evaluateEquipmentRequirement,
   type EquipmentCapabilities,
   type ExerciseDefinition,

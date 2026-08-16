@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { REFERENCE_EXERCISES } from "../../src";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 
 export const SUPPORT_AND_STANCE_MECHANICS_CONTRACT_CLASSIFICATION =
   "SUPPORT_AND_STANCE_SCHEMA_IMPLEMENTED";

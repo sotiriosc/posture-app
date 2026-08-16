@@ -27,6 +27,7 @@ export type ExerciseFamily =
   | "delt_accessory"
   | "calf_accessory"
   | "hip_accessory"
+  | "quad_accessory"
   | "cuff_control"
   | "glute_hamstring";
 
@@ -120,6 +121,7 @@ export const EXERCISE_ACTION_FUNCTIONS = [
   "scapular_retraction",
   "scapular_upward_rotation",
   "knee_flexion",
+  "knee_extension",
   "hip_extension",
   "hip_abduction",
   "hip_adduction",

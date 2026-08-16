@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildProductionPrescriptionPurposeEvidenceSnapshot,
   canonicalize,
   compilePrescriptionAssignment,

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   type ExerciseStressExposureScope,
   type ExerciseStressSideScope,
   type JointStressTag,

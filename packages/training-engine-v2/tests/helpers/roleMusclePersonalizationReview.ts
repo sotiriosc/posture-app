@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { CONTROLLED_CANDIDATE_SCENARIOS, REFERENCE_EXERCISES } from "../../src";
+import { CONTROLLED_CANDIDATE_SCENARIOS, PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import { buildTrainingSafetyAndResponseFoundationData } from "./trainingSafetyAndResponseFoundation";
 
 const hash = (value: unknown) =>

@@ -126,7 +126,9 @@
     "report:post-chunk-d-boundary-repair": "npm run report:post-chunk-d-boundary-repair --workspace=@praxis/engine",
     "test:knowledge-core": "npm test --workspace=@praxis/knowledge-core",
     "test:package-r-knowledge-foundation": "npm run test:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2",
-    "report:package-r-knowledge-foundation": "npm run report:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2"
+    "report:package-r-knowledge-foundation": "npm run report:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2",
+    "test:package-r": "npm run test:package-r --workspace=@praxis/training-engine-v2",
+    "report:package-r": "npm run report:package-r --workspace=@praxis/training-engine-v2"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   PRESCRIPTION_POLICY_V1,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildSourceExposureEventId,
   compileSessionPrescription,
   validatePerformanceBlockLinkage,

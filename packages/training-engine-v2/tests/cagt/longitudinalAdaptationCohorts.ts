@@ -1,4 +1,4 @@
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { EXERCISE_DOSE_MODES, type ExerciseDoseMode } from "../../src/prescription/dose";
 import { SESSION_SECTIONS, type TrainingRole } from "../../src/domain/session";
 import type { ProgressionAxis } from "../../src/domain/progression";

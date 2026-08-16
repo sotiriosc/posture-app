@@ -12,7 +12,7 @@ import {
   CONTROLLED_PRODUCT_SHADOW_TRIGGER_REFERENCE,
   CONTROLLED_PRODUCT_SHADOW_V2_APPLICATION_STATE,
 } from "../../src/productShadow";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import { CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V11 } from "./effectiveAuthorityRegistryV11";
 import {

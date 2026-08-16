@@ -25,11 +25,12 @@ const goalSpecificEvidenceMarker = /\n*<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENC
 const productGoalContextMarker = /\n*<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->[\s\S]*?<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->\n?/;
 const inactiveProductGoalMarker = /\n*<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->[\s\S]*?<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->\n?/;
 const preG1Marker = /\n*<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->[\s\S]*?<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->\n?/;
+const preG2Marker = /\n*<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->[\s\S]*?<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->\n?/;
 const withoutPurposeFirstMarker = (value: string) => value.replace(purposeFirstMarker, "\n")
   .replace(supportedPurposeMarker, "\n").replace(b4Marker, "\n")
   .replace(goalRealizationMarker, "\n").replace(goalSpecificEvidenceMarker, "\n")
   .replace(productGoalContextMarker, "\n").replace(inactiveProductGoalMarker, "\n")
-  .replace(preG1Marker, "\n");
+  .replace(preG1Marker, "\n").replace(preG2Marker, "\n");
 
 describe("Product goal architecture deterministic reports", () => {
   it("builds and persists three Markdown and two JSON artifacts exactly", () => {

@@ -1,4 +1,4 @@
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { SESSION_SECTIONS } from "../../src/domain/session";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import { PRODUCTION_LONGITUDINAL_ACTIONS } from "../../src/longitudinalAdaptation";

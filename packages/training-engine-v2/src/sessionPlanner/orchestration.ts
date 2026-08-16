@@ -1,10 +1,16 @@
 import { deriveAlignmentPriorities } from "../alignment";
-import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
+import {
+  buildSessionCandidateResults,
+  type SessionCandidateBuildOptions,
+} from "../sessionComposer/candidatePools";
 import { composeSessionSkeleton } from "../sessionComposer/composeSessionSkeleton";
 import type { PlannedAndComposedSession, SessionIntentPlannerInput } from "./contracts";
 import { planSessionIntent } from "./planSessionIntent";
 
-export function planAndComposeSessionSkeleton(input: SessionIntentPlannerInput): PlannedAndComposedSession {
+export function planAndComposeSessionSkeleton(
+  input: SessionIntentPlannerInput,
+  options: SessionCandidateBuildOptions = {},
+): PlannedAndComposedSession {
   const planning = planSessionIntent(input);
   if (planning.status !== "planned" || !planning.sessionIntent) {
     return { planning, candidateResultsByNeed: null, skeleton: null };
@@ -19,7 +25,7 @@ export function planAndComposeSessionSkeleton(input: SessionIntentPlannerInput):
     history: input.history,
     satisfiedPrerequisiteIds: input.satisfiedPrerequisiteIds,
     evaluationAsOf: input.evaluationAsOf,
-  });
+  }, options);
   return {
     planning,
     candidateResultsByNeed,

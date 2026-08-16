@@ -5,7 +5,7 @@ import {
   EMPTY_TRAINING_HISTORY,
   FULL_GYM_EQUIPMENT,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildExerciseTransitionTraces,
   deriveAlignmentPriorities,
   getControlledCandidateScenario,

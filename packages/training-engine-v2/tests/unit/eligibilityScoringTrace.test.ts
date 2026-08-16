@@ -4,7 +4,7 @@ import {
   DUMBBELLS_NO_BENCH_EQUIPMENT,
   FULL_GYM_EQUIPMENT,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   composeCandidateScore,
   createDecisionTrace,
   evaluateHardEligibility,

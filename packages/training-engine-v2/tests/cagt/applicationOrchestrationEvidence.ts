@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { PRODUCTION_LONGITUDINAL_ACTIONS } from "../../src/longitudinalAdaptation/policies/policyContracts";
 import { productionLongitudinalApplicationOwner } from "../../src/longitudinalAdaptation/actionCandidates";
 import { evaluateProductionAdaptationApplicationPreconditions,

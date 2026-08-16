@@ -89,3 +89,13 @@ reported pain/problem
 
 No Coaching Rail, workout-card change, route, link, animation, or swipe behavior
 is implemented here.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+Pre-G2 implements the pure `@praxis/knowledge-core` data boundary for the selected eight rows. Engine production code consumes only committed generated compact fallbacks. Coaching Rail and Library runtime/UI integration remain unimplemented.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

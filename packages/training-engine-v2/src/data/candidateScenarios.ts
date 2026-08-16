@@ -31,7 +31,7 @@ import {
   GOLDEN_PERSONAS,
   LOOP_BANDS_ONLY_EQUIPMENT,
 } from "./goldenPersonas";
-import { REFERENCE_EXERCISES } from "./referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "./referenceExercises";
 
 export interface ControlledCandidateScenario {
   readonly id: string;

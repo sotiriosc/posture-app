@@ -1,0 +1,19 @@
+{
+  "contractId": "PACKAGE_R_HOME_FIRST_MIXED_RELEASE",
+  "contractVersion": "1.0.0",
+  "packageId": "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1",
+  "atomic": true,
+  "selectedIds": [
+    "dumbbell-floor-press",
+    "dumbbell-triceps-extension",
+    "bent-over-dumbbell-reverse-fly",
+    "side-lying-hip-abduction",
+    "bird-dog",
+    "band-biceps-curl",
+    "machine-shoulder-press",
+    "machine-leg-extension"
+  ],
+  "knowledgeTiming": "KNOWLEDGE_CORE_CURATION_REQUIRED_WITH_EACH_PRODUCTION_ROW",
+  "catalogBefore": 45,
+  "catalogAfter": 53
+}

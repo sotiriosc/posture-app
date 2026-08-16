@@ -13,7 +13,7 @@ import {
   PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_V1_2_CONTRACT_REFERENCE,
   PRODUCTION_PRESCRIBED_WEEK_SOURCE_CONTRACT_REFERENCE,
   PRODUCTION_WEEK_POLICY_V2,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   SESSION_SEQUENCING_POLICY_V1,
   buildExplicitStandalonePrescriptionPurposeEvidenceSnapshot,
   buildProductionPhaseProgramSnapshot,
@@ -821,7 +821,11 @@ export function createGenuineGoalSpecificStagePorts(input: {
           satisfiedPrerequisiteIds: planner.satisfiedPrerequisiteIds,
           evaluationAsOf: planner.evaluationAsOf,
         };
-        session.candidateResults = buildSessionCandidateResults(session.planning.sessionIntent!, context);
+        session.candidateResults = buildSessionCandidateResults(
+          session.planning.sessionIntent!,
+          context,
+          { candidatePool: REFERENCE_EXERCISES },
+        );
       });
       const reference = put("candidate_intelligence", "production_candidate_results",
         state.sessions!.map((session) => session.candidateResults),

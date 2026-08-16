@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   EXPLICIT_STANDALONE_PRESCRIPTION_PURPOSE_SOURCE_CONTRACT_REFERENCE,
   PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1_REFERENCE,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildExplicitStandalonePrescriptionPurposeEvidenceSnapshot,
   buildProductionPrescriptionPurposeEvidenceSnapshot,
   buildProductionWeekPrescriptionPurposeEvidenceSnapshot,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_TRAINING_RESPONSE_HISTORY,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildCanonicalPainEvidence,
   buildTrainingReadinessTrace,
   buildTrainingResponseLedger,

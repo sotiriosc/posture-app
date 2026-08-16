@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   JOINT_STRESS_TAGS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
 } from "../../src";
 import {
   PROPOSED_TRUNK_CARRY_CANDIDATE_IDS,

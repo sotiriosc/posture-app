@@ -16,6 +16,7 @@ import { buildInactiveProductGoalReportFiles } from "../inactiveProductGoalOptio
 
 const repositoryRoot = path.resolve(__dirname, "../../../..");
 const preG1Marker = /\n*<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->[\s\S]*?<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->\n?/;
+const preG2Marker = /\n*<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->[\s\S]*?<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->\n?/;
 
 describe("inactive Product goal evidence", () => {
   test("meets controlled, locked holdout, mutation, and metamorphic minimums", () => {
@@ -107,7 +108,7 @@ describe("inactive Product goal evidence", () => {
         path.join(repositoryRoot, "docs/training-engine-v2", name),
         "utf8"
       );
-      expect(actual.replace(preG1Marker, "\n"), name).toBe(expected);
+      expect(actual.replace(preG1Marker, "\n").replace(preG2Marker, "\n"), name).toBe(expected);
     }
   });
 });

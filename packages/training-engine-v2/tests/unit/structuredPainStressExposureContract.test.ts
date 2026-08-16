@@ -3,7 +3,7 @@ import {
   CANDIDATE_PAIN_SCORING_COEFFICIENTS,
   JOINT_STRESS_TAGS,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   buildCandidatePainExecutionReadinessTrace,
   buildCandidatePainMatchTrace,
   buildExerciseStressProfile,

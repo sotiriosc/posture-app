@@ -1,4 +1,4 @@
-import { REFERENCE_EXERCISES } from "../../src";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import {
   SESSION_SEQUENCING_POLICY_V1_ADMISSION_PROJECTION,
 } from "../../src/sequencing/policies";

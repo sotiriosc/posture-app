@@ -6,7 +6,7 @@ import {
   buildProductionSequencingDependencyGraph,
   buildProductionSequencingTransitionFacts,
   EXERCISE_DOSE_MODES,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   searchExactFinalSessionSequence,
   sequenceFinalSession,
 } from "../../src";

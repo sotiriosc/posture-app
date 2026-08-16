@@ -51,7 +51,7 @@ import {
   FULL_GYM_EQUIPMENT,
   GOLDEN_PERSONAS,
 } from "../../src/data/goldenPersonas";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import {
   buildExerciseTransitionTrace,
   type ExerciseTransitionTrace,

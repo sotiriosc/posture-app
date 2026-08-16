@@ -522,3 +522,13 @@ Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf13
 Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
 
 <!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+Canonical educational facts live in a private pure package. Candidate, Composer, Week, Prescription, Product Shadow, consumer, and gyms import no Knowledge runtime API; selected compact fallbacks are generated and committed in engine source.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

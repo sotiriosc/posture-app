@@ -4,7 +4,7 @@ import {
   BODY_REGIONS,
   MOVEMENT_ROLES,
   MUSCLE_GROUPS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   type ExerciseDefinition,
 } from "../../src";
 

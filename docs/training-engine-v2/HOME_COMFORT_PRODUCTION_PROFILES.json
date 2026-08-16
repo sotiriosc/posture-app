@@ -1,0 +1,1168 @@
+{
+  "ninety-ninety-breathing": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "ninety-ninety-breathing",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "serratus-wall-slide": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "serratus-wall-slide",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dead-bug": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dead-bug",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "push-up": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "push-up",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-bench-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "moderate",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "machine-chest-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-chest-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "cable-chest-fly": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-chest-fly",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "chest-supported-dumbbell-row": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "chest-supported-dumbbell-row",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "moderate",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "one-arm-dumbbell-row": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "one-arm-dumbbell-row",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "machine-row": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-row",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "seated-cable-row": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "seated-cable-row",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "band-row": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-row",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "moderate",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-shoulder-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-shoulder-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "lat-pulldown": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "lat-pulldown",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "band-lat-pulldown": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-lat-pulldown",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "moderate",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "goblet-squat": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "goblet-squat",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "leg-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "leg-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "bodyweight-box-squat": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-box-squat",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-romanian-deadlift": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "cable-pull-through": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-pull-through",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "split-squat": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "split-squat",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "high",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "step-up": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "step-up",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "high",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "lying-leg-curl": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "lying-leg-curl",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "glute-bridge": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "glute-bridge",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-lateral-raise": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-lateral-raise",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "reverse-pec-deck": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "reverse-pec-deck",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "band-face-pull": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-face-pull",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "moderate",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-curl": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-curl",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "cable-triceps-pressdown": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-triceps-pressdown",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "pallof-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pallof-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "moderate",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "forearm-plank": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-plank",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "forearm-side-plank": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-side-plank",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "high",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "machine-abdominal-crunch": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-abdominal-crunch",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "half-kneeling-high-to-low-cable-chop": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "high",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "farmer-carry": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "farmer-carry",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "suitcase-carry": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "suitcase-carry",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "wall-supported-suitcase-march": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "wall-supported-suitcase-march",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "standing-calf-raise": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "standing-calf-raise",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "side-lying-hip-adduction": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-hip-adduction",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "loop-band-lateral-walk": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "loop-band-lateral-walk",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "side-lying-dumbbell-external-rotation": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "supine-hamstring-walkout": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "supine-hamstring-walkout",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "high",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "wall-ankle-dorsiflexion-rock": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "bodyweight-hip-hinge-rehearsal": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "single-leg-balance-rehearsal": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "single-leg-balance-rehearsal",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "high",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-floor-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-floor-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "dumbbell-triceps-extension": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-triceps-extension",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "moderate",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "moderate",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "bent-over-dumbbell-reverse-fly": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "low",
+    "balanceStabilityBurden": "moderate",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "possible",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "side-lying-hip-abduction": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-hip-abduction",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "excellent",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "bird-dog": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bird-dog",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "low",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "high",
+    "transitionComplexity": "moderate",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "low",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "band-biceps-curl": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-biceps-curl",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "high",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "low",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "moderate",
+    "firstSessionComfortDisposition": "good",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "machine-shoulder-press": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-shoulder-press",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  },
+  "machine-leg-extension": {
+    "contract": {
+      "contractId": "HOME_COMFORT_PRODUCTION_PROFILE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-leg-extension",
+    "status": "accepted",
+    "recognitionFamiliarityExpectation": "moderate",
+    "setupComplexity": "moderate",
+    "environmentalAnchorDependence": "high",
+    "supportConfidence": "high",
+    "balanceStabilityBurden": "low",
+    "coordinationBurden": "moderate",
+    "transitionComplexity": "low",
+    "stopRestartClarity": "high",
+    "equipmentAmbiguity": "high",
+    "firstSessionComfortDisposition": "poor",
+    "provenance": [
+      "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+      "PACKAGE_R_HOME_FIRST_MIXED_RELEASE_V1"
+    ]
+  }
+}

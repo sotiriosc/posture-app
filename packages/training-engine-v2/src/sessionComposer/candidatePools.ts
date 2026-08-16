@@ -10,6 +10,7 @@ import type { EquipmentCapabilities } from "../domain/equipment";
 import type { TrainingHistory } from "../domain/history";
 import type { PainAndInjuryState } from "../domain/painInjury";
 import type { SessionIntent, SessionNeed } from "../domain/session";
+import type { ExerciseDefinition } from "../domain/exercise";
 import type { TrainingSafetyState } from "../domain/trainingSafety";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import type { SessionCandidateResultConsistency } from "./contracts";
@@ -27,6 +28,10 @@ export interface SessionCandidateBuildContext {
   readonly history: TrainingHistory;
   readonly satisfiedPrerequisiteIds: readonly string[];
   readonly evaluationAsOf: string;
+}
+
+export interface SessionCandidateBuildOptions {
+  readonly candidatePool?: readonly ExerciseDefinition[];
 }
 
 export class SessionComposerInputError extends Error {
@@ -115,6 +120,7 @@ export function validateSessionIntent(intent: SessionIntent): readonly string[] 
 export function buildSessionCandidateResults(
   intent: SessionIntent,
   context: SessionCandidateBuildContext,
+  options: SessionCandidateBuildOptions = {},
 ): Readonly<Record<string, CandidateRankingResult>> {
   const errors = [...validateSessionIntent(intent)];
   if (context.athlete.id !== intent.athleteId) errors.push("cross_athlete_build_context");
@@ -142,7 +148,7 @@ export function buildSessionCandidateResults(
           equipment: context.equipment,
           history: context.history,
           continuity: continuityForNeed(intent, need),
-          candidatePool: REFERENCE_EXERCISES,
+          candidatePool: options.candidatePool ?? REFERENCE_EXERCISES,
           satisfiedPrerequisiteIds: context.satisfiedPrerequisiteIds,
           fatigueSignals: intent.fatigueContext,
         });
@@ -174,10 +180,10 @@ export function validateSessionCandidateResults(
   candidateResultsByNeed: Readonly<Record<string, CandidateRankingResult>>,
 ): SessionCandidateResultConsistency {
   const errors = [...validateSessionIntent(intent)];
-  const expectedCatalogIds = REFERENCE_EXERCISES.map((entry) => entry.id).sort();
   const results = Object.entries(candidateResultsByNeed).sort(([left], [right]) => left.localeCompare(right));
   const baseline = results[0]?.[1];
   const baselineContext = baseline ? requestContext(baseline) : null;
+  const expectedCatalogIds = baseline?.request.candidatePool.map((entry) => entry.id).sort() ?? [];
 
   if (results.length !== intent.needs.length) errors.push("candidate_result_count_mismatch");
   for (const need of intent.needs) {

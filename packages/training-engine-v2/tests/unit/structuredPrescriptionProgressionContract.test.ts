@@ -16,7 +16,7 @@ import {
 } from "../helpers/structuredPrescriptionProgressionContract";
 import {
   PROGRESSION_AXES,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   THREE_PHASE_FOUNDATION,
   buildProgressionReadinessTrace,
   exactCount,

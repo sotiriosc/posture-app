@@ -1,0 +1,22 @@
+{
+  "contract": {
+    "contractId": "HOME_COMFORT_PRODUCTION_SELECTION_POLICY",
+    "contractVersion": "1.0.0"
+  },
+  "precedence": [
+    "training_safety",
+    "hard_contraindication_or_personal_block",
+    "equipment_legality",
+    "required_purpose_or_coverage",
+    "pain_and_response_truth",
+    "required_dependency",
+    "productive_continuity_or_exact_familiarity",
+    "home_comfort_when_familiarity_unknown_or_limited",
+    "redundancy_and_setup_consequence",
+    "local_candidate_rank_or_deterministic_tie"
+  ],
+  "weightedScore": null,
+  "noveltyQuota": 0,
+  "varietyQuota": 0,
+  "homeMeansBeginner": false
+}

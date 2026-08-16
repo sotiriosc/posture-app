@@ -1,5 +1,5 @@
 import type { PhaseId } from "../../src/domain/phase";
-import { EXERCISE_DOSE_MODES, REFERENCE_EXERCISES } from "../../src";
+import { EXERCISE_DOSE_MODES, PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import { digest } from "./signatures";
 import type { PhaseContinuityStatus } from "./phaseContinuityContracts";
 

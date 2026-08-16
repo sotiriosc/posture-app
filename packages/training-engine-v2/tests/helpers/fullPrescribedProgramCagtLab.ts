@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import { EXERCISE_DOSE_MODES, REFERENCE_EXERCISES } from "../../src";
+import { EXERCISE_DOSE_MODES, PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import type { ProductionPostPrescriptionWeekValidationInput } from "../../src";
 import {
   CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V2,

@@ -27,6 +27,7 @@ import type {
   RejectedCandidate,
 } from "../types";
 import { buildTrainingReadinessTrace } from "../../domain/trainingSafety";
+import { compareHomeComfortCandidates } from "../homeComfort";
 
 export interface CandidateRankingOptions {
   readonly scoreComponents?: readonly CandidateScoreComponent[];
@@ -82,7 +83,24 @@ function rankLegalCandidates(input: {
   });
 
   return scored
-    .sort((left, right) => right.total - left.total || left.exercise.id.localeCompare(right.exercise.id))
+    .sort((left, right) => {
+      const scoreDifference = right.total - left.total;
+      if (scoreDifference !== 0) return scoreDifference;
+      const homeComfort = compareHomeComfortCandidates(left.exercise.id, right.exercise.id, {
+        environment: input.request.equipment.environment,
+        familiarityByExerciseId: Object.fromEntries(input.request.history.exerciseHistory.events.map((event) => [
+          event.exerciseId,
+          event.type === "successful_completion" || event.type === "appropriate_challenge" || event.type === "progression_success"
+            ? "exact_tolerated"
+            : "limited",
+        ])),
+        productiveContinuityIds: [
+          ...input.request.continuity.productiveExerciseIds,
+          ...input.request.history.exerciseHistory.stableExerciseIds,
+        ],
+      });
+      return homeComfort.comparison || left.exercise.id.localeCompare(right.exercise.id);
+    })
     .map((candidate, index) => {
       const ranked: RankedCandidate = {
         ...candidate,

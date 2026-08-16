@@ -11,7 +11,8 @@
     "./outcome-sources": "./src/outcomeSources/index.ts",
     "./adaptation-persistence": "./src/adaptationPersistence/index.ts",
     "./product-shadow": "./src/productShadow/index.ts",
-    "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts"
+    "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts",
+    "./home-comfort": "./src/candidate/homeComfort/index.ts"
   },
   "scripts": {
     "build": "npm run validate:pure-server-boundary && npm run typecheck:production && npm run typecheck:test-dev",
@@ -243,6 +244,8 @@
     "test:package-r-knowledge-foundation": "vitest --run --config vitest.config.ts tests/unit/packageRKnowledgeFoundation.test.ts",
     "report:package-r-knowledge-foundation": "node --import tsx dev/reportPackageRKnowledgeFoundation.ts",
     "generate:exercise-coaching-fallbacks": "node --import tsx dev/generateExerciseCoachingFallbacks.ts --write",
-    "check:exercise-coaching-fallbacks": "node --import tsx dev/generateExerciseCoachingFallbacks.ts --check"
+    "check:exercise-coaching-fallbacks": "node --import tsx dev/generateExerciseCoachingFallbacks.ts --check",
+    "test:package-r": "vitest --run --config vitest.config.ts tests/unit/packageRKnowledgeFoundation.test.ts tests/unit/packageRHomeFirstMixedRelease.test.ts",
+    "report:package-r": "node --import tsx dev/reportPackageRHomeFirstMixedRelease.ts"
   }
 }

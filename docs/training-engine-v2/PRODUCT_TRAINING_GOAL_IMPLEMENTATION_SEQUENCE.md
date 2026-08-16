@@ -114,3 +114,13 @@ Before G, the sequence now requires Pre-G1 curation, Pre-G2 owner-approved produ
 Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
 
 <!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+The pre-G sequence is Pre-G2 selected rows plus Knowledge, Pre-G2K current-catalog Knowledge completeness, Pre-G3 practice options, G controlled owner delivery, then H broader activation.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

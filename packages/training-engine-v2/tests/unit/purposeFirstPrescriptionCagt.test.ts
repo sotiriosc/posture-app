@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { REFERENCE_EXERCISES } from "../../src";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src";
 import { buildPurposeFirstMetamorphicEvidence, PURPOSE_FIRST_MUTATION_IDS,
   runPurposeFirstMutations, runPurposeFirstStress } from
   "../cagt/purposeFirstPrescriptionResolverAdversarial";

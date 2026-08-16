@@ -440,3 +440,13 @@ Pre-G1 evidence covers 300 controlled scenarios, a frozen 531-case holdout, 32/3
 Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
 
 <!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->
+
+## Pre-G2 - Package R production catalog and Knowledge core
+
+Package R evidence includes 424 controlled scenarios, 400 fixed-shell cases, a 742-case holdout, 52 rejected mutations, 23 passed metamorphic relations, and deterministic stress with zero failures.
+
+Combined Pre-G2 fingerprint: `f67906f4078f29ca0ac9903e5bbc556483bac2083c598e3bad5e6893155df18a`. Exact next dependency: `CURRENT_45_EXERCISE_KNOWLEDGE_CORE_COMPLETENESS_V1_AUTHORIZATION`.
+
+<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->

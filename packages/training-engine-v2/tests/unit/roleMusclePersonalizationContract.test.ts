@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   CONTROLLED_CANDIDATE_SCENARIOS,
   DUMBBELLS_AND_BENCH_EQUIPMENT,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   candidateGoalConflict,
   deriveAlignmentPriorities,
   getReferenceExercise,

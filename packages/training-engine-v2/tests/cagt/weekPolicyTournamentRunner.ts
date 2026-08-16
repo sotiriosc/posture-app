@@ -1,6 +1,7 @@
 import {
   BODYWEIGHT_EQUIPMENT, CONTROLLED_CANDIDATE_SCENARIOS, FULL_GYM_EQUIPMENT,
-  NO_TRAINING_SAFETY_SIGNALS, planAndComposeSessionSkeleton,
+  NO_TRAINING_SAFETY_SIGNALS, PRE_PACKAGE_R_REFERENCE_EXERCISES,
+  planAndComposeSessionSkeleton,
 } from "../../src";
 import type { WeeklyRecoverySpacingRequirement, WeeklySelectionTarget } from "../../src/weekComposer/designContracts";
 import {
@@ -257,7 +258,7 @@ export function executeTournamentScenario(candidate: TournamentCandidate, scenar
       trainingResponseHistory: BASE_REQUEST.history.trainingResponseHistory ?? { observations: [] },
       satisfiedPrerequisiteIds: ["push-up-plank-control", "hinge-control", "suitcase-carry-loaded-gait-setup"],
       evaluationAsOf: WEEK_DESIGN_AS_OF,
-    });
+    }, { candidatePool: PRE_PACKAGE_R_REFERENCE_EXERCISES });
     return [{ production, status: statusForSkeleton(production) }];
   });
   const statuses = pipelines.map((entry) => entry.status);

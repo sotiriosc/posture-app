@@ -33,6 +33,7 @@ import type {
 import type { PhaseId } from "../domain/phase";
 import type { JointStressTag } from "../domain/primitives";
 import type { SessionSection, TrainingRole } from "../domain/session";
+import { GENERATED_EXERCISE_COACHING_FALLBACKS } from "./generatedExerciseCoachingFallbacks";
 
 const excellent = (reason: string): ExerciseSuitability => ({ suitability: "excellent", reason });
 const good = (reason: string): ExerciseSuitability => ({ suitability: "good", reason });
@@ -66,6 +67,30 @@ const dumbbells: EquipmentRequirement = {
   id: "dumbbells",
   label: "Dumbbells",
   allOf: ["dumbbells"],
+};
+
+const dumbbellsAndFloor: EquipmentRequirement = {
+  id: "dumbbells-and-floor-space",
+  label: "One or two dumbbells with floor space",
+  allOf: ["dumbbells", "floor_space"],
+};
+
+const dumbbellsAndStableStandingSpace: EquipmentRequirement = {
+  id: "dumbbells-and-stable-standing-space",
+  label: "Dumbbells and stable loaded standing space",
+  allOf: ["dumbbells", "stable_loaded_standing_space"],
+};
+
+const dumbbellPairAndStableStandingSpace: EquipmentRequirement = {
+  id: "dumbbell-pair-and-stable-standing-space",
+  label: "Dumbbell pair and stable loaded standing space",
+  allOf: ["dumbbell_pair", "stable_loaded_standing_space"],
+};
+
+const selfAnchoredTubeBand: EquipmentRequirement = {
+  id: "self-anchored-tube-band",
+  label: "Tube band with handles and stable under-foot self-anchor space",
+  allOf: ["tube_band", "stable_loaded_standing_space"],
 };
 
 const bench: EquipmentRequirement = {
@@ -176,6 +201,18 @@ const P0_OWNER_DECISION_REF =
   "docs/training-engine-v2/P0_WHOLE_BODY_PRODUCTION_REPORT.md#production-contract";
 const PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF =
   "docs/training-engine-v2/EXERCISE_PRESCRIPTION_KNOWLEDGE_CONTRACT.md#production-45-row-profile";
+const PACKAGE_R_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md";
+const PACKAGE_R_SELECTED_ID_SET = new Set([
+  "dumbbell-floor-press",
+  "dumbbell-triceps-extension",
+  "bent-over-dumbbell-reverse-fly",
+  "side-lying-hip-abduction",
+  "bird-dog",
+  "band-biceps-curl",
+  "machine-shoulder-press",
+  "machine-leg-extension",
+]);
 
 const BREATHING_IDS = new Set(["ninety-ninety-breathing"]);
 const TIMED_HOLD_IDS = new Set([
@@ -252,7 +289,9 @@ function prescriptionKnowledgeProvenance(
 ): ExercisePrescriptionKnowledgeProvenance {
   return {
     source: "owner_decision",
-    sourceRef: PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
+    sourceRef: PACKAGE_R_SELECTED_ID_SET.has(exerciseId)
+      ? PACKAGE_R_OWNER_DECISION_REF
+      : PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
     evidenceBasis: [evidence],
     reviewerId: "sotiriosc",
     reviewedAt: OWNER_REVIEWED_AT,
@@ -710,6 +749,7 @@ function ownerStressAnnotation(input: {
   readonly sideScope: ExerciseStressSideScope;
   readonly notes: string;
   readonly reviewStatus?: ExerciseStressAnnotation["reviewStatus"];
+  readonly sourceRef?: string;
 }): ExerciseStressAnnotation {
   return {
     tag: input.tag,
@@ -720,12 +760,18 @@ function ownerStressAnnotation(input: {
     provenance: [
       {
         source: "owner_decision",
-        sourceRef: STRESS_OWNER_DECISION_REF,
+        sourceRef: input.sourceRef ?? STRESS_OWNER_DECISION_REF,
         evidenceBasis: [input.notes],
       },
     ],
     notes: input.notes,
   };
+}
+
+function generatedCoachingFallback(exerciseId: string) {
+  const fallback = GENERATED_EXERCISE_COACHING_FALLBACKS[exerciseId];
+  if (!fallback) throw new Error(`GENERATED_EXERCISE_COACHING_FALLBACK_MISSING:${exerciseId}`);
+  return fallback;
 }
 
 function reviewedSevenRowTrunkFunction(
@@ -4574,10 +4620,412 @@ const REFERENCE_EXERCISE_DEFINITIONS = [
     cautionStressTags: [], contraindicatedStressTags: [],
     coachingFocus: ["Use only the support you need", "Keep the stance side controlled"],
   },
+  {
+    id: "dumbbell-floor-press",
+    name: "Dumbbell Floor Press",
+    summary: generatedCoachingFallback("dumbbell-floor-press").summary,
+    family: "upper_push",
+    movementRoles: ["horizontal_push"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "shoulder_horizontal_adduction", "elbow_extension"),
+    trainingRoles: ["primary_strength", "secondary_strength"],
+    muscleContributions: contributions({ primary: ["chest"], keySecondary: ["triceps", "front_delts"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "elbow", "wrist"],
+    equipmentRequirements: [dumbbellsAndFloor], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({
+      main: excellent("Provides a no-bench external-load horizontal press with a floor-bounded bottom range."),
+      accessory: good("Can provide additional chest and triceps work without a bench."),
+    }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "moderate", loadingPotential: "high", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: ["horizontal_pressing"],
+    },
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "horizontal_pressing", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Horizontal pressing is intrinsic; range, laterality, load, and volume remain realization or Prescription facts.", sourceRef: PACKAGE_R_OWNER_DECISION_REF }),
+    ],
+    mechanics: mechanics({
+      support: {
+        basePosition: "supine", stance: "bilateral", orientation: "supine",
+        supportContacts: [
+          { bodyRegion: "back", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "pelvis", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "secondary" },
+          { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "The floor supports the torso and bounds the bottom range; one- and two-dumbbell realizations retain the identity.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement", trajectoryFreedom: "high", lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_independent", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "Dumbbells move independently above floor support; no bench is part of the path.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Floor support limits trunk movement while unilateral loading can add bounded anti-rotation demand."),
+        scapular_control: demand("moderate", "Shoulder and scapular control remain relevant within the floor-bounded range."),
+        stability: demand("moderate", "Free dumbbells require implement and shoulder stability."),
+        coordination: demand("moderate", "One or two dumbbells require controlled press coordination."),
+        range: demand("moderate", "The floor explicitly bounds the lowering range."),
+        joint_control: demand("moderate", "Shoulder, elbow, and wrist alignment are controlled under external load."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [
+        transition({ targetExerciseId: "dumbbell-bench-press", direction: "progression", classification: "context_dependent", purposes: ["increase_loadability", "change_resistance_path", "equipment_transition", "stimulus_shift"], notes: "A bench press changes support and available bottom range; it is not an automatic continuation.", provenance: [PACKAGE_R_OWNER_DECISION_REF] }),
+      ],
+    },
+    cautionStressTags: ["horizontal_pressing"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("dumbbell-floor-press").coachingFocus,
+  },
+  {
+    id: "dumbbell-triceps-extension",
+    name: "Dumbbell Triceps Extension",
+    summary: generatedCoachingFallback("dumbbell-triceps-extension").summary,
+    family: "arm_accessory", movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "elbow_extension"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["triceps"], contextual: ["front_delts", "trunk"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "elbow", "wrist"],
+    equipmentRequirements: [dumbbellsAndStableStandingSpace], optionalEquipment: [],
+    prerequisites: [{ id: "overhead-position-control", type: "required_control", description: "Requires control of the reviewed standing overhead start and finish position." }],
+    sectionSuitability: sections({ accessory: excellent("Provides direct elbow-extension work through the admitted standing one-dumbbell realization.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "moderate", loadingPotential: "moderate", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "high",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: ["overhead_pressing"],
+    },
+    stressAnnotations: [ownerStressAnnotation({ tag: "overhead_pressing", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "The admitted realization uses an overhead upper-arm position; load, range, and volume remain Prescription-modifiable.", sourceRef: PACKAGE_R_OWNER_DECISION_REF })],
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "upright",
+        supportContacts: [{ bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }],
+        supportAmount: "none", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "The admitted realization is standing with one dumbbell held by both hands; lying and separate-dumbbell variants are absent.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement", trajectoryFreedom: "high", lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_linked", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "One dumbbell follows an overhead elbow-extension path controlled by both hands.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Standing overhead loading requires trunk position control."),
+        scapular_control: demand("moderate", "The reviewed upper-arm position requires shoulder-girdle control."),
+        stability: demand("moderate", "A single overhead implement requires stable grip and position."),
+        coordination: demand("moderate", "Both hands coordinate one dumbbell through elbow extension."),
+        range: demand("moderate", "Elbow and shoulder range are realization-specific."),
+        joint_control: demand("moderate", "Elbow, shoulder, and wrist control remain explicit."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({ targetExerciseId: "cable-triceps-pressdown", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "equipment_transition", "feature_shift"], notes: "Cable pressdown changes shoulder position, anchor, and resistance path and is never automatic.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: ["overhead_pressing"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("dumbbell-triceps-extension").coachingFocus,
+  },
+  {
+    id: "bent-over-dumbbell-reverse-fly",
+    name: "Bent-Over Dumbbell Reverse Fly",
+    summary: generatedCoachingFallback("bent-over-dumbbell-reverse-fly").summary,
+    family: "delt_accessory", movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "shoulder_horizontal_abduction"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["rear_delts"], contextual: ["upper_back", "trunk"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "thoracic_spine", "lumbar_spine"],
+    equipmentRequirements: [dumbbellPairAndStableStandingSpace], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides direct rear-delt horizontal-abduction work without entering a row pool.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "moderate", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: ["loaded_hinge"],
+    },
+    stressAnnotations: [ownerStressAnnotation({ tag: "loaded_hinge", exposureScope: "variant_dependent", sideScope: "bilateral_or_systemic", notes: "The unsupported bent-over position creates hinge demand; implement load and range determine realized exposure.", sourceRef: PACKAGE_R_OWNER_DECISION_REF })],
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "diagonal",
+        supportContacts: [{ bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }],
+        supportAmount: "none", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "The admitted identity is an unsupported bilateral hinge; chest-supported variants remain absent.",
+      },
+      resistancePath: {
+        resistancePath: "free_implement", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "bilateral_independent", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "A dumbbell pair moves in a rear-delt horizontal-abduction arc, not a rowing pull.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Unsupported hinge position requires trunk control."),
+        scapular_control: demand("moderate", "Scapular position follows the rear-delt arm arc without defining a row."),
+        stability: demand("moderate", "Standing hinge and independent dumbbells require stability."),
+        coordination: demand("moderate", "Both arms move through a matched arc while the hinge remains steady."),
+        range: demand("moderate", "Arm range ends before row or trunk momentum replaces the task."),
+        joint_control: demand("moderate", "Shoulder path and elbow angle remain controlled."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({ targetExerciseId: "reverse-pec-deck", direction: "lateral", classification: "context_dependent", purposes: ["increase_support", "change_resistance_path", "equipment_transition", "stimulus_shift"], notes: "Reverse pec deck changes support and path; it does not make this exercise a pull.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: ["loaded_hinge"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("bent-over-dumbbell-reverse-fly").coachingFocus,
+  },
+  {
+    id: "side-lying-hip-abduction",
+    name: "Side-Lying Hip Abduction",
+    summary: generatedCoachingFallback("side-lying-hip-abduction").summary,
+    family: "hip_accessory", movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "hip_abduction"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["hip_abductors"], keySecondary: ["glutes"], contextual: ["trunk"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides direct floor-supported hip-abduction work by prescribed side.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "low", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "low", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    }, stressAnnotations: [],
+    mechanics: mechanics({
+      support: {
+        basePosition: "side_support", stance: "stacked_feet", orientation: "lateral",
+        supportContacts: [
+          { bodyRegion: "pelvis", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" },
+          { bodyRegion: "forearm", source: "floor", mode: "positioning", side: "prescription_side", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "same_side_load", reviewStatus: "accepted",
+        notes: "Substantial side-lying floor support keeps the working top leg and prescribed side explicit.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "The top leg moves against gravity without a band in the admitted realization.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Floor support limits trunk demand while pelvic stacking remains relevant."),
+        scapular_control: demand("low", "Upper-body support is positioning, not a scapular purpose."),
+        stability: demand("low", "Substantial floor support limits balance demand."),
+        coordination: demand("low", "A single top-leg path is coordinated with pelvic position."),
+        range: demand("moderate", "Hip-abduction range must preserve pelvic position."),
+        joint_control: demand("moderate", "Hip orientation and return remain controlled."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({ targetExerciseId: "loop-band-lateral-walk", direction: "lateral", classification: "context_dependent", purposes: ["increase_stability_demand", "increase_coordination_demand", "change_resistance_path", "feature_shift"], notes: "Lateral walking changes support, coordination, and task identity and is not an automatic progression.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("side-lying-hip-abduction").coachingFocus,
+  },
+  {
+    id: "bird-dog",
+    name: "Bird Dog",
+    summary: generatedCoachingFallback("bird-dog").summary,
+    family: "core_control", movementRoles: ["anti_extension_core", "anti_rotation_core"],
+    actionFunctions: [], trainingRoles: ["activation", "capacity"],
+    muscleContributions: contributions({ primary: ["trunk"], contextual: ["glutes", "serratus"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["lumbar_spine", "pelvis", "shoulder", "wrist", "knee"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({
+      activation: good("Can serve an explicit contralateral trunk-control activation need."),
+      accessory: good("Can serve explicit movement-quality or trunk-capacity work without becoming a mandatory pain exercise."),
+    }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "none", loadingPotential: "low", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "high", localFatigue: "low",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: ["upper_limb_support_loading", "long_lever_core"],
+    },
+    stressAnnotations: [
+      ownerStressAnnotation({ tag: "upper_limb_support_loading", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "Quadruped hand support intrinsically loads upper-limb support contacts.", sourceRef: PACKAGE_R_OWNER_DECISION_REF }),
+      ownerStressAnnotation({ tag: "long_lever_core", exposureScope: "variant_dependent", sideScope: "prescription_side", notes: "Reach length determines realized long-lever exposure and remains Prescription-modifiable.", sourceRef: PACKAGE_R_OWNER_DECISION_REF }),
+    ],
+    mechanics: mechanics({
+      support: {
+        basePosition: "quadruped", stance: "bilateral", orientation: "prone",
+        supportContacts: [
+          { bodyRegion: "hand", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+          { bodyRegion: "knee", source: "floor", mode: "weight_bearing", side: "alternating", taskRole: "primary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "alternating", reviewStatus: "accepted",
+        notes: "Quadruped contralateral support changes by prescribed side or alternating realization.",
+      },
+      resistancePath: {
+        resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high",
+        laterality: "alternating", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "Contralateral limb reach changes lever and support without external resistance.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("high", "Contralateral reach directly challenges trunk position."),
+        scapular_control: demand("moderate", "Supporting-hand and reaching-arm control are relevant."),
+        stability: demand("moderate", "Support changes from four contacts to a contralateral pair."),
+        coordination: demand("high", "Opposite arm and leg move together with explicit side sequencing."),
+        range: demand("moderate", "Reach range is bounded by trunk control."),
+        joint_control: demand("moderate", "Wrist, shoulder, hip, and knee contacts remain controlled."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["reps", "sets", "range", "tempo", "lever", "coordination"],
+      transitionRelationships: [transition({ targetExerciseId: "dead-bug", direction: "lateral", classification: "context_dependent", purposes: ["increase_support", "change_resistance_path", "stimulus_shift"], notes: "Dead Bug changes support and coordination orientation; neither task automatically replaces the other.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: ["upper_limb_support_loading", "long_lever_core"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("bird-dog").coachingFocus,
+  },
+  {
+    id: "band-biceps-curl",
+    name: "Band Biceps Curl",
+    summary: generatedCoachingFallback("band-biceps-curl").summary,
+    family: "arm_accessory", movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "elbow_flexion"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["biceps"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["elbow", "wrist"],
+    equipmentRequirements: [selfAnchoredTubeBand], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides direct self-anchored band elbow-flexion work without entering a pull pool.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "limited", loadingPotential: "moderate", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "low", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    }, stressAnnotations: [],
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "upright",
+        supportContacts: [{ bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }],
+        supportAmount: "none", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "Both feet support the body and retain the reviewed tube-band path; no environmental anchor is used.",
+      },
+      resistancePath: {
+        resistancePath: "band_unanchored", trajectoryFreedom: "high", lineOfPullAdjustability: "moderate",
+        laterality: "bilateral_independent", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "A tube band with handles is self-anchored underfoot; band configuration is not converted to kilograms.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Stable bilateral stance limits trunk demand."),
+        scapular_control: demand("low", "Scapular motion is not the task purpose."),
+        stability: demand("low", "Stable under-foot setup has low balance demand."),
+        coordination: demand("low", "Bilateral elbow flexion follows a simple path."),
+        range: demand("moderate", "Elbow range and changing band tension remain controlled."),
+        joint_control: demand("moderate", "Elbow and wrist alignment remain explicit."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["reps", "sets", "range", "tempo", "effort"],
+      transitionRelationships: [transition({ targetExerciseId: "dumbbell-curl", direction: "lateral", classification: "context_dependent", purposes: ["increase_loadability", "change_resistance_path", "equipment_transition"], notes: "Dumbbell Curl changes resistance path and load representation; it is not an automatic progression.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("band-biceps-curl").coachingFocus,
+  },
+  {
+    id: "machine-shoulder-press",
+    name: "Machine Shoulder Press",
+    summary: generatedCoachingFallback("machine-shoulder-press").summary,
+    family: "upper_push", movementRoles: ["vertical_push"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "shoulder_abduction", "elbow_extension", "scapular_upward_rotation"),
+    trainingRoles: ["primary_strength", "secondary_strength"],
+    muscleContributions: contributions({ primary: ["front_delts"], keySecondary: ["triceps", "side_delts"], contextual: ["serratus"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "elbow"],
+    equipmentRequirements: [machine("shoulder_press", "Exact shoulder press machine")], optionalEquipment: [],
+    prerequisites: [{ id: "machine-overhead-range-control", type: "required_control", description: "Requires control through the selected machine-specific overhead range." }],
+    sectionSuitability: sections({
+      main: excellent("Provides an exact-machine supported vertical push."),
+      accessory: good("Can add guided shoulder and triceps volume when the exact machine fits."),
+    }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "high", loadingPotential: "high", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "low", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: ["overhead_pressing"],
+    },
+    stressAnnotations: [ownerStressAnnotation({ tag: "overhead_pressing", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic", notes: "The supported machine path is overhead pressing; geometry, range, and dose remain machine or Prescription facts.", sourceRef: PACKAGE_R_OWNER_DECISION_REF })],
+    mechanics: mechanics({
+      support: {
+        basePosition: "seated", stance: "bilateral", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "Seat and back support are machine-specific and require explicit adjustment.",
+      },
+      resistancePath: {
+        resistancePath: "machine_guided", trajectoryFreedom: "low", lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked", fitDependency: "machine_geometry", reviewStatus: "accepted",
+        notes: "The admitted selectorized machine path and fit are exact capabilities; plate-loaded machines remain absent.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Seat and back support reduce trunk demand."),
+        scapular_control: demand("moderate", "Overhead machine pressing still requires shoulder-girdle control."),
+        stability: demand("low", "The machine guides the implement path."),
+        coordination: demand("low", "The linked guided path limits coordination demand."),
+        range: demand("moderate", "Machine geometry and start setting bound range."),
+        joint_control: demand("moderate", "Shoulder and elbow alignment remain controlled within the machine path."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({ targetExerciseId: "dumbbell-shoulder-press", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "increase_stability_demand", "increase_coordination_demand", "change_resistance_path", "equipment_transition"], notes: "Dumbbell Shoulder Press changes support and path freedom and is not automatically harder or safer.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: ["overhead_pressing"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("machine-shoulder-press").coachingFocus,
+  },
+  {
+    id: "machine-leg-extension",
+    name: "Machine Leg Extension",
+    summary: generatedCoachingFallback("machine-leg-extension").summary,
+    family: "quad_accessory", movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_R_OWNER_DECISION_REF, "knee_extension"),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions({ primary: ["quads"] }, PACKAGE_R_OWNER_DECISION_REF),
+    bodyRegions: ["knee"],
+    equipmentRequirements: [machine("leg_extension", "Exact leg extension machine")], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides direct machine-guided knee-extension work without satisfying a squat requirement.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "high", loadingPotential: "high", skillDemand: "low",
+      stabilityDemand: "low", coordinationDemand: "low", localFatigue: "high",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: [],
+    }, stressAnnotations: [],
+    mechanics: mechanics({
+      support: {
+        basePosition: "seated", stance: "bilateral", orientation: "upright",
+        supportContacts: [
+          { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+          { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+        ],
+        supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "Seat, back, axis, and lower-leg pad support are machine-specific and explicitly adjusted.",
+      },
+      resistancePath: {
+        resistancePath: "machine_guided", trajectoryFreedom: "low", lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked", fitDependency: "machine_geometry", reviewStatus: "accepted",
+        notes: "The admitted selectorized machine guides direct knee extension; plate-loaded machines remain absent.", provenance: [PACKAGE_R_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Seat and back support limit trunk demand."),
+        scapular_control: demand("low", "The upper body has no direct movement purpose."),
+        stability: demand("low", "The machine guides the lower-leg path."),
+        coordination: demand("low", "Bilateral guided knee extension has low coordination demand."),
+        range: demand("moderate", "Start setting and selected knee range remain explicit."),
+        joint_control: demand("moderate", "Knee extension and controlled return remain the direct task."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({ targetExerciseId: "leg-press", direction: "lateral", classification: "context_dependent", purposes: ["feature_shift", "stimulus_shift", "equipment_transition"], notes: "Leg Press changes to a multi-joint knee-dominant task; Machine Leg Extension never satisfies squat ownership.", provenance: [PACKAGE_R_OWNER_DECISION_REF] })],
+    },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("machine-leg-extension").coachingFocus,
+  },
 ] satisfies readonly CanonicalExerciseDefinition[];
 
 export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] =
   REFERENCE_EXERCISE_DEFINITIONS.map(defineExercise);
+
+export const PRE_PACKAGE_R_REFERENCE_EXERCISES: readonly ExerciseDefinition[] =
+  Object.freeze(REFERENCE_EXERCISES.slice(0, 45));
 
 export function getReferenceExercise(id: string): ExerciseDefinition | undefined {
   return REFERENCE_EXERCISES.find((exercise) => exercise.id === id);

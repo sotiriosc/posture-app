@@ -10,3 +10,4 @@ export * from "./scoring/components";
 export * from "./scoring/config";
 export * from "./scoring/types";
 export * from "./types";
+export * from "./homeComfort";

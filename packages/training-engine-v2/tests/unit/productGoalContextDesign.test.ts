@@ -191,10 +191,25 @@ describe("screenshot-guided Product goal and context input design", () => {
       "apps/consumer/src/components/questionnaire/inactiveProductGoalContracts.ts",
       "apps/consumer/src/components/questionnaire/productGoalOptionRegistry.ts",
     ]);
+    const authorizedPackageRTrainingPaths = new Set([
+      "packages/training-engine-v2/src/candidate/homeComfort/contracts.ts",
+      "packages/training-engine-v2/src/candidate/homeComfort/index.ts",
+      "packages/training-engine-v2/src/candidate/homeComfort/policy.ts",
+      "packages/training-engine-v2/src/candidate/homeComfort/profiles.ts",
+      "packages/training-engine-v2/src/candidate/index.ts",
+      "packages/training-engine-v2/src/candidate/ranking/rankCandidates.ts",
+      "packages/training-engine-v2/src/data/candidateScenarios.ts",
+      "packages/training-engine-v2/src/data/generatedExerciseCoachingFallbacks.ts",
+      "packages/training-engine-v2/src/data/referenceExercises.ts",
+      "packages/training-engine-v2/src/domain/equipment.ts",
+      "packages/training-engine-v2/src/domain/exercise.ts",
+      "packages/training-engine-v2/src/sessionComposer/candidatePools.ts",
+      "packages/training-engine-v2/src/sessionPlanner/orchestration.ts",
+    ]);
     expect(changed.some((path) =>
       (path.startsWith("apps/consumer/src/") && !authorizedChunkFConsumerPaths.has(path)) ||
       path.startsWith("apps/gyms/src/") || path.startsWith("packages/engine/src/") ||
-      path.startsWith("packages/training-engine-v2/src/"))).toBe(false);
+      (path.startsWith("packages/training-engine-v2/src/") && !authorizedPackageRTrainingPaths.has(path)))).toBe(false);
     let productionReferences = "";
     try {
       productionReferences = execFileSync("git", ["grep", "-n", "productGoalContextDesign", "--",

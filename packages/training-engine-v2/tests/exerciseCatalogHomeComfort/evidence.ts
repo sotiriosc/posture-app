@@ -1,4 +1,4 @@
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import {
   CURATION_REFERENCE,
   HOME_COMFORT_PROFILE_REFERENCE,

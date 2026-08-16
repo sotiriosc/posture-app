@@ -11,6 +11,7 @@ export const MACHINE_IDS = [
   "leg_curl",
   "reverse_pec_deck",
   "shoulder_press",
+  "leg_extension",
 ] as const;
 
 export type MachineId = (typeof MACHINE_IDS)[number];
