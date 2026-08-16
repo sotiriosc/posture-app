@@ -1,0 +1,212 @@
+[
+  {
+    "id": "dumbbell-floor-press",
+    "group": "home",
+    "receiver": "no-bench horizontal-push main/accessory pool",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "dumbbell-triceps-extension",
+    "group": "home",
+    "receiver": "home direct-triceps accessory pool",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "bent-over-dumbbell-reverse-fly",
+    "group": "home",
+    "receiver": "home rear-delt accessory pool",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "side-lying-hip-abduction",
+    "group": "home",
+    "receiver": "home direct-abductor accessory/activation pool",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "bird-dog",
+    "group": "home",
+    "receiver": "familiar quadruped trunk-control pool",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "reverse-lunge",
+    "group": "home",
+    "receiver": "single-leg strength pool only if identity is distinct",
+    "disposition": "catalog_identity_gap_confirmed",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "bodyweight-squat",
+    "group": "home",
+    "receiver": "squat rehearsal/development only if distinct",
+    "disposition": "catalog_identity_gap_confirmed",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-biceps-curl",
+    "group": "home",
+    "receiver": "anchorless home biceps pool",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "band-pull-apart",
+    "group": "home",
+    "receiver": "rear-delt/preparation only",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-squat",
+    "group": "home",
+    "receiver": "already served by squat identities",
+    "disposition": "duplicate_low_value",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-romanian-deadlift",
+    "group": "home",
+    "receiver": "home loaded hinge when dumbbells absent",
+    "disposition": "support_or_safety_review_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "foot-anchored-seated-band-row",
+    "group": "home",
+    "receiver": "anchorless horizontal-pull gap",
+    "disposition": "home_comfort_rejected",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "body-wrapped-band-chest-press",
+    "group": "home",
+    "receiver": "anchorless external-resistance horizontal push",
+    "disposition": "home_comfort_rejected",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "machine-shoulder-press",
+    "group": "historical_p1",
+    "receiver": "supported vertical-push path diversity",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "assisted-pull-up",
+    "group": "historical_p1",
+    "receiver": "vertical-pull progression/path diversity",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "machine-leg-extension",
+    "group": "historical_p1",
+    "receiver": "direct quad accessory",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "incline-dumbbell-bench-press",
+    "group": "historical_p1",
+    "receiver": "no current unique receiver",
+    "disposition": "same_identity_realization",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "suspension-row",
+    "group": "historical_p1",
+    "receiver": "home horizontal pull with explicit rated equipment",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "half-kneeling-hip-flexor-mobility",
+    "group": "historical_p1",
+    "receiver": "dependency-owned hip preparation only",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "side-lying-thoracic-rotation",
+    "group": "historical_p1",
+    "receiver": "dependency-owned thoracic preparation only",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "cable-hip-adduction",
+    "group": "historical_p1",
+    "receiver": "loadable direct adductor path",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "cable-hip-abduction",
+    "group": "historical_p1",
+    "receiver": "loadable direct abductor path",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "barbell-bench-press",
+    "group": "common_strength",
+    "receiver": "specific barbell-strength path; not required for initial delivery",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "barbell-back-squat",
+    "group": "common_strength",
+    "receiver": "specific barbell squat strength; current squat alternatives sufficient initially",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "conventional-or-trap-bar-deadlift",
+    "group": "common_strength",
+    "receiver": "specific heavy pull; hinge alternatives sufficient initially",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "unassisted-pull-up",
+    "group": "common_strength",
+    "receiver": "advanced vertical-pull specificity",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "seated-calf-raise",
+    "group": "common_strength",
+    "receiver": "direct calf path diversity",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "slider-leg-curl",
+    "group": "common_strength",
+    "receiver": "home knee-flexion path diversity",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "landmine-press",
+    "group": "common_strength",
+    "receiver": "angled press path",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "hanging-knee-raise",
+    "group": "common_strength",
+    "receiver": "advanced trunk accessory",
+    "disposition": "exercise_science_review_required",
+    "firstTrancheEligible": false
+  }
+]

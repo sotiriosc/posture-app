@@ -1,0 +1,112 @@
+[
+  {
+    "id": "beginner_dumbbells_no_bench",
+    "expected": "Prefer legal recognizable rows; floor press is candidate-only and current external-load horizontal push remains limited.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "beginner_loop_bands_only",
+    "expected": "Use current loop-band and bodyweight foundations only where purpose fits; no invented anchor.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "beginner_tube_band_no_anchor",
+    "expected": "Do not offer anchored rows/pulldowns/face pulls; report vertical-pull limitation.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "beginner_full_gym",
+    "expected": "Stable machines may be considered but are not automatically safer or mandatory.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "unknown_experience_dumbbells",
+    "expected": "Among legal equivalents, favor recognizable low-setup options and calibration.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "unknown_experience_bands",
+    "expected": "Favor low-complexity reviewed paths; no anchor or band-force inference.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "advanced_home_dumbbells_exact_familiarity",
+    "expected": "Preserve familiar legal anchors and use demanding realizations when load/support truth permits.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "advanced_home_bands_exact_anchor_load",
+    "expected": "Advanced evidence overrides coarse comfort defaults without bypassing safety or purpose.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "advanced_home_unfamiliar_exercise",
+    "expected": "Advanced status does not prove exact identity familiarity; coach the legal setup or retain a familiar anchor.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "intermediate_stable_anchors",
+    "expected": "Use exact anchor height/rating and preserve productive continuity.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "relevant_pain",
+    "expected": "Pain/restriction truth precedes comfort and familiarity.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "irrelevant_pain",
+    "expected": "No unrelated candidate change.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "floor_unavailable",
+    "expected": "Remove floor-dependent rows/candidates; never infer floor space.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "wall_unavailable",
+    "expected": "Remove wall-dependent realizations; do not infer wall support.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "chair_support_unavailable",
+    "expected": "Do not realize chair/table-supported rows or squats.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "limited_space",
+    "expected": "Prefer legal stationary options; carries and stepping may become unavailable.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "requests_familiar",
+    "expected": "Preserve legal productive identities before novelty.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "requests_challenge",
+    "expected": "Progress a legal axis or reviewed transition; challenge cannot invent equipment.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "requests_variety",
+    "expected": "Permit bounded justified variation without quota or purpose loss.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "dislikes_floor",
+    "expected": "Prefer legal standing/seated alternatives; preference does not fabricate apparatus.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "prefers_machines",
+    "expected": "Use exact available machine IDs only.",
+    "productionSelectionApplied": false
+  },
+  {
+    "id": "prefers_dumbbells",
+    "expected": "Use legal dumbbell rows; preference does not imply bench or load ceiling.",
+    "productionSelectionApplied": false
+  }
+]

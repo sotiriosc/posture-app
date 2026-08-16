@@ -1,0 +1,148 @@
+[
+  {
+    "id": "H",
+    "name": "Home Comfort Core",
+    "candidateIds": [
+      "dumbbell-floor-press",
+      "dumbbell-triceps-extension",
+      "bent-over-dumbbell-reverse-fly",
+      "side-lying-hip-abduction",
+      "bird-dog",
+      "band-biceps-curl"
+    ],
+    "sameIdentityMetadata": [
+      "push-up",
+      "one-arm-dumbbell-row",
+      "goblet-squat",
+      "split-squat",
+      "glute-bridge",
+      "standing-calf-raise",
+      "forearm-plank",
+      "forearm-side-plank",
+      "single-leg-balance-rehearsal"
+    ],
+    "newRowCount": 6,
+    "environmentsImproved": [
+      "dumbbells_without_bench",
+      "tube_band_without_anchor",
+      "bodyweight_no_equipment"
+    ],
+    "poolsImproved": [
+      "horizontal_push",
+      "elbow_extension",
+      "shoulder_horizontal_abduction",
+      "hip_abduction",
+      "anti_extension",
+      "elbow_flexion"
+    ],
+    "remainingGaps": [
+      "home_vertical_pull_without_apparatus",
+      "safe_anchorless_full_horizontal_pull",
+      "reverse_lunge_identity",
+      "bodyweight_squat_identity"
+    ],
+    "homeComfortConsequence": "Adds recognizable low-setup choices while retaining explicit floor/band/load truth.",
+    "advancedUserConsequence": "Adds identities and runway without imposing beginner realizations.",
+    "rankingConsequenceExpectation": "Future pool/ranking changes require separate Pre-G2 authorization and calibration.",
+    "composerConsequence": "Future redundancy and assignment tests required; no current change.",
+    "knowledgeWork": "Full identity, mechanics, stress, support, Prescription, and coaching curation per selected row.",
+    "testBurden": "Catalog validation, candidate/Composer, Week, Prescription, Product Shadow, home cohort, mutation, and browser invariance.",
+    "rollback": "Remove selected rows/metadata in one future expansion commit before activation.",
+    "risk": "Medium: handling/band/support metadata and receiver purity."
+  },
+  {
+    "id": "G",
+    "name": "Commercial Gym Core",
+    "candidateIds": [
+      "machine-shoulder-press",
+      "assisted-pull-up",
+      "machine-leg-extension",
+      "cable-hip-adduction",
+      "cable-hip-abduction",
+      "seated-calf-raise"
+    ],
+    "sameIdentityMetadata": [
+      "dumbbell-bench-press",
+      "one-arm-dumbbell-row",
+      "standing-calf-raise"
+    ],
+    "newRowCount": 6,
+    "environmentsImproved": [
+      "full_gym",
+      "selected_machine_capabilities"
+    ],
+    "poolsImproved": [
+      "vertical_push",
+      "vertical_pull",
+      "direct_quads",
+      "hip_adduction",
+      "hip_abduction",
+      "calf"
+    ],
+    "remainingGaps": [
+      "barbell_specific_strength",
+      "unassisted_pull_up",
+      "landmine_press",
+      "hanging_trunk"
+    ],
+    "homeComfortConsequence": "Neutral; no machine availability is inferred at home.",
+    "advancedUserConsequence": "Improves supported/loadable path diversity without requiring barbell admission.",
+    "rankingConsequenceExpectation": "New legal gym candidates would require explicit ranking calibration.",
+    "composerConsequence": "Direct-work and support/path redundancy need calibration.",
+    "knowledgeWork": "New machine IDs/assistance/cuff capability plus mechanics, stress, and Prescription curation.",
+    "testBurden": "Machine capability, equipment rejection, candidate, Composer, direct-work anti-bloat, and regression suites.",
+    "rollback": "Remove selected future rows and machine capabilities before activation.",
+    "risk": "Medium-high: equipment ontology and generic machine identity boundaries."
+  },
+  {
+    "id": "M",
+    "name": "Mixed Minimal Release",
+    "candidateIds": [
+      "dumbbell-floor-press",
+      "side-lying-hip-abduction",
+      "bird-dog",
+      "machine-shoulder-press",
+      "machine-leg-extension"
+    ],
+    "sameIdentityMetadata": [
+      "push-up",
+      "one-arm-dumbbell-row",
+      "goblet-squat",
+      "split-squat",
+      "glute-bridge",
+      "standing-calf-raise",
+      "forearm-plank",
+      "forearm-side-plank",
+      "single-leg-balance-rehearsal"
+    ],
+    "newRowCount": 5,
+    "environmentsImproved": [
+      "bodyweight_no_equipment",
+      "dumbbells_without_bench",
+      "full_gym",
+      "selected_machine_capabilities"
+    ],
+    "poolsImproved": [
+      "horizontal_push",
+      "hip_abduction",
+      "anti_extension",
+      "vertical_push",
+      "direct_quads"
+    ],
+    "remainingGaps": [
+      "home_direct_arms",
+      "home_rear_delt",
+      "anchorless_horizontal_pull",
+      "vertical_pull_progression",
+      "barbell_specific_strength"
+    ],
+    "homeComfortConsequence": "Closes three strong home-confidence gaps with low setup burden.",
+    "advancedUserConsequence": "Adds two supported gym paths while preserving existing advanced choices.",
+    "rankingConsequenceExpectation": "Smallest cross-environment calibration surface; still separate authorization.",
+    "composerConsequence": "Five future rows require receiver/redundancy review.",
+    "knowledgeWork": "Complete five-row curation plus two machine capability decisions.",
+    "testBurden": "Cross-environment catalog, candidate/Composer, freeze, and Product Shadow regression matrix.",
+    "rollback": "One bounded future tranche can be removed before activation.",
+    "risk": "Medium: narrower blast radius but leaves known direct-arm/pull gaps."
+  }
+]

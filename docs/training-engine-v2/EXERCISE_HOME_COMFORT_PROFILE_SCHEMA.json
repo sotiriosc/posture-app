@@ -1,0 +1,132 @@
+{
+  "homeComfortProfileSchema": {
+    "reference": {
+      "contractId": "EXERCISE_HOME_COMFORT_PROFILE",
+      "contractVersion": "1.0.0",
+      "activation": "design_only"
+    },
+    "separateFrom": [
+      "exercise_difficulty",
+      "phase",
+      "experience_level",
+      "skill_demand",
+      "Safety",
+      "exercise_score",
+      "Product_preference"
+    ],
+    "dimensions": [
+      "recognizability",
+      "setupComplexity",
+      "instructionBurden",
+      "balanceDemand",
+      "coordinationDemand",
+      "supportClarity",
+      "equipmentAmbiguity",
+      "anchorComplexity",
+      "floorTransitionDemand",
+      "spaceRequirement",
+      "failureConsequenceClarity",
+      "unilateralComplexity",
+      "externalLoadHandlingComplexity",
+      "firstSessionConfidenceSuitability",
+      "homeEnvironmentFit",
+      "unknowns",
+      "reviewState",
+      "provenance"
+    ],
+    "closedLevels": [
+      "low",
+      "moderate",
+      "high",
+      "unknown"
+    ],
+    "closedFits": [
+      "poor",
+      "possible",
+      "good",
+      "excellent",
+      "unknown"
+    ],
+    "weightedScore": null,
+    "rankingAuthority": "none"
+  },
+  "illustrativeComfortProfiles": {
+    "recognizableStableFloor": {
+      "recognizability": "high",
+      "setupComplexity": "low",
+      "instructionBurden": "low",
+      "balanceDemand": "low",
+      "coordinationDemand": "low",
+      "supportClarity": "high",
+      "equipmentAmbiguity": "low",
+      "anchorComplexity": "low",
+      "floorTransitionDemand": "moderate",
+      "spaceRequirement": "low",
+      "failureConsequenceClarity": "high",
+      "unilateralComplexity": "low",
+      "externalLoadHandlingComplexity": "low",
+      "firstSessionConfidenceSuitability": "excellent",
+      "homeEnvironmentFit": "excellent",
+      "unknowns": [],
+      "reviewState": "owner_review_required",
+      "provenance": [
+        "owner_home_comfort_principle"
+      ]
+    },
+    "explicitAdvancedHome": {
+      "recognizability": "high",
+      "setupComplexity": "moderate",
+      "instructionBurden": "moderate",
+      "balanceDemand": "moderate",
+      "coordinationDemand": "moderate",
+      "supportClarity": "high",
+      "equipmentAmbiguity": "low",
+      "anchorComplexity": "moderate",
+      "floorTransitionDemand": "low",
+      "spaceRequirement": "moderate",
+      "failureConsequenceClarity": "high",
+      "unilateralComplexity": "moderate",
+      "externalLoadHandlingComplexity": "moderate",
+      "firstSessionConfidenceSuitability": "good",
+      "homeEnvironmentFit": "excellent",
+      "unknowns": [],
+      "reviewState": "accepted_for_curation",
+      "provenance": [
+        "authenticated_exact_familiarity",
+        "exact_equipment_capability"
+      ]
+    }
+  },
+  "homeComfortSemantics": {
+    "comfortable": "The user can understand, set up, begin, stop, and repeat the legal exercise with reasonable confidence given known facts.",
+    "comfortableDoesNotMean": [
+      "effortless",
+      "low stimulus",
+      "low progression potential",
+      "no coaching",
+      "no fatigue",
+      "no learning"
+    ],
+    "familiarSources": [
+      "exact_identity_familiarity",
+      "related_realization_familiarity",
+      "authenticated_athlete_report",
+      "weak_recognizable_simple_default_when_exact_familiarity_unknown"
+    ],
+    "simpleSignals": [
+      "few_setup_steps",
+      "clear_support",
+      "common_equipment",
+      "low_balance_demand",
+      "low_coordination_demand",
+      "easy_exit_or_stop",
+      "obvious_start_and_finish"
+    ],
+    "nonOverrides": [
+      "Safety",
+      "equipment_legality",
+      "purpose",
+      "pain_or_restriction"
+    ]
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "invariants": [
+    {
+      "id": "candidate_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "current_catalog_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "provenance_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "display_labels",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "notes",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "package_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "environment_list_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "irrelevant_pain",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "equivalent_equipment_capability_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    },
+    {
+      "id": "equivalent_familiarity_evidence_order",
+      "passed": true,
+      "semanticFingerprint": "ad01750b713dc78f254c7efbb1fb099c573fb890a03869f522a6c11252fc6915"
+    }
+  ],
+  "materialResponses": [
+    {
+      "id": "exact_familiarity",
+      "passed": true,
+      "baseline": "840c7790ae468d523fe41f930f083010e834b205228a74334726ec6518865990",
+      "changed": "b7971c2c93e056878b9890045c5c1093ff77ae602659aff04397cc5efb6ea3a3",
+      "responseWindow": "local_rank_tie_or_realization"
+    },
+    {
+      "id": "comfort_preference",
+      "passed": true,
+      "baseline": "94c388f264c8bfcd1eac1e82839d4d005acd083b3d2426baf675eb725e707db8",
+      "changed": "b7fe0b9e2addb6ee48031303ef24d4c0dfe60a6e5d802acbac8f5cec55ae6e1c",
+      "responseWindow": "local_rank_tie"
+    },
+    {
+      "id": "support_availability",
+      "passed": true,
+      "baseline": "4e22b868dd9f6d91690e759bf828bbbb74539426260443ecdb1003df0a9e3919",
+      "changed": "e0c7d0481ad1bd1159d26a3dedeb78e66e5586fa0c3fdbe505b24a331035c94b",
+      "responseWindow": "selection"
+    },
+    {
+      "id": "band_anchor_availability",
+      "passed": true,
+      "baseline": "dcc20d9165d89e7fa12b876743c6849548e54ef7a631a794e942036bf51aba4c",
+      "changed": "26e8c43cf43a052fea84b3432b2da1323ce6188dac4ded0bfaccfdece617acd2",
+      "responseWindow": "progression_options"
+    },
+    {
+      "id": "bench_availability",
+      "passed": true,
+      "baseline": "c51ef4be7119e1f416b3a2f1c6f5a0ca7ed68cc9949b23db4109f5c7f2c0dfea",
+      "changed": "cdf6a7e69179d79a746648ef83d6a5f06492479822834013262d39669e0970fd",
+      "responseWindow": "candidate_set"
+    },
+    {
+      "id": "load_ceiling",
+      "passed": true,
+      "baseline": "9ae901f59b53022cdece25aa2460e0cefa47d348c9eec669c4f32e2ebe57d2c4",
+      "changed": "4fc914b50e1f8ebc95682308d70fb4e109a219f1acedcad7e7412e71e494a218",
+      "responseWindow": "candidate_set"
+    },
+    {
+      "id": "challenge_preference",
+      "passed": true,
+      "baseline": "ec30ae69a524f9802c005458eddd79c69bbe1de003fbf65547c2e7aaa14ec464",
+      "changed": "b875bd96af60788913e341ad633b47f1a442e42bc0d32424546d60c74a4bfc84",
+      "responseWindow": "realization"
+    },
+    {
+      "id": "variety_preference",
+      "passed": true,
+      "baseline": "d017e93e7b55f5bd93d06e647b499e874987e77165ba3cb13dd92ffb3271e76a",
+      "changed": "0d8a9a333771bdea0238b1d714ee6735efbd3407b34518c4aa65370ec48939bd",
+      "responseWindow": "equipment_legality_and_candidate_set"
+    },
+    {
+      "id": "purpose",
+      "passed": true,
+      "baseline": "5af8eb49bc0a85c713738f98f33950a4e1c6e8d49ee584793dbf4fff40c28dad",
+      "changed": "0be3abda13fcd045bf0b00603dce15a89918469f16dd4efc823566dcff2d1b5f",
+      "responseWindow": "progression_options"
+    },
+    {
+      "id": "equipment_legality",
+      "passed": true,
+      "baseline": "db9a6c7f9482366612fb0bbf670f06f6c449efe84938ee24de8407fc8dd9aae6",
+      "changed": "0b7e8dff3296402badaee35fb444aa8065d6160a1a41ddd6c30d3451654ee31e",
+      "responseWindow": "bounded_selection"
+    },
+    {
+      "id": "candidate_unique_coverage",
+      "passed": true,
+      "baseline": "83dbe9a1e7bcb16a1285bf77618bca53a4b18be781bd886ec1ab16ea6f3f1403",
+      "changed": "b2e5d22a7925a4bf84405ec6b90e1c4800eaad3c3a24726cb38e6a89e2c13ee5",
+      "responseWindow": "local_rank_tie_or_realization"
+    }
+  ]
+}

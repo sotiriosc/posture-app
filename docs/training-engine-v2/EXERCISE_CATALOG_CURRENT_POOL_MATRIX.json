@@ -1,0 +1,7117 @@
+{
+  "coverageMatrix": [
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "bodyweight_no_equipment",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "one-arm-dumbbell-row"
+      ],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-shoulder-press"
+      ],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "goblet-squat",
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "goblet-squat"
+      ],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-lateral-raise"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-dumbbell-external-rotation"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-curl"
+      ],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "dumbbells_without_bench",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "push-up",
+        "dumbbell-bench-press"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "chest-supported-dumbbell-row",
+        "one-arm-dumbbell-row"
+      ],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-shoulder-press"
+      ],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "goblet-squat",
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "goblet-squat"
+      ],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-lateral-raise"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-dumbbell-external-rotation"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-curl"
+      ],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "dumbbells_with_bench",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "loop-band-lateral-walk"
+      ],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "loop_band_only",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_without_anchor",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_low_anchor",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "band-row"
+      ],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "impossible_without_equipment",
+      "currentIds": [],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "No legal vertical-pull apparatus is proven; report the limitation rather than relabel a pullover or pull-apart."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "band-face-pull"
+      ],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "band-face-pull"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "pallof-press"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_mid_anchor",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "push-up"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "band-lat-pulldown"
+      ],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "split-squat"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "forearm-side-plank"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "tube_band_high_anchor",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "push-up",
+        "dumbbell-bench-press",
+        "machine-chest-press"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "chest-supported-dumbbell-row",
+        "one-arm-dumbbell-row",
+        "machine-row",
+        "seated-cable-row",
+        "band-row"
+      ],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "5 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-shoulder-press"
+      ],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "lat-pulldown",
+        "band-lat-pulldown"
+      ],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "goblet-squat",
+        "leg-press",
+        "bodyweight-box-squat",
+        "split-squat",
+        "step-up"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "5 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "goblet-squat",
+        "leg-press",
+        "bodyweight-box-squat"
+      ],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "cable-pull-through",
+        "bodyweight-hip-hinge-rehearsal"
+      ],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "split-squat",
+        "step-up",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dumbbell-romanian-deadlift",
+        "cable-pull-through",
+        "glute-bridge"
+      ],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "lying-leg-curl",
+        "supine-hamstring-walkout"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "standing-calf-raise"
+      ],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "loop-band-lateral-walk"
+      ],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "side-lying-hip-adduction"
+      ],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-lateral-raise"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "reverse-pec-deck",
+        "band-face-pull"
+      ],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "side-lying-dumbbell-external-rotation",
+        "band-face-pull"
+      ],
+      "candidateIds": [],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "dumbbell-curl"
+      ],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "cable-triceps-pressdown"
+      ],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "dead-bug",
+        "forearm-plank"
+      ],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "2 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "pallof-press"
+      ],
+      "candidateIds": [],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "forearm-side-plank",
+        "suitcase-carry",
+        "wall-supported-suitcase-march"
+      ],
+      "candidateIds": [],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "machine-abdominal-crunch"
+      ],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "half-kneeling-high-to-low-cable-chop"
+      ],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "farmer-carry",
+        "suitcase-carry",
+        "wall-supported-suitcase-march"
+      ],
+      "candidateIds": [],
+      "reason": "3 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "full_gym",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "sufficient",
+      "currentIds": [
+        "ninety-ninety-breathing",
+        "serratus-wall-slide",
+        "wall-ankle-dorsiflexion-rock",
+        "bodyweight-hip-hinge-rehearsal",
+        "single-leg-balance-rehearsal"
+      ],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "5 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "horizontal_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "machine-chest-press"
+      ],
+      "candidateIds": [
+        "dumbbell-floor-press"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "horizontal_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "machine-row"
+      ],
+      "candidateIds": [
+        "suspension-row"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "vertical_push",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "machine-shoulder-press",
+        "landmine-press"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "vertical_pull",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "lat-pulldown"
+      ],
+      "candidateIds": [
+        "assisted-pull-up",
+        "unassisted-pull-up"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "knee_dominant",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "leg-press"
+      ],
+      "candidateIds": [
+        "reverse-lunge",
+        "bodyweight-squat",
+        "machine-leg-extension"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "squat",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "leg-press"
+      ],
+      "candidateIds": [
+        "bodyweight-squat"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "hinge",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-romanian-deadlift",
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "single_leg",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "reverse-lunge"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "hip_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "conventional-or-trap-bar-deadlift"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "knee_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "lying-leg-curl"
+      ],
+      "candidateIds": [
+        "slider-leg-curl"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "calf",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "seated-calf-raise"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "hip_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-hip-abduction",
+        "cable-hip-abduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "hip_adduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "cable-hip-adduction"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "shoulder_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "shoulder_horizontal_abduction",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "reverse-pec-deck"
+      ],
+      "candidateIds": [
+        "bent-over-dumbbell-reverse-fly",
+        "band-pull-apart"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "shoulder_external_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation",
+        "preparation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "elbow_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "band-biceps-curl"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "elbow_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "hypertrophy",
+        "local_muscular_endurance",
+        "direct_development",
+        "capacity",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "dumbbell-triceps-extension"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "anti_extension",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "bird-dog"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "anti_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "anti_lateral_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "controlled_flexion",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "thin",
+      "currentIds": [
+        "machine-abdominal-crunch"
+      ],
+      "candidateIds": [
+        "hanging-knee-raise"
+      ],
+      "reason": "1 current legal canonical candidate(s)."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "controlled_rotation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "preparation",
+        "activation"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "carry_bracing",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "strength",
+        "hypertrophy",
+        "movement_quality",
+        "local_muscular_endurance",
+        "capacity",
+        "direct_development"
+      ],
+      "status": "empty",
+      "currentIds": [],
+      "candidateIds": [],
+      "reason": "No current row or admitted candidate receiver."
+    },
+    {
+      "environment": "selected_machine_capabilities",
+      "pattern": "mobility_preparation",
+      "experienceAndFamiliarityStates": [
+        "Beginner",
+        "Intermediate",
+        "Advanced",
+        "unknown",
+        "identity_familiar",
+        "exact_realization_familiar",
+        "home_advanced",
+        "gym_beginner"
+      ],
+      "applicablePurposes": [
+        "movement_quality",
+        "preparation",
+        "activation",
+        "recovery"
+      ],
+      "status": "candidate_expansion_available",
+      "currentIds": [],
+      "candidateIds": [
+        "half-kneeling-hip-flexor-mobility",
+        "side-lying-thoracic-rotation"
+      ],
+      "reason": "No current legal row; curated candidates exist but are not production rows."
+    }
+  ],
+  "currentPoolSummary": {
+    "home": {
+      "sufficient": 32,
+      "thin": 74,
+      "empty": 87,
+      "impossibleWithoutEquipment": 7
+    },
+    "gym": {
+      "sufficient": 15,
+      "thin": 18,
+      "empty": 17,
+      "impossibleWithoutEquipment": 0
+    }
+  }
+}

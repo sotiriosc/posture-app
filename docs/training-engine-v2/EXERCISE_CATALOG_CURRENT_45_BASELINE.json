@@ -1,0 +1,2471 @@
+{
+  "contract": {
+    "contractId": "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+    "contractVersion": "1.0.0",
+    "authority": "read_only_not_production_catalog_expansion"
+  },
+  "source": "packages/training-engine-v2/src/data/referenceExercises.ts",
+  "frozenAtCommit": "cc2438248debef43ee829283ff08ab661300b63e",
+  "rowCount": 45,
+  "uniqueIdCount": 45,
+  "rows": [
+    {
+      "id": "ninety-ninety-breathing",
+      "name": "90/90 Breathing",
+      "family": "breathing_reset",
+      "movementRoles": [
+        "breathing_position",
+        "anti_extension_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "serratus",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "preparation",
+        "recovery"
+      ],
+      "sections": [
+        "cooldown",
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "breath_cycles"
+      ],
+      "progressionAxes": [
+        "tempo",
+        "range"
+      ]
+    },
+    {
+      "id": "serratus-wall-slide",
+      "name": "Serratus Wall Slide",
+      "family": "scapular_preparation",
+      "movementRoles": [
+        "scapular_control"
+      ],
+      "actionFunctions": [
+        "scapular_upward_rotation"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "serratus",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "rotator_cuff",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "wall-support",
+          "allOf": [
+            "wall"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "preparation"
+      ],
+      "sections": [
+        "activation",
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "range",
+        "tempo"
+      ]
+    },
+    {
+      "id": "dead-bug",
+      "name": "Dead Bug",
+      "family": "core_control",
+      "movementRoles": [
+        "anti_extension_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hip_adductors",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "range",
+        "tempo",
+        "complexity"
+      ]
+    },
+    {
+      "id": "push-up",
+      "name": "Push-Up",
+      "family": "upper_push",
+      "movementRoles": [
+        "horizontal_push",
+        "anti_extension_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "chest",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "triceps",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "serratus",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "wall-support"
+      ],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo",
+        "support_reduction"
+      ]
+    },
+    {
+      "id": "dumbbell-bench-press",
+      "name": "Dumbbell Bench Press",
+      "family": "upper_push",
+      "movementRoles": [
+        "horizontal_push"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "chest",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "triceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "stable-bench",
+          "allOf": [],
+          "oneOf": [
+            "flat_bench",
+            "adjustable_bench"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "machine-chest-press",
+      "name": "Machine Chest Press",
+      "family": "upper_push",
+      "movementRoles": [
+        "horizontal_push"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "chest",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "triceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-chest_press",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "chest_press"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets"
+      ]
+    },
+    {
+      "id": "cable-chest-fly",
+      "name": "Cable Chest Fly",
+      "family": "upper_push",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "shoulder_horizontal_adduction"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "chest",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "cable-stack",
+          "allOf": [
+            "cable_stack"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo",
+        "range"
+      ]
+    },
+    {
+      "id": "chest-supported-dumbbell-row",
+      "name": "Chest-Supported Dumbbell Row",
+      "family": "upper_pull",
+      "movementRoles": [
+        "horizontal_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "mid_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "stable-bench",
+          "allOf": [],
+          "oneOf": [
+            "flat_bench",
+            "adjustable_bench"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "one-arm-dumbbell-row",
+      "name": "One-Arm Dumbbell Row",
+      "family": "upper_pull",
+      "movementRoles": [
+        "horizontal_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "mid_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "stable-bench"
+      ],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "machine-row",
+      "name": "Machine Row",
+      "family": "upper_pull",
+      "movementRoles": [
+        "horizontal_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "mid_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-row",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "row"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets"
+      ]
+    },
+    {
+      "id": "seated-cable-row",
+      "name": "Seated Cable Row",
+      "family": "upper_pull",
+      "movementRoles": [
+        "horizontal_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "mid_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "cable-stack",
+          "allOf": [
+            "cable_stack"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets"
+      ]
+    },
+    {
+      "id": "band-row",
+      "name": "Band Row",
+      "family": "upper_pull",
+      "movementRoles": [
+        "horizontal_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "mid_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "anchored-band-mid",
+          "allOf": [
+            "tube_band",
+            "band_anchor_mid"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "dumbbell-shoulder-press",
+      "name": "Dumbbell Shoulder Press",
+      "family": "upper_push",
+      "movementRoles": [
+        "vertical_push"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "front_delts",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "triceps",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "side_delts",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "stable-bench"
+      ],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets"
+      ]
+    },
+    {
+      "id": "lat-pulldown",
+      "name": "Lat Pulldown",
+      "family": "upper_pull",
+      "movementRoles": [
+        "vertical_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "mid_back",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-lat_pulldown",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "lat_pulldown"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets"
+      ]
+    },
+    {
+      "id": "band-lat-pulldown",
+      "name": "Band Lat Pulldown",
+      "family": "upper_pull",
+      "movementRoles": [
+        "vertical_pull"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "lats",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "biceps",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "mid_back",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "anchored-band-high",
+          "allOf": [
+            "tube_band",
+            "band_anchor_high"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "goblet-squat",
+      "name": "Goblet Squat",
+      "family": "squat_pattern",
+      "movementRoles": [
+        "squat",
+        "knee_dominant"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "quads",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "range",
+        "sets"
+      ]
+    },
+    {
+      "id": "leg-press",
+      "name": "Leg Press",
+      "family": "squat_pattern",
+      "movementRoles": [
+        "knee_dominant"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "quads",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-leg_press",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "leg_press"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range"
+      ]
+    },
+    {
+      "id": "bodyweight-box-squat",
+      "name": "Bodyweight Box Squat",
+      "family": "squat_pattern",
+      "movementRoles": [
+        "squat",
+        "knee_dominant"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "quads",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "box",
+          "allOf": [],
+          "oneOf": [
+            "box"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "preparation",
+        "activation",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "activation",
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "range",
+        "reps",
+        "tempo"
+      ]
+    },
+    {
+      "id": "dumbbell-romanian-deadlift",
+      "name": "Dumbbell Romanian Deadlift",
+      "family": "hinge_pattern",
+      "movementRoles": [
+        "hinge"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "hamstrings",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "mid_back",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range"
+      ]
+    },
+    {
+      "id": "cable-pull-through",
+      "name": "Cable Pull-Through",
+      "family": "hinge_pattern",
+      "movementRoles": [
+        "hinge"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "cable-stack",
+          "allOf": [
+            "cable_stack"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "secondary_strength",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "range"
+      ]
+    },
+    {
+      "id": "split-squat",
+      "name": "Split Squat",
+      "family": "single_leg_pattern",
+      "movementRoles": [
+        "single_leg",
+        "knee_dominant"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "quads",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hip_adductors",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "dumbbells"
+      ],
+      "trainingRoles": [
+        "secondary_strength",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "range",
+        "support_reduction"
+      ]
+    },
+    {
+      "id": "step-up",
+      "name": "Step-Up",
+      "family": "single_leg_pattern",
+      "movementRoles": [
+        "single_leg",
+        "knee_dominant"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "quads",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "box",
+          "allOf": [],
+          "oneOf": [
+            "box"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "dumbbells"
+      ],
+      "trainingRoles": [
+        "secondary_strength",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "range",
+        "reps"
+      ]
+    },
+    {
+      "id": "lying-leg-curl",
+      "name": "Lying Leg Curl",
+      "family": "glute_hamstring",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "knee_flexion"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "hamstrings",
+          "relationship": "primary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-leg_curl",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "leg_curl"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "glute-bridge",
+      "name": "Glute Bridge",
+      "family": "glute_hamstring",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "hip_extension"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "glutes",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "dumbbells",
+        "loop-band"
+      ],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "dumbbell-lateral-raise",
+      "name": "Dumbbell Lateral Raise",
+      "family": "delt_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "shoulder_abduction"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "side_delts",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo",
+        "load"
+      ]
+    },
+    {
+      "id": "reverse-pec-deck",
+      "name": "Reverse Pec Deck",
+      "family": "delt_accessory",
+      "movementRoles": [
+        "scapular_control"
+      ],
+      "actionFunctions": [
+        "shoulder_horizontal_abduction",
+        "scapular_retraction"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "rear_delts",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "mid_back",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-reverse_pec_deck",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "reverse_pec_deck"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory",
+        "activation"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "band-face-pull",
+      "name": "Band Face Pull",
+      "family": "scapular_preparation",
+      "movementRoles": [
+        "scapular_control"
+      ],
+      "actionFunctions": [
+        "scapular_retraction",
+        "shoulder_external_rotation"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "rear_delts",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "rotator_cuff",
+          "relationship": "key_secondary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "anchored-band-mid",
+          "allOf": [
+            "tube_band",
+            "band_anchor_mid"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "dumbbell-curl",
+      "name": "Dumbbell Curl",
+      "family": "arm_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "elbow_flexion"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "biceps",
+          "relationship": "primary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "cable-triceps-pressdown",
+      "name": "Cable Triceps Pressdown",
+      "family": "arm_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "elbow_extension"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "triceps",
+          "relationship": "primary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "cable-stack",
+          "allOf": [
+            "cable_stack"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "tempo"
+      ]
+    },
+    {
+      "id": "pallof-press",
+      "name": "Pallof Press",
+      "family": "core_control",
+      "movementRoles": [
+        "anti_rotation_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "pallof-load",
+          "allOf": [],
+          "oneOf": [
+            "cable_stack",
+            "band_anchor_mid"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "tempo",
+        "stability"
+      ]
+    },
+    {
+      "id": "forearm-plank",
+      "name": "Forearm Plank",
+      "family": "core_control",
+      "movementRoles": [
+        "anti_extension_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "serratus",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "timed_hold"
+      ],
+      "progressionAxes": [
+        "duration",
+        "lever",
+        "support_reduction",
+        "effort"
+      ]
+    },
+    {
+      "id": "forearm-side-plank",
+      "name": "Forearm Side Plank",
+      "family": "core_control",
+      "movementRoles": [
+        "anti_lateral_flexion_core"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "serratus",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "front_delts",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "hip_abductors",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "timed_hold"
+      ],
+      "progressionAxes": [
+        "duration",
+        "lever",
+        "support_reduction",
+        "load",
+        "effort"
+      ]
+    },
+    {
+      "id": "machine-abdominal-crunch",
+      "name": "Machine Abdominal Crunch",
+      "family": "core_control",
+      "movementRoles": [
+        "trunk_flexion"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "machine-abdominal_crunch",
+          "allOf": [
+            "selectorized_machine"
+          ],
+          "oneOf": [],
+          "machineIds": [
+            "abdominal_crunch"
+          ]
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range",
+        "tempo"
+      ]
+    },
+    {
+      "id": "half-kneeling-high-to-low-cable-chop",
+      "name": "Half-Kneeling High-to-Low Cable Chop",
+      "family": "core_control",
+      "movementRoles": [
+        "trunk_rotation"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "high-cable-stack",
+          "allOf": [
+            "cable_stack",
+            "cable_anchor_high",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range",
+        "tempo"
+      ]
+    },
+    {
+      "id": "farmer-carry",
+      "name": "Farmer Carry",
+      "family": "carry_load",
+      "movementRoles": [
+        "carry",
+        "loaded_bracing"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "quads",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "farmer-carry-equipment",
+          "allOf": [
+            "dumbbell_pair",
+            "loaded_gait_space",
+            "stable_loaded_standing_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "capacity",
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "distance_carry",
+        "timed_carry"
+      ],
+      "progressionAxes": [
+        "load",
+        "distance",
+        "trips",
+        "duration",
+        "effort"
+      ]
+    },
+    {
+      "id": "suitcase-carry",
+      "name": "Suitcase Carry",
+      "family": "carry_load",
+      "movementRoles": [
+        "carry",
+        "anti_lateral_flexion_core",
+        "loaded_bracing"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "upper_back",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "quads",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "suitcase-carry-equipment",
+          "allOf": [
+            "dumbbells",
+            "loaded_gait_space",
+            "stable_loaded_standing_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "capacity",
+        "hypertrophy_accessory",
+        "secondary_strength"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "prescriptionDoseModes": [
+        "distance_carry",
+        "timed_carry"
+      ],
+      "progressionAxes": [
+        "load",
+        "distance",
+        "trips",
+        "duration",
+        "effort"
+      ]
+    },
+    {
+      "id": "wall-supported-suitcase-march",
+      "name": "Wall-Supported Suitcase March",
+      "family": "carry_load",
+      "movementRoles": [
+        "loaded_bracing"
+      ],
+      "actionFunctions": [],
+      "muscleContributions": [
+        {
+          "muscle": "trunk",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "stabilizer_or_contextual_contributor"
+        },
+        {
+          "muscle": "quads",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "wall-supported-suitcase-march-equipment",
+          "allOf": [
+            "dumbbells",
+            "wall",
+            "stable_loaded_standing_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "capacity"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "step_march"
+      ],
+      "progressionAxes": [
+        "load",
+        "steps",
+        "duration",
+        "support_reduction",
+        "effort"
+      ]
+    },
+    {
+      "id": "standing-calf-raise",
+      "name": "Standing Calf Raise",
+      "family": "calf_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "ankle_plantar_flexion"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "calves",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "dumbbells",
+        "stable-support-surface"
+      ],
+      "trainingRoles": [
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range",
+        "tempo",
+        "support_reduction",
+        "stability"
+      ]
+    },
+    {
+      "id": "side-lying-hip-adduction",
+      "name": "Side-Lying Hip Adduction",
+      "family": "hip_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "hip_adduction"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "hip_adductors",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "reps",
+        "sets",
+        "range",
+        "tempo",
+        "lever"
+      ]
+    },
+    {
+      "id": "loop-band-lateral-walk",
+      "name": "Loop-Band Lateral Walk",
+      "family": "hip_accessory",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "hip_abduction"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "hip_abductors",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "quads",
+          "relationship": "incidental_contributor"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "loop-band",
+          "allOf": [
+            "loop_band"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "floor-space",
+          "allOf": [
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "stable-support-surface"
+      ],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "step_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "steps",
+        "sets",
+        "range",
+        "tempo",
+        "effort",
+        "support_reduction"
+      ]
+    },
+    {
+      "id": "side-lying-dumbbell-external-rotation",
+      "name": "Side-Lying Dumbbell External Rotation",
+      "family": "cuff_control",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "shoulder_external_rotation"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "rotator_cuff",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "rear_delts",
+          "relationship": "incidental_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "dumbbells",
+          "allOf": [
+            "dumbbells"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        },
+        {
+          "id": "floor-or-bench-support",
+          "allOf": [],
+          "oneOf": [
+            "floor_space",
+            "flat_bench",
+            "adjustable_bench"
+          ],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "load",
+        "reps",
+        "sets",
+        "range",
+        "tempo"
+      ]
+    },
+    {
+      "id": "supine-hamstring-walkout",
+      "name": "Supine Hamstring Walkout",
+      "family": "glute_hamstring",
+      "movementRoles": [
+        "accessory"
+      ],
+      "actionFunctions": [
+        "knee_flexion",
+        "hip_extension"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "hamstrings",
+          "relationship": "primary_target"
+        },
+        {
+          "muscle": "glutes",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "activation",
+        "hypertrophy_accessory"
+      ],
+      "sections": [
+        "accessory",
+        "activation"
+      ],
+      "prescriptionDoseModes": [
+        "step_sets"
+      ],
+      "progressionAxes": [
+        "steps",
+        "reps",
+        "sets",
+        "range",
+        "tempo",
+        "duration",
+        "lever"
+      ]
+    },
+    {
+      "id": "wall-ankle-dorsiflexion-rock",
+      "name": "Wall Ankle Dorsiflexion Rock",
+      "family": "mobility_preparation",
+      "movementRoles": [
+        "mobility"
+      ],
+      "actionFunctions": [
+        "ankle_dorsiflexion"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "calves",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "wall-and-floor-space",
+          "allOf": [
+            "wall",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [],
+      "trainingRoles": [
+        "preparation"
+      ],
+      "sections": [
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "range",
+        "reps",
+        "tempo",
+        "duration"
+      ]
+    },
+    {
+      "id": "bodyweight-hip-hinge-rehearsal",
+      "name": "Bodyweight Hip-Hinge Rehearsal",
+      "family": "hinge_pattern",
+      "movementRoles": [
+        "hinge"
+      ],
+      "actionFunctions": [
+        "hip_extension"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "glutes",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "hamstrings",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "wall-support",
+        "stable-support-surface"
+      ],
+      "trainingRoles": [
+        "preparation",
+        "activation"
+      ],
+      "sections": [
+        "activation",
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "repetition_sets"
+      ],
+      "progressionAxes": [
+        "range",
+        "reps",
+        "tempo",
+        "support_reduction",
+        "coordination"
+      ]
+    },
+    {
+      "id": "single-leg-balance-rehearsal",
+      "name": "Single-Leg Balance Rehearsal",
+      "family": "single_leg_pattern",
+      "movementRoles": [
+        "single_leg"
+      ],
+      "actionFunctions": [
+        "single_leg_stance_control"
+      ],
+      "muscleContributions": [
+        {
+          "muscle": "hip_abductors",
+          "relationship": "key_secondary_target"
+        },
+        {
+          "muscle": "calves",
+          "relationship": "incidental_contributor"
+        },
+        {
+          "muscle": "trunk",
+          "relationship": "stabilizer_or_contextual_contributor"
+        }
+      ],
+      "equipmentRequirements": [
+        {
+          "id": "bodyweight-floor",
+          "allOf": [
+            "bodyweight",
+            "floor_space"
+          ],
+          "oneOf": [],
+          "machineIds": []
+        }
+      ],
+      "optionalEquipment": [
+        "stable-support-surface"
+      ],
+      "trainingRoles": [
+        "preparation",
+        "activation"
+      ],
+      "sections": [
+        "activation",
+        "warmup"
+      ],
+      "prescriptionDoseModes": [
+        "timed_hold"
+      ],
+      "progressionAxes": [
+        "duration",
+        "reps",
+        "support_reduction",
+        "range",
+        "stability",
+        "coordination"
+      ]
+    }
+  ],
+  "changes": {
+    "additions": 0,
+    "modifications": 0,
+    "deletions": 0
+  }
+}

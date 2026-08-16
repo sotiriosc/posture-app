@@ -512,3 +512,13 @@ Consumer owns five non-public versioned contracts and one pure validated option 
 Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 <!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->
+
+## Pre-G1 - Exercise catalog coverage and home comfort curation
+
+`EXERCISE_HOME_COMFORT_PROFILE@1.0.0` and `HOME_EXERCISE_COMFORT_SELECTION_POLICY_V1@1.0.0` are design-only curation contracts. Comfort is multidimensional and ordered after Safety, equipment, purpose, pain/response, and productive familiarity; it is not a score or active ranking input.
+
+Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->

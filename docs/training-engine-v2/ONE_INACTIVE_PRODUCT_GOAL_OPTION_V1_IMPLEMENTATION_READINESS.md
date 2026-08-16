@@ -15,3 +15,13 @@ Rollback: remove the optional preview branch and the three app-local files; ordi
 Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 Readiness fingerprint: `c6293d578517c9fd6a61c8140067094dae7ba43e2a6e9b79cc8364a9b307a080`. Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`.
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->
+
+## Pre-G1 - Exercise catalog coverage and home comfort curation
+
+Chunk F remains completed preview-only and unchanged. Pre-G1 evaluates catalog coverage before owner delivery without exposing Get stronger, changing its app-local contracts, or adding any Product route, persistence, generation, shadow, or output behavior.
+
+Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->

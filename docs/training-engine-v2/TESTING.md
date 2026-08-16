@@ -430,3 +430,13 @@ The focused consumer suite covers contracts/registry rejection, explicit-only re
 Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 <!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->
+
+## Pre-G1 - Exercise catalog coverage and home comfort curation
+
+Pre-G1 evidence covers 300 controlled scenarios, a frozen 531-case holdout, 32/32 rejected semantic mutations, and 21/21 passed metamorphic relations. Source and activation guards prove zero runtime/Product changes.
+
+Combined curation fingerprint: `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`. Exact next dependency: `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`.
+
+<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->

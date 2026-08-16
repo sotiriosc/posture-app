@@ -230,6 +230,8 @@
     "report:product-goal-architecture": "node --import tsx dev/reportProductGoalArchitecture.ts",
     "test:product-goal-context-design": "vitest --run --config vitest.config.ts tests/unit/productGoalContextDesign.test.ts",
     "report:product-goal-context-design": "node --import tsx dev/reportProductGoalContextDesign.ts",
+    "test:exercise-catalog-home-comfort": "vitest --run --config vitest.config.ts tests/unit/exerciseCatalogHomeComfortCuration.test.ts",
+    "report:exercise-catalog-home-comfort": "node --import tsx dev/reportExerciseCatalogHomeComfort.ts",
     "test:purpose-first-prescription": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionContracts.test.ts tests/unit/purposeFirstPrescriptionEvidence.test.ts tests/unit/purposeFirstPrescriptionCompiler.test.ts tests/unit/purposeFirstPrescriptionCagt.test.ts tests/unit/cagtPurposeFirstPrescriptionRegistryV12.test.ts tests/unit/purposeFirstPrescriptionReports.test.ts tests/unit/purposeFirstPrescriptionActivation.test.ts",
     "test:purpose-first-prescription:contracts": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionContracts.test.ts tests/unit/purposeFirstPrescriptionEvidence.test.ts",
     "test:purpose-first-prescription:compiler": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCompiler.test.ts",
