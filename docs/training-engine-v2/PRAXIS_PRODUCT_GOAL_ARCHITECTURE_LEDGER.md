@@ -1,8 +1,8 @@
 # Praxis Product Goal & Prescription Architecture Ledger
 
-**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_B3_COMPLETE_FUTURE_WORK_REMAINS`  
-**Last verified audit commit:** `3708876ea48dab6f38d641cb67d05da95351245c`  
-**Last completed implementation commit:** `0b26b78f67c9f929d106a4c068b1bcdb26401505`  
+**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_CHUNK_C_COMPLETE_FUTURE_WORK_REMAINS`  
+**Last verified audit commit:** `92af814c27d8b21ce86a9866bb73239757b5b184`  
+**Last completed implementation commit:** `92af814c27d8b21ce86a9866bb73239757b5b184`  
 **PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
 **Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
 **V2 application state:** `NOT_ACTIVATED`
@@ -464,6 +464,42 @@ Audit fingerprint:
 - **Rollback boundary:** revert the B3 ledger closure, then remove explicit future-only V1.1/V1.2/V2 APIs, Registry V13 metadata, evidence, reports, and bounded links; V1.0/V1.1 current behavior and Product remain unchanged
 - **Next dependency:** `EQUIPMENT_EXPERIENCE_AND_CONTEXT_SPECIFIC_PRESCRIPTION_REALIZATION_V1_AUTHORIZATION`
 
+## Chunk C — Controlled Product Shadow goal and realization mapping
+
+- **Status:** completed and proven
+- **Implementation commit:** `92af814c27d8b21ce86a9866bb73239757b5b184`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Combined status:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_IMPLEMENTED_DEFAULT_OFF`
+- **Classification:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_READY_FOR_GOAL_SPECIFIC_SHADOW_EVIDENCE_AUTHORIZATION`
+- **Mapping profile:** `CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4`; explicit-selection-only, default-off, counterfactual-only, and separate from historical Product Shadow V1
+- **Contracts:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING@1.0.0`, `PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING@2.0.0`, `PRODUCT_GOAL_TO_PLANNING_BRIEF_SHADOW_POLICY_V1@1.0.0`, `PRODUCT_TRAINING_MODE_SHADOW_MAPPING@2.0.0`, experience/equipment/availability/preference/history mapping contracts at `1.0.0`, and `PRODUCT_GOAL_REALIZATION_MAPPING_BUNDLE@1.0.0`
+- **Pipeline profile:** `CONTROLLED_PRODUCT_SHADOW_PIPELINE_PROFILE_B1_B4@1.0.0`; thirteen explicit stages connect B1-B4 policy through Compiler V1.3, Gate 13 V1.2, Phase, Longitudinal, and Application Orchestration without hidden ports or default aliases
+- **Run and comparison:** `CONTROLLED_PRODUCT_SHADOW_RUN@1.1.0` and `CONTROLLED_PRODUCT_SHADOW_COMPARISON@1.1.0`; no Product delivery, performed state, mutation, application, or V2 outcome attribution
+- **Goal mapping:** Get stronger maps to strength; Build muscle maps to hypertrophy; Improve posture/movement maps to posture and movement quality; Reduce pain remains context-only and requires a primary outcome; General fitness requires an explicit purpose bundle; conditioning and athletic scope fail closed pending their rightful follow-up or policy owners
+- **Goal priority:** one explicit primary outcome and at most one distinct reviewed secondary outcome; duplicate, unsupported, blended, or inferred relationships are rejected
+- **Planning brief:** goal and context may select a reviewed purpose family or expose a requirement, but create zero exercises and zero numeric dose
+- **Training mode:** develop/build, maintain, and return/rebuild remain distinct; maintain and unsupported systemic modes require policy instead of inheriting developmental behavior
+- **Experience and history:** Product experience remains coarse context; legacy plans and completion logs are restricted evidence and never become exact load, tolerance, performance, or progression authority
+- **Preference and continuity:** preference, dislike, pain, successful exposure, and exact continuity remain separate; pain is not a permanent dislike and substitutions require reviewed identity/realization authority
+- **Equipment and load:** equipment presence, capability, and exact load realization are separate; full-gym labels prove no machine, mechanism, increment, or load; unresolved capability and load fail closed or require self-selected calibration
+- **Availability:** ordered three-, four-, and five-opportunity horizons are preserved without invented weekdays, dates, minutes, frequency, or calendar progression
+- **Exercise identity:** exact canonical identity and reviewed aliases are accepted; fuzzy matching, invented variants, and automatic catalog expansion remain prohibited
+- **Mapping readiness:** complete, complete-with-self-selected-calibration, Product-input-incomplete, policy-incomplete, mapping-incomplete, conflict, and unsupported states are explicit; downstream stages cannot rescue an incomplete mapping
+- **Persistence and replay:** append-only in-memory and PostgreSQL adapters persist exact mapping/profile/run/comparison versions; no schema migration or current Product persistence change; replay accepts exact supported versions only
+- **B4 challenge boundary:** advanced-bodybuilder fixture remains sanitized test-only evidence and creates no Product input, runtime mapping, identity, technique, load, duration, or completed-performance authority
+- **Historical Product Shadow V1:** source and behavior remain byte-frozen; combined fingerprint `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; protected Product/runtime boundary source fingerprint `90d18a89ae8de3e31a32f34d81cc7f0e740a561419d19c198746038b6459f362`
+- **Product and production invariance:** current routes, clients, Questionnaire UI/options, `generateProgram`, delivered Program, Application Orchestration defaults, and Product output are unchanged; new-profile current-route calls: 0; Product artifact outputs: 0; activation: not authorized
+- **Controlled evidence:** 420 controlled scenarios and a 120-case fixed-shell cohort cover current/future goal labels, primary/secondary relationships, mode, experience/history, preference, equipment/load, availability, identity, readiness, pipeline, comparison, and no-rescue behavior
+- **Locked holdout:** 650 scenarios, including 250 historical V1 golden, 400 new-profile mappings, 220 genuine B1-B4 pipeline attempts, 220 complete or calibration-complete cases, and 180 honest incomplete cases; fingerprint `77232b667a1811eb6ffa8319b016be6d5cf2ef150c5d9b9a64ae7645e4aba0cd`
+- **Mutations and metamorphic evidence:** 68/68 semantic mutations rejected and 28/28 invariance/material-response relations passed; downstream rescue count: 0
+- **Stress:** required 10,000-case mapping loops, 5,000 bundle builds, 3,000 pipeline attempts, 2,000-case calibration/history/comparison loops, and 1,000-case replay/route/attribution/B4/no-rescue loops passed with explicit evaluation time, zero hidden clock reads, zero production randomness, and zero failures
+- **Tests:** focused Chunk C passed 28/28; historical Product Shadow passed 30/30 across both packages; Product Goal Architecture passed 15/15; B4 passed 15/15; complete Training Engine V2 passed 1,099/1,099 across 211 files; root engine Vitest passed 1,044 with 9 environment-gated skips across 146 files; Training Engine V2 TypeScript, Product Shadow TypeScript, scoped ESLint, consumer and gyms production builds, both browser invariance specs, deterministic double regeneration, and diff checks passed
+- **PostgreSQL validation:** adapter integration is covered and remains CI-authoritative; six local tests skipped because `TEST_DATABASE_URL` was not configured
+- **Fingerprints:** mapping profile `f1ae07662cfd5d19129af6b215afc69db1b96fd74a81ad12c1ad114188a7c21e`; Registry V15 `b5bab0854112f8488f734d36a1dd694494b922b73170b46036f311deb1690e58`; mutation `897280e2148dc7590285eda79d424229f8f92852380fa87a7dddd4651b89e322`; metamorphic `598ecc1212235c9562ff96a70e30163d2300578db53b84f7f4354ac813432b05`; stress `adffa808584c95da076b51a178320882d1ca9f33ef9734c10c701819454fc5b2`; combined Chunk C `01f3a6a9b1eb6ef28d33876c5cb00d3b01948cad90cf7939ac1d072ffa071a9d`
+- **Explicit deferrals and limitations:** goal-specific shadow evidence, Product-owned goal/context/mode/experience/equipment/availability/preference inputs, Product UI, unsupported systemic conditioning/power/maintenance policies, owner delivery, and broader Product activation remain open
+- **Rollback boundary:** revert the ledger closure, then revert implementation commit `92af814c27d8b21ce86a9866bb73239757b5b184`; historical Product Shadow V1, current Product routes, and legacy output remain the fallback
+- **Next dependency:** `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_AUTHORIZATION`
+
 ## C. Owner architecture selection
 
 Approved direction:
@@ -492,7 +528,7 @@ This approval is architectural only. It does not authorize behavior changes.
 
 Exact next dependency:
 
-`CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`
+`GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_AUTHORIZATION`
 
 ## Chunk B4 — Equipment-, experience-, and context-specific realization
 
@@ -539,18 +575,6 @@ Exact next dependency:
 - **Explicit deferrals and limitations:** Chunk C Product Shadow mapping, Product-owned experience/familiarity/equipment/minutes/context/preference inputs, Product UI/activation, unsupported catalog identities, advanced intensity-technique policy, systemic conditioning, power, maintenance, complete external-load receiver behavior, body composition, nutrition, owner delivery, and broader rollout remain open
 - **Rollback boundary:** revert the B4 ledger closure, then remove explicit future-only V1.3/V1.2 APIs, realization-context contracts, Registry V14 metadata, tests, generated reports, and bounded integration links; historical kernels and Product remain unchanged
 - **Next dependency:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`
-
-## Chunk C — Extend Controlled Product Shadow mapping
-
-Default off.
-
-Add shadow-only mappings for the selected vocabulary.
-
-No user-visible output.
-
-No Product mutation.
-
-No V2 outcome attribution.
 
 ## Chunk D — Run goal-specific shadow evidence
 
@@ -644,7 +668,6 @@ These remain visible so they are not forgotten:
 
 The following remain incomplete until implemented, verified, and separately authorized:
 
-- Controlled Product Shadow goal and realization mapping (Chunk C);
 - Product goal mapping updates;
 - Product goal UI;
 - primary/secondary goal UI;
