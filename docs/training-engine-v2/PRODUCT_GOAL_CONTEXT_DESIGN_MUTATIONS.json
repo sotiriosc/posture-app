@@ -1,0 +1,205 @@
+[
+  {
+    "id": "multiple_product_surfaces",
+    "rejected": true,
+    "reasonCodes": [
+      "ONE_SURFACE_REQUIRED"
+    ]
+  },
+  {
+    "id": "goal_after_schedule",
+    "rejected": true,
+    "reasonCodes": [
+      "PRIMARY_GOAL_MUST_PRECEDE_SCHEDULE"
+    ]
+  },
+  {
+    "id": "reduce_pain_future_primary",
+    "rejected": true,
+    "reasonCodes": [
+      "REDUCE_PAIN_CANNOT_REMAIN_FUTURE_PRIMARY"
+    ]
+  },
+  {
+    "id": "pain_owned_by_outcome",
+    "rejected": true,
+    "reasonCodes": [
+      "PAIN_MUST_REMAIN_CONTEXT"
+    ]
+  },
+  {
+    "id": "pain_creates_diagnosis",
+    "rejected": true,
+    "reasonCodes": [
+      "PAIN_DIAGNOSIS_PROHIBITED"
+    ]
+  },
+  {
+    "id": "pain_creates_corrective_circuit",
+    "rejected": true,
+    "reasonCodes": [
+      "GENERIC_CORRECTIVE_CIRCUIT_PROHIBITED"
+    ]
+  },
+  {
+    "id": "build_mode_maps_strength",
+    "rejected": true,
+    "reasonCodes": [
+      "TRAINING_MODE_CANNOT_CREATE_STRENGTH_OUTCOME"
+    ]
+  },
+  {
+    "id": "general_fitness_maps_strength",
+    "rejected": true,
+    "reasonCodes": [
+      "GENERAL_FITNESS_SILENT_DEFAULT_PROHIBITED"
+    ]
+  },
+  {
+    "id": "athletic_performance_maps_power",
+    "rejected": true,
+    "reasonCodes": [
+      "ATHLETIC_PERFORMANCE_SILENT_DEFAULT_PROHIBITED"
+    ]
+  },
+  {
+    "id": "gym_means_every_capability",
+    "rejected": true,
+    "reasonCodes": [
+      "GYM_UNIVERSAL_CAPABILITY_PROHIBITED"
+    ]
+  },
+  {
+    "id": "dumbbells_imply_bench_max_increment",
+    "rejected": true,
+    "reasonCodes": [
+      "DUMBBELL_CAPABILITY_INFERENCE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "bands_imply_anchor_type_resistance",
+    "rejected": true,
+    "reasonCodes": [
+      "BAND_CAPABILITY_INFERENCE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "advanced_implies_exact_load",
+    "rejected": true,
+    "reasonCodes": [
+      "ADVANCED_EXACT_LOAD_INFERENCE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "secondary_overrides_primary",
+    "rejected": true,
+    "reasonCodes": [
+      "SECONDARY_CANNOT_OVERRIDE_PRIMARY"
+    ]
+  },
+  {
+    "id": "all_future_fields_visible",
+    "rejected": true,
+    "reasonCodes": [
+      "PROGRESSIVE_DISCLOSURE_REQUIRED"
+    ]
+  },
+  {
+    "id": "multi_page_wizard",
+    "rejected": true,
+    "reasonCodes": [
+      "MULTI_PAGE_WIZARD_PROHIBITED"
+    ]
+  },
+  {
+    "id": "ordinary_follow_up_modal",
+    "rejected": true,
+    "reasonCodes": [
+      "ORDINARY_FOLLOW_UP_MUST_BE_INLINE"
+    ]
+  },
+  {
+    "id": "get_stronger_current_route_visible",
+    "rejected": true,
+    "reasonCodes": [
+      "F_CURRENT_ROUTE_VISIBILITY_PROHIBITED"
+    ]
+  },
+  {
+    "id": "inactive_calls_generate_program",
+    "rejected": true,
+    "reasonCodes": [
+      "F_GENERATE_PROGRAM_CALL_PROHIBITED"
+    ]
+  },
+  {
+    "id": "preview_persists_questionnaire",
+    "rejected": true,
+    "reasonCodes": [
+      "F_PREVIEW_PERSISTENCE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "current_route_calls_new_shadow",
+    "rejected": true,
+    "reasonCodes": [
+      "F_CURRENT_ROUTE_SHADOW_CALL_PROHIBITED"
+    ]
+  },
+  {
+    "id": "current_signature_silently_changed",
+    "rejected": true,
+    "reasonCodes": [
+      "CURRENT_SIGNATURE_CHANGE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "screenshot_personal_data_copied",
+    "rejected": true,
+    "reasonCodes": [
+      "SCREENSHOT_PERSONAL_DATA_PROHIBITED"
+    ]
+  },
+  {
+    "id": "consumer_screenshot_proves_gyms",
+    "rejected": true,
+    "reasonCodes": [
+      "CONSUMER_SCREENSHOT_CANNOT_PROVE_GYMS_PARITY"
+    ]
+  },
+  {
+    "id": "screenshot_knees_added_to_code",
+    "rejected": true,
+    "reasonCodes": [
+      "SCREENSHOT_KNEES_CODE_CHANGE_PROHIBITED"
+    ]
+  },
+  {
+    "id": "owner_band_detail_invented",
+    "rejected": true,
+    "reasonCodes": [
+      "REPORTED_BAND_DETAIL_INVENTION_PROHIBITED"
+    ]
+  },
+  {
+    "id": "e_completed_before_evidence",
+    "rejected": true,
+    "reasonCodes": [
+      "E_EVIDENCE_REQUIRED_BEFORE_CLOSURE"
+    ]
+  },
+  {
+    "id": "f_marked_complete",
+    "rejected": true,
+    "reasonCodes": [
+      "F_MUST_REMAIN_OPEN"
+    ]
+  },
+  {
+    "id": "final_ledger_completed",
+    "rejected": true,
+    "reasonCodes": [
+      "FINAL_LEDGER_MUST_REMAIN_INCOMPLETE"
+    ]
+  }
+]

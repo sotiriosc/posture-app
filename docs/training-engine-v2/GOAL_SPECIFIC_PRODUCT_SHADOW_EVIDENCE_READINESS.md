@@ -363,3 +363,13 @@ This is the deterministic pre-closure evidence projection. Commit B alone record
 177. blocker before Chunk E: owner-supplied current Product screenshot and separate design authorization
 
 178. exact next dependency: SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION
+
+<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->
+
+## Chunk E - Screenshot-guided Product input design
+
+Chunk D evidence remains binding: primary goal/follow-up, goal-specific focus, pain/context separation, and exact equipment capability when legality requires it are the first Product-surface priorities. Chunk E changes none of the frozen D evidence or fingerprints.
+
+Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
+
+<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->

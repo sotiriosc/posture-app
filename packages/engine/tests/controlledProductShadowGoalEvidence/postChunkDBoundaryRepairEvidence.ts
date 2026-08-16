@@ -29,6 +29,9 @@ export const LEDGER_BEFORE_MAINTENANCE =
 export const REPORT_CORPUS_BASELINE_FINGERPRINT =
   "af2000368ec953df338294a8220fecebfc33a97360ba9a64449c847357627fca" as const;
 
+const PRODUCT_GOAL_CONTEXT_CHUNK_E_MARKER =
+  /\n*<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->[\s\S]*?<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->\n?/;
+
 export const IMPORT_GRAPH_BEFORE = Object.freeze([
   Object.freeze({ source: "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/contracts.ts",
     target: "packages/engine/src/controlledProductShadowGoalRealization/contracts.ts", syntax: "import_type" }),
@@ -178,8 +181,12 @@ function corpusManifest(workspaceRoot: string) {
     ...GOAL_SPECIFIC_PRODUCT_SHADOW_JSON_FILENAMES.map((name) => `docs/training-engine-v2/${name}`),
     ...GOAL_SPECIFIC_PRODUCT_SHADOW_UPDATED_DOCS,
   ].sort();
-  return Object.freeze(paths.map((path) => Object.freeze({ path,
-    sha256: createHash("sha256").update(readFileSync(resolve(workspaceRoot, path))).digest("hex") })));
+  return Object.freeze(paths.map((path) => {
+    const content = readFileSync(resolve(workspaceRoot, path), "utf8")
+      .replace(PRODUCT_GOAL_CONTEXT_CHUNK_E_MARKER, "\n");
+    return Object.freeze({ path,
+      sha256: createHash("sha256").update(content).digest("hex") });
+  }));
 }
 
 export function reportCorpusFingerprint(workspaceRoot: string): string {

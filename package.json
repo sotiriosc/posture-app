@@ -114,6 +114,8 @@
     "test:product-goal-architecture:mutations": "npm run test:product-goal-architecture:mutations --workspace=@praxis/training-engine-v2",
     "test:product-goal-architecture:activation": "npm run test:product-goal-architecture:activation --workspace=@praxis/training-engine-v2",
     "report:product-goal-architecture": "npm run report:product-goal-architecture --workspace=@praxis/training-engine-v2",
+    "test:product-goal-context-design": "npm run test:product-goal-context-design --workspace=@praxis/training-engine-v2",
+    "report:product-goal-context-design": "npm run report:product-goal-context-design --workspace=@praxis/training-engine-v2",
     "test:goal-specific-product-shadow-evidence": "npm run test:goal-specific-product-shadow-evidence --workspace=@praxis/engine",
     "report:goal-specific-product-shadow-evidence": "npm run report:goal-specific-product-shadow-evidence --workspace=@praxis/engine",
     "test:post-chunk-d-boundary-repair": "npm run test:post-chunk-d-boundary-repair --workspace=@praxis/engine",

@@ -1,0 +1,149 @@
+{
+  "states": [
+    "pristine",
+    "loaded_legacy_profile",
+    "editing",
+    "conditional_follow_up_open",
+    "optional_secondary_open",
+    "incomplete",
+    "unsupported_focus",
+    "equipment_detail_required",
+    "equipment_detail_unresolved",
+    "inactive_preview_selected",
+    "dirty_current_profile",
+    "confirmation_required",
+    "active_session_warning",
+    "submitting_legacy",
+    "future_submission_unavailable",
+    "migration_required",
+    "cancel_revert"
+  ],
+  "transitions": [
+    {
+      "from": "pristine",
+      "to": "editing",
+      "event": "edit_current_field"
+    },
+    {
+      "from": "loaded_legacy_profile",
+      "to": "editing",
+      "event": "edit_current_field"
+    },
+    {
+      "from": "loaded_legacy_profile",
+      "to": "migration_required",
+      "event": "legacy_reduce_pain_detected"
+    },
+    {
+      "from": "editing",
+      "to": "conditional_follow_up_open",
+      "event": "select_broad_goal"
+    },
+    {
+      "from": "editing",
+      "to": "optional_secondary_open",
+      "event": "open_secondary_disclosure"
+    },
+    {
+      "from": "editing",
+      "to": "dirty_current_profile",
+      "event": "change_signed_legacy_field"
+    },
+    {
+      "from": "conditional_follow_up_open",
+      "to": "unsupported_focus",
+      "event": "select_unsupported_focus"
+    },
+    {
+      "from": "conditional_follow_up_open",
+      "to": "editing",
+      "event": "select_supported_focus"
+    },
+    {
+      "from": "editing",
+      "to": "equipment_detail_required",
+      "event": "select_equipment_requiring_legality_fact"
+    },
+    {
+      "from": "equipment_detail_required",
+      "to": "equipment_detail_unresolved",
+      "event": "leave_required_detail_unknown"
+    },
+    {
+      "from": "equipment_detail_required",
+      "to": "editing",
+      "event": "resolve_required_detail"
+    },
+    {
+      "from": "editing",
+      "to": "inactive_preview_selected",
+      "event": "select_explicit_preview_get_stronger"
+    },
+    {
+      "from": "inactive_preview_selected",
+      "to": "future_submission_unavailable",
+      "event": "attempt_submit"
+    },
+    {
+      "from": "unsupported_focus",
+      "to": "future_submission_unavailable",
+      "event": "attempt_submit"
+    },
+    {
+      "from": "equipment_detail_unresolved",
+      "to": "incomplete",
+      "event": "attempt_submit"
+    },
+    {
+      "from": "dirty_current_profile",
+      "to": "confirmation_required",
+      "event": "submit_current_legacy_profile"
+    },
+    {
+      "from": "confirmation_required",
+      "to": "active_session_warning",
+      "event": "active_session_exists"
+    },
+    {
+      "from": "confirmation_required",
+      "to": "submitting_legacy",
+      "event": "confirm_without_active_session"
+    },
+    {
+      "from": "active_session_warning",
+      "to": "submitting_legacy",
+      "event": "confirm_current_legacy_change"
+    },
+    {
+      "from": "confirmation_required",
+      "to": "cancel_revert",
+      "event": "cancel"
+    },
+    {
+      "from": "active_session_warning",
+      "to": "cancel_revert",
+      "event": "cancel"
+    },
+    {
+      "from": "cancel_revert",
+      "to": "loaded_legacy_profile",
+      "event": "restore_exact_committed_state"
+    },
+    {
+      "from": "migration_required",
+      "to": "cancel_revert",
+      "event": "cancel_migration"
+    }
+  ],
+  "prohibitedTransitions": [
+    "inactive_preview_selected_to_submitting_legacy",
+    "unsupported_focus_to_submitting_legacy",
+    "equipment_detail_unresolved_to_submitting_legacy",
+    "selection_to_persistence_without_confirmation"
+  ],
+  "previewReachesLegacyGeneration": false,
+  "unsupportedReachesGeneration": false,
+  "silentStoredProfileChange": false,
+  "cancelRestoresExactCommittedState": true,
+  "currentLegacyFlowRepresentable": true
+}

@@ -1,0 +1,91 @@
+{
+  "reference": {
+    "contractId": "SCREENSHOT_GUIDED_PRODUCT_GOAL_CONTEXT_INPUT_DESIGN",
+    "contractVersion": "1.0.0"
+  },
+  "combinedStatus": "SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_COMPLETED_NO_UI_CHANGE",
+  "classification": "SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_READY_FOR_ONE_INACTIVE_PRODUCT_GOAL_OPTION_AUTHORIZATION",
+  "selectedSurface": {
+    "app": "consumer",
+    "route": "/questionnaire",
+    "component": "apps/consumer/src/components/QuestionnaireForm.tsx",
+    "pageTitle": "Build your Praxis movement profile"
+  },
+  "selectedOption": "A",
+  "firstInactiveOption": "get_stronger",
+  "runtimeChangeCount": 0,
+  "productOutputCount": 0,
+  "activationCount": 0,
+  "unresolvedDrift": [
+    "knees",
+    "reported_band_detail",
+    "owner_mobile_binary_inventory",
+    "gyms_training_mode_parity"
+  ],
+  "unsupportedPolicyGaps": [
+    "power",
+    "systemic_conditioning",
+    "sport_specific_preparation",
+    "maintenance_week_and_longitudinal",
+    "broader_return_rebuild_delivery"
+  ],
+  "nextDependency": "ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION",
+  "validation": {
+    "designErrors": [],
+    "mutationTotal": 29,
+    "mutationRejected": 29,
+    "metamorphicTotal": 21,
+    "metamorphicPassed": 21,
+    "evidenceFingerprint": "4f927b227fb7151c3471aa7e2decbce5c2e185e3d87beeade0b21198c8cac34a"
+  },
+  "fingerprints": {
+    "upstream": {
+      "historicalProductShadow": "fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c",
+      "chunkC": "01f3a6a9b1eb6ef28d33876c5cb00d3b01948cad90cf7939ac1d072ffa071a9d",
+      "chunkD": "dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464",
+      "postChunkDMaintenance": "39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb"
+    },
+    "ontologyAudit": "c7d433350634896213064f78a87ca28ef90e5faa1e5a39dd90dd17b996eba0b1",
+    "screenshotObservationCorpus": "a08df071d8021be642badf35de9ca923ecb7aa09f2bf9232a16a97e0fd212b10",
+    "sanitizedScreenshotEvidence": "96666fcf173ec2f6b51207d59ad3a4c33cb94389a74cbed05f0c0c00d9b37a04",
+    "currentRenderBaseline": "0d4cd4838ccdb14310fe2fab9413a238ac2d995b1d15dbb3141f57e13ae48326",
+    "driftAudit": "eebb5b389cbd48c13ca9426eb5f08427a5ab863a1bf43f45c68178a792f1bdfd",
+    "implementationOwnership": "3f78bbb5d7d582d2d3b7a5c09db1035e31fbe88e7c32d988eb2e6ea48d54b06b",
+    "dEvidenceConsequences": "4bca8dcaea0bd1a01e56b3ad38e48d4a1b30572704d23481382992243d96bd5a",
+    "visualInvariants": "d052a7b22d4ec057b5679024211373ec5ee0bd4941e82183ce992dcb4d1ac554",
+    "informationArchitecture": "693453722ccfe07674645fdb4029b07423dce22144e788aeeb37c4e9582a04b6",
+    "designOptions": "32063f32f98672529d48347d8e2d83ab9b0bfbf14b1e695f453436f0311bf941",
+    "selectedOptionA": "567c273ff415764697646af6f86daaedf18a41d384f390a2a09f138528e37579",
+    "goalVocabulary": "464b0b4cabd7fbcc6330afd8b9f1501888310891d112af2332fe4f2915bf2dee",
+    "goalOptionStates": "3f7050a34c3f7bf786da9c995f386733897d47e2a87663d6d9a2e8c9c5ac7a80",
+    "primaryGoal": "9ef611398bcca69ade8e203acc7688e7fdb00409d3a39d239c5a3c68e40138f6",
+    "followUp": "5ff510540febe2e7cdf70131fe8d33ec01d264c4db27dc474292f086c6225260",
+    "painContext": "192692c050a28c1f6f828a74835047e5c1a9d73eae9c597490511c8c7a7301e9",
+    "reducePainMigration": "d5c896a6f5432022a941232dfc2c83624c64586d3eac165513d42b36771623f8",
+    "trainingMode": "d89fefbe1e959a45afbc7383675e1c434580666df5ff9ac2d62975176bb2a260",
+    "secondaryGoal": "d1d0a73cf5828a3bbab2aa7bdc5103e65f726af860e42959f3223c60b0d1dcf8",
+    "days": "f0b5763d75a3902f2f0a5ab9a41c735d4c1b95663e8f65905db476468a38f22a",
+    "minutes": "288a7de10dea27aff823c72a1e6131e6eb488780044d449e0b25d23903256754",
+    "experience": "d36f357a2b0f8cd17a4e5a36d2a4583891113969e5c9127bfc67468d0097d754",
+    "equipment": "c8b60edc87029298b0ca569ae0f9931d4c64f2f02fbd8350831c1d19bdbcc69f",
+    "desktop": "aacaa45314be6d143e5c8b1a4c27ad305ed65c10914a9748b529888155318f61",
+    "mobile": "20ffffae01042945c71e43e311e765c73c7ccd00816395b302df6c20623a2ea7",
+    "accessibility": "883ad4dc3c83a0a149371f3f0cfffca3860b7ca61584d719b395e6af5aa9cc04",
+    "copyMatrix": "6aec3b7d1eb60ef41dc7b34e26aaeb4bb44a6377803afa7119e798626c87bba4",
+    "stateMachine": "21abbe07c97eb136486b9483055e3535461d6effb1e62e7d8f14de0b5c58ba72",
+    "signatureV2Design": "451be9202f88727171f08192b68af2e9744130d84b6ef44ea6f694bf6f61e8ce",
+    "productProfileV2Design": "eee3fe8f93a94cf2be8630ca7bcffaac2146a3a1d2d3ca6b70225b8edd5e4046",
+    "legacyCompatibility": "facb64a9ea1ae507c2353a7e42046f18b8d6a8f0fcfa47bcfc691f5e071b2fd0",
+    "consumerGymsParity": "d7794d62e0c93c62f378a8f6e44cb03bda06a0badff3d7a566fdf8a1855edfff",
+    "designRisks": "91dfb9320c1cc324441981ffa79461aff387e36190472ae3ccc8c590444773f5",
+    "firstSurfaceRecommendation": "0bd7fbfa347e37c938a40f444850c50179d9f74d00151683694633e195231448",
+    "fHandoff": "d33b05c84cbbbb47d07be893349844635df43aaca3428c1585ef8c1562b1a9ed",
+    "mutations": "f22e3ea91cfab1d684b3606802eb78de3444e5576b5321e34bb0142197666ecf",
+    "metamorphicResults": "77fb9e08af3081248cc218961d2d9bd79cbe78048f42a7a14ee8c8cc347263d2",
+    "activationGuards": "498b2cba16bb4a56782504bfffc1a60fa559443df531e65263f1add491d0bd26",
+    "ledgerBeforeClosure": "57831123a5589cfa6878a3f2f4ba792d65885fc0e80b47750d4d3997b21332aa",
+    "ledgerAfterClosure": "70c0bd612a43bbdbb5de4427dc97c2a1821890db2bbe4604c6c85943b835417f",
+    "readiness": "95eb7fd1bf00643fafb2f3ce1cfc1741b1d5287fe9ee2468b8dc0b111ccb7079",
+    "combinedChunkE": "5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f"
+  }
+}
