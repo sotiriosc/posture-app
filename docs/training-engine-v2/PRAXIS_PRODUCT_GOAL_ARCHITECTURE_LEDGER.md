@@ -492,23 +492,53 @@ This approval is architectural only. It does not authorize behavior changes.
 
 Exact next dependency:
 
-`EQUIPMENT_EXPERIENCE_AND_CONTEXT_SPECIFIC_PRESCRIPTION_REALIZATION_V1_AUTHORIZATION`
+`CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`
 
 ## Chunk B4 — Equipment-, experience-, and context-specific realization
 
-Prove:
-
-- full-gym strength;
-- machine strength;
-- dumbbell-limited strength;
-- bodyweight strength;
-- band strength;
-- beginner calibration;
-- advanced specificity;
-- pain-aware return;
-- unknown prior load;
-- time-constrained behavior;
-- support/range/side constraints.
+- **Status:** completed and proven
+- **Implementation commit:** `3ccb0151ab36328ef974cf926d7b2cb374ca3431`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Combined status:** `EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1_IMPLEMENTED_NOT_ACTIVATED`
+- **Classification:** `EQUIPMENT_EXPERIENCE_AND_CONTEXT_SPECIFIC_PRESCRIPTION_REALIZATION_V1_READY_FOR_CONTROLLED_PRODUCT_SHADOW_GOAL_MAPPING_AUTHORIZATION`
+- **Ontology:** `EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_ONTOLOGY_READY`; all 38 required questions are answered in the deterministic audit
+- **Profiles:** `ATHLETE_TRAINING_EXPERIENCE_PROFILE@1.0.0`, `EXERCISE_IDENTITY_FAMILIARITY_PROFILE@1.0.0`, `EXERCISE_REALIZATION_FAMILIARITY_PROFILE@1.0.0`, `ATHLETE_AUTHORED_PROGRAMMING_BRIEF@1.0.0`, `ATHLETE_SPECIALIZATION_PRIORITY_PROFILE@1.0.0`, and `HABITUAL_TRAINING_EXPOSURE_PROFILE@1.0.0`
+- **Realization policies:** `EQUIPMENT_LOAD_REALIZATION_PROFILE@1.0.0`, `PROGRESSION_STARTING_POINT_POLICY_V1_EVIDENCE_LED@1.0.0`, `EXPERIENCE_CONTEXT_PRESCRIPTION_REALIZATION_POLICY_V1@1.0.0`, `RETURN_OR_REBUILD_REALIZATION_POLICY_V1@1.0.0`, `PROGRESSION_AXIS_REALIZATION_OPTIONS@1.0.0`, `PRESCRIPTION_RAMP_UP_POLICY_V1_CONTEXT_SPECIFIC@1.0.0`, and `ADVANCED_INTENSITY_TECHNIQUE_REQUEST@1.0.0`
+- **Production kernels:** `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.3.0` and `PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_KERNEL@1.2.0`, explicit future-only calls with no default alias or automatic migration
+- **CAGT Registry:** `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@14.0.0`; historical gate order and exact authorities remain preserved; Gate 9 and Gate 13 record only explicit future-version authority; production imports CAGT: no
+- **Twenty-plus-year experience semantics:** verified lifetime and recent experience are retained as context and never converted into exact load, set count, RIR, volume tolerance, recovery, or technique authority
+- **Global versus exact familiarity:** global experience, exercise-identity familiarity, and exact-realization familiarity are separate; exact implement, support, range, side, load, mode, block, purpose, and lineage remain required for exact continuity
+- **Empty-engine-history behavior:** empty V2 history remains unknown and does not downgrade an authenticated or coach-reviewed experienced athlete to novice; unknown exact load returns self-selected calibration
+- **Freshness:** exact current, recent policy-dependent, historical stale, and unknown are typed; `REALIZATION_FAMILIARITY_FRESHNESS_POLICY_REQUIRED` remains explicit and no universal day threshold is introduced
+- **Athlete-authored programming brief:** strong preference and continuity evidence only; stable legal/tolerated/equipped anchors are preserved; it is not completed Performance, equipment proof, exact dose authority, Safety override, or catalog-expansion authority
+- **Specialization:** local priorities are preserved without creating identities, unlimited volume, Safety overrides, or infeasible simultaneous phases
+- **Habitual exposure:** material authority comes from completed source events in separate lanes; draft plans create zero completed events; incompatible modes and fractional set equivalents are not summed; proposed changes require reviewed comparison without universal percentages
+- **Equipment-load realization:** exact implement, minimum, maximum, increment or available set, mechanism, assistance, support, range, side, and explicit unknowns are represented; a full-gym label proves no machine or increment
+- **Equipment semantics:** dumbbell ceilings and increments are visible; Smith and free barbell remain distinct; machines require exact IDs/mechanisms; cable ratios are not inferred; unmeasured bands do not become kilograms or 1RM percentages; bodyweight uses assistance, external load, leverage, range, support, and stability truth; invented variants: 0
+- **Starting point:** exact current productive/tolerated load may be retained only when exact equipment capability agrees; reviewed current context may be applied; related or stale history remains non-exact; unknown load returns `SELF_SELECTED_LOAD_CALIBRATION_REQUIRED`; guessed loads: 0
+- **Load ceiling:** an insufficient ceiling returns Candidate/Composer recomposition required and never silently changes identity or rescues strength through higher repetitions
+- **Return/rebuild:** the bounded B4 mode may preserve identity, select an existing regression variant, calibrate effort, add bounded acclimation, hold progression, and require confirmation; universal load reductions: 0; universal set reductions: 0; deloads applied: 0
+- **Progression axes:** legal and currently realizable load, repetition, range, support, lever, tempo, duration, and set options may be exposed; no axis is selected, authorized, or numerically applied; set progression remains Week/Longitudinal-owned
+- **Calendar progression:** Week-2 repetitions, Week-3 load, Week-4 intensity, and first-exposure progression mutations are rejected; automatic progression count: 0
+- **Ramp-up:** 0-4 context-specific blocks remain within one source event, before developmental work, with zero developmental credit and no guessed exact load; the historical 0-2 behavior remains unchanged
+- **Time constraint:** purpose, productive anchors, required rest, and active dependencies are preserved before optional work, redundancy, and setup churn are removed; unresolved over-budget state remains visible
+- **Advanced challenge:** `ADVANCED_BODYBUILDER_20_PLUS_YEARS_REALIZATION_CHALLENGE@1.0.0` is sanitized, test-only preference evidence; it records more than 20 years, six resistance opportunities, specialization, stable anchors, daily ritual requests, external posing/walking, unknown equipment/loads/increments/minutes, and 146 observed draft work sets without claiming completed Performance or Product input
+- **Challenge findings:** the six-day framework and high volume are neither rejected nor copied without habitual completed exposure, duration, tolerance, and recovery; exact catalog identities: 18; approved same-identity realizations: 7; reviewed alias candidates: 2; identity gaps: 10; ambiguous: 1; fuzzy matches and catalog additions: 0
+- **Intensity-technique deferral:** drop sets, rest-pause, partials, isometrics, clusters, and related requests stay typed and return `ADVANCED_INTENSITY_TECHNIQUE_POLICY_REQUIRED`; production technique policies: 0; compiled or flattened techniques: 0
+- **Deload boundary:** the challenge's automatic post-Week-4 deload is rejected as `DELOAD_REVIEW_REQUIRES_COMPLETED_AGGREGATE_EVIDENCE`; a coach-authored future preference is not completed evidence or an engine default
+- **Controlled evidence:** 460 scenarios and a 120-case fixed-shell cohort cover experience, familiarity, habitual exposure, equipment, starting points, return, time, ramping, progression options, advanced techniques, challenge facts, catalog gaps, and no-rescue behavior
+- **Locked holdout:** 720 scenarios, including 500 genuine Compiler V1.3, 240 Gate 13 V1.2, 200 equipment, 200 experience/familiarity, 160 habitual-volume, 140 return/rebuild, 120 challenge, and 180 historical golden cases; all 45 exercise identities, seven dose modes, five sections, all roles, and all equipment kinds are covered; fingerprint `2144ec3668020c8af329d3972d0b4ede146b910a7bd24e7c22d18dfc797bd2ae`
+- **Mutations and metamorphic evidence:** 54/54 semantic mutations rejected; 38/38 invariance/material-response checks passed; accepted downstream rescues: 0
+- **Stress:** required 10,000-case experience, identity, realization, habitual, equipment, starting-point, and context loops; 8,000 Compiler V1.3; 5,000 Gate 13 V1.2; required 3,000-, 2,000-, and 1,000-case boundary loops all passed with explicit time, no hidden clock, no production randomness, and zero failures
+- **Tests:** focused B4 contracts/realization/reports/activation passed 15/15; complete Training Engine V2 suite passed 1,099/1,099 across 211 files; root Vitest passed 1,016/1,016 across 138 files; Training Engine V2 TypeScript, consumer production build, gyms production build, scoped ESLint, deterministic report regeneration, and staged diff checks passed; local PostgreSQL was not configured and remains an upstream CI job
+- **Product Shadow:** remains pinned to `PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.0.0`; Compiler V1.3, realization-context, equipment-load V2, starting-point, return/rebuild, ramp-up, and Gate 13 V1.2 imports/calls: 0; frozen fingerprint `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; rollout changed: no
+- **Product and production invariance:** Product goal/experience/equipment mappings changed: no; Product UI/options/questionnaire changed: no; `generateProgram` changed: no; delivered Program changed: no; persistence/database changed: no; Application Orchestration migration count: 0; Product output count: 0; V2 activation: not authorized
+- **Fingerprints:** Registry V14 `face4e1fbf00aac38a37b05b6d1d9121cce94750d4df03d6fa917dd10eaadf7a`; Compiler V1.3 `d68d3ec9223877a4a31c618a1f26397b05d91f3656d42d5b2f968e031ba7766b`; Gate 13 V1.2 `6bc6ae200fcce846481fab3e9a777224b0a331d3bab6db36a6ea97c9b0c7df30`; challenge `2cbb5c5034534dd04b568a10541add9cb1bb37b10298eccb1ffe11c129237c1d`; stress `33d3827b476dad3a1dbc7605eccd6d4078a9f230bd909401f29bc67b615e724d`; all 23 required upstream fingerprints are recorded unchanged in deterministic B4 evidence
+- **Ledger pre-closure fingerprint:** `6ca0c9197a6c7dd9d5925d3796ef7058676625d61559d213b1c431e4fdfd9fa1`
+- **Combined B4 implementation fingerprint:** `82b0251049fdf9ceafab06811536e3a1298c5541dad1a08f80b3b2af0ec1999b`; deterministic report-corpus fingerprint `dae04740fb87194d9bd0de8fddf9005e70bbef6e85b940b57ec10ecd94fe7577`
+- **Explicit deferrals and limitations:** Chunk C Product Shadow mapping, Product-owned experience/familiarity/equipment/minutes/context/preference inputs, Product UI/activation, unsupported catalog identities, advanced intensity-technique policy, systemic conditioning, power, maintenance, complete external-load receiver behavior, body composition, nutrition, owner delivery, and broader rollout remain open
+- **Rollback boundary:** revert the B4 ledger closure, then remove explicit future-only V1.3/V1.2 APIs, realization-context contracts, Registry V14 metadata, tests, generated reports, and bounded integration links; historical kernels and Product remain unchanged
+- **Next dependency:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`
 
 ## Chunk C — Extend Controlled Product Shadow mapping
 
@@ -597,7 +627,7 @@ These remain visible so they are not forgotten:
 - body-composition intent;
 - nutrition integration;
 - maintenance policy;
-- return/rebuild policy;
+- return/rebuild Week/Longitudinal and Product-input integration;
 - wearable/cardio evidence;
 - goal-specific success measures;
 - sport-specific preparation;
@@ -614,7 +644,7 @@ These remain visible so they are not forgotten:
 
 The following remain incomplete until implemented, verified, and separately authorized:
 
-- equipment-, experience-, and context-specific B4 realization;
+- Controlled Product Shadow goal and realization mapping (Chunk C);
 - Product goal mapping updates;
 - Product goal UI;
 - primary/secondary goal UI;
