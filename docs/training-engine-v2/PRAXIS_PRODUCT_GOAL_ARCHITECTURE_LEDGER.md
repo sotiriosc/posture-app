@@ -614,6 +614,24 @@ Exact next dependency:
 - **Rollback boundary:** revert this ledger closure, then revert implementation commit `b156988109b892a0db49bec30c7c09407d6641ed`; historical Product Shadow V1, current Product routes, and legacy delivered output remain unchanged
 - **Next dependency:** `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`
 
+## Post-Chunk D maintenance — pure/server evidence dependency repair
+
+- **Status:** completed and proven
+- **Implementation commit:** `aaba3d49f995a5698fc90ddbfb177ed08534d338`
+- **Root cause:** `PURE_TO_SERVER_TEST_DEPENDENCY_DIRECTION_VIOLATION`; the engine-owned `@/lib/*` aliases predated Chunk D, but Chunk D introduced five pure-package test/report imports into engine source or test tooling, causing the Training Engine V2 build to traverse aliases it did not own
+- **Files moved/refactored:** report assembly moved from `packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports.ts` to `packages/engine/tests/controlledProductShadowGoalEvidence/reportAssembly.ts`; the pure evidence contract replaced its engine-source stage-type import with an equivalent pure-owned stage contract; engine report CLI and report tests now consume engine-side assembly
+- **Dependency direction:** executable Training Engine V2-to-engine import count moved from 5 to 0; production pure-source server imports remain 0; package-local engine aliases added to Training Engine V2: 0
+- **Type coverage:** Training Engine V2 production and test/dev configs are both mandatory; the AST boundary validator rejects imports, re-exports, import types, dynamic imports, require calls, relative traversal, package subpaths, and engine-targeting aliases; tests/dev were not excluded
+- **Evidence equivalence:** all 63 frozen Chunk D reports and linked documents regenerated twice byte-for-byte; scenario count 600, fixed-shell count 160, causal pairs 260, holdout 850, genuine pipelines 1,124, Full Program snapshots 974, honest incomplete outcomes 336, Gate 14 comparisons 260, mutations 62/62, and metamorphic checks 28/28 are unchanged
+- **Fingerprint disposition:** Chunk D combined fingerprint remains `dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464`; historical Product Shadow remains `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; maintenance report-corpus manifest is `af2000368ec953df338294a8220fecebfc33a97360ba9a64449c847357627fca`; combined maintenance fingerprint is `39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb`
+- **Maintenance evidence:** 18/18 semantic boundary/CI/Product/ledger mutations rejected and 13/13 metamorphic relations passed; wrong-layer rescue, fingerprint absorption, optionalized CI, Product changes, and Chunk E implementation remain absent
+- **Local validation:** Training Engine V2 production and test/dev type-checks, scoped engine build matrix, complete Training Engine V2 1,111/1,111, focused repair 3/3, B1 15/15, B2 25/25, B3 15/15, B4 15/15, Chunk C 28/28, historical Product Shadow 30/30, root Vitest 1,045 passed with nine local PostgreSQL skips, consumer and gyms builds, browser invariance, scoped ESLint, deterministic reports, and diff checks passed
+- **PostgreSQL CI:** workflow run `31943541767`, job `95156075918` initialized PostgreSQL 16, passed the mandatory pure/server build, and executed Outcome Source 1/1, orchestration 2/2, and controlled Product Shadow 6/6; integration skips caused by build failure: 0; the companion comprehensive PR gate passed
+- **Product/runtime changes:** Product UI, options, Questionnaire, mappings, routes, trigger, rollout, deployment environment, `generateProgram`, delivered Program, persistence, production database, Product Shadow semantics/fingerprint, V2 output, mutation, application, and activation changes: 0
+- **Architecture state:** Chunk D remains completed and proven; Chunk E, F, G, and H remain open; the canonical incomplete-future-work state recorded below is preserved
+- **Rollback boundary:** revert this ledger maintenance commit, then revert implementation commit `aaba3d49f995a5698fc90ddbfb177ed08534d338`; the pre-maintenance Chunk D evidence and Product runtime remain unchanged
+- **Next dependency:** `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`
+
 ## Chunk E — Screenshot-guided Product design
 
 Owner supplies the current Product screen.
