@@ -554,7 +554,7 @@ This approval is architectural only. It does not authorize behavior changes.
 
 Exact next dependency:
 
-`SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`
+`OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`
 
 ## Chunk B4 — Equipment-, experience-, and context-specific realization
 
@@ -694,9 +694,57 @@ Exact next dependency:
 - **Rollback boundary:** revert this ledger-only closure, then revert implementation commit `9b8699f3f4a6af615841bdf09f5f00f38c2f5a71`; current Product routes, UI, persistence, generation, Product Shadow behavior, and delivered legacy output remain unchanged
 - **Next dependency:** `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`
 
+## Pre-G1 — Exercise catalog coverage and home-comfort curation
+
+- **Status:** completed and proven
+- **Owner authorization:** `EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1_READ_ONLY_NOT_PRODUCTION_CATALOG_EXPANSION`
+- **Curation commit:** `c48a092a65fad4e26fc23bc8e08ac600aaed1af9`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD as this ledger-only commit
+- **Classification:** `EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1_READY_FOR_OWNER_SELECTION_OF_PRODUCTION_EXPANSION_TRANCHE`
+- **Ontology classification:** `EXERCISE_CATALOG_COVERAGE_HOME_COMFORT_ONTOLOGY_READY`
+- **Contracts:** `EXERCISE_HOME_COMFORT_PROFILE@1.0.0` and `HOME_EXERCISE_COMFORT_SELECTION_POLICY@1.0.0`
+- **Owner principle:** home equipment does not prove beginner status. When exact familiarity is unknown, a legal home realization should prefer recognizable, low-complexity, low-setup, productive foundations; exact advanced-home familiarity, preference, performance, and response may justify more demanding realizations. Safety, equipment legality, required purpose, pain/restriction truth, and coverage remain higher precedence than comfort
+- **Comfort boundary:** comfort is not ease, low stimulus, or a permanent regression. Progress within a productive familiar identity should precede unnecessary novelty; novelty and variety quotas are both zero
+- **Frozen production catalog:** `packages/training-engine-v2/src/data/referenceExercises.ts`; 45 rows and 45 unique canonical IDs before and after; source SHA-256 `a7c69bae80c58b346d2e907387dd16ecd0f3f33f797b0aa239be5401df4d887d`; additions, modifications, and deletions: 0
+- **Current coverage:** the 250-cell environment/pattern matrix records home pools as 32 sufficient, 74 thin, 87 empty, and 7 impossible without equipment; gym pools are 15 sufficient, 18 thin, and 17 empty. Empty cells remain explicit limitations and do not authorize fabricated substitutions
+- **Identity versus realization:** twelve reviewed decisions record nine same-identity realization families and three unresolved boundaries. Push-up support/lever, one-arm-row support, goblet-squat support/box target, split-squat load/support/range, glute-bridge legal resistance, standing-calf-raise support/laterality/load, plank support/lever, side-plank support/lever, and balance-rehearsal support remain realization metadata rather than duplicate rows
+- **Candidate curation:** 30 non-deferred concepts, including 13 home-comfort concepts, nine historical P1 concepts, and eight common-strength concepts, were assigned explicit dispositions; 13 advanced/systemic/deferred categories remain outside this tranche. Candidate ranking, eligibility, receivers, Composer, Week, Prescription, and production selection changed by zero
+- **Package H — Home Comfort Core:** `dumbbell-floor-press`, `dumbbell-triceps-extension`, `bent-over-dumbbell-reverse-fly`, `side-lying-hip-abduction`, `bird-dog`, `band-biceps-curl`
+- **Package G — Commercial Gym Core:** `machine-shoulder-press`, `assisted-pull-up`, `machine-leg-extension`, `cable-hip-adduction`, `cable-hip-abduction`, `seated-calf-raise`
+- **Package M — Mixed Minimal Release:** `dumbbell-floor-press`, `side-lying-hip-abduction`, `bird-dog`, `machine-shoulder-press`, `machine-leg-extension`
+- **Owner package decision:** no package is recommended or selected by this curation. Fifteen owner questions remain open; Pre-G2 may begin only after an explicit owner tranche selection
+- **Unresolved identity decisions:** bodyweight squat versus bodyweight box squat; reverse lunge versus split squat; unilateral glute bridge boundary; band Romanian-deadlift identity boundary
+- **Unresolved equipment/safety decisions:** assisted-pull-up assistance capability; machine-leg-extension capability; foot-anchored band-row snapback; body-wrapped band-press contact/release; band Romanian-deadlift foot retention; suspension rated-anchor truth
+- **Unresolved catalog-policy decisions:** first package and exact tranche; barbell admission before G; Knowledge curation timing; acceptable anchorless band patterns; explicit limitations at initial release
+- **Home limitations:** no-bench dumbbell horizontal push has a curated floor-press candidate but no new production row; anchorless band horizontal pull remains unsupported; dumbbell-only and bodyweight vertical pull remain explicit equipment limitations. Dumbbell pullover is not counted as vertical pull and band pull-apart is not counted as a full horizontal pull
+- **Practice-options boundary:** Full / Lighter / Recovery is recorded only as a Pre-G3 reminder. Implementation count is 0; it changes no Week, Session, Longitudinal, Product, or activation behavior
+- **Evidence:** 25 Markdown and 19 deterministic JSON reports; 300 controlled scenarios; frozen 531-case holdout; 32/32 semantic mutations rejected; 21/21 metamorphic relations passed; 17/17 focused curation tests; current-catalog and Composer regressions 72/72; historical Product-goal 10/10, Product-goal architecture 15/15, Product-context design 11/11, and inactive-option 22/22 suites passed; Training Engine V2 production/test-dev TypeScript, scoped ESLint, JSON parsing, deterministic regeneration, and diff guards passed
+- **Fingerprints:** report corpus `525c2b0e89334c5d189b483698089c3c3ae743e47bb5c62d5853955394a6eb5f`; holdout `7d0bc84fbb99d556c49cf1f4ce5eca3d86c14b52f597f3b7d5a7e68a425e0306`; activation guards `b51b562534c93e07aa19d098d6a7973127b75fd1a36d6b3f8586c4f459b71d2f`; combined curation `ca8e07795d123706c3e5c50247bce38be1b15036a617d82d84db8305e6863d0b`
+- **Preserved upstream fingerprints:** canonical ledger before `9265f70a7c0707ff88314a6673e954c54326956a187a50aa834793541982b562`; Chunk F `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`; Chunk E `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`; historical Product Shadow `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; Chunk C `01f3a6a9b1eb6ef28d33876c5cb00d3b01948cad90cf7939ac1d072ffa071a9d`; Chunk D `dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464`; post-Chunk-D maintenance `39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb`
+- **Product/runtime boundary:** Product UI, current options, Get stronger visibility, Questionnaire data, persistence, `generateProgram`, delivered Program, Product Shadow, owner delivery, V2 output, Full/Lighter/Recovery implementation, and Product activation changes: 0. Pre-G2, Pre-G3, G, and H remain open
+- **Rollback boundary:** revert this ledger-only closure, then revert curation commit `c48a092a65fad4e26fc23bc8e08ac600aaed1af9`; no production row, Product data, migration, or runtime rollback is required
+- **Next dependency:** `OWNER_SELECTION_OF_EXERCISE_CATALOG_EXPANSION_TRANCHE_V1`
+
+## Pre-G2 — Owner-approved production exercise-catalog expansion
+
+- **Status:** open
+- **Authorization:** not granted
+- **Required owner decision:** select an exact candidate tranche, same-identity metadata scope, explicit limitations, equipment capabilities, and unresolved identity dispositions
+- **Required future work:** complete production-quality Knowledge/mechanics/stress/receiver/Prescription curation for every selected row, add rows only under separate authorization, calibrate Candidate/Composer behavior, and rerun all catalog, engine, Product Shadow, Product, browser, PostgreSQL, and PR gates
+- **Current selection:** none; production catalog remains exactly 45 rows and 45 unique IDs
+- **Delivery consequence:** G cannot begin until Pre-G2 is implemented, proven, and closed by a separate ledger commit
+
+## Pre-G3 — Full / Lighter / Recovery V2 day-of practice-options bridge
+
+- **Status:** open
+- **Authorization:** not granted
+- **Current implementation:** reminder only; implementation count 0
+- **Required future work:** separately own day-of burden reduction, purpose preservation, productive-anchor retention, optional-work removal, Recovery responsibility restrictions, no automatic Week/Longitudinal failure inference, Product inputs, persistence, observability, and rollback
+- **Delivery consequence:** G cannot begin until Pre-G3 is implemented, proven, and closed by a separate ledger commit
+
 ## Chunk G — Controlled owner-account delivery
 
-Separate authorization.
+**Status:** open. Separate authorization.
 
 - owner/internal account only;
 - explicit confirmation;
@@ -707,7 +755,7 @@ Separate authorization.
 
 ## Chunk H — Broader Product activation
 
-Separate authorization only after:
+**Status:** open. Separate authorization only after:
 
 - shadow evidence;
 - Product-owned missing inputs;
@@ -756,6 +804,8 @@ The following remain incomplete until implemented, verified, and separately auth
 - power policy;
 - conditioning policy;
 - systemic-conditioning receiver and modality policy;
+- owner-approved production exercise-catalog expansion (Pre-G2);
+- Full / Lighter / Recovery V2 day-of practice-options bridge (Pre-G3);
 - Product Shadow evidence for the new mappings;
 - owner-account V2 delivery;
 - general Product activation.
