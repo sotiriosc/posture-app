@@ -318,3 +318,16 @@ No V2 artifact is returned, rendered, delivered, marked performed, or applied. S
 - Sequence: owner-gated chunks A-H; every implementation and activation chunk remains separately authorized.
 - Remaining dependency: `OWNER_SELECTION_OF_PRODUCT_GOAL_VOCABULARY_AND_GOAL_SPECIFIC_PRESCRIPTION_POLICY`.
 <!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:END -->
+
+<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->
+## Equipment, Experience, and Context Realization V1
+
+Chunk B4 adds explicit future-only experience, familiarity, habitual exposure, equipment-load,
+starting-point, return/rebuild, ramp-up, Compiler V1.3, and Gate 13 V1.2 contracts. No progression
+is applied. Product Shadow remains pinned to Compiler V1.0; Product and activation are unchanged.
+
+Evidence: [B4 implementation readiness](./EQUIPMENT_EXPERIENCE_CONTEXT_IMPLEMENTATION_READINESS.md)
+and [canonical architecture ledger](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md).
+
+Next dependency: `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`.
+<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->

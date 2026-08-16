@@ -229,6 +229,8 @@
     "test:purpose-first-prescription:compiler": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCompiler.test.ts",
     "test:purpose-first-prescription:cagt": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCagt.test.ts tests/unit/cagtPurposeFirstPrescriptionRegistryV12.test.ts",
     "test:purpose-first-prescription:stress": "vitest --run --config vitest.config.ts tests/unit/purposeFirstPrescriptionCagt.test.ts -t stress",
-    "report:purpose-first-prescription": "node --import tsx dev/reportPurposeFirstPrescriptionResolver.ts"
+    "report:purpose-first-prescription": "node --import tsx dev/reportPurposeFirstPrescriptionResolver.ts",
+    "report:equipment-experience-context": "node --import tsx dev/reportEquipmentExperienceContext.ts",
+    "test:equipment-experience-context": "vitest --run --config vitest.config.ts tests/unit/equipmentExperienceContextRealization.test.ts tests/unit/equipmentExperienceContextReports.test.ts tests/unit/equipmentExperienceContextActivation.test.ts"
   }
 }

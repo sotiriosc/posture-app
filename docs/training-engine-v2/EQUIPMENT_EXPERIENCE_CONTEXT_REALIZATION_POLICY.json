@@ -1,0 +1,21 @@
+{
+  "contract": {
+    "contractId": "EXPERIENCE_CONTEXT_PRESCRIPTION_REALIZATION_POLICY_V1",
+    "contractVersion": "1.0.0"
+  },
+  "variants": [
+    "exact_productive_continuity",
+    "familiar_stable",
+    "first_exposure_calibration",
+    "identity_familiar_realization_new",
+    "return_after_short_absence",
+    "return_after_extended_absence",
+    "pain_aware_regression",
+    "equipment_changed",
+    "support_or_range_changed",
+    "side_specific_realization",
+    "load_ceiling_recomposition",
+    "time_constrained_preserve_purpose",
+    "unknown_review_required"
+  ]
+}

@@ -1,0 +1,7225 @@
+{
+  "count": 460,
+  "scenarios": [
+    {
+      "scenarioId": "b4-holdout-001",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-002",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-003",
+      "exerciseId": "dead-bug",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-004",
+      "exerciseId": "push-up",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-005",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-006",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-007",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-008",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-009",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-010",
+      "exerciseId": "machine-row",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-011",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-012",
+      "exerciseId": "band-row",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-013",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-014",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-015",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-016",
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-017",
+      "exerciseId": "leg-press",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-018",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-019",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-020",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-021",
+      "exerciseId": "split-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-022",
+      "exerciseId": "step-up",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-023",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-024",
+      "exerciseId": "glute-bridge",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-025",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-026",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-027",
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-028",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-029",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-030",
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-031",
+      "exerciseId": "forearm-plank",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-032",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-033",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-034",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-035",
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-036",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-037",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-038",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-039",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-040",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-041",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-042",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-043",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-044",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-045",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-046",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-047",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-048",
+      "exerciseId": "dead-bug",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-049",
+      "exerciseId": "push-up",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-050",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-051",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-052",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-053",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-054",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-055",
+      "exerciseId": "machine-row",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-056",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-057",
+      "exerciseId": "band-row",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-058",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-059",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-060",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-061",
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-062",
+      "exerciseId": "leg-press",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-063",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-064",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-065",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-066",
+      "exerciseId": "split-squat",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-067",
+      "exerciseId": "step-up",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-068",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-069",
+      "exerciseId": "glute-bridge",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-070",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-071",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-072",
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-073",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-074",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-075",
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-076",
+      "exerciseId": "forearm-plank",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-077",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-078",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-079",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-080",
+      "exerciseId": "farmer-carry",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-081",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-082",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-083",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-084",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-085",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-086",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-087",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-088",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-089",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-090",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-091",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-092",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-093",
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-094",
+      "exerciseId": "push-up",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-095",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-096",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-097",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-098",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-099",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-100",
+      "exerciseId": "machine-row",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-101",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-102",
+      "exerciseId": "band-row",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-103",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-104",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-105",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-106",
+      "exerciseId": "goblet-squat",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-107",
+      "exerciseId": "leg-press",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-108",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-109",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-110",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-111",
+      "exerciseId": "split-squat",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-112",
+      "exerciseId": "step-up",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-113",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-114",
+      "exerciseId": "glute-bridge",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-115",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-116",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-117",
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-118",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-119",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-120",
+      "exerciseId": "pallof-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "advanced_challenge",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-121",
+      "exerciseId": "forearm-plank",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-122",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-123",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-124",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-125",
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-126",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-127",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-128",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-129",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-130",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-131",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-132",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-133",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-134",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-135",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-136",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-137",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-138",
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-139",
+      "exerciseId": "push-up",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-140",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "return_rebuild",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-141",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-142",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-143",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-144",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-145",
+      "exerciseId": "machine-row",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-146",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-147",
+      "exerciseId": "band-row",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-148",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-149",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-150",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-151",
+      "exerciseId": "goblet-squat",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-152",
+      "exerciseId": "leg-press",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-153",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-154",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-155",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-156",
+      "exerciseId": "split-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-157",
+      "exerciseId": "step-up",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-158",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-159",
+      "exerciseId": "glute-bridge",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-160",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "habitual_volume",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-161",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-162",
+      "exerciseId": "band-face-pull",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-163",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-164",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-165",
+      "exerciseId": "pallof-press",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-166",
+      "exerciseId": "forearm-plank",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-167",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-168",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-169",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-170",
+      "exerciseId": "farmer-carry",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-171",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-172",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-173",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-174",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-175",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-176",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-177",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-178",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-179",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-180",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity",
+        "historical_golden"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-181",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-182",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-183",
+      "exerciseId": "dead-bug",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-184",
+      "exerciseId": "push-up",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-185",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-186",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-187",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-188",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-189",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-190",
+      "exerciseId": "machine-row",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-191",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-192",
+      "exerciseId": "band-row",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-193",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-194",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-195",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-196",
+      "exerciseId": "goblet-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-197",
+      "exerciseId": "leg-press",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-198",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-199",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-200",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2",
+        "equipment_realization",
+        "experience_familiarity"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-201",
+      "exerciseId": "split-squat",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-202",
+      "exerciseId": "step-up",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-203",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-204",
+      "exerciseId": "glute-bridge",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-205",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-206",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-207",
+      "exerciseId": "band-face-pull",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-208",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-209",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-210",
+      "exerciseId": "pallof-press",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-211",
+      "exerciseId": "forearm-plank",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-212",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-213",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-214",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-215",
+      "exerciseId": "farmer-carry",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-216",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-217",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-218",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-219",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-220",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-221",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-222",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-223",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-224",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-225",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-226",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-227",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-228",
+      "exerciseId": "dead-bug",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-229",
+      "exerciseId": "push-up",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-230",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-231",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-232",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-233",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-234",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-235",
+      "exerciseId": "machine-row",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-236",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-237",
+      "exerciseId": "band-row",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-238",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-239",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-240",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3",
+        "gate13_v1_2"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-241",
+      "exerciseId": "goblet-squat",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-242",
+      "exerciseId": "leg-press",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-243",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-244",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-245",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-246",
+      "exerciseId": "split-squat",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-247",
+      "exerciseId": "step-up",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-248",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-249",
+      "exerciseId": "glute-bridge",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-250",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-251",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-252",
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-253",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-254",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-255",
+      "exerciseId": "pallof-press",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-256",
+      "exerciseId": "forearm-plank",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-257",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-258",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-259",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-260",
+      "exerciseId": "farmer-carry",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-261",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-262",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-263",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-264",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-265",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-266",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-267",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-268",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-269",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-270",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-271",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-272",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-273",
+      "exerciseId": "dead-bug",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-274",
+      "exerciseId": "push-up",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-275",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-276",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-277",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-278",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-279",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-280",
+      "exerciseId": "machine-row",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-281",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-282",
+      "exerciseId": "band-row",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-283",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-284",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-285",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-286",
+      "exerciseId": "goblet-squat",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-287",
+      "exerciseId": "leg-press",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-288",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-289",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-290",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-291",
+      "exerciseId": "split-squat",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-292",
+      "exerciseId": "step-up",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-293",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-294",
+      "exerciseId": "glute-bridge",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-295",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-296",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-297",
+      "exerciseId": "band-face-pull",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-298",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-299",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-300",
+      "exerciseId": "pallof-press",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-301",
+      "exerciseId": "forearm-plank",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-302",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-303",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-304",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-305",
+      "exerciseId": "farmer-carry",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-306",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-307",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-308",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-309",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-310",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-311",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-312",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-313",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-314",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-315",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-316",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-317",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-318",
+      "exerciseId": "dead-bug",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-319",
+      "exerciseId": "push-up",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-320",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-321",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-322",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-323",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-324",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-325",
+      "exerciseId": "machine-row",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-326",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-327",
+      "exerciseId": "band-row",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-328",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-329",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-330",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-331",
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-332",
+      "exerciseId": "leg-press",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-333",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-334",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-335",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-336",
+      "exerciseId": "split-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-337",
+      "exerciseId": "step-up",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-338",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-339",
+      "exerciseId": "glute-bridge",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-340",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-341",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-342",
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-343",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-344",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-345",
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-346",
+      "exerciseId": "forearm-plank",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-347",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-348",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-349",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-350",
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-351",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-352",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-353",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-354",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-355",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-356",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-357",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-358",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-359",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-360",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-361",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-362",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-363",
+      "exerciseId": "dead-bug",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-364",
+      "exerciseId": "push-up",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-365",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-366",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-367",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-368",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-369",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-370",
+      "exerciseId": "machine-row",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-371",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-372",
+      "exerciseId": "band-row",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-373",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-374",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-375",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-376",
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-377",
+      "exerciseId": "leg-press",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-378",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-379",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-380",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-381",
+      "exerciseId": "split-squat",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-382",
+      "exerciseId": "step-up",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-383",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-384",
+      "exerciseId": "glute-bridge",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-385",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-386",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-387",
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-388",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-389",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-390",
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-391",
+      "exerciseId": "forearm-plank",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-392",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-393",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-394",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-395",
+      "exerciseId": "farmer-carry",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-396",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-397",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-398",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-399",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-400",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-401",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-402",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-403",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-404",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-405",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-406",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-407",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-408",
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-409",
+      "exerciseId": "push-up",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-410",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-411",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-412",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-413",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-414",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-415",
+      "exerciseId": "machine-row",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-416",
+      "exerciseId": "seated-cable-row",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-417",
+      "exerciseId": "band-row",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-418",
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-419",
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-420",
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-421",
+      "exerciseId": "goblet-squat",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-422",
+      "exerciseId": "leg-press",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-423",
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-424",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-425",
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-426",
+      "exerciseId": "split-squat",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-427",
+      "exerciseId": "step-up",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-428",
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-429",
+      "exerciseId": "glute-bridge",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-430",
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-431",
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-432",
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-433",
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_march",
+      "section": "main",
+      "role": "capacity",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-434",
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "role": "recovery",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-435",
+      "exerciseId": "pallof-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "role": "preparation",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-436",
+      "exerciseId": "forearm-plank",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "role": "activation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-437",
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "role": "primary_strength",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-438",
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "role": "secondary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-439",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "role": "hypertrophy_accessory",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-440",
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "role": "capacity",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-441",
+      "exerciseId": "suitcase-carry",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "role": "recovery",
+      "experience": "novice",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-442",
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "role": "preparation",
+      "experience": "beginner",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-443",
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "role": "activation",
+      "experience": "intermediate",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-444",
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "role": "primary_strength",
+      "experience": "advanced",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-445",
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "role": "secondary_strength",
+      "experience": "novice",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-446",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "role": "hypertrophy_accessory",
+      "experience": "beginner",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-447",
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_march",
+      "section": "activation",
+      "role": "capacity",
+      "experience": "intermediate",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-448",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "step_sets",
+      "section": "main",
+      "role": "recovery",
+      "experience": "advanced",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-449",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "role": "preparation",
+      "experience": "novice",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-450",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "role": "activation",
+      "experience": "beginner",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-451",
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "role": "primary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "dumbbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-452",
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "role": "secondary_strength",
+      "experience": "advanced",
+      "equipmentKind": "barbell",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-453",
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "role": "hypertrophy_accessory",
+      "experience": "novice",
+      "equipmentKind": "smith_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-454",
+      "exerciseId": "push-up",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "role": "capacity",
+      "experience": "beginner",
+      "equipmentKind": "selectorized_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-455",
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "role": "recovery",
+      "experience": "intermediate",
+      "equipmentKind": "plate_loaded_machine",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-456",
+      "exerciseId": "machine-chest-press",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "role": "preparation",
+      "experience": "advanced",
+      "equipmentKind": "cable",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": true
+    },
+    {
+      "scenarioId": "b4-holdout-457",
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "role": "activation",
+      "experience": "novice",
+      "equipmentKind": "band",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-458",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "role": "primary_strength",
+      "experience": "beginner",
+      "equipmentKind": "bodyweight",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-459",
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "role": "secondary_strength",
+      "experience": "intermediate",
+      "equipmentKind": "loaded_gait",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    },
+    {
+      "scenarioId": "b4-holdout-460",
+      "exerciseId": "machine-row",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "role": "hypertrophy_accessory",
+      "experience": "advanced",
+      "equipmentKind": "other",
+      "lanes": [
+        "compiler_v1_3"
+      ],
+      "mutation": false
+    }
+  ]
+}

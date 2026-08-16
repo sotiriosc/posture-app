@@ -13,6 +13,7 @@ export * from "./policies";
 export * from "./compiler";
 export * from "./compilerV1_1";
 export * from "./compilerV1_2";
+export * from "./compilerV1_3";
 export * from "./policiesV2";
 export * from "./purposeResolution";
 export * from "./purposeResolutionV1_1";

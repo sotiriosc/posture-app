@@ -1,0 +1,35 @@
+{
+  "identityContract": {
+    "contractId": "EXERCISE_IDENTITY_FAMILIARITY_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "identityStates": [
+    "never_exposed",
+    "newly_introduced",
+    "limited_exposure",
+    "familiar",
+    "highly_practiced",
+    "historically_productive",
+    "currently_productive",
+    "historically_adverse",
+    "stale_history",
+    "unknown"
+  ],
+  "realizationContract": {
+    "contractId": "EXERCISE_REALIZATION_FAMILIARITY_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "realizationStates": [
+    "exact_current_productive",
+    "exact_current_tolerated",
+    "exact_current_limited",
+    "exact_current_adverse",
+    "exact_historical_stale",
+    "related_productive",
+    "related_tolerated",
+    "related_limited",
+    "identity_only",
+    "unknown"
+  ],
+  "freshnessPolicyRequired": "REALIZATION_FAMILIARITY_FRESHNESS_POLICY_REQUIRED"
+}

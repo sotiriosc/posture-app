@@ -16,7 +16,9 @@ const workspaceRoot = process.cwd().endsWith("packages/training-engine-v2") ?
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
 
 function withoutSupportedPurposeAddendum(content: string): string {
-  return content.replace(/\n\n<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n?$/, "");
+  return content
+    .replace(/\n*<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n*/g, "\n")
+    .replace(/\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n*/g, "\n");
 }
 
 describe("Purpose-first Prescription deterministic reports", () => {

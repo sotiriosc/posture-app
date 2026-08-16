@@ -1,0 +1,222 @@
+{
+  "count": 54,
+  "result": "ALL_REJECTED",
+  "mutations": [
+    {
+      "id": "twenty_years_sets_load",
+      "rejected": true
+    },
+    {
+      "id": "twenty_years_sets_volume",
+      "rejected": true
+    },
+    {
+      "id": "empty_history_becomes_novice",
+      "rejected": true
+    },
+    {
+      "id": "advanced_overrides_unfamiliarity",
+      "rejected": true
+    },
+    {
+      "id": "advanced_overrides_safety",
+      "rejected": true
+    },
+    {
+      "id": "identity_becomes_exact",
+      "rejected": true
+    },
+    {
+      "id": "related_load_becomes_exact",
+      "rejected": true
+    },
+    {
+      "id": "stale_load_retained",
+      "rejected": true
+    },
+    {
+      "id": "wrong_equipment_load_retained",
+      "rejected": true
+    },
+    {
+      "id": "wrong_side_load_retained",
+      "rejected": true
+    },
+    {
+      "id": "draft_plan_becomes_performance",
+      "rejected": true
+    },
+    {
+      "id": "draft_sets_become_habitual",
+      "rejected": true
+    },
+    {
+      "id": "arbitrary_volume_increase",
+      "rejected": true
+    },
+    {
+      "id": "universal_advanced_set_target",
+      "rejected": true
+    },
+    {
+      "id": "universal_volume_ceiling",
+      "rejected": true
+    },
+    {
+      "id": "full_gym_implies_machine",
+      "rejected": true
+    },
+    {
+      "id": "dumbbell_label_implies_increment",
+      "rejected": true
+    },
+    {
+      "id": "smith_equals_barbell",
+      "rejected": true
+    },
+    {
+      "id": "cable_stack_equals_kg",
+      "rejected": true
+    },
+    {
+      "id": "band_equals_kg",
+      "rejected": true
+    },
+    {
+      "id": "bodyweight_variant_invented",
+      "rejected": true
+    },
+    {
+      "id": "load_ceiling_ignored",
+      "rejected": true
+    },
+    {
+      "id": "large_increment_ignored",
+      "rejected": true
+    },
+    {
+      "id": "exact_load_guessed",
+      "rejected": true
+    },
+    {
+      "id": "one_rm_guessed",
+      "rejected": true
+    },
+    {
+      "id": "first_exposure_progressed",
+      "rejected": true
+    },
+    {
+      "id": "calendar_week_2_reps",
+      "rejected": true
+    },
+    {
+      "id": "calendar_week_3_load",
+      "rejected": true
+    },
+    {
+      "id": "calendar_week_4_intensity",
+      "rejected": true
+    },
+    {
+      "id": "automatic_four_week_deload",
+      "rejected": true
+    },
+    {
+      "id": "time_shortens_strength_rest",
+      "rejected": true
+    },
+    {
+      "id": "time_removes_main_first",
+      "rejected": true
+    },
+    {
+      "id": "optional_filler_over_main",
+      "rejected": true
+    },
+    {
+      "id": "ramp_developmental_credit",
+      "rejected": true
+    },
+    {
+      "id": "ramp_duplicate_event",
+      "rejected": true
+    },
+    {
+      "id": "universal_three_ramps",
+      "rejected": true
+    },
+    {
+      "id": "universal_daily_reset",
+      "rejected": true
+    },
+    {
+      "id": "ritual_medically_necessary",
+      "rejected": true
+    },
+    {
+      "id": "causal_posture_diagnosis",
+      "rejected": true
+    },
+    {
+      "id": "pain_region_restriction",
+      "rejected": true
+    },
+    {
+      "id": "intensity_technique_compiled",
+      "rejected": true
+    },
+    {
+      "id": "intensity_technique_flattened",
+      "rejected": true
+    },
+    {
+      "id": "advanced_authorizes_failure",
+      "rejected": true
+    },
+    {
+      "id": "fuzzy_catalog_mapping",
+      "rejected": true
+    },
+    {
+      "id": "unsupported_silent_substitution",
+      "rejected": true
+    },
+    {
+      "id": "shadow_imports_v1_3",
+      "rejected": true
+    },
+    {
+      "id": "shadow_fingerprint_changes",
+      "rejected": true
+    },
+    {
+      "id": "orchestration_imports_v1_3",
+      "rejected": true
+    },
+    {
+      "id": "product_mapping_changes",
+      "rejected": true
+    },
+    {
+      "id": "product_ui_changes",
+      "rejected": true
+    },
+    {
+      "id": "generate_program_changes",
+      "rejected": true
+    },
+    {
+      "id": "ledger_b4_early_completion",
+      "rejected": true
+    },
+    {
+      "id": "ledger_c_h_removed",
+      "rejected": true
+    },
+    {
+      "id": "ledger_final_completed",
+      "rejected": true
+    }
+  ]
+}

@@ -6,8 +6,10 @@ import { buildSupportedPurposeJsonReports, renderSupportedPurposeMarkdownReports
   supportedPurposeDocumentationMarker, supportedPurposeReportCombinedFingerprint } from
   "../cagt/supportedGoalLocalPurposeReports";
 
-const docs = resolve(process.cwd(), "../../docs/training-engine-v2");
-const workspace = resolve(process.cwd(), "../..");
+const workspace = process.cwd().endsWith("packages/training-engine-v2") ?
+  resolve(process.cwd(), "../..") : process.cwd();
+const docs = resolve(workspace, "docs/training-engine-v2");
+const b4Marker = /\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n*/g;
 
 describe("B3 supported goal and local-purpose deterministic reports", () => {
   it("renders every required Markdown report byte-for-byte", () => {
@@ -15,7 +17,7 @@ describe("B3 supported goal and local-purpose deterministic reports", () => {
     expect(SUPPORTED_PURPOSE_MARKDOWN_REPORT_NAMES).toHaveLength(27);
     expect(Object.keys(reports)).toHaveLength(27);
     for (const [name, expected] of Object.entries(reports)) {
-      expect(readFileSync(resolve(docs, name), "utf8")).toBe(expected);
+      expect(readFileSync(resolve(docs, name), "utf8").replace(b4Marker, "\n")).toBe(expected);
     }
     const evidence = reports["SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_EVIDENCE_REVIEW.md"]!;
     expect(evidence).toContain("https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/");
@@ -37,7 +39,8 @@ describe("B3 supported goal and local-purpose deterministic reports", () => {
 
   it("records exactly 155 sequential readiness fields and a stable combined fingerprint", () => {
     const readiness = readFileSync(resolve(docs,
-      "SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_IMPLEMENTATION_READINESS.md"), "utf8");
+      "SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_IMPLEMENTATION_READINESS.md"), "utf8")
+      .replace(b4Marker, "\n");
     const fields = readiness.match(/^\d+\. /gm) ?? [];
     expect(fields).toHaveLength(155);
     expect(readiness).toContain("155. exact_next_dependency: " +
