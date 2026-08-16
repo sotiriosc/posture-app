@@ -9,6 +9,7 @@ export * from "./adaptationPersistence";
 export * from "./applicationOrchestration";
 export * from "./pipelineObservability";
 export * from "./productShadow";
+export * from "./productShadowGoalRealization";
 export * from "./phaseSuitability";
 export * from "./phaseContinuity";
 export * from "./longitudinalAdaptation";

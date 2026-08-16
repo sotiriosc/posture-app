@@ -12,6 +12,7 @@ import {
 
 const workspace = resolve(process.cwd(), "../..");
 const docs = resolve(workspace, "docs/training-engine-v2");
+const goalRealizationMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:END -->\n?/;
 
 describe("B4 deterministic reports", () => {
   it("persists every required Markdown report byte-for-byte", () => {
@@ -19,7 +20,8 @@ describe("B4 deterministic reports", () => {
     expect(B4_MARKDOWN_REPORT_NAMES).toHaveLength(39);
     expect(Object.keys(reports)).toHaveLength(39);
     for (const [name, expected] of Object.entries(reports)) {
-      expect(readFileSync(resolve(docs, name), "utf8")).toBe(expected);
+      expect(readFileSync(resolve(docs, name), "utf8").replace(goalRealizationMarker, "\n"))
+        .toBe(expected);
     }
     expect(reports["EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_ONTOLOGY_AUDIT.md"])
       .toContain("38. Which B4 facts must later become Product inputs before activation?");

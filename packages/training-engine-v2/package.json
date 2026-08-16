@@ -10,7 +10,8 @@
     "./week-planning": "./src/weekPlanning/index.ts",
     "./outcome-sources": "./src/outcomeSources/index.ts",
     "./adaptation-persistence": "./src/adaptationPersistence/index.ts",
-    "./product-shadow": "./src/productShadow/index.ts"
+    "./product-shadow": "./src/productShadow/index.ts",
+    "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",

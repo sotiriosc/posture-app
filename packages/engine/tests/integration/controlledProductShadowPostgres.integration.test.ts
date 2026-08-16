@@ -9,6 +9,16 @@ import {
   resolveControlledProductShadowRolloutPolicy,
 } from "../../src/controlledProductShadow";
 import {
+  CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4,
+  buildControlledProductShadowGoalRealizationMappingBundleV1,
+  createControlledProductShadowGoalRealizationPostgresRepository,
+  createControlledProductShadowGoalRealizationServiceV1,
+  replayControlledProductShadowGoalRealizationV1,
+  requiredGoalRealizationReplayVersions,
+} from "../../src/controlledProductShadowGoalRealization";
+import { COMPLETE_CHUNK_C_PIPELINE, exactFixtureExtensions, productGoalRealizationSnapshot } from
+  "../cagt/controlledProductShadowGoalRealizationEvidence";
+import {
   COMPLETE_PRODUCT_SHADOW_PIPELINE,
   PRODUCT_SHADOW_DATA_POLICY,
   PRODUCT_SHADOW_RESOURCE_POLICY,
@@ -97,6 +107,35 @@ describePostgres("real PostgreSQL controlled Product shadow persistence", () => 
         "CONTROLLED_PRODUCT_SHADOW_RUN@1.0.0"] })).toMatchObject({ status: "exact_historical_match",
       latestVersionFallbackCount: 0, productMutationCount: 0, applicationCount: 0,
       persistenceWriteCount: 0 });
+  }, 120_000);
+
+  it("reuses append-only storage for exact goal-realization Run V1.1", async () => {
+    const athleteId = "athlete-shadow-pg-goal-realization";
+    const repository = createControlledProductShadowGoalRealizationPostgresRepository({ pool });
+    const snapshot = productGoalRealizationSnapshot();
+    const service = createControlledProductShadowGoalRealizationServiceV1({
+      profile: CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4,
+      loadProductSnapshot: async () => snapshot,
+      resolveActiveProgramId: (value) => value.programs?.[0]?.id ?? null,
+      mappingBuilder: buildControlledProductShadowGoalRealizationMappingBundleV1,
+      pipeline: COMPLETE_CHUNK_C_PIPELINE, repository,
+    });
+    const result = await service.run({ authenticatedUserId: athleteId, appSurface: "consumer",
+      evaluationTime: SHADOW_TIME, fixtureExtensions: exactFixtureExtensions() });
+    const run = await repository.read(athleteId, result.runRevisionId!);
+    expect(run).toMatchObject({ runReference: { contractVersion: "1.1.0" }, counterfactualOnly: true,
+      deliveredToUser: false, performed: false, productMutationApplied: false, applicationApplied: false });
+    const stored = await pool.query<{ product_mutation_applied: boolean; application_applied: boolean;
+      delivered_to_user: boolean; performed: boolean }>(`SELECT product_mutation_applied, application_applied,
+        delivered_to_user, performed FROM controlled_product_shadow_runs
+        WHERE athlete_id = $1 AND run_revision_id = $2`, [athleteId, result.runRevisionId]);
+    expect(stored.rows[0]).toEqual({ product_mutation_applied: false, application_applied: false,
+      delivered_to_user: false, performed: false });
+    const availableVersions = requiredGoalRealizationReplayVersions(run!);
+    await expect(replayControlledProductShadowGoalRealizationV1({ repository, athleteId,
+      runRevisionId: run!.runRevisionId, availableVersions })).resolves.toMatchObject({
+        status: "exact_version_replay_ready", latestVersionFallbackCount: 0, productMutationCount: 0,
+        applicationCount: 0, performedCount: 0 });
   }, 120_000);
 
   it("rejects semantic conflicts, mutation, deletion, and applied records", async () => {

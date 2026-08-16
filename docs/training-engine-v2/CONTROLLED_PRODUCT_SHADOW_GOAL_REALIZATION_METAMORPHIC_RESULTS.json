@@ -1,0 +1,117 @@
+{
+  "count": 28,
+  "results": [
+    {
+      "name": "product_object_key_order",
+      "passed": true
+    },
+    {
+      "name": "goal_registry_order",
+      "passed": true
+    },
+    {
+      "name": "mapping_profile_property_order",
+      "passed": true
+    },
+    {
+      "name": "policy_rule_order",
+      "passed": true
+    },
+    {
+      "name": "source_reference_order",
+      "passed": true
+    },
+    {
+      "name": "program_array_order_with_explicit_day",
+      "passed": true
+    },
+    {
+      "name": "history_log_order",
+      "passed": true
+    },
+    {
+      "name": "equipment_selection_order",
+      "passed": true
+    },
+    {
+      "name": "assessment_order_stable_ids",
+      "passed": true
+    },
+    {
+      "name": "provenance_order_nonsemantic",
+      "passed": true
+    },
+    {
+      "name": "display_labels_outside_registry",
+      "passed": true
+    },
+    {
+      "name": "notes_prose",
+      "passed": true
+    },
+    {
+      "name": "irrelevant_pain",
+      "passed": true
+    },
+    {
+      "name": "irrelevant_assessment",
+      "passed": true
+    },
+    {
+      "name": "account_label",
+      "passed": true
+    },
+    {
+      "name": "program_display_title",
+      "passed": true
+    },
+    {
+      "name": "primary_goal_response",
+      "passed": true
+    },
+    {
+      "name": "secondary_goal_response",
+      "passed": true
+    },
+    {
+      "name": "training_mode_response",
+      "passed": true
+    },
+    {
+      "name": "pain_context_response",
+      "passed": true
+    },
+    {
+      "name": "experience_response",
+      "passed": true
+    },
+    {
+      "name": "equipment_detail_response",
+      "passed": true
+    },
+    {
+      "name": "minutes_response",
+      "passed": true
+    },
+    {
+      "name": "identity_mapping_response",
+      "passed": true
+    },
+    {
+      "name": "product_revision_response",
+      "passed": true
+    },
+    {
+      "name": "profile_version_response",
+      "passed": true
+    },
+    {
+      "name": "pipeline_profile_response",
+      "passed": true
+    },
+    {
+      "name": "exact_lineage_response",
+      "passed": true
+    }
+  ]
+}

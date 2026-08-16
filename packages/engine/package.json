@@ -9,7 +9,8 @@
     ".": "./src/index.ts",
     "./outcome-source-persistence": "./src/outcomeSourcePersistence/index.ts",
     "./adaptation-application-orchestration": "./src/adaptationApplicationOrchestration/index.ts",
-    "./controlled-product-shadow": "./src/controlledProductShadow/index.ts"
+    "./controlled-product-shadow": "./src/controlledProductShadow/index.ts",
+    "./controlled-product-shadow-goal-realization": "./src/controlledProductShadowGoalRealization/index.ts"
   },
   "scripts": {
     "build:outcome-sources": "tsc -p tsconfig.outcome-sources.json --noEmit",
@@ -32,7 +33,9 @@
     "test:product-shadow:persistence": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts",
     "test:product-shadow:replay": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowService.test.ts -t replay",
     "test:product-shadow:e2e": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowTriggerClient.test.ts",
-    "test:product-shadow:postgres": "vitest --run --config vitest.config.ts tests/integration/controlledProductShadowPostgres.integration.test.ts"
+    "test:product-shadow:postgres": "vitest --run --config vitest.config.ts tests/integration/controlledProductShadowPostgres.integration.test.ts",
+    "test:product-shadow-goal-realization": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowGoalRealizationMapping.test.ts tests/unit/controlledProductShadowGoalRealizationService.test.ts tests/unit/controlledProductShadowGoalRealizationActivation.test.ts tests/unit/controlledProductShadowGoalRealizationEvidence.test.ts tests/unit/controlledProductShadowGoalRealizationReports.test.ts",
+    "report:product-shadow-goal-realization": "node --import tsx dev/reportControlledProductShadowGoalRealization.ts"
   },
   "dependencies": {
     "@praxis/training-engine-v2": "0.0.1",

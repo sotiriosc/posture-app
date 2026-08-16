@@ -1,0 +1,125 @@
+[
+  {
+    "reference": {
+      "contractId": "PRODUCT_AVAILABILITY_HORIZON_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    "opportunityCount": 3,
+    "opportunities": [
+      {
+        "opportunityId": "product-goal-realization-opportunity:16c9c64f7e29efb3",
+        "order": 1,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:60b8c648a9644b0c",
+        "order": 2,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:44b86a854e862bc9",
+        "order": 3,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      }
+    ],
+    "minutesSource": "unknown",
+    "status": "ordered_opportunities",
+    "calendarReadCount": 0,
+    "inventedMinutesCount": 0
+  },
+  {
+    "reference": {
+      "contractId": "PRODUCT_AVAILABILITY_HORIZON_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    "opportunityCount": 4,
+    "opportunities": [
+      {
+        "opportunityId": "product-goal-realization-opportunity:16c9c64f7e29efb3",
+        "order": 1,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:60b8c648a9644b0c",
+        "order": 2,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:44b86a854e862bc9",
+        "order": 3,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:92bfcf6e38a7b20a",
+        "order": 4,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      }
+    ],
+    "minutesSource": "unknown",
+    "status": "ordered_opportunities",
+    "calendarReadCount": 0,
+    "inventedMinutesCount": 0
+  },
+  {
+    "reference": {
+      "contractId": "PRODUCT_AVAILABILITY_HORIZON_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    "opportunityCount": 5,
+    "opportunities": [
+      {
+        "opportunityId": "product-goal-realization-opportunity:16c9c64f7e29efb3",
+        "order": 1,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:60b8c648a9644b0c",
+        "order": 2,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:44b86a854e862bc9",
+        "order": 3,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:92bfcf6e38a7b20a",
+        "order": 4,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      },
+      {
+        "opportunityId": "product-goal-realization-opportunity:1ca3b0db55d4b927",
+        "order": 5,
+        "minutes": null,
+        "date": null,
+        "weekday": null
+      }
+    ],
+    "minutesSource": "unknown",
+    "status": "ordered_opportunities",
+    "calendarReadCount": 0,
+    "inventedMinutesCount": 0
+  }
+]

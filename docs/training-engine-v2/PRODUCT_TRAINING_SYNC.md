@@ -14,3 +14,8 @@
 - Safety: zero Product mutation, application, delivery, rendering, performed credit, or counterfactual outcome attribution.
 - Remaining dependency: `SEPARATE_PRODUCT_ACTIVATION_AUTHORIZATION`.
 <!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->
+
+<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:START -->
+## Controlled Product Shadow Goal and Realization Mapping V1
+Chunk C adds `CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4` as an explicit, default-off, counterfactual test/replay profile. Historical Product Shadow V1 and current routes remain frozen. Product goal/context/mode, coarse experience, restricted history, equipment/load, ordered availability, preference/continuity, identity, planning-brief, pipeline, Run V1.1, and Comparison V1.1 mappings are versioned. Product UI, options, persistence, output, mutation, application, and activation remain unchanged. Next dependency: `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_AUTHORIZATION`.
+<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:END -->

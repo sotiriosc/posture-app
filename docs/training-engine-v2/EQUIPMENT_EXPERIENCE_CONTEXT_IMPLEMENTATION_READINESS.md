@@ -192,3 +192,8 @@
 190. rollback_boundary: REVERT_B4_CLOSURE_THEN_REMOVE_EXPLICIT_V1_3_V1_2_AND_REALIZATION_CONTEXT
 191. blocker_before_chunk_c: SEPARATE_CONTROLLED_PRODUCT_SHADOW_MAPPING_AUTHORIZATION
 192. exact_next_dependency: CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION
+
+<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:START -->
+## Controlled Product Shadow Goal and Realization Mapping V1
+Chunk C adds `CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4` as an explicit, default-off, counterfactual test/replay profile. Historical Product Shadow V1 and current routes remain frozen. Product goal/context/mode, coarse experience, restricted history, equipment/load, ordered availability, preference/continuity, identity, planning-brief, pipeline, Run V1.1, and Comparison V1.1 mappings are versioned. Product UI, options, persistence, output, mutation, application, and activation remain unchanged. Next dependency: `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_AUTHORIZATION`.
+<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:END -->

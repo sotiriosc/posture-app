@@ -1,0 +1,88 @@
+{
+  "profileId": "CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4",
+  "reference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING",
+    "contractVersion": "1.0.0"
+  },
+  "mappingContractReferences": [
+    {
+      "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+      "contractVersion": "2.0.0"
+    },
+    {
+      "contractId": "PRODUCT_GOAL_TO_PLANNING_BRIEF_SHADOW_POLICY_V1",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+      "contractVersion": "2.0.0"
+    },
+    {
+      "contractId": "PRODUCT_EXPERIENCE_REALIZATION_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_AVAILABILITY_HORIZON_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_PREFERENCE_CONTINUITY_SHADOW_MAPPING",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_LEGACY_HISTORY_AUTHORITY_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCT_GOAL_REALIZATION_MAPPING_BUNDLE",
+      "contractVersion": "1.0.0"
+    }
+  ],
+  "goalPlanningBriefPolicyReference": {
+    "contractId": "PRODUCT_GOAL_TO_PLANNING_BRIEF_SHADOW_POLICY_V1",
+    "contractVersion": "1.0.0"
+  },
+  "b1B4References": [
+    {
+      "contractId": "PRODUCT_TRAINING_GOAL_ARCHITECTURE_POLICY_V1_LAYERED_PURPOSE_FIRST",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "SUPPORTED_GOAL_AND_LOCAL_PURPOSE_POLICY",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "EXPERIENCE_CONTEXT_PRESCRIPTION_REALIZATION_POLICY_V1",
+      "contractVersion": "1.0.0"
+    }
+  ],
+  "pipelineProfileReference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_PIPELINE_PROFILE_B1_B4",
+    "contractVersion": "1.0.0"
+  },
+  "comparisonReference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_COMPARISON",
+    "contractVersion": "1.1.0"
+  },
+  "runReference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_RUN",
+    "contractVersion": "1.1.0"
+  },
+  "defaultSelected": false,
+  "productAuthority": "LEGACY_PRODUCT_OUTPUT_ONLY",
+  "activationState": "NOT_ACTIVATED",
+  "counterfactualOnly": true,
+  "provenance": [
+    "canonical-ledger:chunk-c",
+    "explicit-profile-selection-only",
+    "historical-product-shadow-v1-frozen"
+  ]
+}

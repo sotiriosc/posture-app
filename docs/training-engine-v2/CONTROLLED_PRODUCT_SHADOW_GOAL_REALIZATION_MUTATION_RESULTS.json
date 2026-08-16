@@ -1,0 +1,278 @@
+{
+  "count": 68,
+  "rejected": 68,
+  "mutations": [
+    {
+      "name": "historical_v1_silently_changed",
+      "rejected": true
+    },
+    {
+      "name": "new_profile_selected_by_default",
+      "rejected": true
+    },
+    {
+      "name": "current_route_selects_new_profile",
+      "rejected": true
+    },
+    {
+      "name": "hidden_latest_profile",
+      "rejected": true
+    },
+    {
+      "name": "profile_selected_from_goal",
+      "rejected": true
+    },
+    {
+      "name": "profile_selected_from_environment",
+      "rejected": true
+    },
+    {
+      "name": "run_omits_profile",
+      "rejected": true
+    },
+    {
+      "name": "replay_uses_latest",
+      "rejected": true
+    },
+    {
+      "name": "reduce_pain_becomes_posture",
+      "rejected": true
+    },
+    {
+      "name": "general_fitness_becomes_strength",
+      "rejected": true
+    },
+    {
+      "name": "general_fitness_becomes_endurance",
+      "rejected": true
+    },
+    {
+      "name": "athletic_performance_becomes_power",
+      "rejected": true
+    },
+    {
+      "name": "fitness_stamina_becomes_conditioning",
+      "rejected": true
+    },
+    {
+      "name": "unknown_goal_guessed",
+      "rejected": true
+    },
+    {
+      "name": "secondary_read_from_unknown_key",
+      "rejected": true
+    },
+    {
+      "name": "goal_creates_exercise",
+      "rejected": true
+    },
+    {
+      "name": "goal_creates_dose",
+      "rejected": true
+    },
+    {
+      "name": "pain_becomes_outcome",
+      "rejected": true
+    },
+    {
+      "name": "rehab_becomes_diagnosis",
+      "rejected": true
+    },
+    {
+      "name": "maintain_uses_development_policy",
+      "rejected": true
+    },
+    {
+      "name": "build_becomes_strength",
+      "rejected": true
+    },
+    {
+      "name": "pain_creates_safety_block",
+      "rejected": true
+    },
+    {
+      "name": "pain_creates_corrective_circuit",
+      "rejected": true
+    },
+    {
+      "name": "advanced_creates_exact_familiarity",
+      "rejected": true
+    },
+    {
+      "name": "advanced_creates_exact_load",
+      "rejected": true
+    },
+    {
+      "name": "empty_history_becomes_novice",
+      "rejected": true
+    },
+    {
+      "name": "legacy_program_becomes_authored_brief",
+      "rejected": true
+    },
+    {
+      "name": "legacy_program_becomes_productive_anchor",
+      "rejected": true
+    },
+    {
+      "name": "session_becomes_v2_performance",
+      "rejected": true
+    },
+    {
+      "name": "exercise_log_becomes_exact_prescription",
+      "rejected": true
+    },
+    {
+      "name": "easy_becomes_preference",
+      "rejected": true
+    },
+    {
+      "name": "pain_becomes_permanent_dislike",
+      "rejected": true
+    },
+    {
+      "name": "substitution_becomes_global_block",
+      "rejected": true
+    },
+    {
+      "name": "elapsed_time_becomes_progression",
+      "rejected": true
+    },
+    {
+      "name": "none_implies_support",
+      "rejected": true
+    },
+    {
+      "name": "dumbbells_imply_bench_max_increment",
+      "rejected": true
+    },
+    {
+      "name": "bands_imply_anchor_resistance",
+      "rejected": true
+    },
+    {
+      "name": "gym_implies_inventory",
+      "rejected": true
+    },
+    {
+      "name": "legacy_program_proves_equipment",
+      "rejected": true
+    },
+    {
+      "name": "exact_load_guessed",
+      "rejected": true
+    },
+    {
+      "name": "calibration_rescues_unknown_equipment",
+      "rejected": true
+    },
+    {
+      "name": "days_create_dates",
+      "rejected": true
+    },
+    {
+      "name": "days_create_weekdays",
+      "rejected": true
+    },
+    {
+      "name": "days_create_spacing",
+      "rejected": true
+    },
+    {
+      "name": "program_length_creates_minutes",
+      "rejected": true
+    },
+    {
+      "name": "exercise_count_creates_minutes",
+      "rejected": true
+    },
+    {
+      "name": "unknown_duration_called_fit",
+      "rejected": true
+    },
+    {
+      "name": "legacy_program_causes_assignment",
+      "rejected": true
+    },
+    {
+      "name": "incomplete_mapping_proceeds",
+      "rejected": true
+    },
+    {
+      "name": "hidden_b1_b4_policy",
+      "rejected": true
+    },
+    {
+      "name": "product_output_returned",
+      "rejected": true
+    },
+    {
+      "name": "shadow_performed",
+      "rejected": true
+    },
+    {
+      "name": "product_log_credited_to_shadow",
+      "rejected": true
+    },
+    {
+      "name": "legacy_outcome_authorizes_progression",
+      "rejected": true
+    },
+    {
+      "name": "gate13_rescues_mapping",
+      "rejected": true
+    },
+    {
+      "name": "comparison_better_score",
+      "rejected": true
+    },
+    {
+      "name": "b4_challenge_imported",
+      "rejected": true
+    },
+    {
+      "name": "b4_priorities_become_goals",
+      "rejected": true
+    },
+    {
+      "name": "b4_equipment_promoted",
+      "rejected": true
+    },
+    {
+      "name": "b4_alias_promoted",
+      "rejected": true
+    },
+    {
+      "name": "b4_volume_becomes_habitual",
+      "rejected": true
+    },
+    {
+      "name": "questionnaire_changed",
+      "rejected": true
+    },
+    {
+      "name": "generate_program_changed",
+      "rejected": true
+    },
+    {
+      "name": "route_response_changed",
+      "rejected": true
+    },
+    {
+      "name": "rollout_changed",
+      "rejected": true
+    },
+    {
+      "name": "product_persistence_changed",
+      "rejected": true
+    },
+    {
+      "name": "product_ui_changed",
+      "rejected": true
+    },
+    {
+      "name": "activation_enabled",
+      "rejected": true
+    }
+  ]
+}
