@@ -1,8 +1,8 @@
 # Praxis Product Goal & Prescription Architecture Ledger
 
-**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_CHUNK_C_COMPLETE_FUTURE_WORK_REMAINS`  
-**Last verified audit commit:** `92af814c27d8b21ce86a9866bb73239757b5b184`  
-**Last completed implementation commit:** `92af814c27d8b21ce86a9866bb73239757b5b184`  
+**Status:** `OWNER_ARCHITECTURE_DIRECTION_APPROVED_CHUNK_F_COMPLETE_FUTURE_WORK_REMAINS`  
+**Last verified audit commit:** `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`  
+**Last completed implementation commit:** `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`  
 **PR:** `#86` — must remain open, draft, and unmerged until separately authorized  
 **Product authority:** `LEGACY_PRODUCT_OUTPUT_ONLY`  
 **V2 application state:** `NOT_ACTIVATED`
@@ -522,6 +522,32 @@ Approved direction:
 
 This approval is architectural only. It does not authorize behavior changes.
 
+## Chunk F — Add one inactive Product option
+
+- **Status:** completed and proven
+- **Owner authorization:** `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_NOT_OWNER_DELIVERY_OR_PRODUCT_ACTIVATION`
+- **Implementation commit:** `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD as this ledger-only commit
+- **Combined status:** `ONE_INACTIVE_GET_STRONGER_PRODUCT_OPTION_V1_IMPLEMENTED_PREVIEW_ONLY`
+- **Classification:** `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_READY_FOR_OWNER_ACCOUNT_GOAL_DELIVERY_DESIGN_AUTHORIZATION`
+- **Contracts:** option `ONE_INACTIVE_PRODUCT_GOAL_OPTION@1.0.0`; registry `PRODUCT_GOAL_OPTION_REGISTRY_V1@1.0.0`; preview input `INACTIVE_PRODUCT_GOAL_PREVIEW_INPUT@1.0.0`; preview selection `INACTIVE_PRODUCT_GOAL_PREVIEW_SELECTION@1.0.0`; preview result `INACTIVE_PRODUCT_GOAL_PREVIEW_RESULT@1.0.0`
+- **Option identity:** stable ID `get_stronger`; display Get stronger; canonical outcome `strength`; availability `future_inactive_internal`; required follow-up count 0; submission behavior `preview_only_fail_closed`
+- **Implemented future option count:** 1; additional future options: 0
+- **Visibility:** ordinary consumer false; ordinary gyms false; buyer demo false; explicit direct component preview only true; production preview routes 0; environment/query-string/storage/server/account activation paths 0
+- **Preview selection:** separate deterministic ephemeral state; persisted false; generation allowed false; Product Shadow allowed false; delivered to user false; Product mutation applied false
+- **Questionnaire state:** `QuestionnaireData`, current goal strings/order/default, normalization, committed/pending data, storage/server shape, and questionnaire signature V1 unchanged; preview selection never enters current Product state or marks the current profile dirty
+- **Fail-closed submission:** `future_submission_unavailable` / `INACTIVE_PRODUCT_GOAL_PREVIEW_ONLY` returns before dirty comparison, confirmation, active-session warning, commit, local/server persistence, draft clearing, signal construction, `generateProgram`, Program/Progress/app-state writes, navigation, Product Shadow, or V2 output
+- **Product behavior:** ordinary current route changed no; ordinary CTA/copy/order/confirmation/session/generation behavior unchanged; gyms runtime source changes 0; buyer-demo behavior changes 0; current-route Product Shadow calls 0; V2 outputs 0; Product delivery not authorized; Product activation not authorized
+- **Accessibility and responsive evidence:** explicit preview retains the native select, associates its label, adds a stable described helper, announces the blocked result, moves focus deterministically only after submit, preserves visible focus and non-color text, and adds no modal/fixed/hover-only control; component contracts cover 320x800, 360x800, 390x844, 768x1024, 1024x768, and 1440x900, while ordinary-route browser checks report zero horizontal overflow
+- **Evidence corpus:** 17 Markdown and 10 deterministic JSON reports; 141/141 controlled scenarios; frozen 240-case holdout split 80 registry/contracts, 80 preview selection/submission, and 80 route/app invariance; 48/48 semantic mutations rejected; 14/14 invariant and 8/8 material-response metamorphic relations passed; 53,000 deterministic stress assertions with zero side effects, clocks, or production randomness
+- **Tests:** focused F suite 22/22; consumer complete 55/55; gyms complete 25/25; current-route Playwright 1/1 on an isolated workspace server; Chunk E 11/11; Product Goal Architecture 15/15; Product goal audit 10/10; post-Chunk-D repair 3/3; goal-specific Chunk D 9/9; complete Training Engine V2 1,122/1,122; root Vitest 1,045/1,045; Training Engine V2 production/test-dev and Engine scoped TypeScript, consumer/gyms production builds, scoped ESLint, deterministic report regeneration, JSON parsing, and staged diff checks passed
+- **PostgreSQL boundary:** local Outcome Source 1, orchestration 2, and Product Shadow 6 integration cases were invoked and skipped because no local test database is configured; the required PostgreSQL CI service remains authoritative, and Chunk F adds no database or persistence path
+- **Fingerprints:** ontology `b8eec119ecbf1759d3706d270b9b6b55b068be28723c1d39fe59d95dca96aa5a`; owner boundaries `64b5499eb99135e8f6d94e7693c9aa4e5b6bed7cceabea9161c428f453ae11f4`; option contract `8d61fc74d2d1b423effbb8201b254e6cc9c43b50314f58283158e72f1f114214`; registry contract `f96b242009b1eb219560bfc294f5cd5eaf0ea596d8c2d8a7e16de18cfb814957`; registry `b962c2f1cbc690db53c1380a5e052ad8c70e4a4e055029db4ce56fb949a04355`; preview rendering `1aac7ae9fa3f0081669fdfaeace50132b3621a69c53c27e088e7feb2547fe7b6`; fail-closed submission `458a7fe4cbb0cc1e0e4457567da4bb9f33f7e7060fef26b3b2cff21409b71409`; controlled scenarios `792744e5a141bab174768feae2e4e91ff9ec93453fafe22c1d065d699bad83a4`; holdout `4f6762ed80b73fd6501f434c7b5d06a2bbc5ec58e25fa9166dc7c06b5ee384a0`; mutations `6bf221b2103375be0f23143e2b9510575a387d2382a0a04fb918123b98d984d3`; metamorphic `463c9e2ce532907f03713ba3e1989b46d3ff79189ae28fb443b9a59629af24b9`; stress `f19fe8f2a1f0c557cf555e0d809d991fb35b8a70ad0467b9c46d376578f29a1e`; activation guards `de31d51f21634d37c67fa334d802f86a16f6b1c341c7f8ccc15a1fdec66c82a0`; readiness `c6293d578517c9fd6a61c8140067094dae7ba43e2a6e9b79cc8364a9b307a080`; combined Chunk F `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`
+- **Preserved upstream fingerprints:** Chunk E `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`; Chunk E report corpus `4b59ed72f987e9f1a6668734052e6d0651fd5e7953529f33f9f7760095ab0bae`; historical Product Shadow `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; Chunk C `01f3a6a9b1eb6ef28d33876c5cb00d3b01948cad90cf7939ac1d072ffa071a9d`; Chunk D `dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464`; post-Chunk-D maintenance `39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb`
+- **Remaining limitations:** no owner-account delivery, no ordinary-route visibility, no broad future option registry, no Product mapping/generation for `get_stronger`, no V2 output, and no Product activation; Chunk G and Chunk H remain open and separately authorized
+- **Rollback boundary:** revert this ledger-only closure, then revert implementation commit `2deff441c7e366f6b319c9ebf42faa0ecb2e2913`; the optional preview branch and three app-local preview files disappear without data migration, while ordinary legacy Product behavior remains unchanged
+- **Next dependency:** `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`
+
 ---
 
 # Future Work
@@ -667,14 +693,6 @@ Exact next dependency:
 - **Unresolved drift and limitations:** Knees, reported band detail, local mobile-crop inventory, gyms training-mode parity, current `trainingIntent` signature identity, legacy gym capability overstatement, power/systemic-conditioning/sport policy, maintenance and broader Return/rebuild delivery, live owner-account evidence, and activation remain open; F, G, and H are not completed
 - **Rollback boundary:** revert this ledger-only closure, then revert implementation commit `9b8699f3f4a6af615841bdf09f5f00f38c2f5a71`; current Product routes, UI, persistence, generation, Product Shadow behavior, and delivered legacy output remain unchanged
 - **Next dependency:** `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`
-
-## Chunk F — Add one inactive Product option
-
-- Behind an explicit inactive feature control.
-- No ordinary-user rollout.
-- No automatic mapping.
-- No general activation.
-- Product screenshot review required first.
 
 ## Chunk G — Controlled owner-account delivery
 
