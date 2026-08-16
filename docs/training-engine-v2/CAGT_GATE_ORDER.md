@@ -202,3 +202,9 @@ The explicit server-only service can validate, build, persist, and replay unappl
 - Safety: zero Product mutation, application, delivery, rendering, performed credit, or counterfactual outcome attribution.
 - Remaining dependency: `SEPARATE_PRODUCT_ACTIVATION_AUTHORIZATION`.
 <!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->
+
+<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:START -->
+## Goal-Specific Controlled Product Shadow Evidence V1
+
+Chunk D exercises the explicit Chunk C profile through genuine B1-B4 kernels using synthetic Product-shaped replay, exact-revision artifacts, Full Prescribed Program snapshots, and Gate 14 causal comparison. It changes no Product UI, current route, output, persistence, rollout, mutation, application, or activation. The historical Chunk C readiness snapshot is preserved; see [post-closure reconciliation](./CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_POST_CLOSURE_RECONCILIATION.md) and [Chunk D evidence readiness](./GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_READINESS.md). Next dependency: `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`.
+<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:END -->

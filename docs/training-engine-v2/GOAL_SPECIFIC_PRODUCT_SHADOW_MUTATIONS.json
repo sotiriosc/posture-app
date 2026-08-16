@@ -1,0 +1,504 @@
+{
+  "mutationCount": 62,
+  "rejectedCount": 62,
+  "acceptedCount": 0,
+  "results": [
+    {
+      "mutation": "scenario_name_drives_status",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:scenario_name_drives_status"
+      ]
+    },
+    {
+      "mutation": "expected_result_passed_to_stage_port",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:expected_result_passed_to_stage_port"
+      ]
+    },
+    {
+      "mutation": "fixture_id_drives_exercise_selection",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:fixture_id_drives_exercise_selection"
+      ]
+    },
+    {
+      "mutation": "stage_returns_canned_complete",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:stage_returns_canned_complete"
+      ]
+    },
+    {
+      "mutation": "artifact_reference_without_artifact",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:artifact_reference_without_artifact"
+      ]
+    },
+    {
+      "mutation": "fake_full_program_snapshot",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:fake_full_program_snapshot"
+      ]
+    },
+    {
+      "mutation": "scripted_gate_13_pass",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:scripted_gate_13_pass"
+      ]
+    },
+    {
+      "mutation": "scripted_gate_14_pass",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:scripted_gate_14_pass"
+      ]
+    },
+    {
+      "mutation": "holdout_modified_after_evaluation",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:holdout_modified_after_evaluation"
+      ]
+    },
+    {
+      "mutation": "expected_and_actual_same_branch",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:expected_and_actual_same_branch"
+      ]
+    },
+    {
+      "mutation": "production_imports_fixture_manifest",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:production_imports_fixture_manifest"
+      ]
+    },
+    {
+      "mutation": "goal_creates_exercises",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:goal_creates_exercises"
+      ]
+    },
+    {
+      "mutation": "goal_creates_dose",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:goal_creates_dose"
+      ]
+    },
+    {
+      "mutation": "pain_becomes_primary_goal",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:pain_becomes_primary_goal"
+      ]
+    },
+    {
+      "mutation": "general_fitness_defaults_strength",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:general_fitness_defaults_strength"
+      ]
+    },
+    {
+      "mutation": "fitness_stamina_defaults_endurance",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:fitness_stamina_defaults_endurance"
+      ]
+    },
+    {
+      "mutation": "athletic_performance_defaults_power",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:athletic_performance_defaults_power"
+      ]
+    },
+    {
+      "mutation": "secondary_overrides_primary",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:secondary_overrides_primary"
+      ]
+    },
+    {
+      "mutation": "display_label_changes_semantic_program",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:display_label_changes_semantic_program"
+      ]
+    },
+    {
+      "mutation": "mapping_failure_rescued_by_week",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:mapping_failure_rescued_by_week"
+      ]
+    },
+    {
+      "mutation": "week_failure_rescued_by_composer",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:week_failure_rescued_by_composer"
+      ]
+    },
+    {
+      "mutation": "composer_failure_rescued_by_prescription",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:composer_failure_rescued_by_prescription"
+      ]
+    },
+    {
+      "mutation": "prescription_difference_rescues_wrong_purpose",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:prescription_difference_rescues_wrong_purpose"
+      ]
+    },
+    {
+      "mutation": "reps_rescue_missing_goal",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:reps_rescue_missing_goal"
+      ]
+    },
+    {
+      "mutation": "gate_13_rescues_invalid_assignment",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:gate_13_rescues_invalid_assignment"
+      ]
+    },
+    {
+      "mutation": "gate_14_scores_upstream_invalid_pair",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:gate_14_scores_upstream_invalid_pair"
+      ]
+    },
+    {
+      "mutation": "gym_proves_every_machine",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:gym_proves_every_machine"
+      ]
+    },
+    {
+      "mutation": "dumbbells_prove_ceiling_increment",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:dumbbells_prove_ceiling_increment"
+      ]
+    },
+    {
+      "mutation": "bands_prove_anchor_resistance",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:bands_prove_anchor_resistance"
+      ]
+    },
+    {
+      "mutation": "calibration_rescues_illegal_equipment",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:calibration_rescues_illegal_equipment"
+      ]
+    },
+    {
+      "mutation": "unknown_minutes_called_fit",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:unknown_minutes_called_fit"
+      ]
+    },
+    {
+      "mutation": "required_rest_shortened_before_optional_removal",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:required_rest_shortened_before_optional_removal"
+      ]
+    },
+    {
+      "mutation": "main_purpose_removed_before_redundancy",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:main_purpose_removed_before_redundancy"
+      ]
+    },
+    {
+      "mutation": "advanced_creates_exact_load",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:advanced_creates_exact_load"
+      ]
+    },
+    {
+      "mutation": "empty_history_becomes_novice",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:empty_history_becomes_novice"
+      ]
+    },
+    {
+      "mutation": "irrelevant_pain_changes_program",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:irrelevant_pain_changes_program"
+      ]
+    },
+    {
+      "mutation": "relevant_pain_changes_unrelated_work",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:relevant_pain_changes_unrelated_work"
+      ]
+    },
+    {
+      "mutation": "pain_creates_diagnosis",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:pain_creates_diagnosis"
+      ]
+    },
+    {
+      "mutation": "pain_creates_permanent_block",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:pain_creates_permanent_block"
+      ]
+    },
+    {
+      "mutation": "duplicate_identity",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:duplicate_identity"
+      ]
+    },
+    {
+      "mutation": "duplicate_source_event",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:duplicate_source_event"
+      ]
+    },
+    {
+      "mutation": "optional_filler",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:optional_filler"
+      ]
+    },
+    {
+      "mutation": "generic_warmup",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:generic_warmup"
+      ]
+    },
+    {
+      "mutation": "generic_activation",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:generic_activation"
+      ]
+    },
+    {
+      "mutation": "generic_cooldown",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:generic_cooldown"
+      ]
+    },
+    {
+      "mutation": "repeated_assessment",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:repeated_assessment"
+      ]
+    },
+    {
+      "mutation": "catalog_breadth_growth",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:catalog_breadth_growth"
+      ]
+    },
+    {
+      "mutation": "shadow_marked_performed",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:shadow_marked_performed"
+      ]
+    },
+    {
+      "mutation": "product_log_credited_to_shadow",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:product_log_credited_to_shadow"
+      ]
+    },
+    {
+      "mutation": "product_outcome_attributed_to_shadow",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:product_outcome_attributed_to_shadow"
+      ]
+    },
+    {
+      "mutation": "weighted_better_score",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:weighted_better_score"
+      ]
+    },
+    {
+      "mutation": "v2_output_returned",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:v2_output_returned"
+      ]
+    },
+    {
+      "mutation": "product_mutation",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:product_mutation"
+      ]
+    },
+    {
+      "mutation": "current_route_selects_new_profile",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:current_route_selects_new_profile"
+      ]
+    },
+    {
+      "mutation": "rollout_enabled",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:rollout_enabled"
+      ]
+    },
+    {
+      "mutation": "product_ui_changed",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:product_ui_changed"
+      ]
+    },
+    {
+      "mutation": "generate_program_changed",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:generate_program_changed"
+      ]
+    },
+    {
+      "mutation": "live_data_loaded",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:live_data_loaded"
+      ]
+    },
+    {
+      "mutation": "b4_reference_fixture_imported_runtime",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:b4_reference_fixture_imported_runtime"
+      ]
+    },
+    {
+      "mutation": "ledger_d_completed_before_evidence",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:ledger_d_completed_before_evidence"
+      ]
+    },
+    {
+      "mutation": "ledger_e_h_removed",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:ledger_e_h_removed"
+      ]
+    },
+    {
+      "mutation": "final_ledger_marked_completed",
+      "semanticStructureChanged": true,
+      "rejected": true,
+      "reasons": [
+        "GOAL_SPECIFIC_EVIDENCE_MUTATION_REJECTED:final_ledger_marked_completed"
+      ]
+    }
+  ],
+  "fingerprint": "4d86ea359695fb358d6f31756f7a7743dca4d83817b067c35002279c8683d2f2"
+}

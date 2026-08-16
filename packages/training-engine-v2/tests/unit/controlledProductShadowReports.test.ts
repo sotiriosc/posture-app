@@ -15,6 +15,7 @@ const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
 const productGoalAuditMarker = /\n?<!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:START -->[\s\S]*?<!-- PRODUCT_TRAINING_GOAL_SPECIFICITY_V1:END -->\n?/g;
 const b4Marker = /\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n*/g;
 const goalRealizationMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:END -->\n*/g;
+const goalSpecificEvidenceMarker = /\n*<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:START -->[\s\S]*?<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:END -->\n*/g;
 
 describe("controlled Product shadow deterministic reports", () => {
   it("builds every requested Markdown and JSON report", () => {
@@ -25,7 +26,8 @@ describe("controlled Product shadow deterministic reports", () => {
     for (const filename of CONTROLLED_PRODUCT_SHADOW_REPORT_FILENAMES) {
       expect(markdown[filename]).toContain("No V2 artifact is returned");
       expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(productGoalAuditMarker, "")
-        .replace(b4Marker, "").replace(goalRealizationMarker, "").trimEnd())
+        .replace(b4Marker, "").replace(goalRealizationMarker, "")
+        .replace(goalSpecificEvidenceMarker, "").trimEnd())
         .toBe(markdown[filename].trimEnd());
     }
     for (const filename of CONTROLLED_PRODUCT_SHADOW_JSON_FILENAMES) {

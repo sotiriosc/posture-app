@@ -1,0 +1,65 @@
+{
+  "strength": {
+    "scenarioCount": 536,
+    "completeCount": 536,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 1072,
+    "fingerprint": "7c4eeb5daf929dbc88ccb8c8d41e441fe9672b267702056e3c498fefb52bb7a9"
+  },
+  "hypertrophy": {
+    "scenarioCount": 148,
+    "completeCount": 142,
+    "honestIncompleteCount": 6,
+    "assignmentCount": 142,
+    "fingerprint": "0ad7da781502e3b90c3ddb0511a1e9e4d2f3cf135b5f071b6c65fcd28543f63e"
+  },
+  "movementQuality": {
+    "scenarioCount": 195,
+    "completeCount": 181,
+    "honestIncompleteCount": 14,
+    "assignmentCount": 362,
+    "fingerprint": "00c194653401b6a0d225d304e7298f64377fde9dccefe4fa2826ed69cfa7e42d"
+  },
+  "generalFitness": {
+    "scenarioCount": 278,
+    "completeCount": 115,
+    "honestIncompleteCount": 163,
+    "assignmentCount": 230,
+    "fingerprint": "8e61465f6c6830f105022bfe10bda218aee82c8a9a78102ff1937e78e02f3ed1"
+  },
+  "painContext": {
+    "scenarioCount": 4,
+    "completeCount": 4,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 8,
+    "fingerprint": "6491b34c8d86000683cf99772c924bd2eb1b46cf96509d351a9400366949dc45"
+  },
+  "primarySecondary": {
+    "scenarioCount": 2,
+    "completeCount": 2,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 4,
+    "fingerprint": "db75fb451b004ba77dd8b5094770f7b105d659fa1a405b1d2d5d4cd0cd3ec4ac"
+  },
+  "equipment": {
+    "scenarioCount": 2,
+    "completeCount": 2,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 4,
+    "fingerprint": "294e2626fd8b9f82fa5df6a22e80630bfba2a864039709cb2cc53dd416147c7c"
+  },
+  "experience": {
+    "scenarioCount": 2,
+    "completeCount": 2,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 4,
+    "fingerprint": "fad91e15945101a49932ee688538f5348aaa271b98c62e518b9965bb7889116f"
+  },
+  "time": {
+    "scenarioCount": 2,
+    "completeCount": 2,
+    "honestIncompleteCount": 0,
+    "assignmentCount": 4,
+    "fingerprint": "4c9a813bd10b0be817077d334b29066431f70e0268e04f00b511a068cd8815f7"
+  }
+}

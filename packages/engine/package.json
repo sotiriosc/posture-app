@@ -35,7 +35,9 @@
     "test:product-shadow:e2e": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowTriggerClient.test.ts",
     "test:product-shadow:postgres": "vitest --run --config vitest.config.ts tests/integration/controlledProductShadowPostgres.integration.test.ts",
     "test:product-shadow-goal-realization": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowGoalRealizationMapping.test.ts tests/unit/controlledProductShadowGoalRealizationService.test.ts tests/unit/controlledProductShadowGoalRealizationActivation.test.ts tests/unit/controlledProductShadowGoalRealizationEvidence.test.ts tests/unit/controlledProductShadowGoalRealizationReports.test.ts",
-    "report:product-shadow-goal-realization": "node --import tsx dev/reportControlledProductShadowGoalRealization.ts"
+    "report:product-shadow-goal-realization": "node --import tsx dev/reportControlledProductShadowGoalRealization.ts",
+    "test:goal-specific-product-shadow-evidence": "vitest --run --config vitest.goal-specific-product-shadow.config.ts",
+    "report:goal-specific-product-shadow-evidence": "node --import tsx dev/reportGoalSpecificProductShadowEvidence.ts"
   },
   "dependencies": {
     "@praxis/training-engine-v2": "0.0.1",

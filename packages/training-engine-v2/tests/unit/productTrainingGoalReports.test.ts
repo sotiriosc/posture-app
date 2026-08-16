@@ -18,9 +18,10 @@ const purposeFirstMarker = /\n*<!-- PURPOSE_FIRST_PRESCRIPTION_RESOLVER_V1:START
 const supportedPurposeMarker = /\n*<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n?/;
 const b4Marker = /\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n?/;
 const goalRealizationMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_V1:END -->\n?/;
+const goalSpecificEvidenceMarker = /\n*<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:START -->[\s\S]*?<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:END -->\n?/;
 const withoutLinkedMarkers = (value: string) => value.replace(architectureMarker, "\n")
   .replace(purposeFirstMarker, "\n").replace(supportedPurposeMarker, "\n").replace(b4Marker, "\n")
-  .replace(goalRealizationMarker, "\n");
+  .replace(goalRealizationMarker, "\n").replace(goalSpecificEvidenceMarker, "\n");
 
 describe("Product training goal deterministic reports", () => {
   it("builds and persists all 18 Markdown and six JSON artifacts", () => {

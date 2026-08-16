@@ -1,0 +1,23 @@
+{
+  "comparisonCount": 260,
+  "frameworkCollisionRate": 0.75,
+  "adaptiveCollisionRate": 0.5,
+  "exactProgramCollisionRate": 0.623077,
+  "sameExerciseRate": 0.746154,
+  "sameAssignmentRate": 0.746154,
+  "sameRepsRate": 0.746154,
+  "sameRestRate": 0.746154,
+  "sameTempoRate": 0.746154,
+  "sameOrderRate": 0.746154,
+  "firstMaterialDifferenceDistribution": {
+    "gate_1_weekly_responsibility_truth": 65,
+    "gate_2_whole_week_allocation_coverage": 32,
+    "gate_7_candidate_intelligence_truth": 33,
+    "none": 130
+  },
+  "wrongLayerCount": 0,
+  "overAdaptationCount": 0,
+  "underAdaptationCount": 0,
+  "acceptedDownstreamRescueCount": 0,
+  "fingerprint": "cf0afb13b9ef35b2a9c964d25a89cc98498a89c0f0721daa4bedb4965cf0b8b2"
+}

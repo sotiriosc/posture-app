@@ -10,6 +10,8 @@ import {
   renderChunkCMarkdownReports,
 } from "../cagt/controlledProductShadowGoalRealizationReports";
 
+const goalSpecificEvidenceMarker = /\n*<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:START -->[\s\S]*?<!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:END -->\n*/g;
+
 const workspace = process.cwd().endsWith("packages/engine") ?
   resolve(process.cwd(), "../..") : process.cwd();
 const docs = resolve(workspace, "docs/training-engine-v2");
@@ -20,7 +22,8 @@ describe("Chunk C deterministic reports", () => {
     expect(CHUNK_C_MARKDOWN_REPORT_NAMES).toHaveLength(24);
     expect(Object.keys(reports)).toHaveLength(24);
     for (const [name, expected] of Object.entries(reports)) {
-      expect(readFileSync(resolve(docs, name), "utf8")).toBe(expected);
+      expect(readFileSync(resolve(docs, name), "utf8").replace(goalSpecificEvidenceMarker, "\n"))
+        .toBe(expected);
     }
     expect(reports["CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_MAPPING_ONTOLOGY_AUDIT.md"]
       .match(/^\d+\. /gm)).toHaveLength(34);
