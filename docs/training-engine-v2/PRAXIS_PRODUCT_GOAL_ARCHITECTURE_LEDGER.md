@@ -528,7 +528,7 @@ This approval is architectural only. It does not authorize behavior changes.
 
 Exact next dependency:
 
-`GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_AUTHORIZATION`
+`SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`
 
 ## Chunk B4 — Equipment-, experience-, and context-specific realization
 
@@ -576,22 +576,43 @@ Exact next dependency:
 - **Rollback boundary:** revert the B4 ledger closure, then remove explicit future-only V1.3/V1.2 APIs, realization-context contracts, Registry V14 metadata, tests, generated reports, and bounded integration links; historical kernels and Product remain unchanged
 - **Next dependency:** `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`
 
-## Chunk D — Run goal-specific shadow evidence
+## Chunk D — Goal-specific Controlled Product Shadow evidence
 
-Run same-shell cohorts for:
-
-- strength;
-- hypertrophy;
-- general fitness;
-- posture/movement quality;
-- pain-aware context;
-- primary + secondary goals;
-- equipment settings;
-- time constraints;
-- experience;
-- relevant and irrelevant pain.
-
-Measure rightful differences and justified convergence.
+- **Status:** completed and proven
+- **Implementation commit:** `b156988109b892a0db49bec30c7c09407d6641ed`
+- **Ledger closure commit:** recorded in Git history / final PR HEAD
+- **Combined status:** `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_COMPLETED_NO_PRODUCT_ACTIVATION`
+- **Classification:** `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE_V1_READY_FOR_SCREENSHOT_GUIDED_PRODUCT_GOAL_INPUT_DESIGN_AUTHORIZATION`
+- **Evidence contracts:** `GOAL_SPECIFIC_CONTROLLED_PRODUCT_SHADOW_EVIDENCE@1.0.0`, `GOAL_SPECIFIC_PRODUCT_SHADOW_SCENARIO@1.0.0`, `GOAL_SPECIFIC_PRODUCT_SHADOW_CAUSAL_PAIR@1.0.0`, `GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_RUN@1.0.0`, `GOAL_SPECIFIC_PRODUCT_SHADOW_ARTIFACT_STORE@1.0.0`, `PRODUCT_INPUT_NECESSITY_MATRIX@1.0.0`, and `GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_RESULT@1.0.0`
+- **CAGT Registry:** `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@16.0.0`; Gate 0-16 order and historical authority are preserved; production import count: 0; Product decision authority remains legacy Product output; activation and outcome-claim authority remain absent
+- **Stage authenticity:** 13 explicit profile stages audited; 11 genuine B1-B4 production-kernel stages; Longitudinal and Application Orchestration are explicit no-Performance/no-action boundaries; scripted stages counted as genuine: 0
+- **Genuine pipeline evidence:** 1,124 genuine executions, 974 Full Prescribed Program snapshots, 336 honest incomplete outcomes, and 260 Gate 14 comparisons; canned scenario status and expected-result leakage counts: 0
+- **Artifact store:** immutable exact-revision payloads, fingerprints, source lineage, and explicit retrieval; latest fallback count: 0; deterministic artifact-index fingerprint `508eafd10cb6a25724281304fc0c312c8d35a8f547c3309a4c3b457cb2568601`
+- **Current Product labels:** Product-shaped Improve posture, Reduce pain, General fitness, and Athletic Performance evidence records both truthful completion where present facts suffice and honest Product-input, policy, or mapping stops; Reduce pain remains context rather than a primary outcome; General fitness never silently defaults; Athletic Performance requires follow-up
+- **Future labels:** fixture extensions prove Get stronger, Build muscle, Improve posture and movement, and admitted local fitness/stamina planning without creating Product options; Improve athletic performance remains honestly incomplete pending power, systemic-conditioning, or sport-specific owners
+- **Strength and hypertrophy:** same framework or exercise is permitted; primary outcome and local purpose carry rightful Week and Prescription differences; framework sameness is never treated as failure
+- **Movement quality and general fitness:** movement-quality practice remains bounded and outcome-neutral; General fitness requires an explicit coherent purpose bundle; local muscular endurance is distinct from systemic conditioning
+- **Pain context:** relevant pain changes only rightful legal-candidate or local-realization dimensions; irrelevant pain is inert; diagnosis, permanent-block, and pain-outcome claims: 0
+- **Primary/secondary:** one primary remains authoritative; a distinct reviewed secondary may affect Week ordering without inventing extra dose; duplicate primary/secondary mappings fail closed
+- **Equipment, experience, and time:** exact capabilities may alter identity or realization at their rightful layer; coarse experience has no exact dose/load authority and may converge; time removes optional work before required purpose, productive anchors, dependencies, or rest
+- **Whole-Week evidence:** responsibility, allocation, SessionNeed, assignment, Prescription, sequence, duration truth, and source-event lineage persist through Gate 13 and Full Prescribed Program construction; Gate 14 validates causal response without completed Performance
+- **Observed convergence/collision metrics:** framework collision `0.75`; adaptive collision `0.5`; exact Program collision `0.623077`; same exercise/assignment/reps/rest/tempo/order each `0.746154`; these are descriptive controlled-evidence observations, not outcome or superiority claims
+- **First material difference:** Gate 1 weekly responsibility: 65; Gate 2 whole-Week allocation: 32; Gate 7 candidate intelligence: 33; justified or expected convergence with no material difference: 130
+- **Anti-bloat and warm-up/activation:** duplicate identity: 0; duplicate source event: 0; optional zero-value work: 0; assessment overrepetition: 0; productive-anchor displacement: 0; generic warm-up: 0; generic activation: 0
+- **Product-input necessity:** primary goal/follow-up, goal-specific purpose or focus, pain-context separation, and exact equipment capability where legality requires are the first Product-surface evidence recommendations; secondary goal and coarse experience may wait; calibration may substitute for absent exact load/familiarity; completed Performance/Response is Longitudinal-only authority
+- **Controlled evidence:** 600 controlled scenarios, 160 fixed-shell scenarios, and 260 predeclared same-shell causal pairs; wrong-layer, over-adaptation, under-adaptation, and accepted downstream-rescue counts: 0
+- **Locked holdout:** 850 scenarios: 300 historical V1 golden, 550 new-profile mappings, 450 genuine pipeline attempts, 300 complete/calibration-complete programs, and 250 honest incomplete outcomes; fingerprint `bf21e3318bdb4f029a1016df5f558a76fcab0765111de00cfec90469e1ea5eb5`
+- **Mutations and metamorphic evidence:** 62/62 semantic mutations rejected; 28/28 invariance/material-response relations passed; outcome claims and live-data reads: 0
+- **Stress:** required 10,000 scenario/pair contract and mapping/planning loops, 10,000 Week/Session loops, 8,000 Candidate/Composer and Prescription loops, 5,000 Sequence/Gate 13 loops, 6,000 Full Program snapshots, 3,000 Gate 14 and anti-bloat loops, 2,000 convergence/equipment/time/pain loops, and 1,000 historical replay/route-invariance/canned-stage/no-rescue/determinism loops passed with zero failures, hidden clocks, or production randomness
+- **Historical Product Shadow and Product invariance:** historical V1 fingerprint `fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c`; current routes, trigger, rollout, default mode, Questionnaire, options, mappings used by current routes, `generateProgram`, delivered Program, persistence, database, and Product UI remain unchanged
+- **No activation:** live account reads: 0; production snapshot reads: 0; V2 outputs returned: 0; V2 artifacts rendered: 0; Product mutations: 0; applications: 0; performed shadows: 0; Product outcome attributions: 0; Product activation: 0
+- **Tests:** focused Chunk D evidence passed 6/6 across four files; Product Goal Architecture 15/15, B2 25/25, B3 15/15, B4 15/15, Chunk C 28/28, and historical Product Shadow 30/30 passed; complete Training Engine V2 passed 1,098/1,099 under parallel load with one 30-second Week-policy timeout and that isolated file then passed 4/4; root engine passed 1,045 with nine environment-gated skips; Product Shadow TypeScript, scoped ESLint, consumer and gyms production builds, both browser invariance specs, deterministic double regeneration, JSON validation, and staged diff checks passed
+- **Local environment boundary:** Training Engine V2 standalone TypeScript reports the three existing cross-package `@/lib` alias-resolution errors; local PostgreSQL is not configured and remains CI-authoritative; neither condition is introduced by Chunk D runtime code
+- **Fingerprints:** ontology `72610e25fa7afd5c9cea758fbe840a063566c8cf354560187fea35938d76243c`; Registry V16 `8000f8d591d965799e88bdf8cbbb976c5a23e3cd411e3bf24e04849e2e776542`; scenario contracts `be5c278494a47f01320e3d2350c90c76a495f77f1dac9bba435f0c72cae0a944`; causal-pair matrix `f45d36d3d7e84863f46c6453bbf9601909dc1629a9f2fb3be901754f7d56c937`; observed metrics `af9686fc7906d73fc7689ba09dd19a54411f1ed3359346ea777371d90dc96d55`; stress `03ea2a85837b9f28d820961ac802065122c22248d9a49658b61f253510d1fa81`; deterministic report corpus `b65aff5d484b024429d8c2da186ac84cd33ba7509841b30728a813d8faf3241d`; combined Chunk D `dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464`
+- **Preserved upstream authority:** all B1-B4 and Chunk C fingerprints remain unchanged; Chunk C post-closure authority is reconciled separately without rewriting its frozen pre-closure readiness snapshot
+- **Remaining limitations:** Product-owned UI and follow-up inputs, power, systemic conditioning, sport-specific policy, exact capability collection, owner-account delivery, broader activation, live Performance/Response evidence, and outcome claims remain open; E-H are not completed
+- **Rollback boundary:** revert this ledger closure, then revert implementation commit `b156988109b892a0db49bec30c7c09407d6641ed`; historical Product Shadow V1, current Product routes, and legacy delivered output remain unchanged
+- **Next dependency:** `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`
 
 ## Chunk E — Screenshot-guided Product design
 
