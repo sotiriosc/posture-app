@@ -38,6 +38,11 @@ export const KNOWLEDGE_COMPLETENESS_AUDIT_CONTRACT = Object.freeze({
   contractVersion: "1.0.0",
 } as const);
 
+export const KNOWLEDGE_CURATION_WAVE_CONTRACT = Object.freeze({
+  contractId: "EXERCISE_KNOWLEDGE_CURATION_WAVE",
+  contractVersion: "1.0.0",
+} as const);
+
 export type KnowledgeContractReference =
   | typeof KNOWLEDGE_CORE_CONTRACT
   | typeof KNOWLEDGE_ENTRY_CONTRACT
@@ -46,7 +51,8 @@ export type KnowledgeContractReference =
   | typeof REALIZATION_KNOWLEDGE_OVERRIDE_CONTRACT
   | typeof KNOWLEDGE_PROVENANCE_CONTRACT
   | typeof COMPACT_FALLBACK_PROJECTION_CONTRACT
-  | typeof KNOWLEDGE_COMPLETENESS_AUDIT_CONTRACT;
+  | typeof KNOWLEDGE_COMPLETENESS_AUDIT_CONTRACT
+  | typeof KNOWLEDGE_CURATION_WAVE_CONTRACT;
 
 export const KNOWLEDGE_FACT_KINDS = [
   "setup_instruction",
@@ -100,6 +106,10 @@ export interface ExerciseKnowledgePresentationMap {
   readonly during: readonly string[];
   readonly pattern: readonly string[];
   readonly watchFor: readonly string[];
+  readonly compactFallbackRefs?: {
+    readonly summary: string;
+    readonly coachingFocus: readonly string[];
+  };
 }
 
 export interface ExerciseRealizationKnowledgeOverride {

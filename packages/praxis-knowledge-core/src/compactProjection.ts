@@ -13,25 +13,21 @@ function statement(entry: ExerciseKnowledgeEntry, factId: string): string {
 export function projectCompactFallback(
   entry: ExerciseKnowledgeEntry,
 ): ExerciseKnowledgeCompactFallback {
-  const patternFactId = entry.presentation.pattern[0];
-  const cueFactId = entry.presentation.cues[0];
-  if (!patternFactId || !cueFactId) {
+  const summaryFactId = entry.presentation.compactFallbackRefs?.summary ?? entry.presentation.pattern[0];
+  const coachingFactIds = entry.presentation.compactFallbackRefs?.coachingFocus ?? [
+    entry.presentation.focus,
+    entry.presentation.cues[0],
+  ].filter((value): value is string => Boolean(value));
+  if (!summaryFactId || coachingFactIds.length === 0) {
     throw new Error(`KNOWLEDGE_COMPACT_PROJECTION_INCOMPLETE:${entry.exerciseId}`);
   }
 
   return Object.freeze({
     contract: COMPACT_FALLBACK_PROJECTION_CONTRACT,
     exerciseId: entry.exerciseId,
-    summary: statement(entry, patternFactId),
-    coachingFocus: Object.freeze([
-      statement(entry, entry.presentation.focus),
-      statement(entry, cueFactId),
-    ]),
-    sourceFactIds: Object.freeze([
-      patternFactId,
-      entry.presentation.focus,
-      cueFactId,
-    ]),
+    summary: statement(entry, summaryFactId),
+    coachingFocus: Object.freeze(coachingFactIds.map((factId) => statement(entry, factId))),
+    sourceFactIds: Object.freeze([summaryFactId, ...coachingFactIds]),
   });
 }
 

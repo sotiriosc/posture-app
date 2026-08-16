@@ -73,6 +73,9 @@ function referencedFactIds(entry: ExerciseKnowledgeEntry): readonly string[] {
     ...presentation.during,
     ...presentation.pattern,
     ...presentation.watchFor,
+    ...(presentation.compactFallbackRefs
+      ? [presentation.compactFallbackRefs.summary, ...presentation.compactFallbackRefs.coachingFocus]
+      : []),
     ...overrideRefs,
   ];
 }
