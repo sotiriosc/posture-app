@@ -174,3 +174,13 @@ Chunk E adds no activation authority. Get stronger remains a future inactive int
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - Preview-only activation boundary
+
+`get_stronger` exists as `future_inactive_internal`, but ordinary consumer, gyms, buyer demo, environment, query string, account state, persistence, generation, Product Shadow, V2 output, owner delivery, and Product activation counts remain zero. The internal wrapper is not a production route.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

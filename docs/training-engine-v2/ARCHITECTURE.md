@@ -502,3 +502,13 @@ Chunk E defines design-only `ProductTrainingProfileV2` and `QUESTIONNAIRE_SIGNAT
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - App-local inactive option boundary
+
+Consumer owns five non-public versioned contracts and one pure validated option registry. The optional prop is the only preview authority. The selection/result records are component-local and cannot enter current questionnaire, storage, signature, Program, Product Shadow, or V2 contracts. No production preview route or cross-app import exists.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

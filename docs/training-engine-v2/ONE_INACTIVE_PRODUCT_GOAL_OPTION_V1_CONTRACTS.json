@@ -1,0 +1,13 @@
+{
+  "authorization": "ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_NOT_OWNER_DELIVERY_OR_PRODUCT_ACTIVATION",
+  "contracts": {
+    "option": "ONE_INACTIVE_PRODUCT_GOAL_OPTION@1.0.0",
+    "registry": "PRODUCT_GOAL_OPTION_REGISTRY_V1@1.0.0",
+    "previewInput": "INACTIVE_PRODUCT_GOAL_PREVIEW_INPUT@1.0.0",
+    "previewSelection": "INACTIVE_PRODUCT_GOAL_PREVIEW_SELECTION@1.0.0",
+    "previewResult": "INACTIVE_PRODUCT_GOAL_PREVIEW_RESULT@1.0.0"
+  },
+  "exactVersionRequired": true,
+  "hiddenLatestAlias": false,
+  "publicExports": []
+}

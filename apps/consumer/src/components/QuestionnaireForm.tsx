@@ -11,6 +11,16 @@ import { clearDraft } from "@/lib/sessionDraftStore";
 import { buildSignalsFromLocalState, generateProgram } from "@/lib/engine";
 import { getProgram, saveProgram, saveProgramProgress, uuid } from "@/lib/logStore";
 import type { ProgramProgress } from "@/lib/types";
+import {
+  GET_STRONGER_OPTION_ID,
+  createInactiveProductGoalPreviewResult,
+  createInactiveProductGoalPreviewSelection,
+  isInactiveProductGoalPreviewInput,
+  type InactiveProductGoalPreviewInput,
+  type InactiveProductGoalPreviewResult,
+  type InactiveProductGoalPreviewSelection,
+} from "./questionnaire/inactiveProductGoalContracts";
+import { getInactiveProductGoalOption } from "./questionnaire/productGoalOptionRegistry";
 
 export type QuestionnaireData = {
   goals: string;
@@ -90,7 +100,22 @@ const hasProgramAffectingChange = (
 ) =>
   buildQuestionnaireSignature(next) !== buildQuestionnaireSignature(baseline);
 
-export default function QuestionnaireForm() {
+export type QuestionnaireFormProps = {
+  inactiveGoalPreview?: InactiveProductGoalPreviewInput;
+  onInactiveGoalPreviewSelectionChange?: (
+    selection: InactiveProductGoalPreviewSelection | null
+  ) => void;
+  onInactiveGoalPreviewResult?: (result: InactiveProductGoalPreviewResult) => void;
+};
+
+const PREVIEW_HELPER_ID = "inactive-goal-preview-helper";
+const PREVIEW_ALERT_ID = "inactive-goal-preview-alert";
+
+export default function QuestionnaireForm({
+  inactiveGoalPreview,
+  onInactiveGoalPreviewSelectionChange,
+  onInactiveGoalPreviewResult,
+}: QuestionnaireFormProps = {}) {
   const [data, setData] = useState<QuestionnaireData>(emptyData);
   const [committedData, setCommittedData] = useState<QuestionnaireData>(emptyData);
   const [pendingData, setPendingData] = useState<QuestionnaireData | null>(null);
@@ -98,9 +123,34 @@ export default function QuestionnaireForm() {
   const [isApplyingChange, setIsApplyingChange] = useState(false);
   const [changeWarning, setChangeWarning] = useState<string | null>(null);
   const [requiresChangeConfirmation, setRequiresChangeConfirmation] = useState(false);
+  const [storedInactiveGoalSelection, setInactiveGoalSelection] =
+    useState<InactiveProductGoalPreviewSelection | null>(null);
+  const [storedInactiveGoalResult, setInactiveGoalResult] =
+    useState<InactiveProductGoalPreviewResult | null>(null);
   const router = useRouter();
   const [hydratedServerSnapshot, setHydratedServerSnapshot] = useState(false);
   const lastQuestionnaireSyncSignatureRef = useRef<string | null>(null);
+  const inactiveGoalAlertRef = useRef<HTMLParagraphElement | null>(null);
+  const previewInputEnabled = isInactiveProductGoalPreviewInput(inactiveGoalPreview);
+  const inactiveGoalOption = previewInputEnabled
+    ? getInactiveProductGoalOption(inactiveGoalPreview.optionId)
+    : null;
+  const inactiveGoalSelection = previewInputEnabled
+    ? storedInactiveGoalSelection
+    : null;
+  const inactiveGoalResult = previewInputEnabled ? storedInactiveGoalResult : null;
+
+  if (
+    !previewInputEnabled &&
+    (storedInactiveGoalSelection !== null || storedInactiveGoalResult !== null)
+  ) {
+    setInactiveGoalSelection(null);
+    setInactiveGoalResult(null);
+  }
+
+  useEffect(() => {
+    if (inactiveGoalResult) inactiveGoalAlertRef.current?.focus();
+  }, [inactiveGoalResult]);
 
   const persistQuestionnaire = (next: QuestionnaireData) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
@@ -313,6 +363,12 @@ export default function QuestionnaireForm() {
       className="ui-card space-y-8 rounded-lg bg-slate-950/60 p-5 shadow-lg sm:p-6"
       onSubmit={(event) => {
         event.preventDefault();
+        if (inactiveGoalSelection) {
+          const result = createInactiveProductGoalPreviewResult();
+          setInactiveGoalResult(result);
+          onInactiveGoalPreviewResult?.(result);
+          return;
+        }
         if (requiresChangeConfirmation && hasProgramAffectingChange(data, committedData)) {
           openChangeConfirm(data);
           return;
@@ -347,20 +403,77 @@ export default function QuestionnaireForm() {
       </div>
 
       <div>
-            <label className="text-sm font-semibold text-white">
+            <label
+              htmlFor={previewInputEnabled ? "primary-goal-select" : undefined}
+              className="text-sm font-semibold text-white"
+            >
               Primary goal
             </label>
             <select
+          id={previewInputEnabled ? "primary-goal-select" : undefined}
+          data-testid={previewInputEnabled ? "primary-goal-select" : undefined}
           className="mt-2 w-full rounded-lg border border-slate-500/25 bg-slate-950/55 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] outline-none focus-visible:border-sky-200/50 focus-visible:ring-2 focus-visible:ring-sky-300/30"
-          value={data.goals}
-          onChange={(event) => updateData({ goals: event.target.value })}
+          value={inactiveGoalSelection?.optionId ?? data.goals}
+          aria-describedby={inactiveGoalSelection ? PREVIEW_HELPER_ID : undefined}
+          onChange={(event) => {
+            if (
+              inactiveGoalOption &&
+              event.target.value === GET_STRONGER_OPTION_ID
+            ) {
+              const selection = createInactiveProductGoalPreviewSelection();
+              setInactiveGoalSelection(selection);
+              setInactiveGoalResult(null);
+              onInactiveGoalPreviewSelectionChange?.(selection);
+              return;
+            }
+
+            setInactiveGoalSelection(null);
+            setInactiveGoalResult(null);
+            onInactiveGoalPreviewSelectionChange?.(null);
+            updateData({ goals: event.target.value });
+          }}
         >
           {goalOptions.map((goal) => (
             <option key={goal} value={goal}>
               {goal}
             </option>
           ))}
+          {inactiveGoalOption ? (
+            <optgroup label="Internal preview">
+              <option value={inactiveGoalOption.id}>
+                {inactiveGoalOption.displayLabel}
+              </option>
+            </optgroup>
+          ) : null}
         </select>
+        {inactiveGoalSelection ? (
+          <div
+            id={PREVIEW_HELPER_ID}
+            data-testid="inactive-goal-preview-panel"
+            className="mt-3 border-l-2 border-sky-300/70 bg-slate-950/45 px-3 py-2.5 text-slate-200"
+          >
+            <p className="text-xs font-semibold uppercase text-sky-200">
+              INTERNAL PREVIEW
+            </p>
+            <p className="mt-1 text-sm font-semibold text-white">Get stronger</p>
+            <p className="mt-1 text-sm leading-5 text-slate-300">
+              This goal is being reviewed and is not available for plan generation yet.
+            </p>
+          </div>
+        ) : null}
+        {inactiveGoalResult ? (
+          <p
+            ref={inactiveGoalAlertRef}
+            id={PREVIEW_ALERT_ID}
+            role="alert"
+            tabIndex={-1}
+            data-testid="inactive-goal-preview-submit-alert"
+            className="mt-3 border-l-2 border-amber-300/70 bg-amber-50/10 px-3 py-2.5 text-sm leading-5 text-amber-100 outline-none focus-visible:ring-2 focus-visible:ring-amber-200/70"
+          >
+            Get stronger is not available for plan generation yet. Your current profile
+            and plan were not changed.
+          </p>
+        ) : null}
       </div>
 
       <div>
@@ -456,6 +569,13 @@ export default function QuestionnaireForm() {
       <button
         type="submit"
         data-testid="generate-routine"
+        aria-describedby={
+          inactiveGoalSelection
+            ? inactiveGoalResult
+              ? `${PREVIEW_HELPER_ID} ${PREVIEW_ALERT_ID}`
+              : PREVIEW_HELPER_ID
+            : undefined
+        }
         disabled={isApplyingChange}
         className="h-12 w-full rounded-lg bg-[linear-gradient(135deg,#38BDF8_0%,#2563EB_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_38px_rgba(37,99,235,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
       >

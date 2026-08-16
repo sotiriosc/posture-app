@@ -31,6 +31,8 @@ export const REPORT_CORPUS_BASELINE_FINGERPRINT =
 
 const PRODUCT_GOAL_CONTEXT_CHUNK_E_MARKER =
   /\n*<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->[\s\S]*?<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->\n?/;
+const ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F_MARKER =
+  /\n*<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->[\s\S]*?<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->\n?/;
 
 export const IMPORT_GRAPH_BEFORE = Object.freeze([
   Object.freeze({ source: "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/contracts.ts",
@@ -183,7 +185,8 @@ function corpusManifest(workspaceRoot: string) {
   ].sort();
   return Object.freeze(paths.map((path) => {
     const content = readFileSync(resolve(workspaceRoot, path), "utf8")
-      .replace(PRODUCT_GOAL_CONTEXT_CHUNK_E_MARKER, "\n");
+      .replace(PRODUCT_GOAL_CONTEXT_CHUNK_E_MARKER, "\n")
+      .replace(ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F_MARKER, "\n");
     return Object.freeze({ path,
       sha256: createHash("sha256").update(content).digest("hex") });
   }));

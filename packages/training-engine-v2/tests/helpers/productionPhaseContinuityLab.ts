@@ -216,7 +216,8 @@ export function runProductionPhaseContinuityStress(evaluationCount = 10_000) {
 function recursiveFiles(root: string): readonly string[] {
   if (!existsSync(root)) return [];
   return readdirSync(root).filter((name) =>
-    ![".next", "node_modules", "test-results", "playwright-report"].includes(name)).flatMap((name) => {
+    ![".next", "node_modules", "test-results", "playwright-report"].includes(name) &&
+    !name.endsWith(".tsbuildinfo")).flatMap((name) => {
     const path = resolve(root, name);
     return statSync(path).isDirectory() ? recursiveFiles(path) : [path];
   });

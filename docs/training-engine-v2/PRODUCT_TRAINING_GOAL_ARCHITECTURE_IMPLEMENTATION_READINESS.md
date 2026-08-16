@@ -158,3 +158,13 @@ Chunk E selects the consumer `/questionnaire` surface and completes design-only 
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - One inactive Product goal option
+
+Chunk F implements five exact-version consumer app-local contracts, a validated one-entry registry, explicit preview injection, separate ephemeral selection, and a first-branch fail-closed result. `QuestionnaireData`, signature V1, engine exports, Product Shadow, V2 output, and ordinary routes remain unchanged. G and H remain open.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

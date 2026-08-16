@@ -1,0 +1,3373 @@
+{
+  "contract": "ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_HOLDOUT@1.0.0",
+  "frozen": true,
+  "freezeBasis": "authorization_contract_v1_before_evaluation",
+  "correctionPolicy": "new_contract_version_and_new_holdout",
+  "partitions": {
+    "registry_contracts": 80,
+    "preview_selection_submission": 80,
+    "route_app_invariance": 80
+  },
+  "cases": [
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-001",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 1,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-002",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 2,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-003",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 3,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-004",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 4,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-005",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 5,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-006",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 6,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-007",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 7,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-008",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 8,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-009",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 9,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-010",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 10,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-011",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 11,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-012",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 12,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-013",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 13,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-014",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 14,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-015",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 15,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-016",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 16,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-017",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 17,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-018",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 18,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-019",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 19,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-020",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 20,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-021",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 21,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-022",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 22,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-023",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 23,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-024",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 24,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-025",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 25,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-026",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 26,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-027",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 27,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-028",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 28,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-029",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 29,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-030",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 30,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-031",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 31,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-032",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 32,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-033",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 33,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-034",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 34,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-035",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 35,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-036",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 36,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-037",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 37,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-038",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 38,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-039",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 39,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-040",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 40,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-041",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 41,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-042",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 42,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-043",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 43,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-044",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 44,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-045",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 45,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-046",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 46,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-047",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 47,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-048",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 48,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-049",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 49,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-050",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 50,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-051",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 51,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-052",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 52,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-053",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 53,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-054",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 54,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-055",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 55,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-056",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 56,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-057",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 57,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-058",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 58,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-059",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 59,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-060",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 60,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-061",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 61,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-062",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 62,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-063",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 63,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-064",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 64,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-065",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 65,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-066",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 66,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-067",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 67,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-068",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 68,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-069",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 69,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-070",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 70,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-071",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 71,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-072",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 72,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-073",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 73,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-074",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 74,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-075",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 75,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-076",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 76,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-077",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 77,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-078",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 78,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-079",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 79,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-REGISTRY_CONTRACTS-080",
+      "partition": "registry_contracts",
+      "vector": {
+        "ordinal": 80,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "accept_exact_registry_or_reject_mutation"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-001",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 1,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-002",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 2,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-003",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 3,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-004",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 4,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-005",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 5,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-006",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 6,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-007",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 7,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-008",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 8,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-009",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 9,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-010",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 10,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-011",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 11,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-012",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 12,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-013",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 13,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-014",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 14,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-015",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 15,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-016",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 16,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-017",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 17,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-018",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 18,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-019",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 19,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-020",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 20,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-021",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 21,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-022",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 22,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-023",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 23,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-024",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 24,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-025",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 25,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-026",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 26,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-027",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 27,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-028",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 28,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-029",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 29,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-030",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 30,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-031",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 31,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-032",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 32,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-033",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 33,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-034",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 34,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-035",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 35,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-036",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 36,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-037",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 37,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-038",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 38,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-039",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 39,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-040",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 40,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-041",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 41,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-042",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 42,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-043",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 43,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-044",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 44,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-045",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 45,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-046",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 46,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-047",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 47,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-048",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 48,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-049",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 49,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-050",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 50,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-051",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 51,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-052",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 52,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-053",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 53,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-054",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 54,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-055",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 55,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-056",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 56,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-057",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 57,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-058",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 58,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-059",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 59,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-060",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 60,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-061",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 61,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-062",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 62,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-063",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 63,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-064",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 64,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-065",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 65,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-066",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 66,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-067",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 67,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-068",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 68,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-069",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 69,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-070",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 70,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-071",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 71,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-072",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 72,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-073",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 73,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-074",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 74,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-075",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 75,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-076",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 76,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-077",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 77,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-078",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 78,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-079",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 79,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-PREVIEW_SELECTION_SUBMISSION-080",
+      "partition": "preview_selection_submission",
+      "vector": {
+        "ordinal": 80,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "ephemeral_or_fail_closed"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-001",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 1,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-002",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 2,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-003",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 3,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-004",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 4,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-005",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 5,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-006",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 6,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-007",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 7,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-008",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 8,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-009",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 9,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-010",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 10,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-011",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 11,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-012",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 12,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-013",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 13,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-014",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 14,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-015",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 15,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-016",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 16,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-017",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 17,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-018",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 18,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-019",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 19,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-020",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 20,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-021",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 21,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-022",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 22,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-023",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 23,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-024",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 24,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-025",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 25,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-026",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 26,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-027",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 27,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-028",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 28,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-029",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 29,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-030",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 30,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-031",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 31,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-032",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 32,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-033",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 33,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-034",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 34,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-035",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 35,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-036",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 36,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-037",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 37,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-038",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 38,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-039",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 39,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-040",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 40,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-041",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 41,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-042",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 42,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-043",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 43,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-044",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 44,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-045",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 45,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-046",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 46,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-047",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 47,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-048",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 48,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-049",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 49,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-050",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 50,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-051",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 51,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-052",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 52,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-053",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 53,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-054",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 54,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-055",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 55,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-056",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 56,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-057",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 57,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-058",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 58,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-059",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 59,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-060",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 60,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-061",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 61,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-062",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 62,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-063",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 63,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-064",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 64,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-065",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 65,
+        "goal": "get_stronger",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-066",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 66,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-067",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 67,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-068",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 68,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-069",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 69,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-070",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 70,
+        "goal": "get_stronger",
+        "input": "absent",
+        "program": true,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-071",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 71,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": false,
+        "activeSession": true,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-072",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 72,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-073",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 73,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-074",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 74,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-075",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 75,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "390x844"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-076",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 76,
+        "goal": "General fitness",
+        "input": "invalid",
+        "program": true,
+        "activeSession": true,
+        "hydration": "server",
+        "viewport": "768x1024"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-077",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 77,
+        "goal": "Improve posture",
+        "input": "valid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "1024x768"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-078",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 78,
+        "goal": "Reduce pain",
+        "input": "absent",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "1440x900"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-079",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 79,
+        "goal": "Athletic performance",
+        "input": "invalid",
+        "program": true,
+        "activeSession": false,
+        "hydration": "local",
+        "viewport": "320x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    },
+    {
+      "id": "F-HOLDOUT-ROUTE_APP_INVARIANCE-080",
+      "partition": "route_app_invariance",
+      "vector": {
+        "ordinal": 80,
+        "goal": "get_stronger",
+        "input": "invalid",
+        "program": false,
+        "activeSession": false,
+        "hydration": "server",
+        "viewport": "360x800"
+      },
+      "expected": "legacy_exact_and_preview_absent"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "contract": "INACTIVE_PRODUCT_GOAL_PREVIEW_RESULT@1.0.0",
+  "version": "1.0.0",
+  "optionId": "get_stronger",
+  "canonicalOutcome": "strength",
+  "status": "future_submission_unavailable",
+  "reason": "INACTIVE_PRODUCT_GOAL_PREVIEW_ONLY",
+  "persistenceAttempted": false,
+  "generationAttempted": false,
+  "ProductShadowAttempted": false,
+  "navigationAttempted": false,
+  "activeSessionMutationAttempted": false,
+  "ProductMutationApplied": false,
+  "V2OutputReturned": false
+}

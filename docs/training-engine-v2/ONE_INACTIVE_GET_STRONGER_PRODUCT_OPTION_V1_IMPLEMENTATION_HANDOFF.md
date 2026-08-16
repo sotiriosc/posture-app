@@ -38,3 +38,15 @@ Rollback: remove preview registry option prop harness and F tests; current route
 Expected F classification: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_READY_FOR_OWNER_ACCOUNT_GOAL_DELIVERY_DESIGN_AUTHORIZATION`.
 
 Fingerprint: `d33b05c84cbbbb47d07be893349844635df43aaca3428c1585ef8c1562b1a9ed`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Disposition
+
+Status: `ONE_INACTIVE_GET_STRONGER_PRODUCT_OPTION_V1_IMPLEMENTED_PREVIEW_ONLY`.
+
+The handoff is implemented through the exact app-local contracts and one-option registry. Direct component preview selection remains outside `QuestionnaireData`; blocked submit returns before current confirmation, session, persistence, generation, navigation, Product Shadow, and V2 paths. Ordinary consumer, gyms, and buyer demo remain absent. No owner-account delivery or activation is authorized.
+
+Evidence: [implementation readiness](./ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_READINESS.md). Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

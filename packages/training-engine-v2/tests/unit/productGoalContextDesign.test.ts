@@ -185,7 +185,14 @@ describe("screenshot-guided Product goal and context input design", () => {
       cwd: repositoryRoot,
       encoding: "utf8",
     }).trim().split("\n").filter(Boolean);
-    expect(changed.some((path) => path.startsWith("apps/consumer/src/") ||
+    const authorizedChunkFConsumerPaths = new Set([
+      "apps/consumer/src/components/QuestionnaireForm.tsx",
+      "apps/consumer/src/components/questionnaire/InactiveProductGoalPreview.tsx",
+      "apps/consumer/src/components/questionnaire/inactiveProductGoalContracts.ts",
+      "apps/consumer/src/components/questionnaire/productGoalOptionRegistry.ts",
+    ]);
+    expect(changed.some((path) =>
+      (path.startsWith("apps/consumer/src/") && !authorizedChunkFConsumerPaths.has(path)) ||
       path.startsWith("apps/gyms/src/") || path.startsWith("packages/engine/src/") ||
       path.startsWith("packages/training-engine-v2/src/"))).toBe(false);
     let productionReferences = "";

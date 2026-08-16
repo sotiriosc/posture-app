@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { relative, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -6,6 +7,7 @@ import { CAGT_EFFECTIVE_AUTHORITY_REGISTRY_V15 } from "../cagt/effectiveAuthorit
 
 const workspace = process.cwd().endsWith("packages/engine") ?
   resolve(process.cwd(), "../..") : process.cwd();
+const CHUNK_F_STARTING_COMMIT = "560f8640661a37c8ffe548967a3de1e827eeab29";
 
 function source(relativeRoot: string): string {
   const root = resolve(workspace, relativeRoot);
@@ -30,8 +32,15 @@ function historicalBoundaryFingerprint(): string {
     });
     return visit(absolute);
   }).sort();
-  const inner = files.map((file) => `${createHash("sha256").update(readFileSync(file)).digest("hex")}  ${relative(workspace, file)}\n`)
-    .join("");
+  const inner = files.map((file) => {
+    const relativePath = relative(workspace, file);
+    const content = relativePath === "apps/consumer/src/components/QuestionnaireForm.tsx"
+      ? execFileSync("git", ["show", `${CHUNK_F_STARTING_COMMIT}:${relativePath}`], {
+        cwd: workspace,
+      })
+      : readFileSync(file);
+    return `${createHash("sha256").update(content).digest("hex")}  ${relativePath}\n`;
+  }).join("");
   return createHash("sha256").update(inner).digest("hex");
 }
 

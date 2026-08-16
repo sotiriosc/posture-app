@@ -1,0 +1,21 @@
+{
+  "contract": "PRODUCT_GOAL_OPTION_REGISTRY_V1@1.0.0",
+  "options": [
+    {
+      "contract": "ONE_INACTIVE_PRODUCT_GOAL_OPTION@1.0.0",
+      "id": "get_stronger",
+      "displayLabel": "Get stronger",
+      "canonicalOutcome": "strength",
+      "availability": "future_inactive_internal",
+      "requiredFollowUp": [],
+      "submissionBehavior": "preview_only_fail_closed",
+      "ordinaryConsumerVisible": false,
+      "ordinaryGymsVisible": false,
+      "buyerDemoVisible": false,
+      "persistenceAllowed": false,
+      "legacyGenerationAllowed": false,
+      "productShadowAllowed": false,
+      "v2OutputAllowed": false
+    }
+  ]
+}

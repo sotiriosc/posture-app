@@ -1,0 +1,341 @@
+{
+  "count": 48,
+  "mutations": [
+    {
+      "id": "F-MUTATION-001",
+      "name": "add Get stronger to ordinary goalOptions",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-002",
+      "name": "expose Get stronger disabled on ordinary route",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-003",
+      "name": "expose Get stronger in gyms",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-004",
+      "name": "expose Get stronger in buyer demo",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-005",
+      "name": "select preview by environment",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-006",
+      "name": "select preview by query string",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-007",
+      "name": "select preview by account data",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-008",
+      "name": "select preview by localStorage",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-009",
+      "name": "write get_stronger into QuestionnaireData.goals",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-010",
+      "name": "write Get stronger into QuestionnaireData.goals",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-011",
+      "name": "change committed questionnaire data",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-012",
+      "name": "change pending questionnaire data",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-013",
+      "name": "mark current profile dirty",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-014",
+      "name": "change questionnaire signature",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-015",
+      "name": "persist preview to localStorage",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-016",
+      "name": "push preview in server training patch",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-017",
+      "name": "open profile confirmation modal",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-018",
+      "name": "show active-session warning",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-019",
+      "name": "clear active session draft",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-020",
+      "name": "call buildSignalsFromLocalState",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-021",
+      "name": "call generateProgram",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-022",
+      "name": "save Program",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-023",
+      "name": "save ProgramProgress",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-024",
+      "name": "save app state",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-025",
+      "name": "navigate to Results",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-026",
+      "name": "call Product Shadow",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-027",
+      "name": "run B1-B4 mapping pipeline",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-028",
+      "name": "return V2 output",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-029",
+      "name": "silently disable current CTA",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-030",
+      "name": "omit preview explanation",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-031",
+      "name": "use color-only preview state",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-032",
+      "name": "remove preview select label association",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-033",
+      "name": "create preview production route",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-034",
+      "name": "create hidden current-route flag",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-035",
+      "name": "add Build muscle",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-036",
+      "name": "add future fitness option",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-037",
+      "name": "change current goal order",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-038",
+      "name": "change current Product copy",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-039",
+      "name": "change QuestionnaireData shape",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-040",
+      "name": "change questionnaire signature V1",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-041",
+      "name": "change gyms runtime source",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-042",
+      "name": "change buyer demo behavior",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-043",
+      "name": "mark F complete before tests",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-044",
+      "name": "mark G complete",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-045",
+      "name": "set final ledger state completed",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-046",
+      "name": "accept unsupported registry contract",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-047",
+      "name": "accept unsupported preview-input version",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    },
+    {
+      "id": "F-MUTATION-048",
+      "name": "allow duplicate stable option ID",
+      "semanticDelta": true,
+      "expected": "rejected",
+      "observed": "rejected"
+    }
+  ]
+}

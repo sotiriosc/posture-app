@@ -30,6 +30,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
+    "test:inactive-product-goal-option": "vitest --run tests/unit/inactiveGetStrongerOption.test.ts tests/unit/inactiveGetStrongerGuards.test.tsx tests/unit/inactiveProductGoalEvidence.test.ts",
+    "report:inactive-product-goal-option": "node --import tsx dev/reportInactiveProductGoalOption.ts",
     "test:e2e": "playwright test"
   }
 }

@@ -94,3 +94,13 @@ Chunk E design is ready for ledger closure. The next separately authorized step 
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - One inactive Product goal option
+
+F is implemented preview-only for exactly one option: `get_stronger` / Get stronger / `strength`. The direct component harness can select it, and submit returns an explicit unavailable result without dirtying, persisting, generating, navigating, or invoking Product Shadow/V2. G controlled owner-account delivery and H broad activation remain separately authorized future work.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

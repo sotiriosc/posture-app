@@ -15,8 +15,12 @@ const workspaceRoot = resolve(packageRoot, "../..");
 const docsRoot = resolve(workspaceRoot, "docs/training-engine-v2");
 mkdirSync(docsRoot, { recursive: true });
 
+const chunkFPattern = /\n*<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->[\s\S]*?<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->\n?/;
 for (const [filename, content] of Object.entries(chunkEMarkdownReports)) {
-  writeFileSync(resolve(docsRoot, filename), content, "utf8");
+  const path = resolve(docsRoot, filename);
+  const existing = existsSync(path) ? readFileSync(path, "utf8") : "";
+  const chunkFMarker = existing.match(chunkFPattern)?.[0]?.trim() ?? "";
+  writeFileSync(path, chunkFMarker ? `${content.trimEnd()}\n\n${chunkFMarker}\n` : content, "utf8");
 }
 for (const [filename, content] of Object.entries(chunkEJsonReports)) {
   writeFileSync(resolve(docsRoot, filename), content, "utf8");

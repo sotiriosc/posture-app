@@ -2282,3 +2282,13 @@ Chunk E preserves design-before-implementation: Option A keeps the compact goal 
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - Preview-only Get stronger implementation
+
+The existing compact native goal select gains one optgroup only under exact direct preview injection. Get stronger selection is represented by a separate unpersisted record and submit emits an unavailable result before every current Product and engine path. This proves presentation ownership only; G must design controlled owner-account delivery before any mapping or output can be considered, and H remains the activation owner.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->

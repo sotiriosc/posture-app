@@ -420,3 +420,13 @@ Chunk E adds deterministic design validators plus synthetic Playwright render ca
 Combined Chunk E fingerprint: `5822ccde91f41387886dd57d92015956f10035a23f78596040033d4a8fcf559f`. Exact next dependency: `ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_IMPLEMENTATION_AUTHORIZATION`.
 
 <!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->
+
+## Chunk F - Inactive Product goal preview
+
+The focused consumer suite covers contracts/registry rejection, explicit-only rendering, ephemeral selection, invalid inputs, dirty/existing-Program/active-session/hydration boundaries, deterministic alert focus, all persistence/generation/navigation tripwires, and six responsive contracts. Evidence includes 141 controlled scenarios, a frozen 240-case holdout, 48/48 rejected semantic mutations, 22/22 metamorphic relations, and 53,000 deterministic stress assertions with zero side effects. Current-route Playwright proves exactly four legacy options and no preview DOM.
+
+Combined Chunk F fingerprint: `1665c6b780ab2638d377f09bac48de61480ab76ea346faf1304b799f1bbc9404`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->
