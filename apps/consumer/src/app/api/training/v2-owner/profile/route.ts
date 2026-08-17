@@ -1,16 +1,16 @@
 import { createHash } from "node:crypto";
 import { buildOwnerProfileRevision } from "@praxis/training-engine-v2";
 import { withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
-import { authorizeOwnerMutation, ownerJson, readOwnerGate, rejectsIdentityFields } from
+import { authorizeOwnerMutation, authorizeOwnerRead, ownerJson, rejectsIdentityFields } from
   "@/server/controlledOwnerDelivery";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
-  const gate = await readOwnerGate("preview");
-  if (!gate.allowed || !gate.userId) return ownerJson({ ok: false,
-    error: { code: "NOT_FOUND", message: "Not Found" } }, 404);
+  const authorization = await authorizeOwnerRead({ operation: "preview", action: "profile-read", limit: 120 });
+  if (!authorization.allowed) return authorization.response;
+  const gate = authorization.gate;
   try {
     const profile = await withControlledOwnerRepositories(({ enrollmentProfiles }) =>
       enrollmentProfiles.readCurrentProfile(gate.userId!));

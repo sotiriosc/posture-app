@@ -49,7 +49,11 @@
     "test:session-practice-v2": "vitest --run --config vitest.config.ts tests/unit/sessionPracticeV2Bridge.test.ts tests/unit/sessionPracticeV2Evidence.test.ts",
     "test:session-practice-v2:postgres": "vitest --run --config vitest.config.ts tests/integration/sessionPracticeV2Postgres.integration.test.ts",
     "report:session-practice-v2": "node --import tsx dev/reportSessionPracticeV2.ts --write",
-    "check:session-practice-v2-reports": "node --import tsx dev/reportSessionPracticeV2.ts --check"
+    "check:session-practice-v2-reports": "node --import tsx dev/reportSessionPracticeV2.ts --check",
+    "test:controlled-owner-delivery": "vitest --run --config vitest.config.ts tests/unit/controlledOwnerDeliveryIdentityProfile.test.ts tests/unit/controlledOwnerDeliveryRequestSecurity.test.ts tests/unit/controlledOwnerDeliveryGenerationApplication.test.ts tests/unit/controlledOwnerDeliveryHardening.test.ts",
+    "test:controlled-owner-delivery:postgres": "vitest --run --config vitest.config.ts tests/integration/controlledOwnerDeliveryPostgres.integration.test.ts",
+    "report:controlled-owner-delivery": "node --import tsx dev/reportControlledOwnerDeliveryImplementation.ts --write",
+    "check:controlled-owner-delivery-reports": "node --import tsx dev/reportControlledOwnerDeliveryImplementation.ts --check"
   },
   "dependencies": {
     "@praxis/training-engine-v2": "0.0.1",

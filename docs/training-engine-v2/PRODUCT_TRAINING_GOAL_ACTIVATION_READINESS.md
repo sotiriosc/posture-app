@@ -244,3 +244,11 @@ Chunk G design adds no activation authority. Owner implementation remains separa
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation - Activation boundary
+
+Implementation adds no activation authority. The delivery mode defaults off; no live environment value changed,
+no live account was read, no live Program was generated/applied, and ordinary Get stronger visibility remains
+unchanged. Owner-only enablement/live verification and H are still open.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

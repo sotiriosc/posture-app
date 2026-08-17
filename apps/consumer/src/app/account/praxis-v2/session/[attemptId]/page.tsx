@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { PRE_PACKAGE_R_REFERENCE_EXERCISES } from "@praxis/training-engine-v2";
+import { REFERENCE_EXERCISES } from "@praxis/training-engine-v2";
 import { buildControlledOwnerSessionOptions, buildOwnerSessionPracticeSource,
   withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
 import { loadActiveOwnerEnvelope, ownerCsrfTokens, requireOwnerPage } from "@/server/controlledOwnerDelivery";
@@ -36,7 +36,7 @@ export default async function OwnerSessionPage({ params }: { readonly params: Pr
     .map((entry) => entry.assignmentId));
   const exercises = state.revision.plan.finalSequence!.steps.filter((step) => retained.has(step.assignmentId))
     .map((step) => {
-      const definition = PRE_PACKAGE_R_REFERENCE_EXERCISES.find((entry) => entry.id === step.exerciseId)!;
+      const definition = REFERENCE_EXERCISES.find((entry) => entry.id === step.exerciseId)!;
       const prescription = source.prescriptions.find((entry) => entry.prescriptionId === step.prescriptionId)!;
       const retainedBlocks = state.revision.plan.assignments.find((entry) => entry.assignmentId === step.assignmentId)
         ?.retainedBlockIds ?? [];

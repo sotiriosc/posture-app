@@ -2,6 +2,7 @@ import { Pool, type PoolClient } from "pg";
 import { createOwnerDeliveryPostgresRepository } from "./postgresDeliveryRepository";
 import { createOwnerEnrollmentProfilePostgresRepository } from "./postgresEnrollmentProfileRepository";
 import { createSessionPracticePostgresRepository } from "../sessionPracticeV2";
+import { createOutcomeSourcePostgresRepository } from "../outcomeSourcePersistence";
 
 let pool: Pool | null = null;
 
@@ -18,13 +19,40 @@ export async function withControlledOwnerRepositories<T>(callback: (repositories
   readonly enrollmentProfiles: ReturnType<typeof createOwnerEnrollmentProfilePostgresRepository>;
   readonly delivery: ReturnType<typeof createOwnerDeliveryPostgresRepository>;
   readonly sessionPractice: ReturnType<typeof createSessionPracticePostgresRepository>;
+  readonly outcomeSources: ReturnType<typeof createOutcomeSourcePostgresRepository>;
 }) => Promise<T>): Promise<T> {
   const client = await databasePool().connect();
   try {
     return await callback({ queryable: client,
       enrollmentProfiles: createOwnerEnrollmentProfilePostgresRepository({ queryable: client }),
       delivery: createOwnerDeliveryPostgresRepository({ queryable: client }),
-      sessionPractice: createSessionPracticePostgresRepository({ queryable: client }) });
+      sessionPractice: createSessionPracticePostgresRepository({ queryable: client }),
+      outcomeSources: createOutcomeSourcePostgresRepository({ pool: databasePool(), transactionClient: client }) });
+  } finally {
+    client.release();
+  }
+}
+
+export async function withControlledOwnerTransaction<T>(callback: (repositories: {
+  readonly queryable: PoolClient;
+  readonly enrollmentProfiles: ReturnType<typeof createOwnerEnrollmentProfilePostgresRepository>;
+  readonly delivery: ReturnType<typeof createOwnerDeliveryPostgresRepository>;
+  readonly sessionPractice: ReturnType<typeof createSessionPracticePostgresRepository>;
+  readonly outcomeSources: ReturnType<typeof createOutcomeSourcePostgresRepository>;
+}) => Promise<T>): Promise<T> {
+  const client = await databasePool().connect();
+  await client.query("BEGIN");
+  try {
+    const value = await callback({ queryable: client,
+      enrollmentProfiles: createOwnerEnrollmentProfilePostgresRepository({ queryable: client }),
+      delivery: createOwnerDeliveryPostgresRepository({ queryable: client }),
+      sessionPractice: createSessionPracticePostgresRepository({ queryable: client }),
+      outcomeSources: createOutcomeSourcePostgresRepository({ pool: databasePool(), transactionClient: client }) });
+    await client.query("COMMIT");
+    return value;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
   } finally {
     client.release();
   }

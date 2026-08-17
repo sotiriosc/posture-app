@@ -547,3 +547,11 @@ Chunk G design distinguishes configured identity reference, authenticated stable
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation - Domain realization
+
+The designed identity, mode, enrollment, profile, preview, approval, application, pointer, practice attempt,
+Performance, Outcome, observation, rollback, suspension, conflict, and unavailable facts are now typed runtime
+records. Product activation remains a distinct absent fact.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

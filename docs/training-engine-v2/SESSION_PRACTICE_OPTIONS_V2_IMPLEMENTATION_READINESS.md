@@ -17,3 +17,12 @@ Chunk G design specifies dedicated owner-only V2 session delivery through the ex
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation - Owner Session consumer
+
+The dedicated owner Session now consumes the exact Pre-G3 bridge across all 64 production identities and all
+seven dose modes. Mode is explicit, draft/resume is exact, execution locks mode, omitted work receives no
+Performance, and completion emits Outcome/Longitudinal evidence without automatic adaptation. Current
+SessionClient and historical V1 behavior remain unchanged. Live owner Session count remains `0`.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

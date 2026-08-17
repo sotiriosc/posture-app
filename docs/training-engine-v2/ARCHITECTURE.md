@@ -572,3 +572,12 @@ Chunk G design selects a dedicated /account/praxis-v2 boundary with server-only 
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation - Isolated runtime
+
+The dedicated `/account/praxis-v2` and `/api/training/v2-owner` namespaces now implement the designed server
+boundary. Pure production kernels remain in Training Engine V2; identity, persistence, transactions, security,
+Outcome integration, and rollback remain in Engine; Consumer routes are thin. Gyms and current Product paths
+have no owner imports.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

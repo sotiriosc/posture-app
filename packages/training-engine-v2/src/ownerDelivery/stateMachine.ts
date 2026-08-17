@@ -4,8 +4,13 @@ const transitions = Object.freeze(OWNER_DELIVERY_STATES.map((state, index) => Ob
   from: state,
   to: OWNER_DELIVERY_STATES[index + 1] ?? "unavailable",
   owner: index < 4 ? "server_eligibility" : index < 10 ? "configured_owner" : "owner_delivery_application",
+  preconditions: Object.freeze(["exact_current_state", "server_verified_authority", "version_match"]),
+  stateChanges: Object.freeze([`${state}->${OWNER_DELIVERY_STATES[index + 1] ?? "unavailable"}`]),
+  repositoryEffects: index < 4 ? Object.freeze([]) : Object.freeze(["append_only_designated_record_only"]),
   idempotent: true,
   automaticApply: false,
+  failure: "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+  rollback: "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION",
 })));
 
 export const OWNER_DELIVERY_STATE_MACHINE = Object.freeze({

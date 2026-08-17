@@ -1,0 +1,106 @@
+{
+  "count": 25,
+  "cases": [
+    {
+      "caseId": "configured_email_case",
+      "result": "PASS"
+    },
+    {
+      "caseId": "configured_email_outer_whitespace",
+      "result": "PASS"
+    },
+    {
+      "caseId": "repository_result_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "profile_field_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "capability_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "provenance_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "preview_display_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "report_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "route_test_order",
+      "result": "PASS"
+    },
+    {
+      "caseId": "repeated_idempotent_request",
+      "result": "PASS"
+    },
+    {
+      "caseId": "background_nonsemantic_difference",
+      "result": "PASS"
+    },
+    {
+      "caseId": "ui_nonsemantic_difference",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_user_id",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_configured_email",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_delivery_mode",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_enrollment_state",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_profile_revision",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_equipment",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_safety",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_source_revision",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_preview_fingerprint",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_approval",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_active_session",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_active_pointer",
+      "result": "PASS"
+    },
+    {
+      "caseId": "material_kill_switch",
+      "result": "PASS"
+    }
+  ],
+  "result": "PASS"
+}

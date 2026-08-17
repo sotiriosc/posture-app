@@ -5,6 +5,7 @@ import {
 } from "@praxis/training-engine-v2";
 import {
   createInMemoryOwnerEnrollmentProfileRepository,
+  createBufferedControlledOwnerObservability,
   loadControlledOwnerDeliveryMigrations,
   parseConfiguredOwnerReference,
   proposeOwnerImportsFromTrainingSnapshot,
@@ -51,17 +52,21 @@ describe("controlled owner identity and profile foundation", () => {
   it("short-circuits off before session or repository access", async () => {
     const readSession = vi.fn(async () => ({ id: USER.id, email: USER.email, plan: USER.plan }));
     const findUserByEmail = vi.fn(async () => USER);
+    const observed = createBufferedControlledOwnerObservability();
     const gate = await resolveControlledOwnerRequestGate({
       operation: "preview",
       environment: {},
       readSession,
       userRepository: { findUserByEmail },
       evaluationTime: NOW,
+      observability: observed.observability,
     });
     expect(gate).toMatchObject({ allowed: false, mode: "off", sessionReadCount: 0,
       reasonCode: "OWNER_DELIVERY_MODE_OFF" });
     expect(readSession).not.toHaveBeenCalled();
     expect(findUserByEmail).not.toHaveBeenCalled();
+    expect(observed.read()).toEqual([expect.objectContaining({ name: "kill_switch", mode: "off",
+      state: "suspended", reasonCodes: ["OWNER_DELIVERY_MODE_OFF"] })]);
     expect(resolveOwnerDeliveryModeFromEnvironment({ PRAXIS_V2_OWNER_DELIVERY_MODE: "unknown" }).mode)
       .toBe("off");
   });

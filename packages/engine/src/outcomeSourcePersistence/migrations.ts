@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import manifestJson from "../../migrations/outcome-sources/manifest.json";
 
 export interface OutcomeSourceMigrationDescriptor {
@@ -36,7 +36,7 @@ export function checksumOutcomeSourceMigration(sql: string): string {
 }
 
 export function loadOutcomeSourceMigrations(
-  migrationsDirectory = fileURLToPath(new URL("../../migrations/outcome-sources", import.meta.url)),
+  migrationsDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "../../migrations/outcome-sources"),
 ): readonly OutcomeSourceMigration[] {
   return Object.freeze(OUTCOME_SOURCE_MIGRATION_MANIFEST.migrations.map((descriptor) => {
     const sql = readFileSync(resolve(migrationsDirectory, descriptor.filename), "utf8");

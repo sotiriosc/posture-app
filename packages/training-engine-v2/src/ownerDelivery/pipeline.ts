@@ -11,7 +11,7 @@ import {
   DUMBBELLS_AND_BENCH_EQUIPMENT,
   FULL_GYM_EQUIPMENT,
 } from "../data/goldenPersonas";
-import { PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../data/referenceExercises";
+import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
 import { composeSessionSkeleton } from "../sessionComposer/composeSessionSkeleton";
 import { buildSessionPrescriptionHandoff } from "../sessionComposer/prescriptionHandoff";

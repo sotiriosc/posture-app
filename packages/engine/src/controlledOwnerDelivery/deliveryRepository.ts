@@ -3,7 +3,7 @@ import { sameSemanticValue, type ControlledOwnerActiveProgramPointer,
   type ControlledOwnerV2ProgramApproval, type ControlledOwnerV2ProgramPreview,
   type OwnerV2ProductProgramEnvelope } from "@praxis/training-engine-v2";
 import type { OwnerDeliveryRepository, OwnerIdempotencyRecord,
-  OwnerProgramApplicationTransactionResult } from "./contracts";
+  OwnerProgramApplicationTransactionResult, OwnerProgramRollbackTransactionResult } from "./contracts";
 
 const key = (...parts: readonly string[]) => parts.join(":");
 
@@ -109,6 +109,38 @@ export function createInMemoryOwnerDeliveryRepository(): OwnerDeliveryRepository
       idempotency.set(idemKey, transaction.idempotency);
       return Object.freeze({ status: "applied", application: transaction.application,
         envelope: transaction.envelope, pointer: transaction.pointer });
+    },
+    rollbackActiveProgram: async (transaction): Promise<OwnerProgramRollbackTransactionResult> => {
+      const idemKey = key(transaction.idempotency.userId, transaction.idempotency.action,
+        transaction.idempotency.idempotencyKey);
+      const priorIdempotency = idempotency.get(idemKey);
+      if (priorIdempotency) {
+        const exact = priorIdempotency.requestFingerprint === transaction.idempotency.requestFingerprint;
+        return Object.freeze({ status: exact ? "exact_retry" : "conflict",
+          pointer: exact ? pointers.get(transaction.pointer.userId) ?? null : null,
+          auditEvent: exact ? audits.get(key(transaction.auditEvent.userId,
+            transaction.auditEvent.eventId)) ?? null : null });
+      }
+      const current = pointers.get(transaction.pointer.userId);
+      if (!current || current.mode !== "v2_owner" ||
+          current.activeApplicationId !== transaction.expectedApplicationId ||
+          current.revision !== transaction.expectedPointerRevision ||
+          transaction.pointer.mode !== "legacy" || transaction.pointer.activeApplicationId !== null ||
+          transaction.pointer.revision !== current.revision + 1) {
+        return Object.freeze({ status: "conflict", pointer: current ?? null, auditEvent: null });
+      }
+      pointers.set(transaction.pointer.userId, transaction.pointer);
+      audits.set(key(transaction.auditEvent.userId, transaction.auditEvent.eventId), transaction.auditEvent);
+      idempotency.set(idemKey, transaction.idempotency);
+      return Object.freeze({ status: "rolled_back", pointer: transaction.pointer,
+        auditEvent: transaction.auditEvent });
+    },
+    appendAuditEvent: async (event) => {
+      const eventKey = key(event.userId, event.eventId);
+      const prior = audits.get(eventKey);
+      if (prior) return sameSemanticValue(prior, event) ? "exact_retry" : "conflict";
+      audits.set(eventKey, event);
+      return "appended";
     },
     listAuditEvents: async (userId) => Object.freeze([...audits.values()].filter((event) =>
       event.userId === userId).sort((left, right) => left.occurredAt.localeCompare(right.occurredAt) ||

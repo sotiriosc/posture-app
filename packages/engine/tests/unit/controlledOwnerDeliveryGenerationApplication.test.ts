@@ -14,11 +14,13 @@ import {
   generateControlledOwnerGetStrongerPreview,
   loadControlledOwnerDeliveryMigrations,
   recordControlledOwnerSessionDraft,
+  rollbackControlledOwnerProgram,
   reviseControlledOwnerSessionMode,
   startControlledOwnerSession,
   type ControlledOwnerRequestGateResult,
 } from "../../src/controlledOwnerDelivery";
 import { createInMemorySessionPracticePersistenceRepository } from "../../src/sessionPracticeV2";
+import type { OutcomeSourcePersistencePort } from "../../src/outcomeSourcePersistence";
 
 const NOW = "2026-08-17T14:00:00.000Z";
 const USER_ID = "synthetic-owner-application-user";
@@ -184,13 +186,53 @@ describe("controlled owner genuine generation and application", () => {
       basedOnPersistenceRevisionId: recorded.revision!.persistenceRevisionId, envelope,
       performedSourceEventIds: performed, completedBlockIds: blocks, partiallyCompletedBlockIds: [],
       completedAt: "2026-08-17T14:03:00.000Z", idempotencyKey: "session-complete",
-      repository: practice, delivery: value.delivery });
+      repository: practice, delivery: value.delivery, outcomeRepository: {
+        persistNormalizedRevision: async (entry) => entry.result,
+      } as unknown as OutcomeSourcePersistencePort });
     expect(completed.status).toBe("completed");
     expect(completed.revision).toMatchObject({ lifecycle: { state: "completed" },
       completion: { status: "full_completed_as_prescribed", automaticReallocationApplied: false,
         adaptationActionApplied: false }, outcomeLink: { omittedAssignmentPerformanceCount: 0,
         selectedModeTreatedAsPerformance: false } });
+    expect(completed.outcome).toMatchObject({ longitudinalObservation: { observationOnly: true,
+      automaticProgressionApplied: false, automaticRegressionApplied: false,
+      automaticDeloadApplied: false, repeatedCompletedEvidenceRequiredForAction: true },
+      automaticAdaptationCount: 0, automaticWeekRewriteCount: 0 });
+    expect((await value.delivery.listAuditEvents(USER_ID)).map((event) => event.action)).toEqual(
+      expect.arrayContaining(["owner_v2_program_applied", "session_completion",
+        "longitudinal_observation", "outcome_source"]));
     expect(await practice.listAthleteCurrentRevisions(USER_ID)).toHaveLength(1);
+  });
+
+  it("rolls the active pointer back atomically without deleting V2 lineage", async () => {
+    const value = await fixture({ mode: "apply", knownMinutes: true });
+    const preview = value.generated.preview!;
+    const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
+      previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
+      idempotencyKey: "rollback-approve", approvedAt: NOW, gate: async () => gate("apply"),
+      enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+      loadCurrentContext: async () => value.context });
+    const applied = await applyControlledOwnerGetStrongerApproval({ approvalId: approved.approval!.approvalId,
+      idempotencyKey: "rollback-apply", csrfVerified: true, appliedAt: NOW, gate: async () => gate("apply"),
+      enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+      loadCurrentContext: async () => value.context });
+    const activePointer = await value.delivery.readActivePointer(USER_ID);
+    const rollback = await rollbackControlledOwnerProgram({ gate: gate("apply"), repository: value.delivery,
+      applicationId: applied.application!.applicationId, expectedPointerRevision: activePointer!.revision,
+      explicitConfirmation: true, csrfVerified: true, idempotencyKey: "rollback-key",
+      rolledBackAt: "2026-08-17T15:00:00.000Z" });
+    expect(rollback).toMatchObject({ status: "rolled_back", pointer: { mode: "legacy",
+      activeApplicationId: null, revision: 2 }, auditEvent: { action: "rollback",
+        metadata: { deletionCount: 0, preservedV2Records: true, legacyRestored: true } } });
+    expect(await value.delivery.readApplicationExact(USER_ID, applied.application!.applicationId))
+      .toEqual(applied.application);
+    expect(await value.delivery.readEnvelopeExact(USER_ID, applied.envelope!.envelopeId,
+      applied.envelope!.envelopeRevisionId)).toEqual(applied.envelope);
+    const retry = await rollbackControlledOwnerProgram({ gate: gate("apply"), repository: value.delivery,
+      applicationId: applied.application!.applicationId, expectedPointerRevision: activePointer!.revision,
+      explicitConfirmation: true, csrfVerified: true, idempotencyKey: "rollback-key",
+      rolledBackAt: "2026-08-17T15:00:00.000Z" });
+    expect(retry.status).toBe("exact_retry");
   });
 
   it("locks all nine default-empty PostgreSQL owner tables", () => {

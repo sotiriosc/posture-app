@@ -18,8 +18,9 @@
 | `/api/training/v2-owner/session/start` | POST | 404 | explicit practice selection | CSRF + active envelope |
 | `/api/training/v2-owner/session/record` | POST | 404 | exact draft/mode revision | CSRF + exact prior revision |
 | `/api/training/v2-owner/session/complete` | POST | 404 | exact completion | CSRF + idempotency + source events |
+| `/api/training/v2-owner/rollback` | POST | 404 | explicit legacy restore | CSRF + idempotency + pointer CAS |
 | `/api/training/v2-owner/history` | GET | 404 | owner V2 only | session user ID |
 
 Every response is private no-store with structured errors. GET never mutates. Client `userId` and email fields
-are rejected; only the passive session gate supplies identity. Rollback is added by its owning hardening commit
-without changing this namespace.
+are rejected; only the passive session gate supplies identity. Rollback preserves the immutable V2 envelope,
+practice evidence, Outcomes, and audit while atomically restoring the retained legacy pointer.

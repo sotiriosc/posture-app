@@ -5,6 +5,8 @@ import type { AuthUser } from "../authTypes";
 import type { ControlledOwnerEligibilityResult } from "./contracts";
 import { resolveConfiguredOwnerEligibility } from "./eligibility";
 import { resolveOwnerDeliveryModeFromEnvironment } from "./environment";
+import { buildControlledOwnerObservabilityEvent, NOOP_CONTROLLED_OWNER_OBSERVABILITY,
+  type ControlledOwnerObservability } from "./observability";
 
 export interface ControlledOwnerRequestGateResult {
   readonly allowed: boolean;
@@ -22,14 +24,24 @@ export async function resolveControlledOwnerRequestGate(input: {
   readonly environment?: Readonly<Record<string, string | undefined>>;
   readonly readSession?: () => Promise<AuthUser | null>;
   readonly userRepository?: Pick<UserRepository, "findUserByEmail">;
+  readonly observability?: ControlledOwnerObservability;
 }): Promise<ControlledOwnerRequestGateResult> {
   const environment = input.environment ?? process.env;
   const mode = resolveOwnerDeliveryModeFromEnvironment(environment).mode;
+  const observability = input.observability ?? NOOP_CONTROLLED_OWNER_OBSERVABILITY;
   if (mode === "off") {
+    await observability.emit(buildControlledOwnerObservabilityEvent({ name: "kill_switch",
+      occurredAt: input.evaluationTime, userId: null, recordId: null, contractVersion: "1.0.0",
+      mode, state: "suspended", reasonCodes: ["OWNER_DELIVERY_MODE_OFF"], latencyMs: null,
+      fingerprint: null, appSurface: null }));
     return Object.freeze({ allowed: false, mode, userId: null, reasonCode: "OWNER_DELIVERY_MODE_OFF",
       sessionReadCount: 0, databaseWriteCount: 0 });
   }
   if (input.operation === "apply" && mode !== "apply") {
+    await observability.emit(buildControlledOwnerObservabilityEvent({ name: "eligibility_result",
+      occurredAt: input.evaluationTime, userId: null, recordId: null, contractVersion: "1.0.0",
+      mode, state: "ineligible", reasonCodes: ["OWNER_DELIVERY_MODE_INSUFFICIENT"], latencyMs: null,
+      fingerprint: null, appSurface: null }));
     return Object.freeze({ allowed: false, mode, userId: null, reasonCode: "OWNER_DELIVERY_MODE_INSUFFICIENT",
       sessionReadCount: 0, databaseWriteCount: 0 });
   }
@@ -39,6 +51,10 @@ export async function resolveControlledOwnerRequestGate(input: {
     userRepository: input.userRepository ?? getUserRepository(),
     evaluationTime: input.evaluationTime,
   });
+  await observability.emit(buildControlledOwnerObservabilityEvent({ name: "eligibility_result",
+    occurredAt: input.evaluationTime, userId: eligibility.userId, recordId: eligibility.userId,
+    contractVersion: eligibility.contractVersion, mode, state: eligibility.eligible ? "eligible" : "ineligible",
+    reasonCodes: [eligibility.reasonCode], latencyMs: null, fingerprint: null, appSurface: null }));
   return Object.freeze({
     allowed: eligibility.eligible,
     mode,

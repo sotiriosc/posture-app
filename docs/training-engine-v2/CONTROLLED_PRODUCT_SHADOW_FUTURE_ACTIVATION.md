@@ -49,3 +49,11 @@ The V2 practice bridge has no Product Shadow imports, calls, persistence, output
 Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 <!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation boundary
+
+Controlled owner delivery imports no Product Shadow route, service, repository, eligibility, rollout mode,
+allowlist, or artifact. The genuine owner pipeline uses the canonical 64-entry production registry directly.
+Product Shadow semantic changes and activation changes remain `0`.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

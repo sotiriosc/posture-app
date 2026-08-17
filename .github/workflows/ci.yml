@@ -42,7 +42,8 @@ jobs:
           npm run build:application-orchestration --workspace=@praxis/engine &&
           npm run build:product-shadow --workspace=@praxis/engine &&
           npm run build:goal-specific-evidence --workspace=@praxis/engine &&
-          npm run build:session-practice-v2 --workspace=@praxis/engine
+          npm run build:session-practice-v2 --workspace=@praxis/engine &&
+          npm run build:controlled-owner-delivery --workspace=@praxis/engine
       - name: Run real Outcome Source PostgreSQL integration
         run: npm run test:outcome-sources:postgres
       - name: Run real orchestration PostgreSQL integration
@@ -52,6 +53,9 @@ jobs:
 
       - name: Run real Session Practice V2 PostgreSQL integration
         run: npm run test:session-practice-v2:postgres
+
+      - name: Run real controlled owner delivery PostgreSQL integration
+        run: npm run test:controlled-owner-delivery:postgres --workspace=@praxis/engine
 
   # ─── PR gate ──────────────────────────────────────────────────────────────
   # Runs on every pull request. Fast enough to be a blocking gate (target:
@@ -104,6 +108,12 @@ jobs:
         run: >-
           npm run test:controlled-owner-delivery-design --workspace=@praxis/training-engine-v2 &&
           npm run check:controlled-owner-delivery-design-reports --workspace=@praxis/training-engine-v2
+
+      - name: Controlled owner delivery default-off implementation gate
+        run: >-
+          npm run build:controlled-owner-delivery --workspace=@praxis/engine &&
+          npm run test:controlled-owner-delivery --workspace=@praxis/engine &&
+          npm run check:controlled-owner-delivery-reports --workspace=@praxis/engine
 
       # ── Playwright smoke: first-run happy path + per-account isolation,
       # for both apps. Blocking per bloom-plan Phase 6f Commit 6.

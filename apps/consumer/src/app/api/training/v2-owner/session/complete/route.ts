@@ -1,4 +1,4 @@
-import { completeControlledOwnerSession, withControlledOwnerRepositories } from
+import { completeControlledOwnerSession, withControlledOwnerTransaction } from
   "@praxis/engine/controlled-owner-delivery";
 import { authorizeOwnerMutation, loadActiveOwnerEnvelope, ownerJson, rejectsIdentityFields } from
   "@/server/controlledOwnerDelivery";
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       message: "Session completion is invalid." } }, 400);
   }
   try {
-    return await withControlledOwnerRepositories(async ({ delivery, sessionPractice }) => {
+    return await withControlledOwnerTransaction(async ({ delivery, sessionPractice, outcomeSources }) => {
       const active = await loadActiveOwnerEnvelope({ userId: authorization.userId,
         applicationId: body.applicationId as string, delivery });
       if (!active) return ownerJson({ ok: false, error: { code: "NOT_FOUND", message: "Not Found" } }, 404);
@@ -32,7 +32,8 @@ export async function POST(request: Request) {
         envelope: active.envelope, performedSourceEventIds: body.performedSourceEventIds as string[],
         completedBlockIds: body.completedBlockIds as string[],
         partiallyCompletedBlockIds: body.partiallyCompletedBlockIds as string[],
-        completedAt: authorization.evaluatedAt, idempotencyKey, repository: sessionPractice, delivery });
+        completedAt: authorization.evaluatedAt, idempotencyKey, repository: sessionPractice, delivery,
+        outcomeRepository: outcomeSources });
       return result.revision ? ownerJson({ ok: true, status: result.status,
         persistenceRevisionId: result.revision.persistenceRevisionId,
         completion: result.revision.completion }) : ownerJson({ ok: false,

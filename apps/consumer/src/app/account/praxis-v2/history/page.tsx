@@ -13,6 +13,8 @@ export default async function OwnerHistoryPage() {
       sessionPractice.listAthleteCurrentRevisions(gate.userId!), delivery.listAuditEvents(gate.userId!)]);
     return { applications, sessions, audits };
   }).catch(() => ({ applications: [], sessions: [], audits: [] }));
+  const rollbackEvents = history.audits.filter((event) => event.action === "rollback");
+  const longitudinalEvents = history.audits.filter((event) => event.action === "longitudinal_observation");
   return <main className={styles.shell}>
     <header className={styles.header}><div><p className={styles.kicker}>Owner V2 only</p>
       <h1 className={styles.title}>History</h1></div><Link className={styles.link} href="/progress">Legacy history</Link></header>
@@ -30,6 +32,16 @@ export default async function OwnerHistoryPage() {
       </article>)}
       {!history.sessions.length ? <p className={styles.muted}>No owner V2 sessions.</p> : null}
     </div></section>
+    <section className={styles.section}><h2>Longitudinal observations</h2>
+      {longitudinalEvents.length ? <ul>{longitudinalEvents.map((event) =>
+        <li key={event.eventId}>Evidence recorded · observation only · {event.occurredAt}</li>)}</ul> :
+        <p className={styles.muted}>No owner V2 longitudinal observations.</p>}
+    </section>
+    <section className={styles.section}><h2>Rollbacks</h2>
+      {rollbackEvents.length ? <ul>{rollbackEvents.map((event) =>
+        <li key={event.eventId}>Legacy Program restored · V2 evidence retained · {event.occurredAt}</li>)}</ul> :
+        <p className={styles.muted}>No owner V2 rollbacks.</p>}
+    </section>
     <section className={styles.section}><h2>Delivery events</h2>
       <ul>{history.audits.map((event) => <li key={event.eventId}>{event.action.replaceAll("_", " ")} · {event.occurredAt}</li>)}</ul>
     </section>

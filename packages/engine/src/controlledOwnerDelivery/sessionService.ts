@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   buildSessionPracticeOutcomeSourceLink,
+  buildOwnerDeliveryAuditEvent,
   buildSessionPracticeRequest,
   createSessionPracticeAttemptLifecycle,
   deriveSessionPracticeAttemptId,
@@ -26,10 +27,13 @@ import {
 import {
   buildPersistedSessionPracticeRevision,
   buildSessionPracticeV2Draft,
-  type PersistedSessionPracticeRevision,
   type SessionPracticePersistenceRepository,
 } from "../sessionPracticeV2";
 import type { OwnerDeliveryRepository, OwnerIdempotencyRecord } from "./contracts";
+import type { OutcomeSourcePersistencePort } from "../outcomeSourcePersistence";
+import { buildControlledOwnerObservabilityEvent, NOOP_CONTROLLED_OWNER_OBSERVABILITY,
+  type ControlledOwnerObservability } from "./observability";
+import { persistControlledOwnerSessionOutcome } from "./outcomeService";
 
 function stage<T>(envelope: OwnerV2ProductProgramEnvelope,
   name: OwnerV2ProductProgramEnvelope["programSnapshot"][number]["stage"]): { payload: T; fingerprint: string } {
@@ -237,7 +241,10 @@ export async function completeControlledOwnerSession(input: {
   readonly completedBlockIds: readonly string[]; readonly partiallyCompletedBlockIds: readonly string[];
   readonly completedAt: string; readonly idempotencyKey: string;
   readonly repository: SessionPracticePersistenceRepository; readonly delivery: OwnerDeliveryRepository;
+  readonly outcomeRepository?: OutcomeSourcePersistencePort;
+  readonly observability?: ControlledOwnerObservability;
 }) {
+  const observability = input.observability ?? NOOP_CONTROLLED_OWNER_OBSERVABILITY;
   const requestFingerprint = createHash("sha256").update(JSON.stringify({ attemptId: input.attemptId,
     basedOn: input.basedOnPersistenceRevisionId, performed: [...input.performedSourceEventIds].sort(),
     completedBlocks: [...input.completedBlockIds].sort(), partial: [...input.partiallyCompletedBlockIds].sort() }))
@@ -288,6 +295,43 @@ export async function completeControlledOwnerSession(input: {
     responsePayload: Object.freeze({ persistenceRevisionId: revision.persistenceRevisionId }),
     createdAt: input.completedAt, completedAt: input.completedAt });
   const idempotencyWrite = await input.delivery.appendIdempotency(idempotency);
-  return Object.freeze({ status: idempotencyWrite === "conflict" ? "conflict" as const : "completed" as const,
-    revision: idempotencyWrite === "conflict" ? null : revision });
+  if (idempotencyWrite === "conflict") return Object.freeze({ status: "conflict" as const, revision: null,
+    outcome: null });
+  const outcome = input.outcomeRepository ? await persistControlledOwnerSessionOutcome({ userId: input.userId,
+    revision, source, repository: input.outcomeRepository, operationTime: input.completedAt }) : null;
+  const completionAudit = buildOwnerDeliveryAuditEvent({ userId: input.userId, action: "session_completion",
+    targetId: input.attemptId, occurredAt: input.completedAt,
+    metadata: { mode: revision.plan.mode, completionDisposition: completion.status,
+      performedSourceEventCount: outcomeLink.performedSourceEventIds.length,
+      omittedAssignmentPerformanceCount: outcomeLink.omittedAssignmentPerformanceCount,
+      automaticAdaptationCount: 0, automaticWeekRewriteCount: 0 } });
+  if (await input.delivery.appendAuditEvent(completionAudit) === "conflict") {
+    throw new Error("OWNER_SESSION_COMPLETION_AUDIT_CONFLICT");
+  }
+  if (outcome) {
+    const outcomeAudit = buildOwnerDeliveryAuditEvent({ userId: input.userId, action: "outcome_source",
+      targetId: outcome.outcome.sourceRecordRevisionId!, occurredAt: input.completedAt,
+      metadata: { attemptId: input.attemptId, sourceCategory: "session_completion",
+        state: outcome.outcome.status, automaticAdaptationCount: 0 } });
+    const longitudinalAudit = buildOwnerDeliveryAuditEvent({ userId: input.userId,
+      action: "longitudinal_observation", targetId: outcome.longitudinalObservation.observationId,
+      occurredAt: input.completedAt, metadata: { attemptId: input.attemptId,
+        completedEvidencePresent: outcome.longitudinalObservation.completedEvidencePresent,
+        observationOnly: true, automaticProgressionCount: 0, automaticRegressionCount: 0,
+        automaticDeloadCount: 0, automaticReplacementCount: 0 } });
+    if (await input.delivery.appendAuditEvent(outcomeAudit) === "conflict" ||
+        await input.delivery.appendAuditEvent(longitudinalAudit) === "conflict") {
+      throw new Error("OWNER_SESSION_OUTCOME_AUDIT_CONFLICT");
+    }
+  }
+  await observability.emit(buildControlledOwnerObservabilityEvent({ name: "completion",
+    occurredAt: input.completedAt, userId: input.userId, recordId: revision.persistenceRevisionId,
+    contractVersion: "1.0.0", mode: null, state: completion.status, reasonCodes: completion.reasonCodes,
+    latencyMs: null, fingerprint: revision.semanticFingerprint, appSurface: "owner_session" }));
+  if (outcome) await observability.emit(buildControlledOwnerObservabilityEvent({ name: "outcome_source",
+    occurredAt: input.completedAt, userId: input.userId,
+    recordId: outcome.outcome.sourceRecordRevisionId, contractVersion: "1.0.0", mode: null,
+    state: outcome.outcome.status, reasonCodes: outcome.outcome.reasonCodes, latencyMs: null,
+    fingerprint: null, appSurface: "owner_session" }));
+  return Object.freeze({ status: "completed" as const, revision, outcome });
 }

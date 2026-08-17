@@ -85,6 +85,20 @@ export interface OwnerProgramApplicationTransactionResult {
   readonly pointer: ControlledOwnerActiveProgramPointer | null;
 }
 
+export interface OwnerProgramRollbackTransaction {
+  readonly pointer: ControlledOwnerActiveProgramPointer;
+  readonly auditEvent: ControlledOwnerDeliveryAuditEvent;
+  readonly idempotency: OwnerIdempotencyRecord;
+  readonly expectedPointerRevision: number;
+  readonly expectedApplicationId: string;
+}
+
+export interface OwnerProgramRollbackTransactionResult {
+  readonly status: "rolled_back" | "exact_retry" | "conflict";
+  readonly pointer: ControlledOwnerActiveProgramPointer | null;
+  readonly auditEvent: ControlledOwnerDeliveryAuditEvent | null;
+}
+
 export interface OwnerDeliveryRepository {
   appendPreview(preview: ControlledOwnerV2ProgramPreview): Promise<OwnerAppendResult>;
   appendPreviewIdempotent(preview: ControlledOwnerV2ProgramPreview,
@@ -104,5 +118,8 @@ export interface OwnerDeliveryRepository {
   appendIdempotency(record: OwnerIdempotencyRecord): Promise<OwnerAppendResult>;
   applyApprovedProgram(transaction: OwnerProgramApplicationTransaction):
     Promise<OwnerProgramApplicationTransactionResult>;
+  rollbackActiveProgram(transaction: OwnerProgramRollbackTransaction):
+    Promise<OwnerProgramRollbackTransactionResult>;
+  appendAuditEvent(event: ControlledOwnerDeliveryAuditEvent): Promise<OwnerAppendResult>;
   listAuditEvents(userId: string): Promise<readonly ControlledOwnerDeliveryAuditEvent[]>;
 }

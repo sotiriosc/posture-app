@@ -490,3 +490,12 @@ Chunk G design adds synthetic-only contract, identity, mode, enrollment, profile
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation evidence
+
+Implementation evidence includes 900 controlled scenarios, 1,140 fixed-shell cases, a frozen 1,350-case
+holdout, 61 rejected semantic mutations, 25 metamorphic cases, all 23 states, all 64 production identities,
+all practice modes, exact deterministic stress floors, and real PostgreSQL 16 integration. Live-account and
+production-data reads remain `0`.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

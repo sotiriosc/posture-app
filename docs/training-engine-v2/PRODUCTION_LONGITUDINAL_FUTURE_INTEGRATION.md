@@ -114,3 +114,11 @@ Future owner delivery sends completed evidence observations to admitted Longitud
 Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
 
 <!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->
+## G Implementation - Observation-only handoff
+
+Owner completion builds the admitted Session Practice longitudinal observation with exact realized source events
+and unfulfilled responsibilities. It is observation-only: progression, regression, deload, replacement,
+reallocation, Week rewrite, and adaptation application counts remain `0`.
+<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->

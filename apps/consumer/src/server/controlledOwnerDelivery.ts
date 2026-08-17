@@ -41,6 +41,19 @@ export async function requireOwnerPage(operation: "read" | "preview" | "apply") 
   return gate;
 }
 
+export async function authorizeOwnerRead(input: { readonly operation: "read" | "preview" | "apply";
+  readonly action: string; readonly limit?: number }) {
+  const evaluatedAt = new Date().toISOString();
+  const gate = await readOwnerGate(input.operation, evaluatedAt);
+  if (!gate.allowed || !gate.userId) return Object.freeze({ allowed: false as const, gate,
+    response: ownerJson({ ok: false, error: { code: "NOT_FOUND", message: "Not Found" } }, 404) });
+  const limit = takeControlledOwnerRateLimit({ userId: gate.userId, action: input.action,
+    evaluatedAtMs: Date.parse(evaluatedAt), limit: input.limit ?? 120, windowMs: 60_000 });
+  if (!limit.allowed) return Object.freeze({ allowed: false as const, gate,
+    response: ownerJson({ ok: false, error: { code: "RATE_LIMITED", message: "Try again shortly." } }, 429) });
+  return Object.freeze({ allowed: true as const, gate, userId: gate.userId, evaluatedAt, response: null });
+}
+
 function csrfSecret(): string {
   return process.env.PRAXIS_V2_OWNER_CSRF_SECRET?.trim() || process.env.AUTH_SECRET?.trim() || "";
 }
@@ -72,8 +85,11 @@ export async function authorizeOwnerMutation(input: { readonly request: Request;
   if (requestReasons.length || !csrfVerified) return Object.freeze({ allowed: false as const, gate,
     response: ownerJson({ ok: false, error: { code: "REQUEST_FORBIDDEN",
       message: "Request validation failed." } }, 403) });
+  const limitByAction: Readonly<Record<string, number>> = Object.freeze({ preview: 4, approve: 4, apply: 4,
+    rollback: 2, "session-start": 12, "session-record": 120, "session-complete": 8,
+    enrollment: 6, profile: 8 });
   const limit = takeControlledOwnerRateLimit({ userId: gate.userId, action: input.action,
-    evaluatedAtMs: Date.parse(evaluatedAt), limit: input.action === "preview" ? 6 : 12, windowMs: 60_000 });
+    evaluatedAtMs: Date.parse(evaluatedAt), limit: limitByAction[input.action] ?? 12, windowMs: 60_000 });
   if (!limit.allowed) return Object.freeze({ allowed: false as const, gate,
     response: ownerJson({ ok: false, error: { code: "RATE_LIMITED", message: "Try again shortly." } }, 429) });
   return Object.freeze({ allowed: true as const, gate, userId: gate.userId, evaluatedAt,

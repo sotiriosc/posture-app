@@ -20,6 +20,19 @@ const markerStart = "<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->";
 const markerEnd = "<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->";
 const markerPattern = /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n?/;
 const mismatches: string[] = [];
+const implementationAuthorized = existsSync(resolve(docsRoot,
+  "CONTROLLED_OWNER_DELIVERY_IMPLEMENTATION_READINESS.md"));
+const implementationSuccessors = new Set([
+  "CONTROLLED_OWNER_ACCOUNT_ENTRY_IMPLEMENTATION.md", "CONTROLLED_OWNER_ACTIVE_PROGRAM_POINTER_IMPLEMENTATION.md",
+  "CONTROLLED_OWNER_APPROVAL_APPLICATION_IMPLEMENTATION.md", "CONTROLLED_OWNER_CURRENT_PRODUCT_INVARIANCE.md",
+  "CONTROLLED_OWNER_DELIVERY_MODE_IMPLEMENTATION.md", "CONTROLLED_OWNER_DELIVERY_RUNTIME_CONTRACT.md",
+  "CONTROLLED_OWNER_ENROLLMENT_PROFILE_IMPLEMENTATION.md", "CONTROLLED_OWNER_GENERATION_IMPLEMENTATION.md",
+  "CONTROLLED_OWNER_GET_STRONGER_DELIVERY_IMPLEMENTATION_ONTOLOGY_AUDIT.md",
+  "CONTROLLED_OWNER_GET_STRONGER_DELIVERY_DESIGN_READINESS.md", "CONTROLLED_OWNER_IDENTITY_GATE_IMPLEMENTATION.md",
+  "CONTROLLED_OWNER_PREVIEW_IMPLEMENTATION.md", "CONTROLLED_OWNER_PRODUCT_IMPORT_IMPLEMENTATION.md",
+  "CONTROLLED_OWNER_PRODUCT_PROJECTION_IMPLEMENTATION.md", "CONTROLLED_OWNER_ROUTE_AND_API_MATRIX.md",
+  "CONTROLLED_OWNER_WEEK_IMPLEMENTATION.md", "OWNER_V2_PROGRAM_ENVELOPE_IMPLEMENTATION.md",
+]);
 
 const applyExpected = (path: string, expected: string) => {
   if (mode === "write") {
@@ -33,6 +46,7 @@ const applyExpected = (path: string, expected: string) => {
 
 mkdirSync(docsRoot, { recursive: true });
 for (const [filename, content] of Object.entries(gDesignMarkdownReports)) {
+  if (implementationAuthorized && implementationSuccessors.has(filename)) continue;
   applyExpected(resolve(docsRoot, filename), content);
 }
 for (const [filename, content] of Object.entries(gDesignJsonReports)) {

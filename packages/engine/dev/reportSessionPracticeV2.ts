@@ -7,10 +7,12 @@ import { sessionPracticeV2Artifacts } from "../tests/sessionPracticeV2Evidence/r
 const outputDirectory = fileURLToPath(new URL("../../../docs/training-engine-v2", import.meta.url));
 const mode = process.argv.includes("--check") ? "check" : "write";
 const chunkGDesignMarker = /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n*/;
+const chunkGImplementationMarker = /\n*<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_IMPLEMENTATION:END -->\n*/;
 
 function preserveChunkGDesignMarker(content: string, current: string): string {
-  const marker = current.match(chunkGDesignMarker)?.[0].trim();
-  return marker === undefined ? content : `${content.trimEnd()}\n\n${marker}\n`;
+  const markers = [current.match(chunkGDesignMarker)?.[0].trim(),
+    current.match(chunkGImplementationMarker)?.[0].trim()].filter((value): value is string => value !== undefined);
+  return markers.length === 0 ? content : `${content.trimEnd()}\n\n${markers.join("\n\n")}\n`;
 }
 
 async function main(): Promise<void> {
@@ -25,7 +27,9 @@ async function main(): Promise<void> {
       if (mode === "check") { stale.push(filename); continue; }
     }
     if (mode === "write") writeFileSync(path, preserveChunkGDesignMarker(content, current), "utf8");
-    else if (current.replace(chunkGDesignMarker, "\n") !== content) stale.push(filename);
+    else if (current.replace(chunkGDesignMarker, "\n").replace(chunkGImplementationMarker, "\n") !== content) {
+      stale.push(filename);
+    }
   }
   if (stale.length) throw new Error(`SESSION_PRACTICE_V2_REPORTS_STALE:${stale.join(",")}`);
   process.stdout.write(`${JSON.stringify({ mode, artifactCount: Object.keys(artifacts).length,

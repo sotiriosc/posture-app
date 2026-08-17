@@ -1,0 +1,21 @@
+{
+  "ownerPageCount": 5,
+  "ownerApiRouteCount": 13,
+  "noCache": true,
+  "getMutationCount": 0,
+  "clientIdentityAuthorityCount": 0,
+  "responsiveViewports": [
+    320,
+    360,
+    390,
+    768,
+    1024
+  ],
+  "accessibility": {
+    "semanticHeadings": true,
+    "labelledControls": true,
+    "liveStatusRegions": true,
+    "minimumControlHeightPx": 44,
+    "keyboardNativeControls": true
+  }
+}
