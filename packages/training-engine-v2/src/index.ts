@@ -4,6 +4,7 @@ export * from "./componentContracts";
 export * from "./decisionTrace";
 export * from "./eligibility";
 export * from "./optimizerContracts";
+export * from "./ownerDelivery";
 export * from "./outcomeSources";
 export * from "./adaptationPersistence";
 export * from "./applicationOrchestration";

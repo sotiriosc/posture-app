@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  },
+  "include": [
+    "src/controlledOwnerDelivery/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
