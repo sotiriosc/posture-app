@@ -22,6 +22,7 @@ export * from "./scoringContracts";
 export * from "./sequencing";
 export * from "./sessionComposer";
 export * from "./sessionPlanner";
+export * from "./sessionPractice";
 export * from "./transitionComparison";
 export * from "./trainingResponseHistory";
 export * from "./trainingResponseReceiver";

@@ -13,7 +13,8 @@
     "./product-shadow": "./src/productShadow/index.ts",
     "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts",
     "./home-comfort": "./src/candidate/homeComfort/index.ts",
-    "./standard-gym-comfort": "./src/candidate/standardGymComfort/index.ts"
+    "./standard-gym-comfort": "./src/candidate/standardGymComfort/index.ts",
+    "./session-practice": "./src/sessionPractice/index.ts"
   },
   "scripts": {
     "build": "npm run validate:pure-server-boundary && npm run typecheck:production && npm run typecheck:test-dev",
