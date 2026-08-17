@@ -1,0 +1,253 @@
+{
+  "reference": {
+    "registryId": "CAGT_EFFECTIVE_AUTHORITY_REGISTRY",
+    "version": "17.0.0"
+  },
+  "gateOrder": [
+    "gate_0_scenario_truth",
+    "gate_1_weekly_responsibility_truth",
+    "gate_2_whole_week_allocation_coverage",
+    "gate_3_weekly_causal_adaptation",
+    "gate_4_weekly_duplication_distribution",
+    "gate_5_reservation_day_materialization",
+    "gate_6_session_intent_truth",
+    "gate_7_candidate_intelligence_truth",
+    "gate_8_session_composition_truth",
+    "gate_9_prescription_handoff_truth",
+    "gate_10_sequencing_duration_handoff_truth",
+    "gate_11_execution_response_foundation",
+    "gate_12_all_horizon_sessions",
+    "gate_13_post_prescription_weekly_validation",
+    "gate_14_full_prescribed_program_comparison",
+    "gate_15_phase_continuity",
+    "gate_16_longitudinal_adaptation"
+  ],
+  "gates": {
+    "gate_0_scenario_truth": {
+      "gate": "gate_0_scenario_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_TEST_INTEGRITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:PRODUCTION_TEST_INTEGRITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_0_scenario_truth"
+      ]
+    },
+    "gate_1_weekly_responsibility_truth": {
+      "gate": "gate_1_weekly_responsibility_truth",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_1_weekly_responsibility_truth"
+      ]
+    },
+    "gate_2_whole_week_allocation_coverage": {
+      "gate": "gate_2_whole_week_allocation_coverage",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_2_whole_week_allocation_coverage"
+      ]
+    },
+    "gate_3_weekly_causal_adaptation": {
+      "gate": "gate_3_weekly_causal_adaptation",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_3_weekly_causal_adaptation"
+      ]
+    },
+    "gate_4_weekly_duplication_distribution": {
+      "gate": "gate_4_weekly_duplication_distribution",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_4_weekly_duplication_distribution"
+      ]
+    },
+    "gate_5_reservation_day_materialization": {
+      "gate": "gate_5_reservation_day_materialization",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:DESIGN_WEEK_AND_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_5_reservation_day_materialization"
+      ]
+    },
+    "gate_6_session_intent_truth": {
+      "gate": "gate_6_session_intent_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:PRODUCTION_KERNEL_AUTHORITY",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_6_session_intent_truth"
+      ]
+    },
+    "gate_7_candidate_intelligence_truth": {
+      "gate": "gate_7_candidate_intelligence_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:PRODUCTION_KERNEL_AUTHORITY",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_7_candidate_intelligence_truth"
+      ]
+    },
+    "gate_8_session_composition_truth": {
+      "gate": "gate_8_session_composition_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:PRODUCTION_KERNEL_AUTHORITY",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_8_session_composition_truth"
+      ]
+    },
+    "gate_9_prescription_handoff_truth": {
+      "gate": "gate_9_prescription_handoff_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "PRODUCTION_PRESCRIPTION_COMPILER_KERNEL@1.0.0",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_9_prescription_handoff_truth"
+      ]
+    },
+    "gate_10_sequencing_duration_handoff_truth": {
+      "gate": "gate_10_sequencing_duration_handoff_truth",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "PRODUCTION_FINAL_SESSION_SEQUENCING_KERNEL@1.0.0",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_10_sequencing_duration_handoff_truth"
+      ]
+    },
+    "gate_11_execution_response_foundation": {
+      "gate": "gate_11_execution_response_foundation",
+      "coarseLegacyAuthority": "FOUNDATION_ONLY",
+      "exactAuthority": "FOUNDATION_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:FOUNDATION_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_11_execution_response_foundation"
+      ]
+    },
+    "gate_12_all_horizon_sessions": {
+      "gate": "gate_12_all_horizon_sessions",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "MIXED_PRODUCTION_AND_DESIGN_HORIZON_AUTHORITY",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:MIXED_PRODUCTION_AND_DESIGN_HORIZON_AUTHORITY",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_12_all_horizon_sessions"
+      ]
+    },
+    "gate_13_post_prescription_weekly_validation": {
+      "gate": "gate_13_post_prescription_weekly_validation",
+      "coarseLegacyAuthority": "PRODUCTION",
+      "exactAuthority": "PRODUCTION_KERNEL_AUTHORITY",
+      "evidenceSource": "PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_KERNEL@1.0.0",
+      "productionRuntimeAuthority": true,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_13_post_prescription_weekly_validation"
+      ]
+    },
+    "gate_14_full_prescribed_program_comparison": {
+      "gate": "gate_14_full_prescribed_program_comparison",
+      "coarseLegacyAuthority": "DESIGN_ONLY",
+      "exactAuthority": "MIXED_PRODUCTION_AND_DESIGN_PROGRAM_COMPARISON_EVIDENCE",
+      "evidenceSource": "FULL_PRESCRIBED_PROGRAM_CAGT_GATE_14_DESIGN_AND_ADMISSION",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": true,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_14_full_prescribed_program_comparison"
+      ]
+    },
+    "gate_15_phase_continuity": {
+      "gate": "gate_15_phase_continuity",
+      "coarseLegacyAuthority": "NOT_IMPLEMENTED",
+      "exactAuthority": "NOT_IMPLEMENTED",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:NOT_IMPLEMENTED",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_15_phase_continuity"
+      ]
+    },
+    "gate_16_longitudinal_adaptation": {
+      "gate": "gate_16_longitudinal_adaptation",
+      "coarseLegacyAuthority": "FOUNDATION_ONLY",
+      "exactAuthority": "FOUNDATION_ONLY_NOT_IMPLEMENTED",
+      "evidenceSource": "CAGT_EFFECTIVE_AUTHORITY:FOUNDATION_ONLY_NOT_IMPLEMENTED",
+      "productionRuntimeAuthority": false,
+      "testOnlyComparison": false,
+      "provenance": [
+        "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@2.0.0",
+        "gate-authority:gate_16_longitudinal_adaptation"
+      ]
+    }
+  },
+  "supersedesReference": {
+    "registryId": "CAGT_EFFECTIVE_AUTHORITY_REGISTRY",
+    "version": "16.0.0"
+  },
+  "historicalRegistryPreserved": true,
+  "sessionPracticeRequestAuthority": "ATHLETE_DAY_OF_REQUEST",
+  "sessionPracticeRealizerAuthority": "PRODUCTION_KERNEL_NOT_PRODUCT_RUNTIME",
+  "recommendationAuthority": "SUGGESTION_ONLY",
+  "Gate13PracticeReceiverAuthority": "PRODUCTION_KERNEL_NOT_PRODUCT_RUNTIME",
+  "ProductAdapterAuthority": "FUTURE_CONTROLLED_OWNER_DELIVERY_ONLY",
+  "ProductDecisionAuthority": "LEGACY_PRODUCT_OUTPUT_ONLY",
+  "ProductActivationAuthority": "NOT_AUTHORIZED",
+  "LongitudinalActionAuthority": "COMPLETED_REPEATED_EVIDENCE_REQUIRED",
+  "productionImportCount": 0,
+  "ownerAccountDeliveryAuthorized": false,
+  "productRuntimeActive": false,
+  "provenance": [
+    "CAGT_EFFECTIVE_AUTHORITY_REGISTRY@16.0.0:PRESERVED",
+    "SESSION_PRACTICE_OPTIONS_V2_BRIDGE@1.0.0",
+    "test-developer-evidence-only:not-product-runtime-authority"
+  ],
+  "fingerprint": "aaa63e96a3b65ac0225c84d238943ada60c556e1646388b055ee2ea4f6481ed7"
+}

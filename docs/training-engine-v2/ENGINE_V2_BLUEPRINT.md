@@ -2322,3 +2322,13 @@ The V2 production catalog contains 64 IDs and 64 complete Knowledge entries afte
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Full / Lighter / Recovery V2 bridge
+
+The default-off bridge now provides deterministic request validation, option availability, Full/Lighter/Recovery realization, dependency pruning, Prescription and final Sequencing revisions, lifecycle locks, completion disposition, exact persistence/replay, and future-only downstream adapters. Current V1 labels, DOM, behavior, routes, persistence, Product Shadow, Get stronger visibility, owner delivery, and activation remain unchanged.
+
+Classification: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_READY_FOR_CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_DELIVERY_DESIGN_AUTHORIZATION`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

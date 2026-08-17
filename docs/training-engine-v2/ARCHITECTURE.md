@@ -552,3 +552,13 @@ Package S extends the one canonical exercise catalog and one canonical Knowledge
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Session Practice Options V2 bridge
+
+Pure policy and realization contracts live in `@praxis/training-engine-v2/session-practice`; server-only append/replay and the future Product adapter live in `@praxis/engine/session-practice-v2`. The current engine root and SessionClient do not import the server bridge, preserving current V1 as the sole Product authority.
+
+Persistence is append-only and athlete-scoped, and replay requires an exact attempt and persistence revision. Gate 13, Outcome Source, Longitudinal, and Week outputs are typed handoffs without application authority.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

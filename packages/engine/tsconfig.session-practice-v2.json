@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  },
+  "include": [
+    "src/sessionPracticeV2/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "historicalV1": {
+    "contractId": "HISTORICAL_SESSION_PRACTICE_OPTIONS_V1",
+    "contractVersion": "1.0.0"
+  },
+  "bridge": {
+    "contractId": "SESSION_PRACTICE_OPTIONS_V2_BRIDGE",
+    "contractVersion": "1.0.0"
+  },
+  "request": {
+    "contractId": "SESSION_PRACTICE_REQUEST",
+    "contractVersion": "1.0.0"
+  },
+  "policy": {
+    "contractId": "SESSION_PRACTICE_OPTION_POLICY_V2",
+    "contractVersion": "1.0.0"
+  },
+  "availability": {
+    "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+    "contractVersion": "1.0.0"
+  },
+  "realizationPlan": {
+    "contractId": "SESSION_PRACTICE_REALIZATION_PLAN",
+    "contractVersion": "1.0.0"
+  },
+  "realizationRevision": {
+    "contractId": "SESSION_PRACTICE_REALIZATION_REVISION",
+    "contractVersion": "1.0.0"
+  },
+  "assignmentDisposition": {
+    "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+    "contractVersion": "1.0.0"
+  },
+  "completionDisposition": {
+    "contractId": "SESSION_PRACTICE_COMPLETION_DISPOSITION",
+    "contractVersion": "1.0.0"
+  },
+  "outcomeSourceLink": {
+    "contractId": "SESSION_PRACTICE_OUTCOME_SOURCE_LINK",
+    "contractVersion": "1.0.0"
+  },
+  "productAdapter": {
+    "contractId": "SESSION_PRACTICE_PRODUCT_ADAPTER",
+    "contractVersion": "1.0.0"
+  },
+  "persistence": {
+    "contractId": "SESSION_PRACTICE_PERSISTENCE",
+    "contractVersion": "1.0.0"
+  },
+  "observability": {
+    "contractId": "SESSION_PRACTICE_OBSERVABILITY",
+    "contractVersion": "1.0.0"
+  },
+  "realizer": {
+    "contractId": "PRODUCTION_SESSION_PRACTICE_REALIZER_KERNEL",
+    "contractVersion": "1.0.0"
+  }
+}

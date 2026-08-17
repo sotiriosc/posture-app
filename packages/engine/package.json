@@ -10,14 +10,16 @@
     "./outcome-source-persistence": "./src/outcomeSourcePersistence/index.ts",
     "./adaptation-application-orchestration": "./src/adaptationApplicationOrchestration/index.ts",
     "./controlled-product-shadow": "./src/controlledProductShadow/index.ts",
-    "./controlled-product-shadow-goal-realization": "./src/controlledProductShadowGoalRealization/index.ts"
+    "./controlled-product-shadow-goal-realization": "./src/controlledProductShadowGoalRealization/index.ts",
+    "./session-practice-v2": "./src/sessionPracticeV2/index.ts"
   },
   "scripts": {
-    "build": "npm run build:outcome-sources && npm run build:application-orchestration && npm run build:product-shadow && npm run build:goal-specific-evidence",
+    "build": "npm run build:outcome-sources && npm run build:application-orchestration && npm run build:product-shadow && npm run build:goal-specific-evidence && npm run build:session-practice-v2",
     "build:outcome-sources": "tsc -p tsconfig.outcome-sources.json --noEmit",
     "build:application-orchestration": "tsc -p tsconfig.application-orchestration.json --noEmit",
     "build:product-shadow": "tsc -p tsconfig.product-shadow.json --noEmit",
     "build:goal-specific-evidence": "tsc -p tsconfig.goal-specific-evidence.json --noEmit",
+    "build:session-practice-v2": "tsc -p tsconfig.session-practice-v2.json --noEmit",
     "test:post-chunk-d-boundary-repair": "vitest --run --config vitest.goal-specific-product-shadow.config.ts tests/controlledProductShadowGoalEvidence/postChunkDBoundaryRepairEvidence.test.ts",
     "report:post-chunk-d-boundary-repair": "node --import tsx dev/reportPostChunkDBoundaryRepair.ts",
     "db:outcome-sources:migrations:plan": "node --import tsx src/outcomeSourcePersistence/cli.ts plan",
@@ -41,7 +43,11 @@
     "test:product-shadow-goal-realization": "vitest --run --config vitest.config.ts tests/unit/controlledProductShadowGoalRealizationMapping.test.ts tests/unit/controlledProductShadowGoalRealizationService.test.ts tests/unit/controlledProductShadowGoalRealizationActivation.test.ts tests/unit/controlledProductShadowGoalRealizationEvidence.test.ts tests/unit/controlledProductShadowGoalRealizationReports.test.ts",
     "report:product-shadow-goal-realization": "node --import tsx dev/reportControlledProductShadowGoalRealization.ts",
     "test:goal-specific-product-shadow-evidence": "vitest --run --config vitest.goal-specific-product-shadow.config.ts",
-    "report:goal-specific-product-shadow-evidence": "node --import tsx dev/reportGoalSpecificProductShadowEvidence.ts"
+    "report:goal-specific-product-shadow-evidence": "node --import tsx dev/reportGoalSpecificProductShadowEvidence.ts",
+    "test:session-practice-v2": "vitest --run --config vitest.config.ts tests/unit/sessionPracticeV2Bridge.test.ts tests/unit/sessionPracticeV2Evidence.test.ts",
+    "test:session-practice-v2:postgres": "vitest --run --config vitest.config.ts tests/integration/sessionPracticeV2Postgres.integration.test.ts",
+    "report:session-practice-v2": "node --import tsx dev/reportSessionPracticeV2.ts --write",
+    "check:session-practice-v2-reports": "node --import tsx dev/reportSessionPracticeV2.ts --check"
   },
   "dependencies": {
     "@praxis/training-engine-v2": "0.0.1",

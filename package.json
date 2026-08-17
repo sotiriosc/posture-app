@@ -128,7 +128,11 @@
     "test:package-r-knowledge-foundation": "npm run test:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2",
     "report:package-r-knowledge-foundation": "npm run report:package-r-knowledge-foundation --workspace=@praxis/training-engine-v2",
     "test:package-r": "npm run test:package-r --workspace=@praxis/training-engine-v2",
-    "report:package-r": "npm run report:package-r --workspace=@praxis/training-engine-v2"
+    "report:package-r": "npm run report:package-r --workspace=@praxis/training-engine-v2",
+    "test:session-practice-v2": "npm run test:session-practice-v2 --workspace=@praxis/engine",
+    "test:session-practice-v2:postgres": "npm run test:session-practice-v2:postgres --workspace=@praxis/engine",
+    "report:session-practice-v2": "npm run report:session-practice-v2 --workspace=@praxis/engine",
+    "check:session-practice-v2-reports": "npm run check:session-practice-v2-reports --workspace=@praxis/engine"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.3",

@@ -224,3 +224,13 @@ Pre-G2L changes no Product option, Get stronger visibility, Questionnaire, curre
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Bridge implemented, Product inactive
+
+Pre-G3 grants no Product or owner-account delivery authority. Current Full/Lighter/Recovery UI and behavior, Get stronger visibility, Product routes, Product persistence, ProgramProgress, SessionRecord, Product Shadow, and activation remain unchanged. G and H remain open.
+
+Final state: `INCOMPLETE_FUTURE_WORK_REMAINS`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

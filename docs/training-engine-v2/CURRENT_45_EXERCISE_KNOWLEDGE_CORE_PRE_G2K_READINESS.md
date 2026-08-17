@@ -17,3 +17,13 @@ Pre-G2K remains completed. Pre-G2L preserves its closed 53-entry historical base
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Session practice bridge coverage
+
+Pre-G3 consumes the complete 64-entry catalog and Knowledge corpus as frozen upstream evidence. It adds no teaching claims, prose-driven decisions, Knowledge-to-runtime dependency, or Product delivery.
+
+Combined Pre-G3 fingerprint: `0a61f586fb885c32fe5cf64a906d527b985c41127ad69cb4a1e5952b23dfec38`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

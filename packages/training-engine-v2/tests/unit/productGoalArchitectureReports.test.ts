@@ -28,12 +28,13 @@ const preG1Marker = /\n*<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START
 const preG2Marker = /\n*<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:START -->[\s\S]*?<!-- PRE_G2_PACKAGE_R_HOME_FIRST_MIXED_RELEASE:END -->\n?/;
 const preG2KMarker = /\n*<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:START -->[\s\S]*?<!-- PRE_G2K_CURRENT_45_KNOWLEDGE_COMPLETION:END -->\n?/;
 const preG2LMarker = /\n*<!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:START -->[\s\S]*?<!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->\n?/;
+const preG3Marker = /\n*<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->[\s\S]*?<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->\n?/;
 const withoutPurposeFirstMarker = (value: string) => value.replace(purposeFirstMarker, "\n")
   .replace(supportedPurposeMarker, "\n").replace(b4Marker, "\n")
   .replace(goalRealizationMarker, "\n").replace(goalSpecificEvidenceMarker, "\n")
   .replace(productGoalContextMarker, "\n").replace(inactiveProductGoalMarker, "\n")
   .replace(preG1Marker, "\n").replace(preG2Marker, "\n").replace(preG2KMarker, "\n")
-  .replace(preG2LMarker, "\n");
+  .replace(preG2LMarker, "\n").replace(preG3Marker, "\n");
 
 describe("Product goal architecture deterministic reports", () => {
   it("builds and persists three Markdown and two JSON artifacts exactly", () => {

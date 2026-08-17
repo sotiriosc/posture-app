@@ -102,3 +102,13 @@ and [canonical architecture ledger](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md
 
 Next dependency: `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`.
 <!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 Session Practice Gate 13 and Week handoff
+
+Gate 13 validates exact practice realization lineage and completion disposition. Remaining required work is emitted as an explicit observation-only Week handoff; the bridge never reallocates, reschedules, progresses, regresses, deloads, or mutates a Week.
+
+Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

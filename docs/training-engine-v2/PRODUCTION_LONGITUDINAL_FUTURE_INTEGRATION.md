@@ -94,3 +94,13 @@ and [canonical architecture ledger](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md
 
 Next dependency: `CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING_V1_AUTHORIZATION`.
 <!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 Session Practice Longitudinal boundary
+
+Practice completion contributes observation-only evidence with exact attempt and realization lineage. It cannot automatically progress, regress, deload, replace, apply, or mutate Longitudinal state.
+
+Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

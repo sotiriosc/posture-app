@@ -1,0 +1,34 @@
+# Session Practice Options V2 Stress Report
+
+Result: `PASS`. Explicit-time deterministic kernels completed every mandated minimum with no hidden clock, production randomness, fallback, or rescue.
+
+| Lane | Count |
+| --- | --- |
+| controlledScenarios | 720 |
+| fixedShellCohorts | 1030 |
+| catalogCoverage | 64 |
+| holdout | 1200 |
+| requestValidation | 15000 |
+| sourceSession | 15000 |
+| availability | 15000 |
+| full | 15000 |
+| lighter | 20000 |
+| recovery | 15000 |
+| dependencyPruning | 10000 |
+| prescriptionRevision | 10000 |
+| sequencing | 8000 |
+| gate13 | 8000 |
+| completionDisposition | 5000 |
+| persistenceReplay | 5000 |
+| lifecycleLock | 3000 |
+| strengthSession | 3000 |
+| hypertrophySession | 3000 |
+| timeConstrained | 2000 |
+| painContext | 2000 |
+| recommendationSelection | 2000 |
+| historicalV1Replay | 1000 |
+| currentRouteInvariance | 1000 |
+| productShadowInvariance | 1000 |
+| noRescue | 1000 |
+| repeatedDeterministicRuns | 2 |
+| result | PASS |

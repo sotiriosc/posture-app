@@ -41,13 +41,17 @@ jobs:
           npm run build:outcome-sources --workspace=@praxis/engine &&
           npm run build:application-orchestration --workspace=@praxis/engine &&
           npm run build:product-shadow --workspace=@praxis/engine &&
-          npm run build:goal-specific-evidence --workspace=@praxis/engine
+          npm run build:goal-specific-evidence --workspace=@praxis/engine &&
+          npm run build:session-practice-v2 --workspace=@praxis/engine
       - name: Run real Outcome Source PostgreSQL integration
         run: npm run test:outcome-sources:postgres
       - name: Run real orchestration PostgreSQL integration
         run: npm run test:application-orchestration:postgres
       - name: Run real controlled Product shadow PostgreSQL integration
         run: npm run test:product-shadow:postgres
+
+      - name: Run real Session Practice V2 PostgreSQL integration
+        run: npm run test:session-practice-v2:postgres
 
   # ─── PR gate ──────────────────────────────────────────────────────────────
   # Runs on every pull request. Fast enough to be a blocking gate (target:
@@ -86,6 +90,13 @@ jobs:
 
       - name: Controlled Product shadow default-off gate
         run: npm run test:product-shadow
+
+      - name: Session Practice V2 default-off gate
+        run: >-
+          npm run build --workspace=@praxis/training-engine-v2 &&
+          npm run build:session-practice-v2 --workspace=@praxis/engine &&
+          npm run test:session-practice-v2 &&
+          npm run check:session-practice-v2-reports
 
       # ── Playwright smoke: first-run happy path + per-account isolation,
       # for both apps. Blocking per bloom-plan Phase 6f Commit 6.

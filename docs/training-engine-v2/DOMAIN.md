@@ -527,3 +527,13 @@ Standard-gym machines require exact capability IDs. Incline is press-support ang
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Session practice semantics
+
+Full is exact pass-through. Lighter preserves session purpose, required responsibility, protected anchors, exercise identity, repetition targets, and rest while applying only the minimum explicit structural reduction. Recovery exists only for explicitly owned support/recovery work, grants no developmental or original-day completion credit, and never infers eligibility from prose.
+
+An attempt is bound to one source session revision. Its selected mode locks when execution begins, and all later draft, completion, and outcome records retain exact attempt and realization revision lineage.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

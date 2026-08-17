@@ -1,0 +1,39 @@
+# Session Practice Options V2 Activation Guards
+
+All protected-current-runtime, over-adaptation, and activation counts are zero.
+
+| Guard | Count |
+| --- | --- |
+| historicalV1SemanticChanges | 0 |
+| currentOptionCopyChanges | 0 |
+| currentRouteDomChanges | 0 |
+| currentSessionClientV2Imports | 0 |
+| currentProductRouteV2Calls | 0 |
+| currentProductPersistenceChanges | 0 |
+| currentProgramProgressChanges | 0 |
+| currentSessionRecordBehaviorChanges | 0 |
+| fullSemanticDifferenceCount | 0 |
+| lighterBlanketSetSubtractionCount | 0 |
+| lighterBlindAccessoryRemovalCount | 0 |
+| lighterRestShorteningCount | 0 |
+| lighterExerciseReplacementCount | 0 |
+| unchangedFullMislabeledLighterCount | 0 |
+| recoveryKeywordParserCount | 0 |
+| recoveryDevelopmentalBlockCount | 0 |
+| recoveryDevelopmentalCreditCount | 0 |
+| recoveryOriginalDayCompleteCount | 0 |
+| safetyBypassCount | 0 |
+| postExecutionModeChangeAcceptanceCount | 0 |
+| silentProgressClearCount | 0 |
+| omittedWorkPerformanceCount | 0 |
+| duplicateSourceEventCount | 0 |
+| automaticReallocationCount | 0 |
+| automaticProgressionCount | 0 |
+| automaticRegressionCount | 0 |
+| automaticDeloadCount | 0 |
+| productShadowSemanticChanges | 0 |
+| productUiChanges | 0 |
+| getStrongerVisibilityChanges | 0 |
+| ownerDeliveryCount | 0 |
+| productActivationCount | 0 |
+| finalLedgerCompletedState | 0 |

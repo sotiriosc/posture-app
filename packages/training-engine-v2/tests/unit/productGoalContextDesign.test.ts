@@ -215,8 +215,11 @@ describe("screenshot-guided Product goal and context input design", () => {
     ]);
     expect(changed.some((path) =>
       (path.startsWith("apps/consumer/src/") && !authorizedChunkFConsumerPaths.has(path)) ||
-      path.startsWith("apps/gyms/src/") || path.startsWith("packages/engine/src/") ||
-      (path.startsWith("packages/training-engine-v2/src/") && !authorizedPackageRTrainingPaths.has(path)))).toBe(false);
+      path.startsWith("apps/gyms/src/") ||
+      (path.startsWith("packages/engine/src/") &&
+        !path.startsWith("packages/engine/src/sessionPracticeV2/")) ||
+      (path.startsWith("packages/training-engine-v2/src/") && !authorizedPackageRTrainingPaths.has(path) &&
+        !path.startsWith("packages/training-engine-v2/src/sessionPractice/")))).toBe(false);
     let productionReferences = "";
     try {
       productionReferences = execFileSync("git", ["grep", "-n", "productGoalContextDesign", "--",

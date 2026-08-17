@@ -26,10 +26,11 @@ describe("production Week reports", () => {
     const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/g;
     const supportedPurposeMarker = /\n*<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:START -->[\s\S]*?<!-- SUPPORTED_GOAL_LOCAL_PURPOSE_POLICY_V1:END -->\n*/g;
     const b4Marker = /\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n*/g;
+    const preG3Marker = /\n*<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->[\s\S]*?<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->\n*/g;
     for (const filename of PRODUCTION_WEEK_REPORT_FILENAMES) {
       expect(readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n")
         .replace(productShadowMarker, "\n").replace(supportedPurposeMarker, "\n")
-        .replace(b4Marker, "\n"))
+        .replace(b4Marker, "\n").replace(preG3Marker, "\n"))
         .toBe(markdown[filename]);
     }
     for (const filename of PRODUCTION_WEEK_JSON_FILENAMES) {

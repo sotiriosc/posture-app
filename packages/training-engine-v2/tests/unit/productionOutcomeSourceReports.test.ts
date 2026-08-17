@@ -16,13 +16,14 @@ describe("production outcome source reports", () => {
   it("emits every required deterministic report", () => {
     const orchestrationMarker = /\n*<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:START -->[\s\S]*?<!-- ADAPTATION_APPLICATION_ORCHESTRATION_V1:END -->\n*/g;
     const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/g;
+    const preG3Marker = /\n*<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->[\s\S]*?<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->\n*/g;
     const markdown = buildProductionOutcomeSourceMarkdownReports();
     const json = buildProductionOutcomeSourceJsonReports();
     expect(PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES).toHaveLength(40);
     expect(PRODUCTION_OUTCOME_SOURCE_JSON_FILENAMES).toHaveLength(14);
     for (const filename of PRODUCTION_OUTCOME_SOURCE_REPORT_FILENAMES) {
       const persisted = readFileSync(resolve(docsRoot, filename), "utf8").replace(orchestrationMarker, "\n")
-        .replace(productShadowMarker, "\n");
+        .replace(productShadowMarker, "\n").replace(preG3Marker, "\n");
       if (filename === "PRODUCTION_OUTCOME_SOURCE_SNAPSHOT.md") {
         expect(persisted).toContain(markdown[filename].trim());
         expect(persisted).toContain("FOUNDATION_DESIGN_EVIDENCE_NOT_RUNTIME");

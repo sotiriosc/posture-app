@@ -39,3 +39,13 @@ Chunk C adds `CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4` as an
 
 Chunk D exercises the explicit Chunk C profile through genuine B1-B4 kernels using synthetic Product-shaped replay, exact-revision artifacts, Full Prescribed Program snapshots, and Gate 14 causal comparison. It changes no Product UI, current route, output, persistence, rollout, mutation, application, or activation. The historical Chunk C readiness snapshot is preserved; see [post-closure reconciliation](./CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_POST_CLOSURE_RECONCILIATION.md) and [Chunk D evidence readiness](./GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_READINESS.md). Next dependency: `SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION`.
 <!-- GOAL_SPECIFIC_PRODUCT_SHADOW_EVIDENCE_V1:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 Session Practice Options V2 boundary
+
+The V2 practice bridge has no Product Shadow imports, calls, persistence, output, rendering, or semantic changes. Its future Product adapter is default off and returns the exact current V1 labels while refusing V2 delivery; Product Shadow activation remains separately governed.
+
+Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

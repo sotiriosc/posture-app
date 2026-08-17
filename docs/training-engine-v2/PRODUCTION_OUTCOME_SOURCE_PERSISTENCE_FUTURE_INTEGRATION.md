@@ -68,3 +68,13 @@ The explicit server-only service can validate, build, persist, and replay unappl
 - Safety: zero Product mutation, application, delivery, rendering, performed credit, or counterfactual outcome attribution.
 - Remaining dependency: `SEPARATE_PRODUCT_ACTIVATION_AUTHORIZATION`.
 <!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 Session Practice Outcome Source handoff
+
+Completed practice creates an explicit, idempotent Outcome Source link with exact athlete, session, source revision, attempt, realization revision, and completion lineage. Omitted work is never reported as performed; duplicate source events are rejected; no progression or application authority is granted.
+
+Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->

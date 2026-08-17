@@ -1,0 +1,260 @@
+{
+  "full": [
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "prep",
+      "exerciseId": "cat-cow",
+      "sourceExposureEventId": "event-prep",
+      "state": "retained",
+      "priority": "required",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [
+        "block-prep"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "FULL_EXACT_PASS_THROUGH"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "main",
+      "exerciseId": "goblet-squat",
+      "sourceExposureEventId": "event-main",
+      "state": "retained",
+      "priority": "required",
+      "productiveRequiredAnchor": true,
+      "retainedBlockIds": [
+        "block-main"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "FULL_EXACT_PASS_THROUGH"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "accessory",
+      "exerciseId": "lateral-raise",
+      "sourceExposureEventId": "event-accessory",
+      "state": "retained",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [
+        "block-accessory"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "FULL_EXACT_PASS_THROUGH"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "cooldown",
+      "exerciseId": "breathing-reset",
+      "sourceExposureEventId": "event-cooldown",
+      "state": "retained",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [
+        "block-cooldown"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "FULL_EXACT_PASS_THROUGH"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    }
+  ],
+  "lighter": [
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "prep",
+      "exerciseId": "cat-cow",
+      "sourceExposureEventId": "event-prep",
+      "state": "retained",
+      "priority": "required",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [
+        "block-prep"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "L0_PROTECTED_OR_RETAINED"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "main",
+      "exerciseId": "goblet-squat",
+      "sourceExposureEventId": "event-main",
+      "state": "retained",
+      "priority": "required",
+      "productiveRequiredAnchor": true,
+      "retainedBlockIds": [
+        "block-main"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "L0_PROTECTED_OR_RETAINED"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "accessory",
+      "exerciseId": "lateral-raise",
+      "sourceExposureEventId": "event-accessory",
+      "state": "omitted",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [],
+      "omittedBlockIds": [
+        "block-accessory"
+      ],
+      "reasonCodes": [
+        "L2_OPTIONAL_LOWEST_TRUTHFUL_MARGINAL_VALUE_OMITTED"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "cooldown",
+      "exerciseId": "breathing-reset",
+      "sourceExposureEventId": "event-cooldown",
+      "state": "omitted",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [],
+      "omittedBlockIds": [
+        "block-cooldown"
+      ],
+      "reasonCodes": [
+        "L2_OPTIONAL_LOWEST_TRUTHFUL_MARGINAL_VALUE_OMITTED"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    }
+  ],
+  "recovery": [
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "prep",
+      "exerciseId": "cat-cow",
+      "sourceExposureEventId": "event-prep",
+      "state": "omitted",
+      "priority": "required",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [],
+      "omittedBlockIds": [
+        "block-prep"
+      ],
+      "reasonCodes": [
+        "RECOVERY_EXPLICIT_SUPPORT_OWNERSHIP_ABSENT"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "main",
+      "exerciseId": "goblet-squat",
+      "sourceExposureEventId": "event-main",
+      "state": "omitted",
+      "priority": "required",
+      "productiveRequiredAnchor": true,
+      "retainedBlockIds": [],
+      "omittedBlockIds": [
+        "block-main"
+      ],
+      "reasonCodes": [
+        "RECOVERY_DEVELOPMENTAL_MAIN_EXCLUDED"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "accessory",
+      "exerciseId": "lateral-raise",
+      "sourceExposureEventId": "event-accessory",
+      "state": "omitted",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [],
+      "omittedBlockIds": [
+        "block-accessory"
+      ],
+      "reasonCodes": [
+        "RECOVERY_EXPLICIT_SUPPORT_OWNERSHIP_ABSENT"
+      ],
+      "recoveryContributionLane": null,
+      "performanceCreated": false
+    },
+    {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+        "contractVersion": "1.0.0"
+      },
+      "assignmentId": "cooldown",
+      "exerciseId": "breathing-reset",
+      "sourceExposureEventId": "event-cooldown",
+      "state": "retained",
+      "priority": "optional",
+      "productiveRequiredAnchor": false,
+      "retainedBlockIds": [
+        "block-cooldown"
+      ],
+      "omittedBlockIds": [],
+      "reasonCodes": [
+        "RECOVERY_EXPLICIT_LANE:recovery_support_only"
+      ],
+      "recoveryContributionLane": "recovery_support_only",
+      "performanceCreated": false
+    }
+  ]
+}

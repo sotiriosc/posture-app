@@ -470,3 +470,13 @@ Pre-G2L evidence freezes 576 controlled scenarios, 660 fixed-shell cases, 960 ho
 Combined Pre-G2L fingerprint: `5926959c3540ed3045ad7ab55cdcbde516be85b73bb7fac1ed572982a1b5a267`. Exact next dependency: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_AUTHORIZATION`.
 
 <!-- PRE_G2L_STANDARD_GYM_FOUNDATIONS:END -->
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->
+
+## Pre-G3 - Session Practice Options V2 evidence
+
+Pre-G3 evidence covers 720 controlled scenarios, 1,030 fixed-shell cohort cases, all 64 catalog and Knowledge identities, a frozen 1,200-case holdout, 60 rejected semantic mutations, 11 invariant and 10 material metamorphic relations, and the mandated deterministic stress floors. In-memory and PostgreSQL 16 tests verify append-only exact-version replay; activation guards prove zero current V1, Product, Product Shadow, delivery, or activation changes.
+
+Combined Pre-G3 fingerprint: `0a61f586fb885c32fe5cf64a906d527b985c41127ad69cb4a1e5952b23dfec38`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
+
+<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->
