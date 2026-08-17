@@ -53,6 +53,16 @@ export const PRODUCTION_KNOWLEDGE_REGISTRY_CONTRACT = Object.freeze({
   contractVersion: "1.0.0",
 } as const);
 
+export const PACKAGE_S_KNOWLEDGE_CONTRACT = Object.freeze({
+  contractId: "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_KNOWLEDGE",
+  contractVersion: "1.0.0",
+} as const);
+
+export const PRODUCTION_64_KNOWLEDGE_REGISTRY_CONTRACT = Object.freeze({
+  contractId: "PRODUCTION_64_EXERCISE_KNOWLEDGE_REGISTRY",
+  contractVersion: "1.0.0",
+} as const);
+
 export const LEGACY_FALLBACK_EQUIVALENCE_CONTRACT = Object.freeze({
   contractId: "EXERCISE_KNOWLEDGE_LEGACY_FALLBACK_EQUIVALENCE",
   contractVersion: "1.0.0",
@@ -75,6 +85,8 @@ export type KnowledgeContractReference =
   | typeof KNOWLEDGE_CURATION_WAVE_CONTRACT
   | typeof CURRENT_45_KNOWLEDGE_COMPLETION_CONTRACT
   | typeof PRODUCTION_KNOWLEDGE_REGISTRY_CONTRACT
+  | typeof PACKAGE_S_KNOWLEDGE_CONTRACT
+  | typeof PRODUCTION_64_KNOWLEDGE_REGISTRY_CONTRACT
   | typeof LEGACY_FALLBACK_EQUIVALENCE_CONTRACT
   | typeof PRODUCTION_KNOWLEDGE_REVIEW_LEDGER_CONTRACT;
 

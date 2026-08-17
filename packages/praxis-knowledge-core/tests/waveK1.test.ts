@@ -56,7 +56,7 @@ describe("Pre-G2K Wave K1 Knowledge curation", () => {
 
   it("models overrides as differences only", () => {
     const overrides = PREPARATION_PRESSING_PULLING_KNOWLEDGE_ENTRIES.flatMap((entry) => entry.realizationOverrides);
-    expect(overrides).toHaveLength(7);
+    expect(overrides).toHaveLength(8);
     expect(overrides.every((override) =>
       !override.replaceSetupRefs && !override.replaceDuringRefs && !override.replaceWatchForRefs,
     )).toBe(true);

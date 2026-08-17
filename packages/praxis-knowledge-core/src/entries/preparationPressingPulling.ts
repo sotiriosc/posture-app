@@ -86,7 +86,10 @@ export const PREPARATION_PRESSING_PULLING_KNOWLEDGE_ENTRIES = Object.freeze([
     during: [fact("Press through the machine path without leaving the chosen support position."), fact("Return the handles under control to the reviewed start range.")],
     pattern: "A machine chest press is a supported horizontal press constrained by the specific machine path.",
     watchFor: [fact("Watch for a seat position that starts the handles outside the intended range."), fact("Watch for the torso lifting away from the support to finish the press.")],
-    compactCoachingRefs: ["focus"], mechanics: ["support.seated-machine", "resistance.machine-guided", "fit.machine-specific"], roles: ["horizontal_push"], actions: [], stress: [], painTopics: ["shoulder-response-context"], unresolvedClaims: ["No selectorized or plate-loaded geometry variant is accepted without exact machine capability review."],
+    compactCoachingRefs: ["focus"], overrides: [{ id: "fixed-incline-machine", realizationId: "fixed-machine-incline", facts: [
+      { suffix: "setup", category: "setup", statement: "For the fixed incline realization, verify the exact incline-chest-press capability and adjust its seat and start position before loading." },
+      { suffix: "during", category: "during", statement: "Follow the fixed inclined machine path without treating its angle as another exercise identity or an upper-chest guarantee." },
+    ] }], mechanics: ["support.seated-machine", "resistance.machine-guided", "fit.machine-specific"], roles: ["horizontal_push"], actions: [], stress: [], painTopics: ["shoulder-response-context"], unresolvedClaims: ["Only the exact fixed-machine-incline realization is accepted; other selectorized or plate-loaded geometries still require review."],
   }),
   entry({
     exerciseId: "cable-chest-fly", canonicalName: "Cable Chest Fly",

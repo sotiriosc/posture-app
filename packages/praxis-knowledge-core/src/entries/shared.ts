@@ -50,6 +50,11 @@ export interface CuratedEntrySpec {
   readonly stress: readonly string[];
   readonly painTopics?: readonly string[];
   readonly unresolvedClaims?: readonly string[];
+  readonly provenanceContext?: {
+    readonly humanReviewRef: string;
+    readonly ownerEvidenceBasis: string;
+    readonly compactEvidenceBasis: string;
+  };
 }
 
 const OWNER_REF = "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md";
@@ -70,20 +75,22 @@ function provenance(
   };
 }
 
-const humanReview = (exerciseId: string) => provenance(
+const humanReview = (exerciseId: string, spec: CuratedEntrySpec) => provenance(
   "human_exercise_science_review",
-  HUMAN_REVIEW_REF,
+  spec.provenanceContext?.humanReviewRef ?? HUMAN_REVIEW_REF,
   `${exerciseId} language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries.`,
 );
-const ownerBoundary = (exerciseId: string) => provenance(
+const ownerBoundary = (exerciseId: string, spec: CuratedEntrySpec) => provenance(
   "owner_decision",
   OWNER_REF,
-  `The owner authorized Knowledge completion while preserving the existing ${exerciseId} identity boundary.`,
+  spec.provenanceContext?.ownerEvidenceBasis ??
+    `The owner authorized Knowledge completion while preserving the existing ${exerciseId} identity boundary.`,
 );
-const fallbackReview = (exerciseId: string) => provenance(
+const fallbackReview = (exerciseId: string, spec: CuratedEntrySpec) => provenance(
   "human_exercise_science_review",
   FALLBACK_REF,
-  `The historical ${exerciseId} compact fallback was reviewed and retained byte-for-byte as presentation output.`,
+  spec.provenanceContext?.compactEvidenceBasis ??
+    `The historical ${exerciseId} compact fallback was reviewed and retained byte-for-byte as presentation output.`,
 );
 const equipmentTruth = (exerciseId: string) => provenance(
   "equipment_capability_truth",
@@ -100,8 +107,8 @@ const defaultKind: Readonly<Record<KnowledgeCategory, ExerciseKnowledgeFactKind>
 
 export function defineCuratedEntry(spec: CuratedEntrySpec): ExerciseKnowledgeEntry {
   const id = (suffix: string) => `${spec.exerciseId}.${suffix}`;
-  const human = humanReview(spec.exerciseId);
-  const legacy = fallbackReview(spec.exerciseId);
+  const human = humanReview(spec.exerciseId, spec);
+  const legacy = fallbackReview(spec.exerciseId, spec);
   const factRows: {
     suffix: string;
     kind: ExerciseKnowledgeFactKind;
@@ -165,7 +172,7 @@ export function defineCuratedEntry(spec: CuratedEntrySpec): ExerciseKnowledgeEnt
         ...(refs("during").length ? { addDuringRefs: refs("during") } : {}),
         ...(refs("watchFor").length ? { addWatchForRefs: refs("watchFor") } : {}),
         reviewStatus: "accepted" as const,
-        provenance: Object.freeze([ownerBoundary(spec.exerciseId), human]),
+        provenance: Object.freeze([ownerBoundary(spec.exerciseId, spec), human]),
       };
     }),
   );
@@ -196,7 +203,7 @@ export function defineCuratedEntry(spec: CuratedEntrySpec): ExerciseKnowledgeEnt
     relatedStressTags: Object.freeze([...spec.stress]),
     relatedPainTopicIds: Object.freeze([...(spec.painTopics ?? [])]),
     reviewStatus: "accepted",
-    provenance: Object.freeze([ownerBoundary(spec.exerciseId), human]),
+    provenance: Object.freeze([ownerBoundary(spec.exerciseId, spec), human]),
     unresolvedClaims: Object.freeze([...(spec.unresolvedClaims ?? [])]),
   });
 }

@@ -115,6 +115,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "cable-chest-fly.cue.1"
     ]
   },
+  "cable-lateral-raise": {
+    "summary": "Cable shoulder-abduction accessory with explicit anchor and laterality.",
+    "coachingFocus": [
+      "Raise through the controlled cable path",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "cable-lateral-raise.pattern",
+      "cable-lateral-raise.focus",
+      "cable-lateral-raise.cue.1"
+    ]
+  },
   "cable-pull-through": {
     "summary": "Cable hinge pattern with posterior loading.",
     "coachingFocus": [
@@ -305,6 +317,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "goblet-squat.cue.1"
     ]
   },
+  "hack-squat": {
+    "summary": "Machine-guided squat and knee-dominant strength pattern.",
+    "coachingFocus": [
+      "Squat through the guided range",
+      "Keep feet secure on the platform"
+    ],
+    "sourceFactIds": [
+      "hack-squat.pattern",
+      "hack-squat.focus",
+      "hack-squat.cue.1"
+    ]
+  },
   "half-kneeling-high-to-low-cable-chop": {
     "summary": "Half-kneeling high-cable controlled trunk-rotation exercise.",
     "coachingFocus": [
@@ -377,6 +401,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "machine-abdominal-crunch.cue.1"
     ]
   },
+  "machine-chest-fly": {
+    "summary": "Machine-guided shoulder horizontal-adduction accessory.",
+    "coachingFocus": [
+      "Fly through the guided range",
+      "Stay connected to the support"
+    ],
+    "sourceFactIds": [
+      "machine-chest-fly.pattern",
+      "machine-chest-fly.focus",
+      "machine-chest-fly.cue.1"
+    ]
+  },
   "machine-chest-press": {
     "summary": "Machine-guided horizontal press.",
     "coachingFocus": [
@@ -385,6 +421,42 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
     "sourceFactIds": [
       "machine-chest-press.pattern",
       "machine-chest-press.focus"
+    ]
+  },
+  "machine-hip-abduction": {
+    "summary": "Seated machine-guided hip-abduction accessory.",
+    "coachingFocus": [
+      "Abduct through the selected machine range",
+      "Keep the pelvis supported"
+    ],
+    "sourceFactIds": [
+      "machine-hip-abduction.pattern",
+      "machine-hip-abduction.focus",
+      "machine-hip-abduction.cue.1"
+    ]
+  },
+  "machine-hip-adduction": {
+    "summary": "Seated machine-guided hip-adduction accessory.",
+    "coachingFocus": [
+      "Adduct through the selected machine range",
+      "Keep the pelvis supported"
+    ],
+    "sourceFactIds": [
+      "machine-hip-adduction.pattern",
+      "machine-hip-adduction.focus",
+      "machine-hip-adduction.cue.1"
+    ]
+  },
+  "machine-hip-thrust": {
+    "summary": "Machine-supported loaded hip-extension strength exercise.",
+    "coachingFocus": [
+      "Extend the hips through the guided path",
+      "Keep feet secure"
+    ],
+    "sourceFactIds": [
+      "machine-hip-thrust.pattern",
+      "machine-hip-thrust.focus",
+      "machine-hip-thrust.cue.1"
     ]
   },
   "machine-leg-extension": {
@@ -447,6 +519,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "one-arm-dumbbell-row.cue.1"
     ]
   },
+  "overhead-cable-triceps-extension": {
+    "summary": "Overhead cable elbow-extension accessory with exact high anchor.",
+    "coachingFocus": [
+      "Extend the elbows through the overhead path",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "overhead-cable-triceps-extension.pattern",
+      "overhead-cable-triceps-extension.focus",
+      "overhead-cable-triceps-extension.cue.1"
+    ]
+  },
   "pallof-press": {
     "summary": "Anti-rotation core press using cable or anchored band.",
     "coachingFocus": [
@@ -457,6 +541,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "pallof-press.pattern",
       "pallof-press.focus",
       "pallof-press.cue.1"
+    ]
+  },
+  "pull-up": {
+    "summary": "Vertical body pull with exact unassisted or machine-assisted apparatus.",
+    "coachingFocus": [
+      "Pull through the prescribed vertical range",
+      "Keep a secure grip"
+    ],
+    "sourceFactIds": [
+      "pull-up.pattern",
+      "pull-up.focus",
+      "pull-up.cue.1"
     ]
   },
   "push-up": {
@@ -491,6 +587,30 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "seated-cable-row.pattern",
       "seated-cable-row.focus",
       "seated-cable-row.cue.1"
+    ]
+  },
+  "seated-calf-raise": {
+    "summary": "Seated machine-supported ankle plantar-flexion accessory.",
+    "coachingFocus": [
+      "Raise the heels from stable seated support",
+      "Keep forefeet secure"
+    ],
+    "sourceFactIds": [
+      "seated-calf-raise.pattern",
+      "seated-calf-raise.focus",
+      "seated-calf-raise.cue.1"
+    ]
+  },
+  "seated-leg-curl": {
+    "summary": "Seated machine-supported knee-flexion accessory.",
+    "coachingFocus": [
+      "Curl from stable seated support",
+      "Keep thighs supported"
+    ],
+    "sourceFactIds": [
+      "seated-leg-curl.pattern",
+      "seated-leg-curl.focus",
+      "seated-leg-curl.cue.1"
     ]
   },
   "serratus-wall-slide": {
@@ -587,6 +707,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "step-up.pattern",
       "step-up.focus",
       "step-up.cue.1"
+    ]
+  },
+  "straight-arm-cable-pulldown": {
+    "summary": "High-cable shoulder-extension accessory, not a vertical-pull replacement.",
+    "coachingFocus": [
+      "Pull straight arms down from the shoulders",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "straight-arm-cable-pulldown.pattern",
+      "straight-arm-cable-pulldown.focus",
+      "straight-arm-cable-pulldown.cue.1"
     ]
   },
   "suitcase-carry": {
