@@ -1,0 +1,86 @@
+{
+  "invariants": [
+    {
+      "relation": "email_case_outer_whitespace",
+      "result": "invariant"
+    },
+    {
+      "relation": "configuration_object_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "profile_fact_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "provenance_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "preview_display_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "synthetic_user_relationship",
+      "result": "invariant"
+    },
+    {
+      "relation": "route_test_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "report_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "repeated_generation_design_simulation",
+      "result": "invariant"
+    }
+  ],
+  "materialResponses": [
+    {
+      "relation": "owner_user_id",
+      "result": "material_response"
+    },
+    {
+      "relation": "configured_email_match",
+      "result": "material_response"
+    },
+    {
+      "relation": "delivery_mode",
+      "result": "material_response"
+    },
+    {
+      "relation": "enrollment",
+      "result": "material_response"
+    },
+    {
+      "relation": "profile_completeness",
+      "result": "material_response"
+    },
+    {
+      "relation": "Safety",
+      "result": "material_response"
+    },
+    {
+      "relation": "equipment_capability",
+      "result": "material_response"
+    },
+    {
+      "relation": "preview_staleness",
+      "result": "material_response"
+    },
+    {
+      "relation": "approval",
+      "result": "material_response"
+    },
+    {
+      "relation": "active_session_conflict",
+      "result": "material_response"
+    },
+    {
+      "relation": "kill_switch",
+      "result": "material_response"
+    }
+  ]
+}

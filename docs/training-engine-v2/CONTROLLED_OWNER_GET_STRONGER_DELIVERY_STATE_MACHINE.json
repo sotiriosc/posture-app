@@ -1,0 +1,395 @@
+{
+  "contract": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_DELIVERY_STATE_MACHINE",
+    "contractVersion": "1.0.0"
+  },
+  "states": [
+    "hidden",
+    "ineligible",
+    "eligible_not_enrolled",
+    "profile_requires_confirmation",
+    "profile_ready",
+    "generating",
+    "preview_blocked",
+    "preview_ready",
+    "approval_unavailable",
+    "approval_ready",
+    "approved",
+    "applying",
+    "applied_inactive",
+    "v2_active",
+    "active_session_conflict",
+    "rollback_ready",
+    "rolling_back",
+    "legacy_restored",
+    "suspended",
+    "revoked",
+    "stale",
+    "conflict",
+    "unavailable"
+  ],
+  "transitions": [
+    {
+      "from": "hidden",
+      "to": "ineligible",
+      "owner": "server_eligibility",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "ineligible",
+      "to": "eligible_not_enrolled",
+      "owner": "server_eligibility",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "eligible_not_enrolled",
+      "to": "profile_requires_confirmation",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "profile_requires_confirmation",
+      "to": "profile_ready",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "profile_ready",
+      "to": "generating",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "generating",
+      "to": "preview_blocked",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "preview_blocked",
+      "to": "preview_ready",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "preview_ready",
+      "to": "approval_unavailable",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "approval_unavailable",
+      "to": "approval_ready",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "approval_ready",
+      "to": "approved",
+      "owner": "configured_owner",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "approved",
+      "to": "applying",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "applying",
+      "to": "applied_inactive",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "applied_inactive",
+      "to": "v2_active",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "v2_active",
+      "to": "active_session_conflict",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "active_session_conflict",
+      "to": "rollback_ready",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "rollback_ready",
+      "to": "rolling_back",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "rolling_back",
+      "to": "legacy_restored",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "legacy_restored",
+      "to": "suspended",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "suspended",
+      "to": "revoked",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "revoked",
+      "to": "stale",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "stale",
+      "to": "conflict",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "conflict",
+      "to": "unavailable",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    },
+    {
+      "from": "unavailable",
+      "to": "unavailable",
+      "owner": "owner_delivery_application",
+      "preconditions": [
+        "exact_current_state",
+        "server_verified_authority",
+        "version_match"
+      ],
+      "sideEffects": [
+        "append_only_designated_record_only"
+      ],
+      "idempotency": "REQUIRED",
+      "failure": "FAIL_CLOSED_WITH_STRUCTURED_REASON",
+      "rollback": "RETURN_TO_LAST_DURABLE_STATE_WITHOUT_DATA_DELETION"
+    }
+  ],
+  "stateCount": 23,
+  "automaticApplyTransitions": 0
+}

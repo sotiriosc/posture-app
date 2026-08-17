@@ -63,6 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -97,6 +99,11 @@ jobs:
           npm run build:session-practice-v2 --workspace=@praxis/engine &&
           npm run test:session-practice-v2 &&
           npm run check:session-practice-v2-reports
+
+      - name: Controlled owner delivery design-only gate
+        run: >-
+          npm run test:controlled-owner-delivery-design --workspace=@praxis/training-engine-v2 &&
+          npm run check:controlled-owner-delivery-design-reports --workspace=@praxis/training-engine-v2
 
       # ── Playwright smoke: first-run happy path + per-account isolation,
       # for both apps. Blocking per bloom-plan Phase 6f Commit 6.

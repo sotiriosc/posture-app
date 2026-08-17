@@ -1,0 +1,31 @@
+{
+  "privacy": {
+    "persistedIdentity": "userId",
+    "emailInTables": 0,
+    "rawFreeText": 0,
+    "photoCopies": 0,
+    "authSecretCopies": 0,
+    "productionTestData": 0,
+    "syntheticFixturesOnly": true
+  },
+  "security": {
+    "serverSessionVerification": true,
+    "exactUserIdMatch": true,
+    "exactStoredEmailMatch": true,
+    "csrf": true,
+    "sameOrigin": true,
+    "getMutations": 0,
+    "clientAuthority": 0,
+    "queryActivation": 0,
+    "localStorageActivation": 0,
+    "unsignedCookieAuthority": 0,
+    "emailBodyAuthority": 0,
+    "openRedirects": 0,
+    "ownerPageCaching": 0,
+    "ownerResponseHeaders": 0,
+    "rateLimitsRequired": true,
+    "idempotency": true,
+    "appendOnlyAudit": true,
+    "ineligibleStatus": 404
+  }
+}

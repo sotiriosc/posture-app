@@ -28,11 +28,12 @@ describe("production Longitudinal reports", () => {
     const productShadowMarker = /\n*<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:START -->[\s\S]*?<!-- CONTROLLED_PRODUCT_SHADOW_INTEGRATION_V1:END -->\n*/;
     const b4Marker = /\n*<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:START -->[\s\S]*?<!-- EQUIPMENT_EXPERIENCE_CONTEXT_REALIZATION_V1:END -->\n*/;
     const preG3Marker = /\n*<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:START -->[\s\S]*?<!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->\n*/;
+    const chunkGDesignMarker = /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n*/;
     for (const [name, content] of Object.entries(rendered)) {
       expect(readFileSync(resolve(docsRoot, name), "utf8").replace(foundationMarker, "\n")
         .replace(productionSourceMarker, "\n").replace(productionWeekMarker, "\n")
         .replace(orchestrationMarker, "\n").replace(productShadowMarker, "\n")
-        .replace(b4Marker, "\n").replace(preG3Marker, "\n"), name).toBe(content);
+        .replace(b4Marker, "\n").replace(preG3Marker, "\n").replace(chunkGDesignMarker, "\n"), name).toBe(content);
     }
   });
 

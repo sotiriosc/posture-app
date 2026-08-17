@@ -234,3 +234,13 @@ Pre-G3 grants no Product or owner-account delivery authority. Current Full/Light
 Final state: `INCOMPLETE_FUTURE_WORK_REMAINS`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 <!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->
+
+## Chunk G Design - Controlled owner Get stronger delivery
+
+Chunk G design adds no activation authority. Owner implementation remains separately authorized, H remains open, and owner delivery and Product activation counts remain zero.
+
+Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->

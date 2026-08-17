@@ -2332,3 +2332,13 @@ The default-off bridge now provides deterministic request validation, option ava
 Classification: `SESSION_PRACTICE_OPTIONS_FULL_LIGHTER_RECOVERY_V2_BRIDGE_READY_FOR_CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_DELIVERY_DESIGN_AUTHORIZATION`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_DESIGN_V1_AUTHORIZATION`.
 
 <!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->
+
+## Chunk G Design - Controlled owner Get stronger delivery
+
+Chunk G design connects the admitted production V2 pipeline to a future isolated owner surface without flattening lineage into legacy Program state. G implementation and H activation remain separate owner decisions.
+
+Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->

@@ -1,0 +1,37 @@
+{
+  "contract": {
+    "contractId": "CONTROLLED_OWNER_ACCOUNT_IDENTITY_POLICY",
+    "contractVersion": "1.0.0"
+  },
+  "configuredIdentitySource": "configured_owner_email_reference",
+  "normalization": [
+    "trim",
+    "lowercase",
+    "exactly_one_email",
+    "no_list",
+    "no_wildcard",
+    "no_domain_match",
+    "no_substring_match"
+  ],
+  "authority": "SERVER_ONLY_ELIGIBILITY",
+  "passiveResolution": [
+    "readServerSession",
+    "findUserByEmail"
+  ],
+  "prohibitedCalls": [
+    "ensureBootstrapUser",
+    "createUser",
+    "updateUserCredentials",
+    "updateUserPlan"
+  ],
+  "exactMatch": [
+    "session_user_id",
+    "resolved_user_id",
+    "session_email",
+    "stored_email",
+    "configured_email"
+  ],
+  "persistedIdentity": "userId",
+  "emailPersisted": false,
+  "mismatchBehavior": "FAIL_CLOSED_REAUTHORIZATION_REQUIRED_NO_AUTOMATIC_MIGRATION"
+}

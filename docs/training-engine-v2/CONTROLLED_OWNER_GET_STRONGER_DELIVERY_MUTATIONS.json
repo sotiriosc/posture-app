@@ -1,0 +1,452 @@
+[
+  {
+    "mutationId": "client_email_trusted",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "substring_match",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "domain_match",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "case_sensitive_mismatch",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "admin_allowlist_reuse",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "shadow_allowlist_reuse",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "bootstrap_in_eligibility",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "owner_created",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "email_persisted",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "email_logged",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "query_activation",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "localStorage_activation",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "client_prop_authority",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "unsigned_cookie",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "mode_defaults_apply",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "ineligible_details",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "gym_proves_machines",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "exact_load_inferred",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "minutes_invented",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "pain_becomes_goal",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "legacy_history_as_performance",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "shadow_artifact_applied",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "legacy_generator_called",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "canned_pipeline_stage",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "incomplete_preview_ready",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "preview_auto_applied",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "legacy_program_overwritten",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "legacy_progress_overwritten",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "active_session_terminated",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "stale_preview_applied",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "missing_approval",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "duplicate_apply_non_idempotent",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "browser_only_pointer",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "rollback_deletes_data",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "kill_switch_strands_session",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "get_stronger_public",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "questionnaire_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "results_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "SessionClient_imports_v2",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "paywall_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "Stripe_plan_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "Product_Shadow_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "gyms_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "owner_delivery_implemented",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "H_completed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "ledger_completed",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "free_text_telemetry",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "email_response_header",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "GET_mutation",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  },
+  {
+    "mutationId": "open_redirect",
+    "semanticChange": true,
+    "rejected": true,
+    "acceptedDownstreamRescue": false,
+    "reasonCodes": [
+      "CHUNK_G_DESIGN_CONTRACT_VIOLATION"
+    ]
+  }
+]

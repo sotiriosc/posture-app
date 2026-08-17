@@ -1,0 +1,123 @@
+{
+  "previewDesign": {
+    "contract": {
+      "contractId": "CONTROLLED_OWNER_V2_PROGRAM_PREVIEW",
+      "contractVersion": "1.0.0"
+    },
+    "states": [
+      "ready_for_review",
+      "blocked_profile_incomplete",
+      "blocked_training_safety",
+      "blocked_equipment",
+      "blocked_policy_required",
+      "blocked_mapping",
+      "blocked_prescription",
+      "blocked_sequence",
+      "blocked_gate13",
+      "search_inconclusive",
+      "stale",
+      "conflict"
+    ],
+    "readyState": "ready_for_review",
+    "counterfactual": true,
+    "applied": false,
+    "productMutationCount": 0,
+    "reviewDisplay": [
+      "goal_and_mode",
+      "Week_structure",
+      "session_purpose",
+      "exercise_realization",
+      "resolved_dose_rest_effort",
+      "unknowns",
+      "exercise_rationale",
+      "equipment_requirements",
+      "practice_options",
+      "duration_truth",
+      "safety_review_warnings",
+      "legacy_Program_unchanged"
+    ],
+    "prohibitedClaims": [
+      "superiority",
+      "guaranteed_strength_gain",
+      "guaranteed_pain_reduction",
+      "automatic_personalization_perfection"
+    ],
+    "contents": [
+      "previewId",
+      "userId",
+      "profileRevision",
+      "v2ProgramSnapshot",
+      "weekObjectives",
+      "opportunities",
+      "sessions",
+      "assignments",
+      "exercises",
+      "realizations",
+      "PrescriptionBlocks",
+      "Sequence",
+      "durationTruth",
+      "practiceAvailability",
+      "unresolvedInputs",
+      "Safety",
+      "versions",
+      "fingerprints",
+      "createdAt",
+      "stalePolicy"
+    ]
+  },
+  "approvalDesign": {
+    "contract": {
+      "contractId": "CONTROLLED_OWNER_V2_PROGRAM_APPROVAL",
+      "contractVersion": "1.0.0"
+    },
+    "separateFromApplication": true,
+    "requires": [
+      "eligible_owner_session",
+      "apply_mode",
+      "apply_enrollment",
+      "current_preview",
+      "exact_preview_fingerprint",
+      "exact_versions",
+      "no_blocker",
+      "no_active_session",
+      "explicit_confirmation",
+      "csrf",
+      "idempotency_key"
+    ],
+    "csrf": "SAME_ORIGIN_CSRF_SAFE_SERVER_MUTATION",
+    "idempotency": "ONE_EXACT_PREVIEW_APPROVAL_PER_KEY",
+    "automaticApplicationCount": 0
+  },
+  "applicationDesign": {
+    "contract": {
+      "contractId": "CONTROLLED_OWNER_V2_PROGRAM_APPLICATION",
+      "contractVersion": "1.0.0"
+    },
+    "preserveLegacyProgram": true,
+    "preserveLegacyProgress": true,
+    "preserveHistory": true,
+    "createImmutableEnvelope": true,
+    "createOwnerActivePointer": true,
+    "otherUserWrites": 0,
+    "idempotent": true,
+    "failClosedStale": true,
+    "failClosedActiveSession": true,
+    "legacyProgramOverwriteCount": 0,
+    "legacyProgressOverwriteCount": 0
+  },
+  "rollbackDesign": {
+    "contract": {
+      "contractId": "CONTROLLED_OWNER_V2_ROLLBACK",
+      "contractVersion": "1.0.0"
+    },
+    "explicitConfirmation": true,
+    "pointerResult": "legacy",
+    "preservesV2Data": true,
+    "preservesLegacyData": true,
+    "preservesOutcomeEvidence": true,
+    "rewritesCompletedSessions": false,
+    "idempotent": true,
+    "structuredAudit": true,
+    "dataDeletionCount": 0
+  }
+}

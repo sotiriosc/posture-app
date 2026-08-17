@@ -562,3 +562,13 @@ Pure policy and realization contracts live in `@praxis/training-engine-v2/sessio
 Persistence is append-only and athlete-scoped, and replay requires an exact attempt and persistence revision. Gate 13, Outcome Source, Longitudinal, and Week outputs are typed handoffs without application authority.
 
 <!-- PRE_G3_SESSION_PRACTICE_OPTIONS_V2:END -->
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->
+
+## Chunk G Design - Controlled owner Get stronger delivery
+
+Chunk G design selects a dedicated /account/praxis-v2 boundary with server-only two-key eligibility, immutable V2 envelope, separate owner active-program pointer, exact lineage sidecar, and legacy fallback. Runtime implementation remains absent.
+
+Combined G-design fingerprint: `8b3b4d6f3088d50083498d8885cb19d91e15c56996e3198c7bf6785aa63eef13`. Exact next dependency: `CONTROLLED_OWNER_ACCOUNT_GET_STRONGER_GOAL_DELIVERY_IMPLEMENTATION_V1_AUTHORIZATION`.
+
+<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->

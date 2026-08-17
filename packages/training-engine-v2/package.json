@@ -254,6 +254,9 @@
     "check:current45-knowledge-reports": "node --import tsx dev/reportCurrent45KnowledgeCompletion.ts --check",
     "test:package-s": "vitest --run --config vitest.config.ts tests/unit/packageSFoundations.test.ts tests/unit/packageSProductionAdmission.test.ts",
     "report:package-s": "node --import tsx dev/reportPackageSStandardGym.ts --write",
-    "check:package-s-reports": "node --import tsx dev/reportPackageSStandardGym.ts --check"
+    "check:package-s-reports": "node --import tsx dev/reportPackageSStandardGym.ts --check",
+    "test:controlled-owner-delivery-design": "vitest --run --config vitest.config.ts tests/unit/controlledOwnerDeliveryDesign.test.ts tests/unit/controlledOwnerDeliveryReports.test.ts",
+    "report:controlled-owner-delivery-design": "node --import tsx dev/reportControlledOwnerDeliveryDesign.ts --write",
+    "check:controlled-owner-delivery-design-reports": "node --import tsx dev/reportControlledOwnerDeliveryDesign.ts --check"
   }
 }

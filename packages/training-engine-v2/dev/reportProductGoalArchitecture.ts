@@ -9,6 +9,7 @@ import {
   buildProductGoalArchitectureMarkdownReports,
   productGoalArchitectureDocumentationMarker,
 } from "../tests/cagt/productGoalArchitectureReports";
+import { preserveLinkedDocumentationMarkers } from "./preserveLinkedDocumentationMarkers";
 
 const packageRoot = process.cwd().endsWith("packages/training-engine-v2") ? process.cwd() :
   resolve(process.cwd(), "packages/training-engine-v2");
@@ -27,15 +28,9 @@ const linkedMarkerPatterns = Object.freeze([
   /\n*<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:START -->[\s\S]*?<!-- PRODUCT_GOAL_CONTEXT_CHUNK_E:END -->\n?/,
   /\n*<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:START -->[\s\S]*?<!-- ONE_INACTIVE_PRODUCT_GOAL_OPTION_CHUNK_F:END -->\n?/,
   /\n*<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:START -->[\s\S]*?<!-- PRE_G1_EXERCISE_CATALOG_HOME_COMFORT_CURATION:END -->\n?/,
+  /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n?/,
 ]);
 
-function preserveLinkedMarkers(content: string, current: string): string {
-  const starts = linkedMarkerPatterns.flatMap((linkedPattern) => {
-    const match = current.match(linkedPattern);
-    return match?.index === undefined ? [] : [match.index];
-  });
-  return starts.length > 0 ? `${content.trimEnd()}${current.slice(Math.min(...starts))}` : content;
-}
 for (const filename of PRODUCT_GOAL_ARCHITECTURE_UPDATED_DOCS) {
   const path = resolve(workspaceRoot, filename);
   const current = existsSync(path) ? readFileSync(path, "utf8") :
@@ -49,7 +44,8 @@ const json = buildProductGoalArchitectureJsonReports(workspaceRoot);
 for (const filename of PRODUCT_GOAL_ARCHITECTURE_REPORT_FILENAMES) {
   const path = resolve(docsRoot, filename);
   const current = existsSync(path) ? readFileSync(path, "utf8") : "";
-  writeFileSync(path, preserveLinkedMarkers(markdown[filename], current), "utf8");
+  writeFileSync(path,
+    preserveLinkedDocumentationMarkers(markdown[filename], current, linkedMarkerPatterns), "utf8");
 }
 for (const filename of PRODUCT_GOAL_ARCHITECTURE_JSON_FILENAMES) {
   writeFileSync(resolve(docsRoot, filename), json[filename], "utf8");

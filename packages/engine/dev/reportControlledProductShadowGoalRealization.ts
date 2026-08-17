@@ -13,7 +13,13 @@ async function main() {
   mkdirSync(outputDirectory, { recursive: true });
 
   for (const [name, content] of Object.entries(await renderChunkCMarkdownReports())) {
-    writeFileSync(resolve(outputDirectory, name), content, "utf8");
+    const path = resolve(outputDirectory, name);
+    const current = existsSync(path) ? readFileSync(path, "utf8") : "";
+    const chunkG = current.match(
+      /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n?/,
+    )?.[0].trim();
+    writeFileSync(path, chunkG === undefined ? content :
+      `${content.trimEnd()}\n\n${chunkG}\n`, "utf8");
   }
   for (const [name, content] of Object.entries(await buildChunkCJsonReports())) {
     writeFileSync(resolve(outputDirectory, name), `${JSON.stringify(content, null, 2)}\n`, "utf8");

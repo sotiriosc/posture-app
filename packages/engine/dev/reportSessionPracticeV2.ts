@@ -6,6 +6,13 @@ import { sessionPracticeV2Artifacts } from "../tests/sessionPracticeV2Evidence/r
 
 const outputDirectory = fileURLToPath(new URL("../../../docs/training-engine-v2", import.meta.url));
 const mode = process.argv.includes("--check") ? "check" : "write";
+const chunkGDesignMarker = /\n*<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:START -->[\s\S]*?<!-- CHUNK_G_OWNER_DELIVERY_DESIGN:END -->\n*/;
+
+function preserveChunkGDesignMarker(content: string, current: string): string {
+  const marker = current.match(chunkGDesignMarker)?.[0].trim();
+  return marker === undefined ? content : `${content.trimEnd()}\n\n${marker}\n`;
+}
+
 async function main(): Promise<void> {
   const evidence = await runSessionPracticeV2Evidence();
   const artifacts = sessionPracticeV2Artifacts(evidence);
@@ -13,12 +20,12 @@ async function main(): Promise<void> {
   const stale: string[] = [];
   for (const [filename, content] of Object.entries(artifacts)) {
     const path = resolve(outputDirectory, filename);
-    if (mode === "write") writeFileSync(path, content, "utf8");
-    else {
-      let current = "";
-      try { current = readFileSync(path, "utf8"); } catch { stale.push(filename); continue; }
-      if (current !== content) stale.push(filename);
+    let current = "";
+    try { current = readFileSync(path, "utf8"); } catch {
+      if (mode === "check") { stale.push(filename); continue; }
     }
+    if (mode === "write") writeFileSync(path, preserveChunkGDesignMarker(content, current), "utf8");
+    else if (current.replace(chunkGDesignMarker, "\n") !== content) stale.push(filename);
   }
   if (stale.length) throw new Error(`SESSION_PRACTICE_V2_REPORTS_STALE:${stale.join(",")}`);
   process.stdout.write(`${JSON.stringify({ mode, artifactCount: Object.keys(artifacts).length,

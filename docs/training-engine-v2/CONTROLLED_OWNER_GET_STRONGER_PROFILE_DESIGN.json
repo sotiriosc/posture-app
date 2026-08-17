@@ -1,0 +1,35 @@
+{
+  "contract": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "identity": "userId",
+  "primaryGoal": "strength",
+  "secondaryGoal": null,
+  "trainingMode": "develop",
+  "fields": [
+    "daysPerWeek",
+    "sessionOpportunities",
+    "sessionMinutes",
+    "equipmentEnvironment",
+    "equipmentCapabilitySnapshot",
+    "coarseExperience",
+    "familiarity",
+    "painContext",
+    "assessmentReferences",
+    "trainingSafety",
+    "continuityReferences",
+    "evaluationTime",
+    "provenance",
+    "reviewState"
+  ],
+  "prohibited": [
+    "exercise_selection",
+    "sets",
+    "reps",
+    "load",
+    "diagnosis",
+    "free_text_parsing"
+  ],
+  "minimumInputCount": 11
+}
