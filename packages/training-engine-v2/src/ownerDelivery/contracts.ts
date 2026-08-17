@@ -1,4 +1,5 @@
-import { deterministicToken, explicitIsoTime, stableId, uniqueSorted } from "../prescription/compiler/utilities";
+import { deterministicToken, explicitIsoTime, sameSemanticValue, stableId, uniqueSorted } from
+  "../prescription/compiler/utilities";
 
 export interface OwnerDeliveryContractReference {
   readonly contractId: string;
@@ -173,6 +174,295 @@ export interface OwnerProfileReadiness {
   readonly previewAllowed: boolean;
   readonly approvalAllowed: boolean;
   readonly minimumInputCount: 11;
+}
+
+export type OwnerPreviewReadinessStatus =
+  | "ready_for_approval"
+  | "preview_only_unknown_duration"
+  | "blocked";
+
+export interface OwnerGenerationCommand {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly commandId: string;
+  readonly userId: string;
+  readonly enrollmentRevisionId: string;
+  readonly profileRevisionId: string;
+  readonly sourceProductSnapshotId: string;
+  readonly sourceProductRevisionId: string;
+  readonly activeLegacyProgramRevisionId: string | null;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+  readonly evaluationTime: string;
+  readonly requestedAt: string;
+}
+
+export interface OwnerPipelineStageArtifact {
+  readonly stage:
+    | "product_mapping"
+    | "product_horizon"
+    | "week_intent"
+    | "week_allocation"
+    | "session_intent"
+    | "candidate_intelligence"
+    | "session_composer"
+    | "prescription_compiler"
+    | "final_sequencing"
+    | "gate_13"
+    | "phase_snapshot"
+    | "application_readiness"
+    | "owner_envelope_projection";
+  readonly productionKernel: string;
+  readonly status: "complete" | "blocked";
+  readonly artifactFingerprint: string;
+  readonly payload: unknown;
+  readonly reasonCodes: readonly string[];
+}
+
+export interface OwnerProgramExerciseProjection {
+  readonly assignmentId: string;
+  readonly exerciseId: string;
+  readonly realizationId: string | null;
+  readonly sourceEventId: string | null;
+  readonly prescriptionRevisionId: string | null;
+  readonly sets: number | null;
+  readonly reps: string;
+  readonly tempo: string | null;
+  readonly restSeconds: number | null;
+  readonly effort: string | null;
+  readonly equipmentRequirementIds: readonly string[];
+  readonly reasonCodes: readonly string[];
+}
+
+export interface OwnerProgramSessionProjection {
+  readonly sessionId: string;
+  readonly opportunityId: string;
+  readonly purpose: string;
+  readonly durationStatus: "known" | "unknown";
+  readonly durationMinutes: number | null;
+  readonly exerciseAssignments: readonly OwnerProgramExerciseProjection[];
+  readonly practiceModes: readonly ["full", "lighter", "recovery"];
+}
+
+export interface OwnerProgramProjection {
+  readonly projectionContract: OwnerDeliveryContractReference;
+  readonly goal: "strength";
+  readonly mode: "develop";
+  readonly weekObjectiveIds: readonly string[];
+  readonly sessions: readonly OwnerProgramSessionProjection[];
+  readonly unresolvedFacts: readonly string[];
+  readonly safetyState: OwnerTrainingSafetyState;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+  readonly authoritative: false;
+  readonly projectionFingerprint: string;
+}
+
+export interface ControlledOwnerV2ProgramPreview {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly previewId: string;
+  readonly userId: string;
+  readonly generationCommandId: string;
+  readonly profileId: string;
+  readonly profileRevisionId: string;
+  readonly sourceProductSnapshotId: string;
+  readonly sourceProductRevisionId: string;
+  readonly activeLegacyProgramRevisionId: string | null;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+  readonly completeProgramSnapshot: readonly OwnerPipelineStageArtifact[];
+  readonly productProjection: OwnerProgramProjection;
+  readonly unresolvedFacts: readonly string[];
+  readonly readinessStatus: OwnerPreviewReadinessStatus;
+  readonly safetyState: OwnerTrainingSafetyState;
+  readonly createdAt: string;
+  readonly counterfactual: true;
+  readonly applied: false;
+  readonly stale: false;
+  readonly previewFingerprint: string;
+}
+
+export interface ControlledOwnerV2ProgramApproval {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly approvalId: string;
+  readonly userId: string;
+  readonly previewId: string;
+  readonly previewFingerprint: string;
+  readonly profileRevisionId: string;
+  readonly sourceProductRevisionId: string;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+  readonly explicitConfirmation: true;
+  readonly approvedAt: string;
+  readonly approvalFingerprint: string;
+}
+
+export interface OwnerV2ProductProgramEnvelope {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly envelopeId: string;
+  readonly envelopeRevisionId: string;
+  readonly userId: string;
+  readonly previewId: string;
+  readonly previewFingerprint: string;
+  readonly approvalId: string;
+  readonly applicationId: string;
+  readonly profileRevisionId: string;
+  readonly sourceProductSnapshotId: string;
+  readonly sourceProductRevisionId: string;
+  readonly legacyFallbackReference: string | null;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+  readonly programSnapshot: readonly OwnerPipelineStageArtifact[];
+  readonly productProjection: OwnerProgramProjection;
+  readonly assignmentIds: readonly string[];
+  readonly sourceEventIds: readonly string[];
+  readonly prescriptionRevisionIds: readonly string[];
+  readonly weekObjectiveIds: readonly string[];
+  readonly practiceModeReferences: readonly ["full", "lighter", "recovery"];
+  readonly createdAt: string;
+  readonly envelopeFingerprint: string;
+}
+
+export interface ControlledOwnerV2ProgramApplication {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly applicationId: string;
+  readonly userId: string;
+  readonly approvalId: string;
+  readonly previewId: string;
+  readonly envelopeId: string;
+  readonly envelopeRevisionId: string;
+  readonly priorPointerRevision: number;
+  readonly appliedAt: string;
+  readonly applicationFingerprint: string;
+}
+
+export interface ControlledOwnerActiveProgramPointer {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly userId: string;
+  readonly mode: "legacy" | "v2_owner";
+  readonly activeApplicationId: string | null;
+  readonly legacyFallbackReference: string | null;
+  readonly revision: number;
+  readonly updatedAt: string;
+  readonly provenance: OwnerRecordProvenance;
+  readonly pointerFingerprint: string;
+}
+
+export interface ControlledOwnerDeliveryAuditEvent {
+  readonly contract: OwnerDeliveryContractReference;
+  readonly eventId: string;
+  readonly userId: string;
+  readonly action: string;
+  readonly targetId: string;
+  readonly occurredAt: string;
+  readonly metadata: Readonly<Record<string, string | number | boolean | null>>;
+  readonly eventFingerprint: string;
+}
+
+export function buildOwnerGenerationCommand(input: Omit<OwnerGenerationCommand,
+"contract" | "commandId">): OwnerGenerationCommand {
+  if (!input.userId.trim() || !explicitIsoTime(input.evaluationTime) || !explicitIsoTime(input.requestedAt)) {
+    throw new Error("OWNER_GENERATION_EXPLICIT_IDENTITY_AND_TIME_REQUIRED");
+  }
+  const semantic = Object.freeze({ ...input, policyVersions: Object.freeze(uniqueSorted(input.policyVersions)) });
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.generationCommand,
+    commandId: stableId("owner-v2-generation-command", semantic), ...semantic });
+}
+
+export function buildOwnerProgramProjection(input: Omit<OwnerProgramProjection,
+"projectionContract" | "projectionFingerprint" | "authoritative">): OwnerProgramProjection {
+  const semantic = Object.freeze({ ...input, weekObjectiveIds: Object.freeze(uniqueSorted(input.weekObjectiveIds)),
+    policyVersions: Object.freeze(uniqueSorted(input.policyVersions)), authoritative: false as const });
+  return Object.freeze({ projectionContract: contract("CONTROLLED_OWNER_PRODUCT_PROJECTION"), ...semantic,
+    projectionFingerprint: semanticFingerprint(semantic) });
+}
+
+export function buildOwnerProgramPreview(input: Omit<ControlledOwnerV2ProgramPreview,
+"contract" | "previewId" | "previewFingerprint" | "counterfactual" | "applied" | "stale">):
+ControlledOwnerV2ProgramPreview {
+  if (!input.userId.trim() || !explicitIsoTime(input.createdAt)) throw new Error("OWNER_PREVIEW_INVALID");
+  const semantic = Object.freeze({ ...input, policyVersions: Object.freeze(uniqueSorted(input.policyVersions)),
+    counterfactual: true as const, applied: false as const, stale: false as const });
+  const previewId = stableId("owner-v2-preview", semantic);
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.preview, previewId, ...semantic,
+    previewFingerprint: semanticFingerprint({ previewId, ...semantic }) });
+}
+
+export function buildOwnerProgramApproval(input: Omit<ControlledOwnerV2ProgramApproval,
+"contract" | "approvalId" | "approvalFingerprint">): ControlledOwnerV2ProgramApproval {
+  if (!input.explicitConfirmation || !explicitIsoTime(input.approvedAt)) throw new Error("OWNER_APPROVAL_INVALID");
+  const semantic = Object.freeze({ ...input, policyVersions: Object.freeze(uniqueSorted(input.policyVersions)) });
+  const approvalId = stableId("owner-v2-approval", semantic);
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.approval, approvalId, ...semantic,
+    approvalFingerprint: semanticFingerprint({ approvalId, ...semantic }) });
+}
+
+export function buildOwnerProgramEnvelope(input: Omit<OwnerV2ProductProgramEnvelope,
+"contract" | "envelopeId" | "envelopeRevisionId" | "envelopeFingerprint">): OwnerV2ProductProgramEnvelope {
+  if (!explicitIsoTime(input.createdAt)) throw new Error("OWNER_ENVELOPE_EXPLICIT_TIME_REQUIRED");
+  const semantic = Object.freeze({ ...input,
+    policyVersions: Object.freeze(uniqueSorted(input.policyVersions)),
+    assignmentIds: Object.freeze(uniqueSorted(input.assignmentIds)),
+    sourceEventIds: Object.freeze(uniqueSorted(input.sourceEventIds)),
+    prescriptionRevisionIds: Object.freeze(uniqueSorted(input.prescriptionRevisionIds)),
+    weekObjectiveIds: Object.freeze(uniqueSorted(input.weekObjectiveIds)) });
+  const envelopeId = stableId("owner-v2-program-envelope", { userId: input.userId, applicationId: input.applicationId });
+  const envelopeRevisionId = stableId("owner-v2-program-envelope-revision", semantic);
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.envelope, envelopeId, envelopeRevisionId,
+    ...semantic, envelopeFingerprint: semanticFingerprint({ envelopeId, envelopeRevisionId, ...semantic }) });
+}
+
+export function buildOwnerProgramApplication(input: Omit<ControlledOwnerV2ProgramApplication,
+"contract" | "applicationId" | "applicationFingerprint">): ControlledOwnerV2ProgramApplication {
+  if (!explicitIsoTime(input.appliedAt)) throw new Error("OWNER_APPLICATION_EXPLICIT_TIME_REQUIRED");
+  const applicationId = deriveOwnerApplicationId(input);
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.application, applicationId, ...input,
+    applicationFingerprint: semanticFingerprint({ applicationId, ...input }) });
+}
+
+export function deriveOwnerApplicationId(input: Pick<ControlledOwnerV2ProgramApplication,
+"userId" | "approvalId" | "previewId" | "priorPointerRevision" | "appliedAt">): string {
+  return stableId("owner-v2-application", { userId: input.userId, approvalId: input.approvalId,
+    previewId: input.previewId, priorPointerRevision: input.priorPointerRevision, appliedAt: input.appliedAt });
+}
+
+export function buildOwnerActiveProgramPointer(input: Omit<ControlledOwnerActiveProgramPointer,
+"contract" | "pointerFingerprint">): ControlledOwnerActiveProgramPointer {
+  if (!explicitIsoTime(input.updatedAt) || input.revision < 0 ||
+      (input.mode === "v2_owner" && !input.activeApplicationId)) throw new Error("OWNER_POINTER_INVALID");
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.activeProgramPointer, ...input,
+    pointerFingerprint: semanticFingerprint(input) });
+}
+
+export function buildOwnerDeliveryAuditEvent(input: Omit<ControlledOwnerDeliveryAuditEvent,
+"contract" | "eventId" | "eventFingerprint">): ControlledOwnerDeliveryAuditEvent {
+  if (!explicitIsoTime(input.occurredAt)) throw new Error("OWNER_AUDIT_EXPLICIT_TIME_REQUIRED");
+  const eventId = stableId("owner-v2-audit-event", input);
+  return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.auditEvent, eventId, ...input,
+    eventFingerprint: semanticFingerprint({ eventId, ...input }) });
+}
+
+export function deriveOwnerPreviewStaleness(input: {
+  readonly preview: ControlledOwnerV2ProgramPreview;
+  readonly currentProfileRevisionId: string;
+  readonly currentProductRevisionId: string;
+  readonly currentLegacyProgramRevisionId: string | null;
+  readonly currentEngineVersion: string;
+  readonly currentPolicyVersions: readonly string[];
+  readonly currentEquipmentSourceRevision: string;
+  readonly previewEquipmentSourceRevision: string;
+  readonly currentSafetyState: OwnerTrainingSafetyState;
+  readonly deliveryMode: OwnerDeliveryMode;
+}): readonly string[] {
+  const reasons: string[] = [];
+  if (input.deliveryMode === "off") reasons.push("OWNER_DELIVERY_MODE_OFF");
+  if (input.preview.profileRevisionId !== input.currentProfileRevisionId) reasons.push("OWNER_PROFILE_REVISION_CHANGED");
+  if (input.preview.sourceProductRevisionId !== input.currentProductRevisionId) reasons.push("OWNER_PRODUCT_REVISION_CHANGED");
+  if (input.preview.activeLegacyProgramRevisionId !== input.currentLegacyProgramRevisionId) reasons.push("OWNER_LEGACY_PROGRAM_REVISION_CHANGED");
+  if (input.preview.engineVersion !== input.currentEngineVersion) reasons.push("OWNER_ENGINE_VERSION_CHANGED");
+  if (!sameSemanticValue(uniqueSorted(input.preview.policyVersions), uniqueSorted(input.currentPolicyVersions))) reasons.push("OWNER_POLICY_VERSION_CHANGED");
+  if (input.previewEquipmentSourceRevision !== input.currentEquipmentSourceRevision) reasons.push("OWNER_EQUIPMENT_REVISION_CHANGED");
+  if (input.preview.safetyState !== input.currentSafetyState) reasons.push("OWNER_SAFETY_STATE_CHANGED");
+  return Object.freeze(uniqueSorted(reasons));
 }
 
 function semanticFingerprint(value: unknown): string {
