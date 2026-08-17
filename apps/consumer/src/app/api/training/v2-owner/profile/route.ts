@@ -1,0 +1,80 @@
+import { createHash } from "node:crypto";
+import { buildOwnerProfileRevision } from "@praxis/training-engine-v2";
+import { withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
+import { authorizeOwnerMutation, ownerJson, readOwnerGate, rejectsIdentityFields } from
+  "@/server/controlledOwnerDelivery";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export async function GET() {
+  const gate = await readOwnerGate("preview");
+  if (!gate.allowed || !gate.userId) return ownerJson({ ok: false,
+    error: { code: "NOT_FOUND", message: "Not Found" } }, 404);
+  try {
+    const profile = await withControlledOwnerRepositories(({ enrollmentProfiles }) =>
+      enrollmentProfiles.readCurrentProfile(gate.userId!));
+    return ownerJson({ ok: true, profile });
+  } catch {
+    return ownerJson({ ok: false, error: { code: "OWNER_DELIVERY_UNAVAILABLE",
+      message: "Owner delivery is unavailable." } }, 503);
+  }
+}
+
+export async function POST(request: Request) {
+  const authorization = await authorizeOwnerMutation({ request, operation: "preview",
+    actionFamily: "profile", action: "profile" });
+  if (!authorization.allowed) return authorization.response;
+  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+  if (!body || rejectsIdentityFields(body)) return ownerJson({ ok: false,
+    error: { code: "INVALID_PROFILE", message: "Profile is invalid." } }, 400);
+  const days = body.daysPerWeek;
+  const opportunities = body.sessionOpportunities;
+  const sessionMinutes = body.sessionMinutes as { status?: unknown; minutes?: unknown } | null;
+  const environment = body.equipmentEnvironment;
+  const capabilityIds = body.capabilityIds;
+  const experience = body.coarseExperience;
+  const validMinutes = sessionMinutes?.status === "explicit_unknown" && sessionMinutes.minutes === null ||
+    sessionMinutes?.status === "known" && typeof sessionMinutes.minutes === "number" &&
+      sessionMinutes.minutes >= 15 && sessionMinutes.minutes <= 180;
+  if (!Number.isInteger(days) || Number(days) < 1 || Number(days) > 7 || !Array.isArray(opportunities) ||
+      opportunities.length !== days || !validMinutes || !["home", "commercial_gym", "mixed"].includes(String(environment)) ||
+      !Array.isArray(capabilityIds) || !capabilityIds.length || !capabilityIds.every((value) => typeof value === "string") ||
+      !["beginner", "intermediate", "advanced"].includes(String(experience)) || body.painConfirmed !== true) {
+    return ownerJson({ ok: false, error: { code: "INVALID_PROFILE", message: "Profile is invalid." } }, 400);
+  }
+  const normalizedOpportunities = opportunities.map((_, index) => ({
+    opportunityId: `owner-opportunity-${index + 1}`, order: index + 1,
+    minutes: sessionMinutes?.status === "known" ? sessionMinutes.minutes as number : null,
+  }));
+  try {
+    return await withControlledOwnerRepositories(async ({ enrollmentProfiles }) => {
+      const current = await enrollmentProfiles.readCurrentProfile(authorization.userId);
+      const sourceRevision = `owner-equipment:${createHash("sha256").update(JSON.stringify({ environment,
+        capabilityIds: [...new Set(capabilityIds as string[])].sort() })).digest("hex")}`;
+      const profile = buildOwnerProfileRevision({ profileId: current?.profileId, userId: authorization.userId,
+        basedOnRevisionId: current?.revisionId ?? null, primaryGoal: "strength", trainingMode: "develop",
+        secondaryGoal: null, daysPerWeek: Number(days), sessionOpportunities: normalizedOpportunities,
+        sessionMinutes: sessionMinutes?.status === "known" ? { status: "known", minutes: sessionMinutes.minutes as number } :
+          { status: "explicit_unknown", minutes: null },
+        equipmentCapabilitySnapshot: { environment: environment as "home" | "commercial_gym" | "mixed",
+          capabilityIds: capabilityIds as string[], confirmed: true, sourceRevision },
+        coarseExperience: experience as "beginner" | "intermediate" | "advanced",
+        familiarity: current?.familiarity ?? [],
+        painContext: { regionIds: current?.painContext.regionIds ?? [],
+          limitationIds: current?.painContext.limitationIds ?? [], confirmed: true, diagnosticClaimCount: 0 },
+        assessmentReferences: current?.assessmentReferences ?? [], trainingSafety: body.safetyConfirmed === true
+          ? "clear" : "review_required", continuityReferences: current?.continuityReferences ?? [],
+        evaluationTime: authorization.evaluatedAt,
+        provenance: { source: "owner_confirmation", sourceRefs: ["owner-account-profile"] },
+        reviewState: "confirmed", createdAt: authorization.evaluatedAt });
+      const written = await enrollmentProfiles.appendProfile(profile);
+      return written === "conflict" ? ownerJson({ ok: false,
+        error: { code: "PROFILE_CONFLICT", message: "Profile changed. Reload and try again." } }, 409) :
+        ownerJson({ ok: true, profileId: profile.profileId, revisionId: profile.revisionId });
+    });
+  } catch {
+    return ownerJson({ ok: false, error: { code: "OWNER_DELIVERY_UNAVAILABLE",
+      message: "Owner delivery is unavailable." } }, 503);
+  }
+}
