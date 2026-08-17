@@ -10,6 +10,7 @@ import {
   verifyControlledOwnerCsrfToken,
   type ControlledOwnerRequestGateResult,
   type OwnerCsrfActionFamily,
+  type OwnerDeliveryRepository,
 } from "@praxis/engine/controlled-owner-delivery";
 import { CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS } from "@praxis/training-engine-v2";
 import { getTrainingSnapshot, type TrainingSnapshot } from "@/lib/trainingStoreDb";
@@ -45,7 +46,8 @@ function csrfSecret(): string {
 }
 
 export function ownerCsrfTokens(input: { readonly userId: string; readonly cookieHeader: string;
-  readonly issuedAt: string; readonly actionFamilies: readonly OwnerCsrfActionFamily[] }) {
+  readonly issuedAt: string; readonly actionFamilies: readonly OwnerCsrfActionFamily[] }):
+Readonly<Partial<Record<OwnerCsrfActionFamily, string>>> {
   const expiresAt = new Date(Date.parse(input.issuedAt) + 15 * 60_000).toISOString();
   const binding = controlledOwnerSessionBinding(input.cookieHeader);
   const secret = csrfSecret();
@@ -109,4 +111,16 @@ export async function loadOwnerProductRuntimeContext(userId: string) {
   });
   return Object.freeze({ snapshot, sourceProductSnapshotId: ownerProductSnapshotId(userId),
     sourceProductRevisionId, activeLegacyProgramRevisionId, activeLegacySession });
+}
+
+export async function loadActiveOwnerEnvelope(input: { readonly userId: string;
+  readonly applicationId?: string; readonly delivery: OwnerDeliveryRepository }) {
+  const pointer = await input.delivery.readActivePointer(input.userId);
+  const applicationId = input.applicationId ?? pointer?.activeApplicationId ?? null;
+  if (!applicationId || pointer?.mode !== "v2_owner" || pointer.activeApplicationId !== applicationId) return null;
+  const application = await input.delivery.readApplicationExact(input.userId, applicationId);
+  if (!application) return null;
+  const envelope = await input.delivery.readEnvelopeExact(input.userId, application.envelopeId,
+    application.envelopeRevisionId);
+  return envelope ? Object.freeze({ pointer, application, envelope }) : null;
 }

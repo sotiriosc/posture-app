@@ -141,6 +141,15 @@ export function createInMemorySessionPracticePersistenceRepository(): SessionPra
       .filter((record) => record.athleteId === athleteId && record.attemptId === attemptId)
       .sort((left, right) => left.createdAt.localeCompare(right.createdAt) ||
         left.persistenceRevisionId.localeCompare(right.persistenceRevisionId))),
+    listAthleteCurrentRevisions: async (athleteId) => {
+      const byAttempt = new Map<string, PersistedSessionPracticeRevision>();
+      [...records.values()].filter((record) => record.athleteId === athleteId)
+        .sort((left, right) => left.createdAt.localeCompare(right.createdAt) ||
+          left.persistenceRevisionId.localeCompare(right.persistenceRevisionId))
+        .forEach((record) => byAttempt.set(record.attemptId, record));
+      return Object.freeze([...byAttempt.values()].sort((left, right) =>
+        right.createdAt.localeCompare(left.createdAt) || right.attemptId.localeCompare(left.attemptId)));
+    },
   };
   return Object.freeze(repository);
 }

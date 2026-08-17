@@ -9,10 +9,16 @@ import {
   approveControlledOwnerGetStrongerPreview,
   createInMemoryOwnerDeliveryRepository,
   createInMemoryOwnerEnrollmentProfileRepository,
+  buildControlledOwnerSessionOptions,
+  completeControlledOwnerSession,
   generateControlledOwnerGetStrongerPreview,
   loadControlledOwnerDeliveryMigrations,
+  recordControlledOwnerSessionDraft,
+  reviseControlledOwnerSessionMode,
+  startControlledOwnerSession,
   type ControlledOwnerRequestGateResult,
 } from "../../src/controlledOwnerDelivery";
+import { createInMemorySessionPracticePersistenceRepository } from "../../src/sessionPracticeV2";
 
 const NOW = "2026-08-17T14:00:00.000Z";
 const USER_ID = "synthetic-owner-application-user";
@@ -132,6 +138,59 @@ describe("controlled owner genuine generation and application", () => {
         currentProductRevisionId: "product-revision:changed" }) });
     expect(approved.status).toBe("stale");
     expect(approved.reasonCodes).toContain("OWNER_PRODUCT_REVISION_CHANGED");
+  });
+
+  it("executes and resumes an exact owner V2 Full session without touching legacy drafts", async () => {
+    const value = await fixture({ mode: "apply", knownMinutes: true });
+    const preview = value.generated.preview!;
+    const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
+      previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
+      idempotencyKey: "session-approve", approvedAt: NOW, gate: async () => gate("apply"),
+      enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+      loadCurrentContext: async () => value.context });
+    const applied = await applyControlledOwnerGetStrongerApproval({ approvalId: approved.approval!.approvalId,
+      idempotencyKey: "session-apply", csrfVerified: true, appliedAt: NOW, gate: async () => gate("apply"),
+      enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+      loadCurrentContext: async () => value.context });
+    const envelope = applied.envelope!;
+    const sessionId = envelope.productProjection.sessions[0]!.sessionId;
+    const options = buildControlledOwnerSessionOptions({ envelope, sessionId, userId: USER_ID,
+      evaluatedAt: NOW });
+    expect(options.map((option) => option.mode)).toEqual(["full", "lighter", "recovery"]);
+    expect(options[0]?.availability.state).toBe("available");
+    const practice = createInMemorySessionPracticePersistenceRepository();
+    const started = await startControlledOwnerSession({ userId: USER_ID, envelope, sessionId, mode: "full",
+      startedAt: NOW, repository: practice });
+    expect(started.status).toBe("started");
+    const initial = started.revision!;
+    expect(initial).toMatchObject({ lifecycle: { state: "final_for_execution", selectedMode: "full" },
+      draft: { selectedMode: "full", currentPosition: { exerciseIndex: 0, blockIndex: 0, setIndex: 0 } } });
+    const recordedAt = "2026-08-17T14:01:00.000Z";
+    const retained = initial.plan.assignments.filter((entry) => entry.state !== "omitted");
+    const performed = retained.map((entry) => entry.sourceExposureEventId);
+    const blocks = retained.flatMap((entry) => entry.retainedBlockIds);
+    const recorded = await recordControlledOwnerSessionDraft({ userId: USER_ID, attemptId: initial.attemptId,
+      basedOnPersistenceRevisionId: initial.persistenceRevisionId,
+      currentPosition: { exerciseIndex: 0, blockIndex: 0, setIndex: 1 },
+      actualPerformanceState: Object.fromEntries(performed.map((eventId) => [eventId, { completed: true }])),
+      timers: [{ timerId: "rest", elapsedSeconds: 30, running: false }], executionStarted: true,
+      recordedAt, repository: practice });
+    expect(recorded.revision?.lifecycle.state).toBe("execution_started");
+    const locked = await reviseControlledOwnerSessionMode({ userId: USER_ID, attemptId: initial.attemptId,
+      basedOnPersistenceRevisionId: recorded.revision!.persistenceRevisionId, envelope, mode: "lighter",
+      selectedAt: "2026-08-17T14:02:00.000Z", repository: practice });
+    expect(locked.status).toBe("locked");
+    const completed = await completeControlledOwnerSession({ userId: USER_ID, attemptId: initial.attemptId,
+      basedOnPersistenceRevisionId: recorded.revision!.persistenceRevisionId, envelope,
+      performedSourceEventIds: performed, completedBlockIds: blocks, partiallyCompletedBlockIds: [],
+      completedAt: "2026-08-17T14:03:00.000Z", idempotencyKey: "session-complete",
+      repository: practice, delivery: value.delivery });
+    expect(completed.status).toBe("completed");
+    expect(completed.revision).toMatchObject({ lifecycle: { state: "completed" },
+      completion: { status: "full_completed_as_prescribed", automaticReallocationApplied: false,
+        adaptationActionApplied: false }, outcomeLink: { omittedAssignmentPerformanceCount: 0,
+        selectedModeTreatedAsPerformance: false } });
+    expect(await practice.listAthleteCurrentRevisions(USER_ID)).toHaveLength(1);
   });
 
   it("locks all nine default-empty PostgreSQL owner tables", () => {

@@ -138,6 +138,9 @@ export function createOwnerDeliveryPostgresRepository(input: {
       (await db.query<PayloadRow<ControlledOwnerV2ProgramApplication>>(
         `SELECT payload FROM owner_v2_applications WHERE user_id = $1 AND application_id = $2`,
         [userId, applicationId])).rows[0]?.payload ?? null,
+    listApplications: async (userId) => Object.freeze((await db.query<PayloadRow<ControlledOwnerV2ProgramApplication>>(
+      `SELECT payload FROM owner_v2_applications WHERE user_id = $1
+       ORDER BY applied_at DESC, application_id DESC`, [userId])).rows.map((row) => row.payload)),
     readEnvelopeExact: async (userId, envelopeId, envelopeRevisionId) =>
       (await db.query<PayloadRow<OwnerV2ProductProgramEnvelope>>(
         `SELECT payload FROM owner_v2_program_envelopes
@@ -150,6 +153,19 @@ export function createOwnerDeliveryPostgresRepository(input: {
         request_fingerprint, response_payload, created_at, completed_at FROM owner_v2_idempotency
         WHERE user_id = $1 AND action = $2 AND idempotency_key = $3`, [userId, action, idempotencyKey]);
       return result.rows[0] ? idempotencyFromRow(result.rows[0]) : null;
+    },
+    appendIdempotency: async (record) => {
+      const inserted = await db.query(`INSERT INTO owner_v2_idempotency
+        (user_id,action,idempotency_key,request_fingerprint,response_payload,created_at,completed_at)
+        VALUES ($1,$2,$3,$4,$5::jsonb,$6,$7) ON CONFLICT (user_id,action,idempotency_key) DO NOTHING`,
+      [record.userId, record.action, record.idempotencyKey, record.requestFingerprint,
+        JSON.stringify(record.responsePayload), record.createdAt, record.completedAt]);
+      if ((inserted.rowCount ?? 0) === 1) return "appended";
+      const prior = await db.query<IdempotencyRow>(`SELECT user_id, action, idempotency_key,
+        request_fingerprint, response_payload, created_at, completed_at FROM owner_v2_idempotency
+        WHERE user_id=$1 AND action=$2 AND idempotency_key=$3`,
+      [record.userId, record.action, record.idempotencyKey]);
+      return prior.rows[0]?.request_fingerprint === record.requestFingerprint ? "exact_retry" : "conflict";
     },
     applyApprovedProgram: async (transaction): Promise<OwnerProgramApplicationTransactionResult> => {
       await db.query("BEGIN");

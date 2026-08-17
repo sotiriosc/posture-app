@@ -63,6 +63,9 @@ export interface SessionPracticePersistenceRepository {
     athleteId: string,
     attemptId: string,
   ) => Promise<readonly PersistedSessionPracticeRevision[]>;
+  readonly listAthleteCurrentRevisions: (
+    athleteId: string,
+  ) => Promise<readonly PersistedSessionPracticeRevision[]>;
 }
 
 export interface SessionPracticePostgresQueryable {

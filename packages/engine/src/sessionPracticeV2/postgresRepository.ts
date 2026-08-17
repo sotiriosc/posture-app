@@ -81,6 +81,17 @@ export function createSessionPracticePostgresRepository(input: {
       );
       return Object.freeze(result.rows.map((row) => row.revision_payload));
     },
+    listAthleteCurrentRevisions: async (athleteId) => {
+      const result = await queryable.query<PersistedRow>(
+        `SELECT DISTINCT ON (attempt_id) semantic_fingerprint, revision_payload
+           FROM session_practice_v2_attempt_revisions
+          WHERE athlete_id = $1
+          ORDER BY attempt_id, created_at DESC, persistence_revision_id DESC`,
+        [athleteId],
+      );
+      return Object.freeze(result.rows.map((row) => row.revision_payload).sort((left, right) =>
+        right.createdAt.localeCompare(left.createdAt) || right.attemptId.localeCompare(left.attemptId)));
+    },
   };
   return Object.freeze(repository);
 }

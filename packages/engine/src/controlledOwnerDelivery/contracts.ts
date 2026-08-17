@@ -95,11 +95,13 @@ export interface OwnerDeliveryRepository {
     idempotency: OwnerIdempotencyRecord): Promise<OwnerAppendResult>;
   readApprovalExact(userId: string, approvalId: string): Promise<ControlledOwnerV2ProgramApproval | null>;
   readApplicationExact(userId: string, applicationId: string): Promise<ControlledOwnerV2ProgramApplication | null>;
+  listApplications(userId: string): Promise<readonly ControlledOwnerV2ProgramApplication[]>;
   readEnvelopeExact(userId: string, envelopeId: string,
     envelopeRevisionId: string): Promise<OwnerV2ProductProgramEnvelope | null>;
   readActivePointer(userId: string): Promise<ControlledOwnerActiveProgramPointer | null>;
   readIdempotency(userId: string, action: OwnerIdempotencyRecord["action"],
     idempotencyKey: string): Promise<OwnerIdempotencyRecord | null>;
+  appendIdempotency(record: OwnerIdempotencyRecord): Promise<OwnerAppendResult>;
   applyApprovedProgram(transaction: OwnerProgramApplicationTransaction):
     Promise<OwnerProgramApplicationTransactionResult>;
   listAuditEvents(userId: string): Promise<readonly ControlledOwnerDeliveryAuditEvent[]>;

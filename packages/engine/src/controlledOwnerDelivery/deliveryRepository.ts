@@ -57,11 +57,22 @@ export function createInMemoryOwnerDeliveryRepository(): OwnerDeliveryRepository
     },
     readApprovalExact: async (userId, approvalId) => approvals.get(key(userId, approvalId)) ?? null,
     readApplicationExact: async (userId, applicationId) => applications.get(key(userId, applicationId)) ?? null,
+    listApplications: async (userId) => Object.freeze([...applications.values()]
+      .filter((application) => application.userId === userId)
+      .sort((left, right) => right.appliedAt.localeCompare(left.appliedAt) ||
+        right.applicationId.localeCompare(left.applicationId))),
     readEnvelopeExact: async (userId, envelopeId, envelopeRevisionId) =>
       envelopes.get(key(userId, envelopeId, envelopeRevisionId)) ?? null,
     readActivePointer: async (userId) => pointers.get(userId) ?? null,
     readIdempotency: async (userId, action, idempotencyKey) =>
       idempotency.get(key(userId, action, idempotencyKey)) ?? null,
+    appendIdempotency: async (record) => {
+      const recordKey = key(record.userId, record.action, record.idempotencyKey);
+      const prior = idempotency.get(recordKey);
+      if (prior) return prior.requestFingerprint === record.requestFingerprint ? "exact_retry" : "conflict";
+      idempotency.set(recordKey, record);
+      return "appended";
+    },
     applyApprovedProgram: async (transaction): Promise<OwnerProgramApplicationTransactionResult> => {
       const idemKey = key(transaction.idempotency.userId, transaction.idempotency.action,
         transaction.idempotency.idempotencyKey);
