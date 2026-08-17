@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
 import { ownerCsrfTokens, requireOwnerPage } from "@/server/controlledOwnerDelivery";
+import { normalizeOwnerDynamicRecordId } from "@/server/ownerDynamicRecordId";
 import OwnerPreviewActions from "./OwnerPreviewActions";
 import styles from "../../owner-v2.module.css";
 
@@ -10,7 +11,8 @@ export const revalidate = 0;
 
 export default async function OwnerPreviewPage({ params }: { readonly params: Promise<{ previewId: string }> }) {
   const gate = await requireOwnerPage("preview");
-  const { previewId } = await params;
+  const previewId = normalizeOwnerDynamicRecordId((await params).previewId, "owner-v2-preview");
+  if (!previewId) notFound();
   const preview = await withControlledOwnerRepositories(({ delivery }) =>
     delivery.readPreviewExact(gate.userId!, previewId)).catch(() => null);
   if (!preview) notFound();
