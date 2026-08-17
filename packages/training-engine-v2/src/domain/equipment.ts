@@ -12,6 +12,15 @@ export const MACHINE_IDS = [
   "reverse_pec_deck",
   "shoulder_press",
   "leg_extension",
+  "assisted_pull_up",
+  "incline_chest_press",
+  "hack_squat",
+  "seated_leg_curl",
+  "chest_fly",
+  "hip_adduction",
+  "hip_abduction",
+  "seated_calf_raise",
+  "hip_thrust",
 ] as const;
 
 export type MachineId = (typeof MACHINE_IDS)[number];
@@ -120,6 +129,7 @@ export interface EquipmentRequirement {
   readonly allOf?: readonly EquipmentCapabilityKey[];
   readonly oneOf?: readonly EquipmentCapabilityKey[];
   readonly machineIds?: readonly MachineId[];
+  readonly oneOfMachineIds?: readonly MachineId[];
 }
 
 export interface EquipmentRequirementResult {
@@ -130,7 +140,7 @@ export interface EquipmentRequirementResult {
 
 export interface EquipmentCapabilityCheck {
   readonly capability: string;
-  readonly requirementKind: "all_of" | "one_of" | "machine_id";
+  readonly requirementKind: "all_of" | "one_of" | "machine_id" | "one_of_machine_id";
   readonly available: boolean;
 }
 
@@ -268,8 +278,13 @@ export function evaluateEquipmentRequirement(
     (capability) => !hasEquipmentCapability(equipment, capability),
   );
   const oneOf = requirement.oneOf ?? [];
+  const oneOfMachineIds = requirement.oneOfMachineIds ?? [];
   const oneOfSatisfied =
-    oneOf.length === 0 || oneOf.some((capability) => hasEquipmentCapability(equipment, capability));
+    (oneOf.length === 0 && oneOfMachineIds.length === 0) ||
+    oneOf.some((capability) => hasEquipmentCapability(equipment, capability)) ||
+    oneOfMachineIds.some((machineId) =>
+      equipment.machines.availableMachineIds.includes(machineId),
+    );
   const missingMachines = (requirement.machineIds ?? []).filter(
     (machineId) => !equipment.machines.availableMachineIds.includes(machineId),
   );
@@ -284,6 +299,11 @@ export function evaluateEquipmentRequirement(
       requirementKind: "one_of" as const,
       available: hasEquipmentCapability(equipment, capability),
     })),
+    ...oneOfMachineIds.map((machineId) => ({
+      capability: `machine:${machineId}`,
+      requirementKind: "one_of_machine_id" as const,
+      available: equipment.machines.availableMachineIds.includes(machineId),
+    })),
     ...(requirement.machineIds ?? []).map((machineId) => ({
       capability: `machine:${machineId}`,
       requirementKind: "machine_id" as const,
@@ -292,7 +312,12 @@ export function evaluateEquipmentRequirement(
   ];
   const missingCapabilities = [
     ...missingAllOf,
-    ...(oneOfSatisfied ? [] : [`one of: ${oneOf.join(", ")}`]),
+    ...(oneOfSatisfied
+      ? []
+      : [`one of: ${[
+          ...oneOf,
+          ...oneOfMachineIds.map((machineId) => `machine:${machineId}`),
+        ].join(", ")}`]),
     ...missingMachines.map((machineId) => `machine:${machineId}`),
   ];
 
