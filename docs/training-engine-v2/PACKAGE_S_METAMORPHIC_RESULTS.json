@@ -1,0 +1,110 @@
+{
+  "invariants": [
+    {
+      "id": "selected-row-order",
+      "passed": true
+    },
+    {
+      "id": "machine-id-registry-order",
+      "passed": true
+    },
+    {
+      "id": "knowledge-fact-order",
+      "passed": true
+    },
+    {
+      "id": "presentation-order-nonsemantic",
+      "passed": true
+    },
+    {
+      "id": "provenance-order-nonsemantic",
+      "passed": true
+    },
+    {
+      "id": "equipment-capability-order",
+      "passed": true
+    },
+    {
+      "id": "catalog-order",
+      "passed": true
+    },
+    {
+      "id": "angle-display-label",
+      "passed": true
+    },
+    {
+      "id": "irrelevant-pain",
+      "passed": true
+    },
+    {
+      "id": "exact-familiarity-equivalence",
+      "passed": true
+    },
+    {
+      "id": "generated-fallback-regeneration",
+      "passed": true
+    }
+  ],
+  "materialResponses": [
+    {
+      "id": "press-angle",
+      "passed": true,
+      "baseline": "baseline:press-angle",
+      "changed": "changed:press-angle"
+    },
+    {
+      "id": "exact-bench-capability",
+      "passed": true,
+      "baseline": "baseline:exact-bench-capability",
+      "changed": "changed:exact-bench-capability"
+    },
+    {
+      "id": "exact-machine-id",
+      "passed": true,
+      "baseline": "baseline:exact-machine-id",
+      "changed": "changed:exact-machine-id"
+    },
+    {
+      "id": "assistance-state",
+      "passed": true,
+      "baseline": "baseline:assistance-state",
+      "changed": "changed:assistance-state"
+    },
+    {
+      "id": "machine-capability",
+      "passed": true,
+      "baseline": "baseline:machine-capability",
+      "changed": "changed:machine-capability"
+    },
+    {
+      "id": "anchor-height",
+      "passed": true,
+      "baseline": "baseline:anchor-height",
+      "changed": "changed:anchor-height"
+    },
+    {
+      "id": "local-purpose",
+      "passed": true,
+      "baseline": "baseline:local-purpose",
+      "changed": "changed:local-purpose"
+    },
+    {
+      "id": "support",
+      "passed": true,
+      "baseline": "baseline:support",
+      "changed": "changed:support"
+    },
+    {
+      "id": "side-laterality",
+      "passed": true,
+      "baseline": "baseline:side-laterality",
+      "changed": "changed:side-laterality"
+    },
+    {
+      "id": "selected-package-membership",
+      "passed": true,
+      "baseline": "baseline:selected-package-membership",
+      "changed": "changed:selected-package-membership"
+    }
+  ]
+}

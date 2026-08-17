@@ -12,7 +12,8 @@
     "./adaptation-persistence": "./src/adaptationPersistence/index.ts",
     "./product-shadow": "./src/productShadow/index.ts",
     "./product-shadow-goal-realization": "./src/productShadowGoalRealization/index.ts",
-    "./home-comfort": "./src/candidate/homeComfort/index.ts"
+    "./home-comfort": "./src/candidate/homeComfort/index.ts",
+    "./standard-gym-comfort": "./src/candidate/standardGymComfort/index.ts"
   },
   "scripts": {
     "build": "npm run validate:pure-server-boundary && npm run typecheck:production && npm run typecheck:test-dev",
@@ -249,6 +250,9 @@
     "report:package-r": "node --import tsx dev/reportPackageRHomeFirstMixedRelease.ts",
     "test:current45-knowledge": "vitest --run --config vitest.config.ts tests/unit/current45KnowledgeCompletion.test.ts",
     "report:current45-knowledge": "node --import tsx dev/reportCurrent45KnowledgeCompletion.ts --write",
-    "check:current45-knowledge-reports": "node --import tsx dev/reportCurrent45KnowledgeCompletion.ts --check"
+    "check:current45-knowledge-reports": "node --import tsx dev/reportCurrent45KnowledgeCompletion.ts --check",
+    "test:package-s": "vitest --run --config vitest.config.ts tests/unit/packageSFoundations.test.ts tests/unit/packageSProductionAdmission.test.ts",
+    "report:package-s": "node --import tsx dev/reportPackageSStandardGym.ts --write",
+    "check:package-s-reports": "node --import tsx dev/reportPackageSStandardGym.ts --check"
   }
 }

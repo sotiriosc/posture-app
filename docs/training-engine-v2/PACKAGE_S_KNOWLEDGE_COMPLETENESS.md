@@ -8,8 +8,8 @@ Every selected entry has one focus, 2-5 cues, at least two setup facts, at least
 
 The prior 53 compact fallbacks remain byte-equivalent. Fifty-two existing Knowledge entries remain byte-identical; `machine-chest-press` changes only by the authorized `fixed-machine-incline` differences-only override and its updated exact-capability boundary. Missing categories, duplicate entries, stale fallbacks, treatment claims, diagnosis claims, and machine-safety promises: 0.
 
-Package S Knowledge fingerprint: `b3ce7594b0ab4cddd69196b4c9923b8ff129da6c37364a5334d02709df298662`.
+Package S Knowledge fingerprint: `23b44d1499199f000f678a8f077944a7cd981a5c5b1b4ed404e3509b1e264c20`.
 
-Production-64 Knowledge fingerprint: `df9c1f9569539dc2ff5614d5f49e8265c6a1a6335512f881127e6f49ce0e52f1`.
+Production-64 Knowledge fingerprint: `f3138efd15799c441d07e5893763bb52849494d652d59780555bf1b08139f246`.
 
 Generated fallback fingerprint: `0d29118d7642cea006fdb1168d9bcbcf1032e69c03169b29b43f256be36740b2`.

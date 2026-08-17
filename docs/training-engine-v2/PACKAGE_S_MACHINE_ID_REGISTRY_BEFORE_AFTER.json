@@ -1,0 +1,78 @@
+{
+  "before": [
+    "abdominal_crunch",
+    "chest_press",
+    "row",
+    "lat_pulldown",
+    "leg_press",
+    "leg_curl",
+    "reverse_pec_deck",
+    "shoulder_press",
+    "leg_extension"
+  ],
+  "added": [
+    "assisted_pull_up",
+    "incline_chest_press",
+    "hack_squat",
+    "seated_leg_curl",
+    "chest_fly",
+    "hip_adduction",
+    "hip_abduction",
+    "seated_calf_raise",
+    "hip_thrust"
+  ],
+  "after": [
+    "abdominal_crunch",
+    "chest_press",
+    "row",
+    "lat_pulldown",
+    "leg_press",
+    "leg_curl",
+    "reverse_pec_deck",
+    "shoulder_press",
+    "leg_extension",
+    "assisted_pull_up",
+    "incline_chest_press",
+    "hack_squat",
+    "seated_leg_curl",
+    "chest_fly",
+    "hip_adduction",
+    "hip_abduction",
+    "seated_calf_raise",
+    "hip_thrust"
+  ],
+  "mechanisms": {
+    "assisted_pull_up": [
+      "selectorized"
+    ],
+    "incline_chest_press": [
+      "selectorized",
+      "plate_loaded"
+    ],
+    "hack_squat": [
+      "selectorized",
+      "plate_loaded"
+    ],
+    "seated_leg_curl": [
+      "selectorized",
+      "plate_loaded"
+    ],
+    "chest_fly": [
+      "selectorized"
+    ],
+    "hip_adduction": [
+      "selectorized"
+    ],
+    "hip_abduction": [
+      "selectorized"
+    ],
+    "seated_calf_raise": [
+      "selectorized",
+      "plate_loaded"
+    ],
+    "hip_thrust": [
+      "selectorized",
+      "plate_loaded"
+    ]
+  }
+}

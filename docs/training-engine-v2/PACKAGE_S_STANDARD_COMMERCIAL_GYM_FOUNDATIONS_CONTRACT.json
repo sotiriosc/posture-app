@@ -1,0 +1,24 @@
+{
+  "contractId": "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS",
+  "contractVersion": "1.0.0",
+  "packageId": "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_V1",
+  "atomic": true,
+  "selectedIds": [
+    "pull-up",
+    "hack-squat",
+    "seated-leg-curl",
+    "machine-chest-fly",
+    "machine-hip-adduction",
+    "machine-hip-abduction",
+    "seated-calf-raise",
+    "machine-hip-thrust",
+    "cable-lateral-raise",
+    "overhead-cable-triceps-extension",
+    "straight-arm-cable-pulldown"
+  ],
+  "catalogBefore": 53,
+  "catalogAfter": 64,
+  "knowledgeBefore": 53,
+  "knowledgeAfter": 64,
+  "activation": "IMPLEMENTED_NOT_PRODUCT_ACTIVATED"
+}

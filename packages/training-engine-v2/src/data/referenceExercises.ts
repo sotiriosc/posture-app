@@ -136,6 +136,12 @@ const machine = (id: MachineId, label: string): EquipmentRequirement => ({
   machineIds: [id],
 });
 
+const chestPressMachine: EquipmentRequirement = {
+  id: "machine-chest-press-angle-realization",
+  label: "Exact flat or incline chest press machine",
+  oneOfMachineIds: ["chest_press", "incline_chest_press"],
+};
+
 const anchoredBand = (height: "low" | "mid" | "high"): EquipmentRequirement => ({
   id: `anchored-band-${height}`,
   label: `Band with ${height} anchor`,
@@ -203,6 +209,8 @@ const PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF =
   "docs/training-engine-v2/EXERCISE_PRESCRIPTION_KNOWLEDGE_CONTRACT.md#production-45-row-profile";
 const PACKAGE_R_OWNER_DECISION_REF =
   "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md";
+const PACKAGE_S_OWNER_DECISION_REF =
+  "docs/training-engine-v2/PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION.md";
 const PACKAGE_R_SELECTED_ID_SET = new Set([
   "dumbbell-floor-press",
   "dumbbell-triceps-extension",
@@ -212,6 +220,19 @@ const PACKAGE_R_SELECTED_ID_SET = new Set([
   "band-biceps-curl",
   "machine-shoulder-press",
   "machine-leg-extension",
+]);
+const PACKAGE_S_SELECTED_ID_SET = new Set([
+  "pull-up",
+  "hack-squat",
+  "seated-leg-curl",
+  "machine-chest-fly",
+  "machine-hip-adduction",
+  "machine-hip-abduction",
+  "seated-calf-raise",
+  "machine-hip-thrust",
+  "cable-lateral-raise",
+  "overhead-cable-triceps-extension",
+  "straight-arm-cable-pulldown",
 ]);
 
 const BREATHING_IDS = new Set(["ninety-ninety-breathing"]);
@@ -291,7 +312,9 @@ function prescriptionKnowledgeProvenance(
     source: "owner_decision",
     sourceRef: PACKAGE_R_SELECTED_ID_SET.has(exerciseId)
       ? PACKAGE_R_OWNER_DECISION_REF
-      : PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
+      : PACKAGE_S_SELECTED_ID_SET.has(exerciseId)
+        ? PACKAGE_S_OWNER_DECISION_REF
+        : PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
     evidenceBasis: [evidence],
     reviewerId: "sotiriosc",
     reviewedAt: OWNER_REVIEWED_AT,
@@ -928,6 +951,167 @@ function transition(input: {
   };
 }
 
+function packageSMachineExercise(input: {
+  readonly id: string;
+  readonly name: string;
+  readonly machineId: MachineId;
+  readonly family: CanonicalExerciseDefinition["family"];
+  readonly movementRoles: CanonicalExerciseDefinition["movementRoles"];
+  readonly actionFunctions: readonly ExerciseActionFunction[];
+  readonly trainingRoles: CanonicalExerciseDefinition["trainingRoles"];
+  readonly muscles: Parameters<typeof contributions>[0];
+  readonly bodyRegions: CanonicalExerciseDefinition["bodyRegions"];
+  readonly sectionSuitability: CanonicalExerciseDefinition["sectionSuitability"];
+  readonly support: ExerciseMechanicsProfile["support"];
+  readonly loadability?: CanonicalExerciseDefinition["loading"]["loadability"];
+  readonly loadingPotential?: CanonicalExerciseDefinition["loading"]["loadingPotential"];
+  readonly localFatigue?: CanonicalExerciseDefinition["loading"]["localFatigue"];
+  readonly systemicFatigue?: CanonicalExerciseDefinition["loading"]["systemicFatigue"];
+  readonly jointStressTags?: readonly JointStressTag[];
+  readonly progressionAxes: CanonicalExerciseDefinition["progression"]["progressionAxes"];
+  readonly transitions: readonly ExerciseTransitionRelationship[];
+  readonly resistanceNotes: string;
+}): CanonicalExerciseDefinition {
+  const stressTags = input.jointStressTags ?? [];
+  return {
+    id: input.id,
+    name: input.name,
+    summary: generatedCoachingFallback(input.id).summary,
+    family: input.family,
+    movementRoles: input.movementRoles,
+    actionFunctions: actionsWithSource(PACKAGE_S_OWNER_DECISION_REF, ...input.actionFunctions),
+    trainingRoles: input.trainingRoles,
+    muscleContributions: contributions(input.muscles, PACKAGE_S_OWNER_DECISION_REF),
+    bodyRegions: input.bodyRegions,
+    equipmentRequirements: [{
+      id: `machine-${input.machineId}`,
+      label: `Exact ${input.name.toLowerCase()} machine capability`,
+      machineIds: [input.machineId],
+    }],
+    optionalEquipment: [],
+    prerequisites: [],
+    sectionSuitability: input.sectionSuitability,
+    phaseSuitability: {},
+    phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: input.loadability ?? "high",
+      loadingPotential: input.loadingPotential ?? "high",
+      skillDemand: "low",
+      stabilityDemand: "low",
+      coordinationDemand: "low",
+      localFatigue: input.localFatigue ?? "moderate",
+      systemicFatigue: input.systemicFatigue ?? "low",
+      axialLoading: "low",
+      jointStressTags: stressTags,
+    },
+    stressAnnotations: stressTags.map((tag) => ownerStressAnnotation({
+      tag,
+      exposureScope: "variant_dependent",
+      sideScope: "bilateral_or_systemic",
+      notes: `${input.name} exposure to ${tag.replaceAll("_", " ")} depends on exact machine geometry, selected range, and dose; machine support is not a safety guarantee.`,
+      sourceRef: PACKAGE_S_OWNER_DECISION_REF,
+    })),
+    mechanics: mechanics({
+      support: input.support,
+      resistancePath: {
+        resistancePath: "machine_guided",
+        trajectoryFreedom: "low",
+        lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked",
+        fitDependency: "machine_geometry",
+        reviewStatus: "accepted",
+        notes: input.resistanceNotes,
+        provenance: [PACKAGE_S_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("low", "Machine support bounds trunk demand without making the movement universally safer."),
+        scapular_control: demand("low", "Scapular demand is not a direct selection purpose unless the row action requires it."),
+        stability: demand("low", "The exact machine guides the loaded path."),
+        coordination: demand("low", "The reviewed machine path has low coordination demand."),
+        range: demand("moderate", "Range remains an explicit machine-setting and Prescription fact."),
+        joint_control: demand("moderate", "Controlled movement through the selected machine range remains required."),
+      },
+    }),
+    progression: {
+      progressionAxes: input.progressionAxes,
+      transitionRelationships: input.transitions,
+    },
+    cautionStressTags: stressTags,
+    contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback(input.id).coachingFocus,
+  };
+}
+
+function packageSCableExercise(input: {
+  readonly id: string;
+  readonly name: string;
+  readonly family: CanonicalExerciseDefinition["family"];
+  readonly actionFunctions: readonly ExerciseActionFunction[];
+  readonly muscles: Parameters<typeof contributions>[0];
+  readonly bodyRegions: CanonicalExerciseDefinition["bodyRegions"];
+  readonly equipment: EquipmentRequirement;
+  readonly supportNotes: string;
+  readonly resistanceNotes: string;
+  readonly jointStressTags?: readonly JointStressTag[];
+  readonly transitions: readonly ExerciseTransitionRelationship[];
+}): CanonicalExerciseDefinition {
+  const stressTags = input.jointStressTags ?? [];
+  return {
+    id: input.id,
+    name: input.name,
+    summary: generatedCoachingFallback(input.id).summary,
+    family: input.family,
+    movementRoles: ["accessory"],
+    actionFunctions: actionsWithSource(PACKAGE_S_OWNER_DECISION_REF, ...input.actionFunctions),
+    trainingRoles: ["hypertrophy_accessory"],
+    muscleContributions: contributions(input.muscles, PACKAGE_S_OWNER_DECISION_REF),
+    bodyRegions: input.bodyRegions,
+    equipmentRequirements: [input.equipment],
+    optionalEquipment: [],
+    prerequisites: [],
+    sectionSuitability: sections({ accessory: excellent("Provides exact cable-path accessory development when the reviewed anchor and setup are available.") }),
+    phaseSuitability: {},
+    phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "moderate", loadingPotential: "moderate", skillDemand: "moderate",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "moderate",
+      systemicFatigue: "low", axialLoading: "low", jointStressTags: stressTags,
+    },
+    stressAnnotations: stressTags.map((tag) => ownerStressAnnotation({
+      tag,
+      exposureScope: "variant_dependent",
+      sideScope: "prescription_side",
+      notes: `${input.name} exposure to ${tag.replaceAll("_", " ")} depends on anchor, side, range, and dose.`,
+      sourceRef: PACKAGE_S_OWNER_DECISION_REF,
+    })),
+    mechanics: mechanics({
+      support: {
+        basePosition: "standing", stance: "bilateral", orientation: "upright",
+        supportContacts: [{ bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }],
+        supportAmount: "prescription_modifiable", supportRelationship: "side_neutral", reviewStatus: "accepted",
+        notes: input.supportNotes,
+      },
+      resistancePath: {
+        resistancePath: "cable_anchored", trajectoryFreedom: "moderate", lineOfPullAdjustability: "high",
+        laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: input.resistanceNotes, provenance: [PACKAGE_S_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "Standing cable resistance requires bounded position control."),
+        scapular_control: demand("moderate", "Shoulder-girdle control remains explicit without creating a corrective purpose."),
+        stability: demand("moderate", "Standing against a cable line of pull creates setup-dependent stability demand."),
+        coordination: demand("moderate", "Anchor, path, and side must remain coordinated."),
+        range: demand("moderate", "Owned range remains a Prescription fact."),
+        joint_control: demand("moderate", "The selected cable path requires controlled joint motion."),
+      },
+    }),
+    progression: { progressionAxes: ["load", "reps", "sets", "range", "tempo"], transitionRelationships: input.transitions },
+    cautionStressTags: stressTags,
+    contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback(input.id).coachingFocus,
+  };
+}
+
 const REFERENCE_EXERCISE_DEFINITIONS = [
   {
     id: "ninety-ninety-breathing",
@@ -1542,7 +1726,7 @@ const REFERENCE_EXERCISE_DEFINITIONS = [
     trainingRoles: ["primary_strength", "secondary_strength"],
     muscleContributions: contributions({ primary: ["chest"], keySecondary: ["triceps", "front_delts"] }),
     bodyRegions: ["shoulder", "elbow"],
-    equipmentRequirements: [machine("chest_press", "Chest press machine")],
+    equipmentRequirements: [chestPressMachine],
     optionalEquipment: [],
     prerequisites: [],
     sectionSuitability: sections({
@@ -5019,13 +5203,244 @@ const REFERENCE_EXERCISE_DEFINITIONS = [
     cautionStressTags: [], contraindicatedStressTags: [],
     coachingFocus: generatedCoachingFallback("machine-leg-extension").coachingFocus,
   },
+  {
+    id: "pull-up",
+    name: "Pull-Up",
+    summary: generatedCoachingFallback("pull-up").summary,
+    family: "upper_pull",
+    movementRoles: ["vertical_pull"],
+    actionFunctions: actionsWithSource(PACKAGE_S_OWNER_DECISION_REF, "elbow_flexion", "shoulder_extension"),
+    trainingRoles: ["primary_strength", "secondary_strength"],
+    muscleContributions: contributions({ primary: ["lats"], keySecondary: ["upper_back", "biceps"], contextual: ["trunk"] }, PACKAGE_S_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "elbow", "wrist", "thoracic_spine"],
+    equipmentRequirements: [{
+      id: "pull-up-exact-apparatus",
+      label: "Exact pull-up bar or assisted pull-up machine",
+      oneOf: ["pull_up_bar"],
+      oneOfMachineIds: ["assisted_pull_up"],
+    }],
+    optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({
+      main: excellent("Provides a true vertical-pull identity through an exact unassisted or machine-assisted realization."),
+      accessory: good("Can provide additional vertical-pull volume when the explicit realization fits."),
+    }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: {
+      loadability: "moderate", loadingPotential: "high", skillDemand: "high",
+      stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "high",
+      systemicFatigue: "moderate", axialLoading: "low", jointStressTags: ["grip_intensive", "upper_limb_support_loading"],
+    },
+    stressAnnotations: [ownerStressAnnotation({
+      tag: "grip_intensive", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic",
+      notes: "Hanging or machine-supported Pull-Up realizations retain explicit grip and upper-limb support demand; assistance is not external load.",
+      sourceRef: PACKAGE_S_OWNER_DECISION_REF,
+    }), ownerStressAnnotation({
+      tag: "upper_limb_support_loading", exposureScope: "intrinsic", sideScope: "bilateral_or_systemic",
+      notes: "Pull-Up realizations require explicit upper-limb support contact; assistance may change magnitude without removing the support relationship.",
+      sourceRef: PACKAGE_S_OWNER_DECISION_REF,
+    })],
+    mechanics: mechanics({
+      support: {
+        basePosition: "hanging", stance: "bilateral", orientation: "suspended",
+        supportContacts: [{ bodyRegion: "hand", source: "machine", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }],
+        supportAmount: "prescription_modifiable", supportRelationship: "bilateral", reviewStatus: "accepted",
+        notes: "The exact realization supplies a pull-up bar or assisted-machine hand support; machine assistance adds lower-body support without creating another identity.",
+      },
+      resistancePath: {
+        resistancePath: "prescription_dependent", trajectoryFreedom: "moderate", lineOfPullAdjustability: "low",
+        laterality: "bilateral_linked", fitDependency: "setup_geometry", reviewStatus: "accepted",
+        notes: "Bodyweight-unassisted and machine-assisted paths share one identity; assistance magnitude remains separate from external load.",
+        provenance: [PACKAGE_S_OWNER_DECISION_REF],
+      },
+      demands: {
+        trunk_control: demand("moderate", "The hanging body position requires controlled trunk organization."),
+        scapular_control: demand("high", "Vertical pulling requires controlled shoulder-girdle motion through the selected range."),
+        stability: demand("moderate", "The body or machine support must remain controlled."),
+        coordination: demand("moderate", "Elbow, shoulder, and hanging support must coordinate."),
+        range: demand("high", "Start and finish range are explicit realization and Prescription facts."),
+        joint_control: demand("high", "Shoulder and elbow control remain required in either assistance state."),
+      },
+    }),
+    progression: {
+      progressionAxes: ["reps", "sets", "range", "tempo"],
+      transitionRelationships: [transition({
+        targetExerciseId: "lat-pulldown", direction: "lateral", classification: "context_dependent",
+        purposes: ["increase_support", "change_resistance_path", "equipment_transition"],
+        notes: "Lat Pulldown changes support and load path; it is not an automatic Pull-Up progression or replacement.",
+        provenance: [PACKAGE_S_OWNER_DECISION_REF],
+      })],
+    },
+    cautionStressTags: ["grip_intensive", "upper_limb_support_loading"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("pull-up").coachingFocus,
+  },
+  packageSMachineExercise({
+    id: "hack-squat", name: "Hack Squat", machineId: "hack_squat", family: "squat_pattern",
+    movementRoles: ["squat", "knee_dominant"], actionFunctions: ["knee_extension", "hip_extension"],
+    trainingRoles: ["primary_strength", "secondary_strength"],
+    muscles: { primary: ["quads"], keySecondary: ["glutes"], contextual: ["hamstrings", "trunk"] },
+    bodyRegions: ["knee", "hip", "ankle", "lumbar_spine"],
+    sectionSuitability: sections({ main: excellent("Provides an exact-machine supported squat and knee-dominant path."), accessory: good("Can add knee-dominant volume when purpose and machine fit are explicit.") }),
+    support: {
+      basePosition: "standing", stance: "bilateral", orientation: "diagonal",
+      supportContacts: [
+        { bodyRegion: "foot", source: "machine", mode: "weight_bearing", side: "bilateral", taskRole: "primary" },
+        { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+      ],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Footplate, back pad, shoulder support, start stop, and range are machine-specific; no universal foot placement is asserted.",
+    },
+    systemicFatigue: "moderate", jointStressTags: ["deep_knee_flexion", "loaded_knee_flexion", "heavy_axial_loading"],
+    progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [
+      transition({ targetExerciseId: "leg-press", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"], notes: "Leg Press changes support and task geometry; it is not the same identity.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+      transition({ targetExerciseId: "goblet-squat", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "change_resistance_path", "equipment_transition"], notes: "Goblet Squat changes support and free-load demands without a universal difficulty order.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+    ],
+    resistanceNotes: "The exact hack-squat path may be selectorized or plate-loaded only when the current equipment realization says so; stack values are not kilograms by inference.",
+  }),
+  packageSMachineExercise({
+    id: "seated-leg-curl", name: "Seated Leg Curl", machineId: "seated_leg_curl", family: "glute_hamstring",
+    movementRoles: ["accessory"], actionFunctions: ["knee_flexion"], trainingRoles: ["hypertrophy_accessory"],
+    muscles: { primary: ["hamstrings"] }, bodyRegions: ["knee", "hip"],
+    sectionSuitability: sections({ accessory: excellent("Provides direct seated machine knee-flexion work with an explicit hip/support relationship.") }),
+    support: {
+      basePosition: "seated", stance: "bilateral", orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+      ],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Seat, back, thigh restraint, axis, and lower-leg pad settings distinguish this row from Lying Leg Curl.",
+    },
+    jointStressTags: ["loaded_knee_flexion"], progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [transition({ targetExerciseId: "lying-leg-curl", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "equipment_transition", "stimulus_shift"], notes: "Lying Leg Curl changes hip position and support and remains a distinct identity.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+    resistanceNotes: "The exact seated-leg-curl machine guides knee flexion; selectorized or plate-loaded mechanism remains equipment-realization truth.",
+  }),
+  packageSMachineExercise({
+    id: "machine-chest-fly", name: "Machine Chest Fly", machineId: "chest_fly", family: "upper_push",
+    movementRoles: ["accessory"], actionFunctions: ["shoulder_horizontal_adduction"], trainingRoles: ["hypertrophy_accessory"],
+    muscles: { primary: ["chest"], incidental: ["front_delts"] }, bodyRegions: ["shoulder"],
+    sectionSuitability: sections({ accessory: excellent("Provides supported shoulder-horizontal-adduction work without satisfying a press need.") }),
+    support: {
+      basePosition: "seated", stance: "bilateral", orientation: "upright",
+      supportContacts: [
+        { bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" },
+        { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" },
+      ],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Seat, back, arm contact, and selected range are exact machine settings; no universal deep-stretch instruction is encoded.",
+    },
+    progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [transition({ targetExerciseId: "cable-chest-fly", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "change_resistance_path", "equipment_transition"], notes: "Cable Chest Fly changes support and line-of-pull freedom; neither fly becomes a press.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+    resistanceNotes: "The exact chest-fly or pec-deck machine supplies a guided adduction path distinct from cable and reverse-pec-deck identities.",
+  }),
+  packageSMachineExercise({
+    id: "machine-hip-adduction", name: "Machine Hip Adduction", machineId: "hip_adduction", family: "hip_accessory",
+    movementRoles: ["accessory"], actionFunctions: ["hip_adduction"], trainingRoles: ["hypertrophy_accessory"],
+    muscles: { primary: ["hip_adductors"] }, bodyRegions: ["hip", "pelvis"],
+    sectionSuitability: sections({ accessory: excellent("Provides direct seated machine hip-adduction development without a treatment purpose.") }),
+    support: {
+      basePosition: "seated", stance: "bilateral", orientation: "upright",
+      supportContacts: [{ bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" }, { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" }],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Seat, back, thigh pads, and start range are exact machine settings and distinguish the row from side-lying adduction.",
+    },
+    progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [transition({ targetExerciseId: "side-lying-hip-adduction", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "change_resistance_path", "equipment_transition"], notes: "Side-Lying Hip Adduction changes support and resistance and is not a machine realization.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+    resistanceNotes: "The exact hip-adduction machine guides the selected seated range; machine use carries no groin-treatment claim.",
+  }),
+  packageSMachineExercise({
+    id: "machine-hip-abduction", name: "Machine Hip Abduction", machineId: "hip_abduction", family: "hip_accessory",
+    movementRoles: ["accessory"], actionFunctions: ["hip_abduction"], trainingRoles: ["hypertrophy_accessory"],
+    muscles: { primary: ["hip_abductors"], keySecondary: ["glutes"] }, bodyRegions: ["hip", "pelvis"],
+    sectionSuitability: sections({ accessory: excellent("Provides direct seated machine hip-abduction development without a corrective purpose.") }),
+    support: {
+      basePosition: "seated", stance: "bilateral", orientation: "upright",
+      supportContacts: [{ bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" }, { bodyRegion: "back", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" }],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Seat, back, thigh pads, and start range are exact machine settings and distinguish the row from floor and band identities.",
+    },
+    progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [
+      transition({ targetExerciseId: "side-lying-hip-abduction", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "change_resistance_path", "equipment_transition"], notes: "Side-Lying Hip Abduction changes support and resistance path.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+      transition({ targetExerciseId: "loop-band-lateral-walk", direction: "lateral", classification: "context_dependent", purposes: ["increase_coordination_demand", "change_resistance_path", "stimulus_shift"], notes: "Lateral walking adds a stepping task and is not the same identity.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+    ],
+    resistanceNotes: "The exact hip-abduction machine guides the seated path; it does not create a glute-correction or treatment claim.",
+  }),
+  packageSMachineExercise({
+    id: "seated-calf-raise", name: "Seated Calf Raise", machineId: "seated_calf_raise", family: "calf_accessory",
+    movementRoles: ["accessory"], actionFunctions: ["ankle_plantar_flexion"], trainingRoles: ["hypertrophy_accessory"],
+    muscles: { primary: ["calves"] }, bodyRegions: ["ankle", "knee"],
+    sectionSuitability: sections({ accessory: excellent("Provides seated supported plantar-flexion development through an exact machine realization.") }),
+    support: {
+      basePosition: "seated", stance: "bilateral", orientation: "upright",
+      supportContacts: [{ bodyRegion: "seat", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" }, { bodyRegion: "foot", source: "machine", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" }],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Seat, knee pad, foot platform, start position, and range are machine-specific and distinguish the row from Standing Calf Raise.",
+    },
+    progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [transition({ targetExerciseId: "standing-calf-raise", direction: "lateral", classification: "context_dependent", purposes: ["reduce_support", "change_resistance_path", "equipment_transition"], notes: "Standing Calf Raise changes knee position, support, and load path; no soleus-isolation certainty is claimed.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+    resistanceNotes: "The seated-calf path may be selectorized or plate-loaded only under an exact equipment realization; machine range is not a universal stretch prescription.",
+  }),
+  packageSMachineExercise({
+    id: "machine-hip-thrust", name: "Machine Hip Thrust", machineId: "hip_thrust", family: "glute_hamstring",
+    movementRoles: ["accessory"], actionFunctions: ["hip_extension"], trainingRoles: ["secondary_strength", "hypertrophy_accessory"],
+    muscles: { primary: ["glutes"], keySecondary: ["hamstrings"], contextual: ["trunk"] }, bodyRegions: ["hip", "pelvis", "lumbar_spine"],
+    sectionSuitability: sections({ main: good("Can provide an explicit supported hip-extension responsibility when the session need calls for it."), accessory: excellent("Provides loadable supported hip-extension volume.") }),
+    support: {
+      basePosition: "supine", stance: "bilateral", orientation: "supine",
+      supportContacts: [{ bodyRegion: "back", source: "machine", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" }, { bodyRegion: "pelvis", source: "machine", mode: "positioning", side: "side_neutral", taskRole: "secondary" }, { bodyRegion: "foot", source: "machine", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" }],
+      supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted",
+      notes: "Back support, pelvic pad or belt, foot platform, start, and finish are exact machine settings and distinguish the row from floor Glute Bridge.",
+    },
+    loadingPotential: "high", localFatigue: "high", jointStressTags: ["loaded_spinal_extension"], progressionAxes: ["load", "reps", "sets", "range", "tempo"],
+    transitions: [transition({ targetExerciseId: "glute-bridge", direction: "lateral", classification: "context_dependent", purposes: ["reduce_loadability", "change_resistance_path", "equipment_transition"], notes: "Glute Bridge changes support and loading and is not a machine realization of this identity.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+    resistanceNotes: "The hip-thrust or glute-drive path may be selectorized or plate-loaded only when exact equipment realization supports it; no brand identity is encoded.",
+  }),
+  packageSCableExercise({
+    id: "cable-lateral-raise", name: "Cable Lateral Raise", family: "delt_accessory",
+    actionFunctions: ["shoulder_abduction"], muscles: { primary: ["side_delts"], contextual: ["upper_back"] },
+    bodyRegions: ["shoulder"], equipment: { id: "cable-lateral-raise-anchor", label: "Cable stack with low anchor and stable standing space", allOf: ["cable_stack", "cable_anchor_low", "stable_loaded_standing_space"] },
+    supportNotes: "Standing unilateral use is canonical; bilateral use requires an exact two-cable realization and no universal arm path is asserted.",
+    resistanceNotes: "The low cable line creates a distinct resistance path from Dumbbell Lateral Raise; side and attachment remain explicit realization facts.",
+    jointStressTags: ["shoulder_abduction_external_rotation"],
+    transitions: [transition({ targetExerciseId: "dumbbell-lateral-raise", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "equipment_transition"], notes: "Dumbbell Lateral Raise changes resistance direction and setup without a universal difficulty order.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+  }),
+  packageSCableExercise({
+    id: "overhead-cable-triceps-extension", name: "Overhead Cable Triceps Extension", family: "arm_accessory",
+    actionFunctions: ["elbow_extension"], muscles: { primary: ["triceps"], contextual: ["front_delts", "trunk"] },
+    bodyRegions: ["shoulder", "elbow", "wrist"], equipment: { id: "overhead-cable-triceps-anchor", label: "Cable stack with legal high anchor and stable standing space", allOf: ["cable_stack", "cable_anchor_high", "stable_loaded_standing_space"] },
+    supportNotes: "The admitted realization is standing with an exact high anchor; shoulder position and support are realization facts and elbow position is not universalized.",
+    resistanceNotes: "The overhead high-cable path is distinct from Cable Triceps Pressdown and Dumbbell Triceps Extension.",
+    jointStressTags: ["overhead_pressing"],
+    transitions: [
+      transition({ targetExerciseId: "cable-triceps-pressdown", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "feature_shift"], notes: "Pressdown changes shoulder position and cable direction.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+      transition({ targetExerciseId: "dumbbell-triceps-extension", direction: "lateral", classification: "context_dependent", purposes: ["change_resistance_path", "equipment_transition"], notes: "Dumbbell extension changes resistance and setup.", provenance: [PACKAGE_S_OWNER_DECISION_REF] }),
+    ],
+  }),
+  packageSCableExercise({
+    id: "straight-arm-cable-pulldown", name: "Straight-Arm Cable Pulldown", family: "upper_pull",
+    actionFunctions: ["shoulder_extension"], muscles: { primary: ["lats"], contextual: ["upper_back", "trunk"] },
+    bodyRegions: ["shoulder", "thoracic_spine", "lumbar_spine"], equipment: highCable,
+    supportNotes: "The admitted realization is a standing high-cable accessory path; stance and trunk position remain explicit and do not create a vertical-pull identity.",
+    resistanceNotes: "The high-cable shoulder-extension path is distinct from Lat Pulldown and Row and never satisfies required vertical-pull strength coverage.",
+    transitions: [transition({ targetExerciseId: "lat-pulldown", direction: "lateral", classification: "context_dependent", purposes: ["increase_loadability", "change_resistance_path", "feature_shift"], notes: "Lat Pulldown adds elbow flexion and owns vertical-pull coverage; this relationship is accessory-only and never automatic.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
+  }),
 ] satisfies readonly CanonicalExerciseDefinition[];
 
 export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] =
   REFERENCE_EXERCISE_DEFINITIONS.map(defineExercise);
 
+function prePackageSExerciseSnapshot(exercise: ExerciseDefinition): ExerciseDefinition {
+  return exercise.id === "machine-chest-press"
+    ? Object.freeze({ ...exercise, equipmentRequirements: [machine("chest_press", "Chest press machine")] })
+    : exercise;
+}
+
+export const PRE_PACKAGE_S_REFERENCE_EXERCISES: readonly ExerciseDefinition[] =
+  Object.freeze(REFERENCE_EXERCISES.slice(0, 53).map(prePackageSExerciseSnapshot));
+
 export const PRE_PACKAGE_R_REFERENCE_EXERCISES: readonly ExerciseDefinition[] =
-  Object.freeze(REFERENCE_EXERCISES.slice(0, 45));
+  Object.freeze(PRE_PACKAGE_S_REFERENCE_EXERCISES.slice(0, 45));
 
 export function getReferenceExercise(id: string): ExerciseDefinition | undefined {
   return REFERENCE_EXERCISES.find((exercise) => exercise.id === id);

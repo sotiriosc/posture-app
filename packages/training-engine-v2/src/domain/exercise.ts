@@ -115,6 +115,7 @@ export const EXERCISE_ACTION_FUNCTIONS = [
   "elbow_flexion",
   "elbow_extension",
   "shoulder_abduction",
+  "shoulder_extension",
   "shoulder_horizontal_adduction",
   "shoulder_horizontal_abduction",
   "shoulder_external_rotation",

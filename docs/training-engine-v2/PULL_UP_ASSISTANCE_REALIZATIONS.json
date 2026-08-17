@@ -1,0 +1,61 @@
+[
+  {
+    "contract": {
+      "contractId": "PULL_UP_ASSISTANCE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pull-up",
+    "realizationId": "bodyweight-unassisted",
+    "assistanceKind": "unassisted",
+    "apparatus": "pull_up_bar",
+    "supportContact": "hands_on_bar",
+    "startFinishTruth": "Begin and finish from the prescribed controlled hanging range on the exact bar.",
+    "progressionAxisAvailability": [
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "automaticTransitionAllowed": false,
+    "bandAssistanceAllowed": false,
+    "externalLoad": null,
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "The owner selected one Pull-Up identity with an exact unassisted bodyweight realization."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "PULL_UP_ASSISTANCE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pull-up",
+    "realizationId": "machine-assisted",
+    "assistanceKind": "machine_assisted",
+    "apparatus": "assisted_pull_up_machine",
+    "supportContact": "hands_on_bar_and_machine_support",
+    "startFinishTruth": "Use the exact machine support and prescribed controlled vertical pulling range.",
+    "progressionAxisAvailability": [
+      "reps",
+      "sets",
+      "range",
+      "tempo",
+      "assistance_reduction_future_authority_required"
+    ],
+    "automaticTransitionAllowed": false,
+    "bandAssistanceAllowed": false,
+    "externalLoad": null,
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "Machine assistance is realization and prescription truth, not external load or a second exercise identity."
+        ]
+      }
+    ]
+  }
+]

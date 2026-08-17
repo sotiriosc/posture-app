@@ -1,0 +1,30 @@
+# Package S Activation Guards
+
+Generated deterministically from Package S production evidence; edit the source contracts and regenerate.
+
+- selectedNewProductionRowCount: 11
+- totalRowCount: 64
+- knowledgeEntryCount: 64
+- machineIdAddedCount: 9
+- unselectedNewRowCount: 0
+- duplicateIdCount: 0
+- selectedRowMissingKnowledgeCount: 0
+- selectedRowMissingCategoryCount: 0
+- staleFallbackCount: 0
+- candidateKnowledgeImportCount: 0
+- composerKnowledgeImportCount: 0
+- weekKnowledgeImportCount: 0
+- productKnowledgeImportCount: 0
+- libraryRouteCount: 0
+- coachingRailComponentCount: 0
+- productGoalOptionChangeCount: 0
+- getStrongerVisibilityChangeCount: 0
+- questionnaireChangeCount: 0
+- generateProgramChangeCount: 0
+- productShadowSemanticChangeCount: 0
+- productUiChangeCount: 0
+- fullLighterRecoveryImplementationCount: 0
+- ownerDeliveryCount: 0
+- productActivationCount: 0
+- preG3CompletionCount: 0
+- finalLedgerCompletedCount: 0

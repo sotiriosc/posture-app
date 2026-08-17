@@ -28,6 +28,7 @@ import type {
 } from "../types";
 import { buildTrainingReadinessTrace } from "../../domain/trainingSafety";
 import { compareHomeComfortCandidates } from "../homeComfort";
+import { compareStandardGymComfortCandidates } from "../standardGymComfort";
 
 export interface CandidateRankingOptions {
   readonly scoreComponents?: readonly CandidateScoreComponent[];
@@ -99,7 +100,22 @@ function rankLegalCandidates(input: {
           ...input.request.history.exerciseHistory.stableExerciseIds,
         ],
       });
-      return homeComfort.comparison || left.exercise.id.localeCompare(right.exercise.id);
+      if (homeComfort.comparison) return homeComfort.comparison;
+      const standardGymComfort = compareStandardGymComfortCandidates(left.exercise.id, right.exercise.id, {
+        environment: input.request.equipment.environment,
+        familiarityByExerciseId: Object.fromEntries(input.request.history.exerciseHistory.events.map((event) => [
+          event.exerciseId,
+          event.type === "successful_completion" || event.type === "appropriate_challenge" || event.type === "progression_success"
+            ? "exact_tolerated"
+            : "limited",
+        ])),
+        productiveContinuityIds: [
+          ...input.request.continuity.productiveExerciseIds,
+          ...input.request.history.exerciseHistory.stableExerciseIds,
+        ],
+        availableMachineIds: input.request.equipment.machines.availableMachineIds,
+      });
+      return standardGymComfort.comparison || left.exercise.id.localeCompare(right.exercise.id);
     })
     .map((candidate, index) => {
       const ranked: RankedCandidate = {

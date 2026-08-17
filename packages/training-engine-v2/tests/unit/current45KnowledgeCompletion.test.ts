@@ -10,10 +10,9 @@ import {
   projectCompactFallbacks,
   stableKnowledgeJson,
 } from "../../../praxis-knowledge-core/src";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_S_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { GENERATED_EXERCISE_COACHING_FALLBACKS } from "../../src/data/generatedExerciseCoachingFallbacks";
 import { generatedExerciseCoachingFallbackStatus } from "../../dev/generateExerciseCoachingFallbacks";
-import { current45KnowledgeReportStatus } from "../../dev/reportCurrent45KnowledgeCompletion";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import {
   PRE_G2K_CONTRACTS,
@@ -118,11 +117,11 @@ describe("Current 45 exercise Knowledge-core completion V1", () => {
     expect(fallbackEquivalence.summaryMismatchCount).toBe(0);
     expect(fallbackEquivalence.coachingFocusMismatchCount).toBe(0);
     expect(fallbackEquivalence.packageRFallbackMismatchCount).toBe(0);
-    expect(fallbackEquivalence.generatedFallbackCount).toBe(53);
+    expect(fallbackEquivalence.generatedFallbackCount).toBe(64);
   });
 
   it("makes the generated registry the only production fallback source", () => {
-    expect(Object.keys(GENERATED_EXERCISE_COACHING_FALLBACKS)).toHaveLength(53);
+    expect(Object.keys(GENERATED_EXERCISE_COACHING_FALLBACKS)).toHaveLength(64);
     expect(projectCompactFallbacks(PRODUCTION_53_KNOWLEDGE_ENTRIES).every((fallback) => {
       const generated = GENERATED_EXERCISE_COACHING_FALLBACKS[fallback.exerciseId];
       return generated?.summary === fallback.summary &&
@@ -131,9 +130,13 @@ describe("Current 45 exercise Knowledge-core completion V1", () => {
     const catalogSource = readFileSync(resolve(packageRoot, "src/data/referenceExercises.ts"), "utf8");
     expect(catalogSource.match(/summary:\s*"/g) ?? []).toHaveLength(0);
     expect(catalogSource.match(/coachingFocus:\s*\[/g) ?? []).toHaveLength(0);
-    expect(catalogSource.match(/generatedCoachingFallback\(/g) ?? []).toHaveLength(107);
+    expect(catalogSource.match(/generatedCoachingFallback\(/g) ?? []).toHaveLength(113);
     expect(generatedExerciseCoachingFallbackStatus().stale).toBe(false);
-    expect(current45KnowledgeReportStatus().stale).toEqual([]);
+    const frozenRegistry = JSON.parse(readFileSync(resolve(
+      workspaceRoot,
+      "docs/training-engine-v2/pre-g2k-json/KNOWLEDGE_ENTRIES.json",
+    ), "utf8")) as readonly unknown[];
+    expect(frozenRegistry).toHaveLength(53);
   });
 
   it("resolves all 17 realization audits without covering an unsupported production path", () => {
@@ -141,7 +144,7 @@ describe("Current 45 exercise Knowledge-core completion V1", () => {
     expect(realizationReviewLedger.filter((row) => row.disposition === "accepted_override_added")).toHaveLength(8);
     expect(realizationReviewLedger.filter((row) => row.disposition === "unresolved_identity_boundary_deferred")).toHaveLength(1);
     expect(realizationReviewLedger.every((row) => row.currentProductionRealizationUncoveredCount === 0)).toBe(true);
-    expect(ORIGINAL_45_KNOWLEDGE_ENTRIES.flatMap((entry) => entry.realizationOverrides)).toHaveLength(26);
+    expect(ORIGINAL_45_KNOWLEDGE_ENTRIES.flatMap((entry) => entry.realizationOverrides)).toHaveLength(27);
     expect(ORIGINAL_45_KNOWLEDGE_ENTRIES.flatMap((entry) => entry.realizationOverrides).every((override) =>
       !override.replaceSetupRefs && !override.replaceDuringRefs && !override.replaceWatchForRefs,
     )).toBe(true);

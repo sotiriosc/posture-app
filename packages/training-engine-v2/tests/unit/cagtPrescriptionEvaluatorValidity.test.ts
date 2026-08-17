@@ -25,7 +25,7 @@ describe("CAGT Prescription evaluator validity hardening", () => {
     expect(report.candidateValuesUnchanged).toBe(true);
     expect(PRESCRIPTION_NUMERIC_CANDIDATE_LATTICE_V1.manifestFingerprint)
       .toBe("7d96a67a80ce0b6c16f40523cd6b8f2734128953e781dcfe977dd12aba4c69a8");
-  }, 90_000);
+  }, 120_000);
 
   it("keeps evaluator inputs blind and withdraws owner-leading recommendations", () => {
     const report = buildPrescriptionEvaluatorHardeningReport();

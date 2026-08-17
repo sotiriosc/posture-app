@@ -6,7 +6,7 @@ import {
   PACKAGE_R_SELECTED_EXERCISE_IDS,
 } from "../../../praxis-knowledge-core/src";
 import {
-  HOME_COMFORT_PROFILES,
+  PRE_PACKAGE_S_HOME_COMFORT_PROFILES as HOME_COMFORT_PROFILES,
   HOME_COMFORT_SELECTION_POLICY,
   compareHomeComfortCandidates,
 } from "../../src/candidate/homeComfort";
@@ -16,7 +16,7 @@ import {
   DUMBBELLS_NO_BENCH_EQUIPMENT,
   FULL_GYM_EQUIPMENT,
 } from "../../src/data/goldenPersonas";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_S_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import { generatedExerciseCoachingFallbackStatus } from "../../dev/generateExerciseCoachingFallbacks";
 import {

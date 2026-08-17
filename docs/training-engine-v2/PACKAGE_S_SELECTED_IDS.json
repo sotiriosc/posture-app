@@ -1,0 +1,16 @@
+{
+  "packageId": "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_V1",
+  "selectedIds": [
+    "pull-up",
+    "hack-squat",
+    "seated-leg-curl",
+    "machine-chest-fly",
+    "machine-hip-adduction",
+    "machine-hip-abduction",
+    "seated-calf-raise",
+    "machine-hip-thrust",
+    "cable-lateral-raise",
+    "overhead-cable-triceps-extension",
+    "straight-arm-cable-pulldown"
+  ]
+}

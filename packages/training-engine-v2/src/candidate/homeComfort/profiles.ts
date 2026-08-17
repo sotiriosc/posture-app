@@ -111,14 +111,31 @@ export const HOME_COMFORT_PROFILES: Readonly<Record<string, HomeComfortProductio
   "band-biceps-curl": profile("band-biceps-curl", { recognitionFamiliarityExpectation: "high", setupComplexity: "moderate", environmentalAnchorDependence: "low", supportConfidence: "high", equipmentAmbiguity: "moderate", firstSessionComfortDisposition: "good" }),
   "machine-shoulder-press": gymMachine("machine-shoulder-press"),
   "machine-leg-extension": gymMachine("machine-leg-extension"),
+  "pull-up": profile("pull-up", { setupComplexity: "moderate", environmentalAnchorDependence: "high", supportConfidence: "moderate", balanceStabilityBurden: "moderate", coordinationBurden: "high", equipmentAmbiguity: "high", firstSessionComfortDisposition: "possible" }),
+  "hack-squat": gymMachine("hack-squat"),
+  "seated-leg-curl": gymMachine("seated-leg-curl"),
+  "machine-chest-fly": gymMachine("machine-chest-fly"),
+  "machine-hip-adduction": gymMachine("machine-hip-adduction"),
+  "machine-hip-abduction": gymMachine("machine-hip-abduction"),
+  "seated-calf-raise": gymMachine("seated-calf-raise"),
+  "machine-hip-thrust": gymMachine("machine-hip-thrust"),
+  "cable-lateral-raise": cableStation("cable-lateral-raise"),
+  "overhead-cable-triceps-extension": cableStation("overhead-cable-triceps-extension"),
+  "straight-arm-cable-pulldown": cableStation("straight-arm-cable-pulldown"),
 });
 
-export function validateHomeComfortProfileCoverage(catalogIds: readonly string[]): readonly string[] {
-  const profileIds = Object.keys(HOME_COMFORT_PROFILES);
+export const PRE_PACKAGE_S_HOME_COMFORT_PROFILES: Readonly<Record<string, HomeComfortProductionProfile>> =
+  Object.freeze(Object.fromEntries(Object.entries(HOME_COMFORT_PROFILES).slice(0, 53)));
+
+export function validateHomeComfortProfileCoverage(
+  catalogIds: readonly string[],
+  profiles: Readonly<Record<string, HomeComfortProductionProfile>> = HOME_COMFORT_PROFILES,
+): readonly string[] {
+  const profileIds = Object.keys(profiles);
   const catalogSet = new Set(catalogIds);
   return [
-    ...catalogIds.filter((id) => !HOME_COMFORT_PROFILES[id]).map((id) => `missing_profile:${id}`),
+    ...catalogIds.filter((id) => !profiles[id]).map((id) => `missing_profile:${id}`),
     ...profileIds.filter((id) => !catalogSet.has(id)).map((id) => `orphan_profile:${id}`),
-    ...profileIds.filter((id) => HOME_COMFORT_PROFILES[id]?.status !== "accepted").map((id) => `unaccepted_profile:${id}`),
+    ...profileIds.filter((id) => profiles[id]?.status !== "accepted").map((id) => `unaccepted_profile:${id}`),
   ].sort();
 }

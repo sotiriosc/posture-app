@@ -38,7 +38,7 @@ export const PULL_UP_KNOWLEDGE = entry({
       { suffix: "watch", category: "watchFor", statement: "Watch for reading a lower assistance setting as automatic progression without Longitudinal authority." },
     ] },
   ],
-  mechanics: ["support.hanging-or-machine-assisted", "resistance.bodyweight", "assistance.machine-setting"], roles: ["vertical_pull"], actions: [], stress: ["grip_intensive", "upper_limb_support_loading"], painTopics: ["shoulder-response-context", "elbow-response-context", "grip-response-context"], unresolvedClaims: ["Band assistance, weighted Pull-Up, chin-up, and mixed-grip realizations remain deferred."],
+  mechanics: ["support.hanging-or-machine-assisted", "resistance.bodyweight", "assistance.machine-setting"], roles: ["vertical_pull"], actions: ["elbow_flexion", "shoulder_extension"], stress: ["grip_intensive", "upper_limb_support_loading"], painTopics: ["shoulder-response-context", "elbow-response-context", "grip-response-context"], unresolvedClaims: ["Band assistance, weighted Pull-Up, chin-up, and mixed-grip realizations remain deferred."],
 });
 
 export const HACK_SQUAT_KNOWLEDGE = entry({
@@ -54,7 +54,7 @@ export const HACK_SQUAT_KNOWLEDGE = entry({
     { id: "selectorized", realizationId: "selectorized-hack-squat", facts: [{ suffix: "setup", category: "setup", statement: "For a selectorized realization, record the exact machine setting without converting it to another machine's load." }] },
     { id: "plate-loaded", realizationId: "plate-loaded-hack-squat", facts: [{ suffix: "setup", category: "setup", statement: "For a plate-loaded realization, record the exact plate loading and machine geometry without selectorized-stack equivalence." }] },
   ],
-  mechanics: ["support.machine-guided-squat", "path.bilateral-squat", "fit.machine-geometry"], roles: ["squat", "knee_dominant"], actions: [], stress: ["deep_knee_flexion", "loaded_knee_flexion", "heavy_axial_loading"], painTopics: ["knee-response-context", "hip-response-context", "lumbar-response-context"],
+  mechanics: ["support.machine-guided-squat", "path.bilateral-squat", "fit.machine-geometry"], roles: ["squat", "knee_dominant"], actions: ["knee_extension", "hip_extension"], stress: ["deep_knee_flexion", "loaded_knee_flexion", "heavy_axial_loading"], painTopics: ["knee-response-context", "hip-response-context", "lumbar-response-context"],
 });
 
 export const SEATED_LEG_CURL_KNOWLEDGE = entry({
@@ -70,7 +70,7 @@ export const SEATED_LEG_CURL_KNOWLEDGE = entry({
     { id: "selectorized", realizationId: "selectorized-seated-leg-curl", facts: [{ suffix: "setup", category: "setup", statement: "Record selectorized assistance and load only in the exact machine setting system." }] },
     { id: "plate-loaded", realizationId: "plate-loaded-seated-leg-curl", facts: [{ suffix: "setup", category: "setup", statement: "Record plate loading without equating it to selectorized settings." }] },
   ],
-  mechanics: ["support.seated-machine", "action.knee-flexion", "fit.machine-geometry"], roles: ["accessory"], actions: ["knee_flexion"], stress: [], painTopics: ["knee-response-context", "hip-response-context"],
+  mechanics: ["support.seated-machine", "action.knee-flexion", "fit.machine-geometry"], roles: ["accessory"], actions: ["knee_flexion"], stress: ["loaded_knee_flexion"], painTopics: ["knee-response-context", "hip-response-context"],
 });
 
 export const MACHINE_CHEST_FLY_KNOWLEDGE = entry({
@@ -154,7 +154,7 @@ export const CABLE_LATERAL_RAISE_KNOWLEDGE = entry({
     { id: "unilateral", realizationId: "unilateral-cable-lateral", facts: [{ suffix: "during", category: "during", statement: "For unilateral work, preserve the prescribed side and complete the opposite side only when assigned." }] },
     { id: "bilateral", realizationId: "bilateral-cable-lateral", facts: [{ suffix: "setup", category: "setup", statement: "For bilateral work, verify two legal cable lines and clear paths before beginning." }] },
   ],
-  mechanics: ["support.standing", "resistance.cable-anchored", "laterality.prescription-owned"], roles: ["accessory"], actions: ["shoulder_abduction"], stress: [], painTopics: ["shoulder-response-context"],
+  mechanics: ["support.standing", "resistance.cable-anchored", "laterality.prescription-owned"], roles: ["accessory"], actions: ["shoulder_abduction"], stress: ["shoulder_abduction_external_rotation"], painTopics: ["shoulder-response-context"],
 });
 
 export const OVERHEAD_CABLE_TRICEPS_EXTENSION_KNOWLEDGE = entry({

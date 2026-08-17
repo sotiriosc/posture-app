@@ -10,13 +10,13 @@ import {
   PACKAGE_R_KNOWLEDGE_CORE,
 } from "../../../praxis-knowledge-core/src";
 import {
-  HOME_COMFORT_PROFILES,
+  PRE_PACKAGE_S_HOME_COMFORT_PROFILES as HOME_COMFORT_PROFILES,
   HOME_COMFORT_PROFILE_CONTRACT,
   HOME_COMFORT_SELECTION_POLICY,
   compareHomeComfortCandidates,
   validateHomeComfortProfileCoverage,
 } from "../../src/candidate/homeComfort";
-import { REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
+import { PRE_PACKAGE_S_REFERENCE_EXERCISES as REFERENCE_EXERCISES } from "../../src/data/referenceExercises";
 import { EXERCISE_DOSE_MODES } from "../../src/prescription/dose";
 import { validateExerciseCatalog } from "../../src/validation";
 import { current45KnowledgeAudit } from "./current45Audit";
@@ -426,7 +426,7 @@ export const packageRValidationSummary = Object.freeze({
   catalogFindings: validateExerciseCatalog(REFERENCE_EXERCISES),
   catalogErrorCount: validateExerciseCatalog(REFERENCE_EXERCISES).filter((finding) => finding.severity === "error").length,
   knowledgeFindings: validateKnowledgeCore(PACKAGE_R_KNOWLEDGE_CORE),
-  homeComfortFindings: validateHomeComfortProfileCoverage(REFERENCE_EXERCISES.map((row) => row.id)),
+  homeComfortFindings: validateHomeComfortProfileCoverage(REFERENCE_EXERCISES.map((row) => row.id), HOME_COMFORT_PROFILES),
   controlledScenarioCount: controlledScenarios.length,
   cohortCount: Object.values(cohortRegistry).reduce((sum, rows) => sum + rows.length, 0),
   holdoutCount: holdoutManifest.length,

@@ -11,3 +11,4 @@ export * from "./scoring/config";
 export * from "./scoring/types";
 export * from "./types";
 export * from "./homeComfort";
+export * from "./standardGymComfort";
