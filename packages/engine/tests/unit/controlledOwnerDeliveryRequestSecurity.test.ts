@@ -26,6 +26,35 @@ describe("controlled owner request security", () => {
       sessionBinding: binding, actionFamily: "preview", evaluatedAt: "2026-08-17T16:15:00.000Z" })).toBe(false);
   });
 
+  it("fails closed when the session binding is mismatched or tampered", () => {
+    const binding = controlledOwnerSessionBinding("bac_user=session-a");
+    const token = issueControlledOwnerCsrfToken({ userId: "owner-1", sessionBinding: binding,
+      actionFamily: "enrollment", expiresAt: "2026-08-17T16:15:00.000Z", revision: 1,
+      secret: "synthetic-secret" });
+
+    expect(verifyControlledOwnerCsrfToken({ token, secret: "synthetic-secret", userId: "owner-1",
+      sessionBinding: controlledOwnerSessionBinding("bac_user=session-b"), actionFamily: "enrollment",
+      evaluatedAt: NOW })).toBe(false);
+    expect(verifyControlledOwnerCsrfToken({ token, secret: "synthetic-secret", userId: "owner-1",
+      sessionBinding: `${binding}tampered`, actionFamily: "enrollment", evaluatedAt: NOW })).toBe(false);
+  });
+
+  it("fails closed for expired, wrong-action, and tampered CSRF tokens", () => {
+    const binding = controlledOwnerSessionBinding("bac_user=synthetic-session");
+    const token = issueControlledOwnerCsrfToken({ userId: "owner-1", sessionBinding: binding,
+      actionFamily: "enrollment", expiresAt: "2026-08-17T16:15:00.000Z", revision: 1,
+      secret: "synthetic-secret" });
+    const tampered = `${token.slice(0, -1)}${token.endsWith("A") ? "B" : "A"}`;
+
+    expect(verifyControlledOwnerCsrfToken({ token, secret: "synthetic-secret", userId: "owner-1",
+      sessionBinding: binding, actionFamily: "enrollment",
+      evaluatedAt: "2026-08-17T16:15:00.000Z" })).toBe(false);
+    expect(verifyControlledOwnerCsrfToken({ token, secret: "synthetic-secret", userId: "owner-1",
+      sessionBinding: binding, actionFamily: "profile", evaluatedAt: NOW })).toBe(false);
+    expect(verifyControlledOwnerCsrfToken({ token: tampered, secret: "synthetic-secret", userId: "owner-1",
+      sessionBinding: binding, actionFamily: "enrollment", evaluatedAt: NOW })).toBe(false);
+  });
+
   it("requires same-origin JSON POST with a session cookie", () => {
     const valid = new Request("https://praxis.test/api/training/v2-owner/profile", { method: "POST",
       headers: { origin: "https://praxis.test", host: "praxis.test", "content-type": "application/json",
