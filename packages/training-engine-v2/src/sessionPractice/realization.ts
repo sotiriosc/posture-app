@@ -18,6 +18,7 @@ import {
 import { evaluateSessionPracticeOption } from "./availability";
 import { deriveSessionPracticeAssignmentFacts } from "./validation";
 import { deriveSessionPracticeRealizationRevisionId } from "./request";
+import { sequenceSessionPracticeProjection } from "./finalSequencing";
 
 function targetMaximum(target: NumericTarget<string> | undefined): number | null {
   if (!target || target.kind === "unknown" || target.kind === "not_prescribed") return null;
@@ -188,10 +189,14 @@ export function realizeSessionPractice(
   context: SessionPracticePolicyContext,
 ): SessionPracticeRealizationPlan {
   const projection = evaluateSessionPracticeOption(context);
+  const available = projection.availability.state === "available" ||
+    projection.availability.state === "available_with_pending_week_responsibility";
+  const transformedSequence = projection.mode === "full" || !available ? null :
+    sequenceSessionPracticeProjection({ context, projection }).sequence;
   return assembleSessionPracticeRealizationPlan({
     context,
     projection,
-    finalSequence: projection.mode === "full" ? wrapFullSourceSequence(context) : null,
+    finalSequence: projection.mode === "full" ? wrapFullSourceSequence(context) : transformedSequence,
   });
 }
 

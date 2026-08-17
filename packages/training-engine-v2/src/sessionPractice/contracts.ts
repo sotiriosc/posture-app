@@ -68,6 +68,21 @@ export const SESSION_PRACTICE_OUTCOME_SOURCE_LINK_CONTRACT_REFERENCE = Object.fr
   contractVersion: "1.0.0",
 } as const);
 
+export const SESSION_PRACTICE_GATE13_RECEIVER_CONTRACT_REFERENCE = Object.freeze({
+  contractId: "SESSION_PRACTICE_GATE13_RECEIVER",
+  contractVersion: "1.0.0",
+} as const);
+
+export const SESSION_PRACTICE_REMAINING_WEEK_HANDOFF_CONTRACT_REFERENCE = Object.freeze({
+  contractId: "SESSION_PRACTICE_REMAINING_WEEK_HANDOFF",
+  contractVersion: "1.0.0",
+} as const);
+
+export const SESSION_PRACTICE_LONGITUDINAL_OBSERVATION_CONTRACT_REFERENCE = Object.freeze({
+  contractId: "SESSION_PRACTICE_LONGITUDINAL_OBSERVATION",
+  contractVersion: "1.0.0",
+} as const);
+
 export const SESSION_PRACTICE_PRODUCT_ADAPTER_CONTRACT_REFERENCE = Object.freeze({
   contractId: "SESSION_PRACTICE_PRODUCT_ADAPTER",
   contractVersion: "1.0.0",

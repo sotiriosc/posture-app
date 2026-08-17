@@ -9,3 +9,8 @@ export * from "./lighterPolicy";
 export * from "./recoveryPolicy";
 export * from "./availability";
 export * from "./realization";
+export * from "./finalSequencing";
+export * from "./gate13Receiver";
+export * from "./completionDisposition";
+export * from "./outcomeLink";
+export * from "./downstreamBoundaries";

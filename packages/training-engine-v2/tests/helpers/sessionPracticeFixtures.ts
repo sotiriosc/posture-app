@@ -155,6 +155,7 @@ export function makeSessionPracticeSource(options: {
       executionAttemptId: "attempt-source", sessionIntentId: "intent-1", status: "sequenced_exact_optimal",
       executable: true, steps, finalPrescriptionRevisionIds: plans.map((plan) => plan.prescriptionRevisionId),
       sourceExposureEventIds: eventIds, prescriptionIds: plans.map((plan) => plan.prescriptionId),
+      consecutiveTransitionFacts: [], transitionInstructions: [],
       duration: { knownLowerBoundSeconds: plans.length * 60, knownUpperBoundSeconds: plans.length * 90,
         availableSeconds: 2700, status: "bounded", unknownComponents: [], prescriptionIntervalRefs: [],
         transitionInstructionIds: [], timingFactReuseCount: 0, noInventedTime: true, provenance: [], },
