@@ -7,9 +7,10 @@ import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury
 import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
 import type { EquipmentCapabilities } from "../domain/equipment";
+import type { ExerciseDefinition } from "../domain/exercise";
 import { BODY_REGIONS, type BodyRegion, type JointStressTag } from "../domain/primitives";
 import type { CurrentSessionEquipment, SessionAllocationDirective } from "../domain/sessionPlanningDirective";
-import { getPreparationKnowledgeProfile } from "../preparation";
+import { isLowFatigueActivationCandidate } from "../candidate";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
 import { composeSessionSkeleton } from "../sessionComposer/composeSessionSkeleton";
@@ -336,14 +337,13 @@ function directive(input: { readonly command: OwnerGenerationCommand; readonly p
 
 function compilationContext(input: { readonly assignment: Handoff["assignments"][number];
   readonly intent: NonNullable<Planning["sessionIntent"]>; readonly profile: OwnerGetStrongerProfileRevision;
-  readonly assessment: AssessmentState }): PrescriptionCompilationContextFacts {
+  readonly assessment: AssessmentState; readonly selectedExercise: ExerciseDefinition | null }): PrescriptionCompilationContextFacts {
   const needs = input.intent.needs.filter((need) => input.assignment.satisfiedNeedIds.includes(need.id));
   const dependencies = needs.flatMap((need) => need.dependencies);
   const assessmentPriorityIds = uniqueSorted(dependencies.flatMap((entry) => entry.assessmentSignalIds));
   const alignmentPriorityIds = deriveAlignmentPriorities(input.assessment).priorities
     .filter((priority) => priority.sourceAssessmentSignalIds.some((id) => assessmentPriorityIds.includes(id)))
     .map((priority) => priority.id);
-  const preparation = getPreparationKnowledgeProfile(input.assignment.exerciseId);
   const familiarity = input.profile.familiarity.find((entry) => entry.exerciseId === input.assignment.exerciseId);
   const explicitControl = dependencies.some((entry) => entry.actionFunctions.length > 0 ||
     entry.movementRoles.length > 0 || (entry.rangeRequirements?.length ?? 0) > 0);
@@ -363,7 +363,7 @@ function compilationContext(input: { readonly assignment: Handoff["assignments"]
       dependencies.some((entry) => entry.required),
     explicitControlRequirement: input.assignment.section === "activation" && explicitControl,
     lowFatigueActivationSuitable: input.assignment.section === "activation" &&
-      (preparation?.fatigueCost === "minimal" || preparation?.fatigueCost === "low"),
+      input.selectedExercise !== null && isLowFatigueActivationCandidate(input.selectedExercise),
     adverseActivationFatigueResponse: false, mainWorkPreserved: true, secondaryObjectiveRequired: false,
     secondaryWeeklyPriority: false, secondaryCapacitySupported: true, secondaryHigherPriorityConflict: false,
     secondaryNonRedundantUpstream: true, accessoryPriority: "optional", accessoryUniquePurposeActive: true,
@@ -380,7 +380,8 @@ function compilationContext(input: { readonly assignment: Handoff["assignments"]
 
 function compileSession(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
   readonly plannerInput: SessionIntentPlannerInput; readonly planning: Planning; readonly skeleton: Skeleton;
-  readonly handoff: Handoff; readonly materialized: readonly MaterializedAllocatedObjectiveV1_1[] }): Compilation {
+  readonly candidates: Candidates; readonly handoff: Handoff;
+  readonly materialized: readonly MaterializedAllocatedObjectiveV1_1[] }): Compilation {
   const intent = input.planning.sessionIntent!;
   const purpose: PrescriptionLocalPurpose = input.materialized[0]?.localPrescriptionPurpose ?? "strength_development";
   const compilerInput: PrescriptionSessionCompilerInput = {
@@ -390,9 +391,13 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
     currentEquipment: input.plannerInput.currentEquipment.capabilities,
     trainingReadiness: buildTrainingReadinessTrace({ trainingSafety: input.plannerInput.trainingSafety }),
     executionRequirements: [],
-    contextByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
-      [assignment.handoffId, compilationContext({ assignment, intent, profile: input.profile,
-        assessment: input.plannerInput.assessment })])),
+    contextByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) => {
+      const selectedExercise = assignment.satisfiedNeedIds.flatMap((needId) =>
+        input.candidates[needId]?.rankedCandidates ?? [])
+        .find((candidate) => candidate.exercise.id === assignment.exerciseId)?.exercise ?? null;
+      return [assignment.handoffId, compilationContext({ assignment, intent, profile: input.profile,
+        assessment: input.plannerInput.assessment, selectedExercise })];
+    })),
     continuityEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
       [assignment.handoffId, null])),
     priorRealizationEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
@@ -451,7 +456,7 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
         candidateResultsByNeed: candidates });
       if (!skeleton.assignments.length || !handoff.assignments.length) throw new Error("OWNER_SESSION_COMPOSER_EMPTY");
       const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput, planning,
-        skeleton, handoff, materialized: objectives });
+        skeleton, candidates, handoff, materialized: objectives });
       if (compilation.status !== "compiled") throw new Error(`OWNER_PRESCRIPTION_BLOCKED:${compilation.status}`);
       const facts = deriveCanonicalCompositionFacts({ candidateResultsByNeed: candidates,
         continuity: planning.sessionIntent.continuityEvidence });

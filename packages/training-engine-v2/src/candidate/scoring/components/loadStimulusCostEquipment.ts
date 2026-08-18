@@ -3,12 +3,21 @@ import {
   buildCandidatePainMatchTrace,
   receiverDecision,
 } from "../../pain";
+import type { ExerciseDefinition } from "../../../domain/exercise";
 import type { CandidateScoreComponent } from "../types";
 import { component, demandValue, loadabilityValue } from "../utils";
 import { resolveCandidateGoal } from "../../request";
 
 function phaseLoadingTarget(loading: "low" | "moderate" | "high"): number {
   return loading === "low" ? 1 : loading === "moderate" ? 2 : 3;
+}
+
+export function isLowFatigueActivationCandidate(
+  exercise: Pick<ExerciseDefinition, "loading">,
+): boolean {
+  return exercise.loading.loadingPotential === "low" &&
+    exercise.loading.localFatigue === "low" &&
+    exercise.loading.systemicFatigue === "low";
 }
 
 export const loadabilityComponent: CandidateScoreComponent = {

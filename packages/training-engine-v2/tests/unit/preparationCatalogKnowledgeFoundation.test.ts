@@ -3,9 +3,7 @@ import {
   GENERATED_EXERCISE_COACHING_FALLBACKS,
 } from "../../src/data/generatedExerciseCoachingFallbacks";
 import {
-  PREPARATION_KNOWLEDGE_PROFILES,
   REFERENCE_EXERCISES,
-  getPreparationKnowledgeProfile,
 } from "../../src";
 import {
   PREPARATION_FOUNDATION_KNOWLEDGE_ENTRIES,
@@ -68,21 +66,19 @@ describe("preparation catalog and Knowledge foundation", () => {
     }
   });
 
-  it("publishes explicit selection, fatigue, equipment, and timing boundaries", () => {
-    expect(PREPARATION_KNOWLEDGE_PROFILES.length).toBeGreaterThanOrEqual(13);
-    for (const profile of PREPARATION_KNOWLEDGE_PROFILES) {
-      expect(REFERENCE_EXERCISES.some((exercise) => exercise.id === profile.exerciseId)).toBe(true);
-      expect(profile.compatibleDemandIds.length).toBeGreaterThan(0);
-      expect(profile.equipmentRequirementIds.length).toBeGreaterThan(0);
-      expect(profile.evidenceRefs.length).toBeGreaterThan(0);
-      expect(profile.explanation.length).toBeGreaterThan(20);
-    }
-    const staticRange = getPreparationKnowledgeProfile("half-kneeling-hip-flexor-stretch")!;
-    expect(staticRange.dosage).toMatchObject({ doseMode: "static_hold", maximum: 45, unit: "seconds" });
-    expect(staticRange.timingConstraints.join(" ")).toContain("followed by dynamic or task-specific preparation");
-    expect(getPreparationKnowledgeProfile("serratus-wall-slide")?.incompatibleConditionIds)
-      .toContain("wall_unavailable");
-    expect(getPreparationKnowledgeProfile("scapular-push-up")?.mechanicalStressTags)
+  it("keeps exercise, Candidate, Prescription, and Safety facts canonical", () => {
+    const byId = new Map(REFERENCE_EXERCISES.map((exercise) => [exercise.id, exercise]));
+    expect(byId.get("serratus-wall-slide")?.equipmentRequirements.map((entry) => entry.id))
+      .toEqual(["wall-support"]);
+    expect(byId.get("serratus-wall-slide")?.cautionStressTags).toContain("overhead_pressing");
+    expect(byId.get("scapular-push-up")?.loading.jointStressTags)
       .toContain("wrist_extension_loading");
+    expect(byId.get("half-kneeling-hip-flexor-stretch")?.prescriptionKnowledge)
+      .toMatchObject({ timingModel: "isometric_hold", primaryDoseMode: "timed_hold" });
+    expect(byId.get("dead-bug")?.loading).toMatchObject({
+      loadingPotential: "low",
+      localFatigue: "low",
+      systemicFatigue: "low",
+    });
   });
 });

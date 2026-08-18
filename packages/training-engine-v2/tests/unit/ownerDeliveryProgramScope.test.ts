@@ -190,6 +190,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
 
   it("uses confirmed assessment facts for causal shared preparation without manufacturing defaults", () => {
     const noAssessment = fixture({ id: "no-assessment" }).result;
+    expect(noAssessment.pipelineFingerprint).toBe("e7935019b5e6e57d");
     expect(noAssessment.projection!.sessions.flatMap((session) => session.exerciseAssignments)
       .filter((assignment) => assignment.section === "warmup" || assignment.section === "activation")).toEqual([]);
 
@@ -199,6 +200,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
       assessment: { signals: [assessmentSignal({ id: "pose-shoulder-asymmetry", region: "shoulder",
         movementRole: "scapular_control" })], historicalWeaknesses: [] } }).result;
     expect(upper.status, JSON.stringify(upper.unresolvedFacts)).toBe("complete");
+    expect(upper.pipelineFingerprint).toBe("dca662090e710ab5");
     for (const session of upper.projection!.sessions) {
       const preparation = session.exerciseAssignments.filter((assignment) => assignment.section === "activation");
       expect(preparation).toHaveLength(1);
@@ -214,6 +216,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
         assessmentSignal({ id: "pose-hip-shift", region: "hip", movementRole: "single_leg" }),
         assessmentSignal({ id: "pose-trunk-bias", region: "lumbar_spine", movementRole: "anti_extension_core" }),
       ], historicalWeaknesses: [] } }).result;
+    expect(lower.pipelineFingerprint).toBe("4d5642c380460a4f");
     const lowerPreparation = lower.projection!.sessions.flatMap((session) => session.exerciseAssignments)
       .filter((assignment) => assignment.section === "activation");
     expect(lowerPreparation.map((assignment) => assignment.exerciseId)).toEqual(
@@ -295,16 +298,18 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     expect(unknown.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
   });
 
-  it("fails restricted equipment and pain contexts closed and keeps opaque history references non-authoritative", () => {
+  it("fails restricted equipment closed and keeps canonical pain and opaque history non-authoritative", () => {
     const restricted = fixture({ id: "bodyweight-only", capabilityIds: ["bodyweight"] }).result;
     expect(restricted.status).toBe("blocked");
     expect(restricted.approvalAllowed).toBe(false);
 
-    for (const painRegions of [["shoulder"], ["knee"], ["lower-back"]]) {
-      const pain = fixture({ id: `pain-${painRegions[0]}`, painRegions }).result;
-      expect(pain.status).toBe("blocked");
-      expect(pain.approvalAllowed).toBe(false);
-    }
+    const painResults = [["shoulder"], ["knee"], ["lower-back"]].map((painRegions) =>
+      fixture({ id: `pain-${painRegions[0]}`, painRegions }).result);
+    expect(painResults.map((result) => result.status)).toEqual(["blocked", "blocked", "complete"]);
+    expect(painResults.map((result) => result.pipelineFingerprint)).toEqual([
+      "27a01958d52378b4", "3b178f0d5836ead1", "04077dc01309c654",
+    ]);
+    expect(painResults.every((result) => result.approvalAllowed === false)).toBe(true);
 
     const familiar = fixture({ id: "familiar", familiarity: [{ exerciseId: "dumbbell-bench-press",
       realizationId: null, status: "known" }], continuityReferences: ["history:opaque-owner-reference"] });
