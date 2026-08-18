@@ -18,6 +18,7 @@ import { CONTROLLED_PRODUCT_SHADOW_GOAL_REALIZATION_PROFILE_V1_B1_B4 } from "./m
 import { createProductGoalArchitectureShadowPlanningBrief } from "./planningBriefPolicy";
 import { mapProductPreferenceContinuity } from "./preferenceContinuityMapping";
 import { mapProductTrainingModeV2 } from "./trainingModeMapping";
+import { projectProductAssessmentReportForShadow } from "../productAssessmentAdapter";
 
 function strings(value: unknown): readonly string[] {
   return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string") : [];
@@ -41,12 +42,15 @@ export function mapProductAssessmentV2(
   assessment: Record<string, unknown> | null,
 ): ProductAssessmentShadowMapping {
   const rawSignals = Array.isArray(assessment?.signals) ? assessment.signals : [];
-  const signals = rawSignals.filter((entry): entry is Record<string, unknown> =>
+  const legacySignals = rawSignals.filter((entry): entry is Record<string, unknown> =>
     Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)).map((entry, index) => Object.freeze({
       signalId: field(entry.id) ?? `product-assessment-signal-${index + 1}`,
       confidence: typeof entry.confidence === "number" && Number.isFinite(entry.confidence) ? entry.confidence : null,
       region: field(entry.region), action: field(entry.action), reviewState: field(entry.reviewState),
     })).sort((left, right) => left.signalId.localeCompare(right.signalId));
+  const signals = legacySignals.length || !Array.isArray(assessment?.observations)
+    ? legacySignals
+    : projectProductAssessmentReportForShadow({ assessment, sourceRevision: "product-shadow-goal-realization:assessment" });
   return Object.freeze({ signals: Object.freeze(signals), proseConsumptionCount: 0,
     genericCorrectiveCircuitCount: 0 });
 }

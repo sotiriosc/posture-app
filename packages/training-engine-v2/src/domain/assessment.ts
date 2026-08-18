@@ -61,6 +61,16 @@ export interface AssessmentSignal {
   readonly assessmentFeatures?: readonly AssessmentFeature[];
   readonly actionFunctions?: readonly ExerciseActionFunction[];
   readonly description: string;
+  readonly provenance?: AssessmentSignalProvenance;
+}
+
+export interface AssessmentSignalProvenance {
+  readonly sourceSystem: "product_assessment_report" | "training_engine_v2";
+  readonly sourceObservationId: string;
+  readonly sourceRevision: string;
+  readonly mappingRuleId: string;
+  readonly evidenceRefs: readonly string[];
+  readonly opaqueTextConsumed: false;
 }
 
 export interface HistoricalWeakness {

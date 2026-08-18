@@ -1,5 +1,6 @@
 import { REFERENCE_EXERCISES, stableId } from "@praxis/training-engine-v2";
 import type { LogPrefs, Program } from "../types";
+import { projectProductAssessmentReportForShadow } from "../productAssessmentAdapter";
 import { PRODUCT_ORDERED_CYCLE_HORIZON_ADAPTER_REFERENCE,
   PRODUCT_TO_V2_EXERCISE_IDENTITY_MAP_REFERENCE, type ControlledProductShadowMappingBundle,
   type ProductEquipmentMapping, type ProductExerciseIdentityMapEntry, type ProductExerciseIdentityRegistry,
@@ -118,6 +119,9 @@ export function mapProductAssessment(assessment: Record<string, unknown> | null)
   readonly signalId: string; readonly confidence: number | null; readonly region: string | null;
   readonly action: string | null; readonly reviewState: string | null }[] {
   const signals = Array.isArray(assessment?.signals) ? assessment.signals : [];
+  if (signals.length === 0 && Array.isArray(assessment?.observations)) {
+    return projectProductAssessmentReportForShadow({ assessment, sourceRevision: "product-shadow:assessment" });
+  }
   return Object.freeze(signals.filter((entry): entry is Record<string, unknown> => Boolean(entry) && typeof entry === "object")
     .map((entry, index) => Object.freeze({ signalId: stringField(entry.id) ?? `product-assessment-signal-${index + 1}`,
       confidence: typeof entry.confidence === "number" ? entry.confidence : null,
