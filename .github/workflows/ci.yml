@@ -34,9 +34,10 @@ jobs:
 
       - name: Lint changed source files
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          DIFF_BASE: ${{ github.event.before || github.event.pull_request.base.sha }}
+          DIFF_HEAD: ${{ github.event.after || github.event.pull_request.head.sha }}
         run: |
-          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA...$GITHUB_SHA" -- '*.js' '*.jsx' '*.ts' '*.tsx')
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$DIFF_BASE...$DIFF_HEAD" -- '*.js' '*.jsx' '*.ts' '*.tsx')
           if ((${#files[@]})); then
             npx eslint "${files[@]}"
           else
