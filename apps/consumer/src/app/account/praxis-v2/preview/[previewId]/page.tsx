@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { resolveOwnerExerciseDoseBlocks } from "@praxis/training-engine-v2";
 import { withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
 import { ownerCsrfTokens, requireOwnerPage } from "@/server/controlledOwnerDelivery";
 import { normalizeOwnerDynamicRecordId } from "@/server/ownerDynamicRecordId";
@@ -31,11 +32,21 @@ export default async function OwnerPreviewPage({ params }: { readonly params: Pr
       {preview.productProjection.sessions.map((session) => <article className={styles.session} key={session.sessionId}>
         <h3>{session.purpose.replaceAll("_", " ")}</h3>
         <p className={styles.muted}>{session.durationStatus === "known" ? `${session.durationMinutes} minutes` : "Duration unknown"}</p>
-        {session.exerciseAssignments.map((exercise) => <div className={styles.exercise} key={exercise.assignmentId}>
-          <div><strong>{exercise.exerciseId.replaceAll("-", " ")}</strong>
-            <p className={styles.muted}>{exercise.reasonCodes.join(", ")}</p></div>
-          <div>{exercise.sets ?? "?"} sets · {exercise.reps}<br />{exercise.restSeconds ?? "?"}s rest</div>
-        </div>)}
+        {session.exerciseAssignments.map((exercise) => {
+          const doseBlocks = resolveOwnerExerciseDoseBlocks(preview, exercise);
+          return <div className={styles.exercise} key={exercise.assignmentId}>
+            <div><strong>{exercise.exerciseId.replaceAll("-", " ")}</strong>
+              <p className={styles.muted}>{exercise.reasonCodes.join(", ")}</p></div>
+            <div className={styles.doseBlocks}>{doseBlocks.map((block) =>
+              <div className={styles.doseBlock} key={block.blockId}>
+                <strong>{block.purpose.replaceAll("_", " ")}</strong>
+                <p>{block.volume} · {block.target}</p>
+                <p className={styles.muted}>{block.rest}<br />{block.effort} · {block.tempo}<br />{block.load}</p>
+              </div>)}
+            {!doseBlocks.length ?
+              <div>{exercise.sets ?? "?"} sets · {exercise.reps}<br />{exercise.restSeconds ?? "?"}s rest</div> : null}</div>
+          </div>;
+        })}
         <p className={styles.muted}>Full · Lighter · Recovery</p>
       </article>)}
     </div></section>

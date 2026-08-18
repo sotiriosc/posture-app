@@ -98,6 +98,14 @@ const PREVIEW: ControlledOwnerV2ProgramPreview = {
         tempo: null,
         restSeconds: 120,
         effort: "rpe_8",
+        doseBlocks: [{ blockId: "block-preparation", order: 0, purpose: "preparatory_acclimation",
+          volume: "1 set", target: "4-8 reps", rest: "60-180 seconds before strength work",
+          effort: "Quality-limited effort", tempo: "controlled tempo",
+          load: "Choose load to match the effort target", calibrationRequired: true },
+        { blockId: "block-development", order: 1, purpose: "developmental_work",
+          volume: "3 sets", target: "3-6 reps", rest: "180-300 seconds between strength sets",
+          effort: "1-3 reps in reserve", tempo: "natural tempo",
+          load: "Choose load to match the effort target", calibrationRequired: true }],
         equipmentRequirementIds: ["dumbbells", "adjustable_bench"],
         reasonCodes: ["STRENGTH_PRIMARY_PRESS"],
       }],
@@ -163,6 +171,13 @@ describe("owner preview exact page and API reads", () => {
     expect(output).toContain("strength-foundation");
     expect(output).toContain("Sessions");
     expect(output).toContain("dumbbell bench press");
+    expect(output).toContain("preparatory acclimation");
+    expect(output).toContain("1 set");
+    expect(output).toContain("60-180 seconds before strength work");
+    expect(output).toContain("developmental work");
+    expect(output).toContain("3 sets");
+    expect(output).toContain("1-3 reps in reserve");
+    expect(output).not.toContain("&quot;kind&quot;");
     expect(output).toContain("OWNER LOAD SELECTION PENDING");
     expect(output).toContain("Technical details");
     expect(output).toContain("training-engine-v2@fixture");

@@ -114,6 +114,10 @@ export interface ProductionWeekAllocationPlanV1_1 {
   readonly optionalBloatCount: 0;
 }
 
+export type ProductionWeekResponsibilityPackingV1_1 =
+  | "distributed_across_opportunities"
+  | "coherent_shared_sessions";
+
 export interface MaterializedAllocatedObjectiveV1_1 {
   readonly materializerContract: typeof PRODUCTION_SESSION_ALLOCATION_MATERIALIZER_V1_1_REFERENCE;
   readonly allocatedObjectiveId: string;

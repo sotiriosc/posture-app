@@ -14,6 +14,7 @@ import {
   generateControlledOwnerGetStrongerPreview,
   loadControlledOwnerDeliveryMigrations,
   recordControlledOwnerSessionDraft,
+  resolveOwnerPreviewReadinessStatus,
   rollbackControlledOwnerProgram,
   reviseControlledOwnerSessionMode,
   startControlledOwnerSession,
@@ -69,6 +70,15 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
 }
 
 describe("controlled owner genuine generation and application", () => {
+  it("keeps profile, pipeline, and approval readiness separate", () => {
+    expect(resolveOwnerPreviewReadinessStatus({ programSemanticCompletenessSatisfied: true,
+      profileApprovalAllowed: true })).toBe("ready_for_approval");
+    expect(resolveOwnerPreviewReadinessStatus({ programSemanticCompletenessSatisfied: true,
+      profileApprovalAllowed: false })).toBe("preview_only_unknown_duration");
+    expect(resolveOwnerPreviewReadinessStatus({ programSemanticCompletenessSatisfied: false,
+      profileApprovalAllowed: true })).toBe("blocked");
+  });
+
   it("runs genuine production stages and stores an immutable preview without Shadow or legacy generation", async () => {
     const value = await fixture({ mode: "preview", knownMinutes: true });
     expect(value.generated.status, JSON.stringify(value.generated.reasonCodes)).toBe("generated");

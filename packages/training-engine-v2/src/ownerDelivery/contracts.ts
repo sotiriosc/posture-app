@@ -229,8 +229,22 @@ export interface OwnerProgramExerciseProjection {
   readonly tempo: string | null;
   readonly restSeconds: number | null;
   readonly effort: string | null;
+  readonly doseBlocks?: readonly OwnerProgramDoseBlockProjection[];
   readonly equipmentRequirementIds: readonly string[];
   readonly reasonCodes: readonly string[];
+}
+
+export interface OwnerProgramDoseBlockProjection {
+  readonly blockId: string;
+  readonly order: number;
+  readonly purpose: string;
+  readonly volume: string;
+  readonly target: string;
+  readonly rest: string;
+  readonly effort: string;
+  readonly tempo: string;
+  readonly load: string;
+  readonly calibrationRequired: boolean;
 }
 
 export interface OwnerProgramSessionProjection {

@@ -4,13 +4,8 @@ import { EMPTY_TRAINING_HISTORY } from "../domain/history";
 import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury";
 import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
+import type { EquipmentCapabilities } from "../domain/equipment";
 import type { CurrentSessionEquipment, SessionAllocationDirective } from "../domain/sessionPlanningDirective";
-import {
-  ANCHORED_BANDS_EQUIPMENT,
-  BODYWEIGHT_EQUIPMENT,
-  DUMBBELLS_AND_BENCH_EQUIPMENT,
-  FULL_GYM_EQUIPMENT,
-} from "../data/goldenPersonas";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
 import { composeSessionSkeleton } from "../sessionComposer/composeSessionSkeleton";
@@ -59,6 +54,7 @@ import {
   type OwnerProgramProjection,
   type ProposedOwnerImportFact,
 } from "./contracts";
+import { projectOwnerPrescriptionDoseBlocks } from "./projection";
 
 const ENGINE_POLICY_VERSIONS = Object.freeze([
   "PRODUCTION_WEEK_POLICY_V2@2.0.0",
@@ -108,6 +104,8 @@ export interface ControlledOwnerProductionPipelineInput {
 
 export interface ControlledOwnerProductionPipelineResult {
   readonly status: "complete" | "blocked";
+  readonly approvalAllowed: boolean;
+  readonly programSemanticCompletenessSatisfied: boolean;
   readonly stages: readonly OwnerPipelineStageArtifact[];
   readonly projection: OwnerProgramProjection | null;
   readonly unresolvedFacts: readonly string[];
@@ -117,6 +115,47 @@ export interface ControlledOwnerProductionPipelineResult {
   readonly pipelineFingerprint: string;
 }
 
+export const OWNER_GET_STRONGER_RESPONSIBILITY_KEYS = Object.freeze([
+  "knee_dominant_lower_body",
+  "hinge_lower_body",
+  "upper_body_push",
+  "upper_body_pull",
+] as const);
+
+export interface OwnerProgramSemanticCompletenessInput {
+  readonly weeklyResponsibilitiesComplete: boolean;
+  readonly allocationCoverageComplete: boolean;
+  readonly sessionNeedCoverageComplete: boolean;
+  readonly assignmentCoverageComplete: boolean;
+  readonly developmentalPrescriptionCoverageComplete: boolean;
+  readonly projectionCoverageComplete: boolean;
+  readonly availabilityNotAutomaticallyFilled: boolean;
+  readonly exactEquipmentCapabilityPreserved: boolean;
+}
+
+export function evaluateOwnerProgramSemanticCompleteness(input: OwnerProgramSemanticCompletenessInput) {
+  const definitions = Object.freeze([
+    Object.freeze({ id: "OWNER_BROAD_STRENGTH_RESPONSIBILITIES_COMPLETE",
+      satisfied: input.weeklyResponsibilitiesComplete }),
+    Object.freeze({ id: "OWNER_WEEK_ALLOCATION_COVERS_REQUIRED_RESPONSIBILITIES",
+      satisfied: input.allocationCoverageComplete }),
+    Object.freeze({ id: "OWNER_SESSION_NEEDS_PRESERVE_ALLOCATED_RESPONSIBILITIES",
+      satisfied: input.sessionNeedCoverageComplete }),
+    Object.freeze({ id: "OWNER_ASSIGNMENTS_COVER_REQUIRED_SESSION_NEEDS",
+      satisfied: input.assignmentCoverageComplete }),
+    Object.freeze({ id: "OWNER_REQUIRED_ASSIGNMENTS_HAVE_DEVELOPMENTAL_PRESCRIPTION",
+      satisfied: input.developmentalPrescriptionCoverageComplete }),
+    Object.freeze({ id: "OWNER_PROJECTION_PRESERVES_ORDERED_PRESCRIPTION_BLOCKS",
+      satisfied: input.projectionCoverageComplete }),
+    Object.freeze({ id: "OWNER_AVAILABILITY_NOT_AUTOMATICALLY_FILLED",
+      satisfied: input.availabilityNotAutomaticallyFilled }),
+    Object.freeze({ id: "OWNER_EXACT_EQUIPMENT_CAPABILITIES_PRESERVED",
+      satisfied: input.exactEquipmentCapabilityPreserved }),
+  ]);
+  const reasonCodes = Object.freeze(definitions.filter((entry) => !entry.satisfied).map((entry) => entry.id));
+  return Object.freeze({ approvalAllowed: reasonCodes.length === 0, invariants: definitions, reasonCodes });
+}
+
 function artifact(stage: OwnerPipelineStageArtifact["stage"], productionKernel: string,
   payload: unknown, reasonCodes: readonly string[] = []): OwnerPipelineStageArtifact {
   return Object.freeze({ stage, productionKernel, status: reasonCodes.length ? "blocked" : "complete",
@@ -124,16 +163,29 @@ function artifact(stage: OwnerPipelineStageArtifact["stage"], productionKernel: 
     reasonCodes: Object.freeze(uniqueSorted(reasonCodes)) });
 }
 
-function equipmentFor(profile: OwnerGetStrongerProfileRevision) {
-  const ids = profile.equipmentCapabilitySnapshot.capabilityIds;
-  if (profile.equipmentCapabilitySnapshot.environment !== "home" || ids.includes("commercial_gym")) {
-    return FULL_GYM_EQUIPMENT;
-  }
-  if (ids.some((id) => id.includes("dumbbell")) && ids.some((id) => id.includes("bench"))) {
-    return DUMBBELLS_AND_BENCH_EQUIPMENT;
-  }
-  if (ids.some((id) => id.includes("band"))) return ANCHORED_BANDS_EQUIPMENT;
-  return BODYWEIGHT_EQUIPMENT;
+export function buildOwnerEquipmentCapabilities(profile: OwnerGetStrongerProfileRevision): EquipmentCapabilities {
+  const ids = new Set(profile.equipmentCapabilitySnapshot.capabilityIds);
+  const bodyweight = ids.has("bodyweight");
+  const dumbbells = ids.has("dumbbells");
+  const barbellRack = ids.has("barbell_rack");
+  const adjustableBench = ids.has("adjustable_bench");
+  const cables = ids.has("cables");
+  return Object.freeze({
+    environment: profile.equipmentCapabilitySnapshot.environment === "commercial_gym" ?
+      "commercial_gym" : "home",
+    trainingSpace: Object.freeze({ stableLoadedStandingSpace: ids.has("stable_loaded_standing_space"),
+      loadedGait: Object.freeze({ available: false }) }),
+    bodyweight: Object.freeze({ floorSpace: bodyweight, wallAvailable: false,
+      pullUpBar: ids.has("pull_up_station") }),
+    bench: Object.freeze({ types: Object.freeze(adjustableBench ? ["adjustable" as const] : []),
+      stable: adjustableBench }),
+    dumbbells: Object.freeze({ available: dumbbells, pairAvailable: dumbbells, adjustable: false }),
+    barbell: Object.freeze({ available: barbellRack, rackAvailable: barbellRack }),
+    cables: Object.freeze({ available: cables, adjustableHeight: false, availableHeights: Object.freeze([]) }),
+    bands: Object.freeze({ types: Object.freeze([]), anchors: Object.freeze([]) }),
+    machines: Object.freeze({ availableMachineIds: Object.freeze([]) }),
+    supportSurfaces: Object.freeze([]),
+  });
 }
 
 function painFor(profile: OwnerGetStrongerProfileRevision): PainAndInjuryState {
@@ -152,22 +204,37 @@ function painFor(profile: OwnerGetStrongerProfileRevision): PainAndInjuryState {
     }))) });
 }
 
-function weeklyPriority(profile: OwnerGetStrongerProfileRevision): ProductionExplicitWeeklyPriorityV1_1 {
-  return Object.freeze({
-    priorityId: `owner-strength-priority:${profile.revisionId}`,
-    family: "strength",
-    purpose: "movement_development",
-    localPrescriptionPurpose: "strength_development",
-    purposeAuthority: "primary_local_purpose",
-    target: Object.freeze({ targetMovementRoles: Object.freeze(["horizontal_push"] as const),
-      targetActionFunctions: Object.freeze([]), targetMuscles: Object.freeze(["chest"] as const),
-      muscleRequirement: "primary_required", targetBodyRegions: Object.freeze(["shoulder"] as const) }),
-    priority: "required",
-    priorityOrder: 0,
-    goalRelationships: Object.freeze([Object.freeze({ goal: "strength", relationship: "primary_weekly_goal",
+export function buildOwnerGetStrongerWeeklyPriorities(
+  profile: OwnerGetStrongerProfileRevision,
+): readonly ProductionExplicitWeeklyPriorityV1_1[] {
+  const definitions = [
+    { key: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS[0], roles: ["squat", "single_leg"] as const,
+      muscles: ["quads", "glutes"] as const, regions: ["knee", "hip", "ankle"] as const },
+    { key: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS[1], roles: ["hinge"] as const,
+      muscles: ["hamstrings", "glutes"] as const, regions: ["hip", "lumbar_spine"] as const },
+    { key: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS[2], roles: ["horizontal_push"] as const,
+      muscles: ["chest", "triceps"] as const, regions: ["shoulder", "elbow"] as const },
+    { key: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS[3], roles: ["horizontal_pull"] as const,
+      muscles: ["mid_back", "lats"] as const, regions: ["shoulder", "thoracic_spine"] as const },
+  ];
+  return Object.freeze(definitions.map((definition, priorityOrder) => Object.freeze({
+    priorityId: `owner-strength-responsibility:${definition.key}:${profile.revisionId}`,
+    family: "strength" as const,
+    purpose: "movement_development" as const,
+    localPrescriptionPurpose: "strength_development" as const,
+    purposeAuthority: "primary_local_purpose" as const,
+    target: Object.freeze({ targetMovementRoles: Object.freeze(definition.roles),
+      targetActionFunctions: Object.freeze([]), targetMuscles: Object.freeze(definition.muscles),
+      muscleRequirement: "any_meaningful_contributor" as const,
+      targetBodyRegions: Object.freeze(definition.regions) }),
+    priority: "required" as const,
+    priorityOrder,
+    goalRelationships: Object.freeze([Object.freeze({ goal: "strength" as const,
+      relationship: "primary_weekly_goal" as const,
       sourceEvidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`]) })]),
-    sourceEvidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`, "product-goal:get_stronger"]),
-  });
+    sourceEvidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`, "product-goal:get_stronger",
+      "phase-intent:phase_2:whole-person-strength-capabilities"]),
+  })));
 }
 
 function athleteFor(profile: OwnerGetStrongerProfileRevision): AthleteProfile {
@@ -183,7 +250,7 @@ function athleteFor(profile: OwnerGetStrongerProfileRevision): AthleteProfile {
 
 function directive(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
   readonly opportunityId: string; readonly minutes: number | null;
-  readonly objectives: readonly MaterializedAllocatedObjectiveV1_1[] }): SessionAllocationDirective {
+  readonly objectives: readonly MaterializedAllocatedObjectiveV1_1[]; readonly intent: WeeklyIntent }): SessionAllocationDirective {
   return Object.freeze({ id: stableId("owner-session-directive", { commandId: input.command.commandId,
     opportunityId: input.opportunityId }), source: "future_week_composer", athleteId: input.profile.userId,
   sessionType: "ordinary_training", outcomeGoal: "strength", programmingContextModes: Object.freeze([]),
@@ -191,17 +258,29 @@ function directive(input: { readonly command: OwnerGenerationCommand; readonly p
     structuralCapacity: input.minutes === null ? "standard" : input.minutes <= 30 ? "condensed" :
       input.minutes >= 60 ? "expanded" : "standard", provenance: "week_allocation",
     sourceRef: `owner-profile-opportunity:${input.opportunityId}` }),
-  allocatedObjectives: Object.freeze(input.objectives.map((objective, index) => Object.freeze({
-    id: objective.allocatedObjectiveId, kind: "dominant_main" as const, priority: objective.priority,
-    priorityOrder: index, selectionTarget: Object.freeze({
-      targetMovementRoles: Object.freeze(["horizontal_push"] as const),
-      targetActionFunctions: Object.freeze([]), targetMuscles: Object.freeze(["chest"] as const),
-      muscleRequirement: "primary_required" as const,
-      targetBodyRegions: Object.freeze(["shoulder"] as const)}),
-    sourceEvidence: Object.freeze([Object.freeze({ sourceKind: "future_week_allocation" as const,
-      sourceId: objective.weeklyObjectiveId, evidenceRefs: objective.plannerProvenance.sourceEvidenceRefs })]),
-    standaloneAdmissionDirection: "policy_default" as const, reasonCode: "OWNER_WEEK_STRENGTH_ALLOCATION",
-    explanation: "Required strength objective allocated by the production Week planner." }))),
+  allocatedObjectives: Object.freeze(input.objectives.map((objective, index) => {
+    const weeklyObjective = input.intent.objectives.find((entry) =>
+      entry.objectiveId === objective.weeklyObjectiveId);
+    if (!weeklyObjective) throw new Error("OWNER_WEEKLY_OBJECTIVE_TARGET_MISSING");
+    return Object.freeze({
+      id: objective.allocatedObjectiveId,
+      kind: index === 0 ? "dominant_main" as const : "secondary_main" as const,
+      priority: objective.priority,
+      priorityOrder: index,
+      selectionTarget: Object.freeze({
+        ...weeklyObjective.target,
+        targetMovementRoles: Object.freeze([...weeklyObjective.target.targetMovementRoles]),
+        targetActionFunctions: Object.freeze([...weeklyObjective.target.targetActionFunctions]),
+        targetMuscles: Object.freeze([...weeklyObjective.target.targetMuscles]),
+        targetBodyRegions: Object.freeze([...weeklyObjective.target.targetBodyRegions]),
+      }),
+      sourceEvidence: Object.freeze([Object.freeze({ sourceKind: "future_week_allocation" as const,
+        sourceId: objective.weeklyObjectiveId, evidenceRefs: objective.plannerProvenance.sourceEvidenceRefs })]),
+      standaloneAdmissionDirection: "policy_default" as const,
+      reasonCode: "OWNER_WEEK_STRENGTH_ALLOCATION",
+      explanation: "Required strength objective allocated by the production Week planner.",
+    });
+  })),
   neighboringSessionContextRefs: Object.freeze([]), unresolvedWeeklyContextRefs: Object.freeze([]),
   weekReallocationEvidenceRefs: Object.freeze([]), unresolvedContextObservations: Object.freeze([]),
   sourceTrace: Object.freeze({ owner: "future_week_composer", sourceRefs: Object.freeze([input.command.commandId]),
@@ -255,8 +334,9 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
   return compileSessionPrescription(compilerInput);
 }
 
-function executeSessions(input: ControlledOwnerProductionPipelineInput, weekPlan: WeekPlan): readonly SessionExecution[] {
-  const equipment = equipmentFor(input.profile);
+function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: WeeklyIntent,
+  weekPlan: WeekPlan): readonly SessionExecution[] {
+  const equipment = buildOwnerEquipmentCapabilities(input.profile);
   const athlete = athleteFor(input.profile);
   const assessment = Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
   const grouped = new Map<string, MaterializedAllocatedObjectiveV1_1[]>();
@@ -268,7 +348,7 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, weekPlan
       const opportunity = input.profile.sessionOpportunities.find((entry) => entry.opportunityId === opportunityId)!;
       const plannerInput: SessionIntentPlannerInput = Object.freeze({
         directive: directive({ command: input.command, profile: input.profile, opportunityId,
-          minutes: opportunity.minutes, objectives }), athlete,
+          minutes: opportunity.minutes, objectives, intent }), athlete,
         phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
         assessment, painAndInjury: painFor(input.profile), trainingSafety: NO_TRAINING_SAFETY_SIGNALS,
         currentEquipment: Object.freeze({ capabilities: equipment, provenance: "profile_default",
@@ -392,7 +472,10 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
       durationMinutes: session.minutes,
       exerciseAssignments: Object.freeze(session.handoff.assignments.map((assignment) => {
         const plan = session.compilation.plans.find((entry) => entry.exerciseId === assignment.exerciseId);
-        const block = plan?.doseBlocks[0];
+        const block = plan?.doseBlocks.find((entry) => entry.purpose === "developmental_work") ??
+          plan?.doseBlocks[0];
+        const doseBlocks = plan ? projectOwnerPrescriptionDoseBlocks(plan) : Object.freeze([]);
+        const projectedBlock = doseBlocks.find((entry) => entry.blockId === block?.blockId);
         const realization = session.compilation.assignmentResults.find((entry) =>
           entry.handoffAssignment?.handoffId === assignment.handoffId)?.equipmentRealization ?? null;
         const dose = block?.dose;
@@ -405,16 +488,74 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
           realizationId: realization?.realizationId ?? null,
           sourceEventId: plan?.sourceExposureEvent.sourceExposureEventId ?? null,
           prescriptionRevisionId: plan?.prescriptionRevisionId ?? null,
-          sets, reps: repetitionTarget ? JSON.stringify(repetitionTarget) : "unknown",
-          tempo: dose && "tempo" in dose && dose.tempo ? JSON.stringify(dose.tempo) : null,
+          sets, reps: projectedBlock?.target ?? (repetitionTarget ? "Calibration required" : "unknown"),
+          tempo: projectedBlock?.tempo ?? null,
           restSeconds: rest?.kind === "exact" ? rest.value : null,
-          effort: dose?.effort ? JSON.stringify(dose.effort) : null,
+          effort: projectedBlock?.effort ?? null,
+          doseBlocks,
           equipmentRequirementIds: Object.freeze(realization?.requirementTraces.map((trace) =>
             trace.requirementId) ?? []),
           reasonCodes: Object.freeze(plan?.rationaleReasonCodes ?? []) });
       })), practiceModes: Object.freeze(["full", "lighter", "recovery"] as const) }))),
     unresolvedFacts, safetyState: input.profile.trainingSafety, engineVersion: input.command.engineVersion,
     policyVersions: input.command.policyVersions });
+}
+
+function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfileRevision;
+  readonly intent: WeeklyIntent; readonly weekPlan: WeekPlan; readonly sessions: readonly SessionExecution[];
+  readonly projection: OwnerProgramProjection }): ReturnType<typeof evaluateOwnerProgramSemanticCompleteness> {
+  const expectedTargets = [
+    ["single_leg", "squat"],
+    ["hinge"],
+    ["horizontal_push"],
+    ["horizontal_pull"],
+  ].map((roles) => roles.join("|"));
+  const actualTargets = input.intent.objectives.map((objective) =>
+    [...objective.target.targetMovementRoles].sort().join("|"));
+  const allocationCounts = new Map(input.intent.objectives.map((objective) => [objective.objectiveId, 0]));
+  input.weekPlan.reservations.forEach((reservation) => allocationCounts.set(reservation.weeklyObjectiveId,
+    (allocationCounts.get(reservation.weeklyObjectiveId) ?? 0) + 1));
+  const requiredNeedIds = input.sessions.flatMap((session) => session.planning.sessionIntent!.needs
+    .filter((need) => need.priority === "required").map((need) => need.id));
+  const coveredNeedIds = new Set(input.sessions.flatMap((session) => session.handoff.assignments
+    .flatMap((assignment) => assignment.satisfiedNeedIds)));
+  const allPlans = input.sessions.flatMap((session) => session.compilation.plans);
+  const projectedAssignments = input.projection.sessions.flatMap((session) => session.exerciseAssignments);
+  const exactEquipment = buildOwnerEquipmentCapabilities(input.profile);
+  const capabilityIds = new Set(input.profile.equipmentCapabilitySnapshot.capabilityIds);
+  const targetSessionCount = Math.min(input.profile.sessionOpportunities.length,
+    Math.max(...input.intent.objectives.map((objective) => objective.frequencyIntent.targetAllocatedSessions)));
+  return evaluateOwnerProgramSemanticCompleteness({
+    weeklyResponsibilitiesComplete: actualTargets.length === expectedTargets.length &&
+      expectedTargets.every((target) => actualTargets.includes(target)),
+    allocationCoverageComplete: input.intent.objectives.every((objective) => {
+      const count = allocationCounts.get(objective.objectiveId) ?? 0;
+      return count >= objective.frequencyIntent.minimumAllocatedSessions &&
+        count <= objective.frequencyIntent.targetAllocatedSessions;
+    }),
+    sessionNeedCoverageComplete: input.sessions.every((session) => session.materialized.every((materialized) =>
+      session.planning.sessionIntent!.needs.some((need) =>
+        need.plannerProvenance?.objectiveIds.includes(materialized.allocatedObjectiveId)))),
+    assignmentCoverageComplete: requiredNeedIds.every((needId) => coveredNeedIds.has(needId)),
+    developmentalPrescriptionCoverageComplete: allPlans.length === projectedAssignments.length &&
+      allPlans.every((plan) => plan.doseBlocks.some((block) => block.purpose === "developmental_work")),
+    projectionCoverageComplete: projectedAssignments.every((assignment) => {
+      const plan = allPlans.find((entry) => entry.prescriptionRevisionId === assignment.prescriptionRevisionId);
+      return Boolean(plan && assignment.doseBlocks && assignment.doseBlocks.length === plan.doseBlocks.length &&
+        assignment.doseBlocks.every((block, index) => block.blockId === plan.doseBlocks[index]?.blockId));
+    }),
+    availabilityNotAutomaticallyFilled: input.sessions.length === targetSessionCount,
+    exactEquipmentCapabilityPreserved: exactEquipment.machines.availableMachineIds.length === 0 &&
+      exactEquipment.bands.types.length === 0 && exactEquipment.bands.anchors.length === 0 &&
+      !exactEquipment.trainingSpace.loadedGait.available &&
+      exactEquipment.trainingSpace.stableLoadedStandingSpace ===
+        capabilityIds.has("stable_loaded_standing_space") &&
+      exactEquipment.dumbbells.available === capabilityIds.has("dumbbells") &&
+      exactEquipment.bench.stable === capabilityIds.has("adjustable_bench") &&
+      exactEquipment.barbell.available === capabilityIds.has("barbell_rack") &&
+      exactEquipment.cables.available === capabilityIds.has("cables") &&
+      exactEquipment.bodyweight.pullUpBar === capabilityIds.has("pull_up_station"),
+  });
 }
 
 export function runControlledOwnerProductionPipeline(
@@ -434,17 +575,19 @@ export function runControlledOwnerProductionPipeline(
       athleteId: input.profile.userId, opportunityIds: input.profile.sessionOpportunities.map((entry) =>
         entry.opportunityId), evaluationTime: input.command.evaluationTime });
     stages.push(artifact("product_horizon", "buildControlledOwnerProductHorizon", horizon));
+    const priorities = buildOwnerGetStrongerWeeklyPriorities(input.profile);
     const intent = planSupportedPurposeWeeklyIntentV1_1({ policy: PRODUCTION_WEEK_POLICY_V2,
       intentId: stableId("owner-week-intent", input.command), athleteId: input.profile.userId,
-      outcomeGoal: "strength", priorities: [weeklyPriority(input.profile)],
+      outcomeGoal: "strength", priorities,
       evaluationTime: input.command.evaluationTime });
     stages.push(artifact("week_intent", "planSupportedPurposeWeeklyIntentV1_1", intent));
     const weekPlan = composeSupportedPurposeWeekV1_1({ intent,
       opportunities: input.profile.sessionOpportunities.map((entry) => ({ opportunityId: entry.opportunityId,
         structuralCapacity: entry.minutes === null ? "unknown" : entry.minutes <= 30 ? "condensed" :
-          entry.minutes >= 60 ? "expanded" : "standard" })) });
+          entry.minutes >= 60 ? "expanded" : "standard" })),
+      responsibilityPacking: "coherent_shared_sessions" });
     stages.push(artifact("week_allocation", "composeSupportedPurposeWeekV1_1", weekPlan));
-    const sessions = executeSessions(input, weekPlan);
+    const sessions = executeSessions(input, intent, weekPlan);
     stages.push(artifact("session_intent", "planSessionIntent", sessions.map((entry) => entry.planning)));
     stages.push(artifact("candidate_intelligence", "buildSessionCandidateResults",
       sessions.map((entry) => entry.candidates)));
@@ -471,19 +614,30 @@ export function runControlledOwnerProductionPipeline(
       evaluationTime: input.command.evaluationTime, basedOnRevisionId: null,
       provenance: ["controlled-owner-delivery:planned-truth-only"] });
     stages.push(artifact("phase_snapshot", "buildProductionPhaseProgramSnapshot", phase));
-    const readiness = Object.freeze({ approvalAvailable: unresolvedFacts.length === 0,
-      unresolvedFacts: Object.freeze(unresolvedFacts), profileRevisionId: input.profile.revisionId,
+    let projection = displayProjection(input, intent, sessions, unresolvedFacts);
+    const completeness = semanticCompleteness({ profile: input.profile, intent, weekPlan, sessions, projection });
+    const finalUnresolvedFacts = uniqueSorted([...unresolvedFacts, ...completeness.reasonCodes]);
+    if (finalUnresolvedFacts.length !== unresolvedFacts.length) {
+      projection = displayProjection(input, intent, sessions, finalUnresolvedFacts);
+    }
+    const readiness = Object.freeze({ approvalAvailable: finalUnresolvedFacts.length === 0,
+      unresolvedFacts: Object.freeze(finalUnresolvedFacts), semanticCompleteness: completeness,
+      profileRevisionId: input.profile.revisionId,
       productRevisionId: input.command.sourceProductRevisionId });
-    stages.push(artifact("application_readiness", "validateControlledOwnerApplicationReadiness", readiness));
-    const projection = displayProjection(input, intent, sessions, unresolvedFacts);
+    stages.push(artifact("application_readiness", "validateControlledOwnerApplicationReadiness", readiness,
+      completeness.reasonCodes));
     stages.push(artifact("owner_envelope_projection", "buildOwnerProgramProjection", projection));
-    return Object.freeze({ status: "complete", stages: Object.freeze(stages), projection,
-      unresolvedFacts: Object.freeze(unresolvedFacts), genuineProductionStageCount: 13,
+    return Object.freeze({ status: "complete", approvalAllowed: readiness.approvalAvailable,
+      programSemanticCompletenessSatisfied: completeness.approvalAllowed,
+      stages: Object.freeze(stages), projection,
+      unresolvedFacts: Object.freeze(finalUnresolvedFacts), genuineProductionStageCount: 13,
       productShadowCallCount: 0, legacyGenerateProgramCallCount: 0,
       pipelineFingerprint: deterministicToken(stages) });
   } catch (error) {
     const code = error instanceof Error ? error.message : "OWNER_GENERATION_UNKNOWN_FAILURE";
-    return Object.freeze({ status: "blocked", stages: Object.freeze(stages), projection: null,
+    return Object.freeze({ status: "blocked", approvalAllowed: false,
+      programSemanticCompletenessSatisfied: false,
+      stages: Object.freeze(stages), projection: null,
       unresolvedFacts: Object.freeze(uniqueSorted([...unresolvedFacts, code])),
       genuineProductionStageCount: stages.length, productShadowCallCount: 0,
       legacyGenerateProgramCallCount: 0, pipelineFingerprint: deterministicToken({ stages, code }) });

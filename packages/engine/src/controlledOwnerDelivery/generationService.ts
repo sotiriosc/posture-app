@@ -32,6 +32,14 @@ export interface GenerateControlledOwnerPreviewResult {
   readonly legacyGenerateProgramCallCount: 0;
 }
 
+export function resolveOwnerPreviewReadinessStatus(input: {
+  readonly programSemanticCompletenessSatisfied: boolean;
+  readonly profileApprovalAllowed: boolean;
+}): "ready_for_approval" | "preview_only_unknown_duration" | "blocked" {
+  if (!input.programSemanticCompletenessSatisfied) return "blocked";
+  return input.profileApprovalAllowed ? "ready_for_approval" : "preview_only_unknown_duration";
+}
+
 export async function generateControlledOwnerGetStrongerPreview(input: {
   readonly requestedAt: string;
   readonly evaluationTime: string;
@@ -82,7 +90,9 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     engineVersion: input.engineVersion, policyVersions: input.policyVersions,
     completeProgramSnapshot: pipeline.stages, productProjection: pipeline.projection,
     unresolvedFacts: pipeline.unresolvedFacts,
-    readinessStatus: readiness.approvalAllowed ? "ready_for_approval" : "preview_only_unknown_duration",
+    readinessStatus: resolveOwnerPreviewReadinessStatus({
+      programSemanticCompletenessSatisfied: pipeline.programSemanticCompletenessSatisfied,
+      profileApprovalAllowed: readiness.approvalAllowed }),
     safetyState: profile.trainingSafety, createdAt: input.requestedAt });
   const requestFingerprint = createHash("sha256").update(JSON.stringify({ userId: gate.userId,
     enrollmentRevisionId: enrollment.revisionId, profileRevisionId: profile.revisionId,

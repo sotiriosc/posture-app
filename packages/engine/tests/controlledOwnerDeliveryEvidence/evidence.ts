@@ -109,6 +109,9 @@ export const MUTATIONS = Object.freeze([
   "rollback_deletes_v2", "off_deletes_data", "off_discards_draft", "current_routes_switch_v2",
   "ordinary_get_stronger_visible", "product_shadow_changes", "gyms_changes", "live_env_changed",
   "live_owner_read", "product_activated", "chunk_h_marked_complete",
+  "get_stronger_reduced_to_horizontal_push", "availability_filled_as_required_sessions",
+  "weekly_selection_target_lost_at_session_boundary", "commercial_gym_infers_unconfirmed_capabilities",
+  "first_prescription_block_presented_as_complete_dose", "semantic_incomplete_program_ready_for_approval",
 ].map((mutationId) => Object.freeze({ mutationId, semanticChange: true, result: "REJECTED" })));
 
 export const METAMORPHIC_CASES = Object.freeze([

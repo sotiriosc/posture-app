@@ -1,6 +1,7 @@
 import { PRODUCTION_WEEK_ALLOCATION_COMPOSER_V1_1_REFERENCE,
   type ProductionSessionResponsibilityPurposeV1_1, type ProductionWeekAllocationPlanV1_1,
-  type ProductionWeeklyDevelopmentObjectiveV1_1, type ProductionWeeklyIntentV1_1 } from "./contracts";
+  type ProductionWeekResponsibilityPackingV1_1, type ProductionWeeklyDevelopmentObjectiveV1_1,
+  type ProductionWeeklyIntentV1_1 } from "./contracts";
 
 function responsibility(objective: ProductionWeeklyDevelopmentObjectiveV1_1):
 ProductionSessionResponsibilityPurposeV1_1 {
@@ -21,7 +22,15 @@ ProductionSessionResponsibilityPurposeV1_1 {
 export function composeSupportedPurposeWeekV1_1(input: {
   readonly intent: ProductionWeeklyIntentV1_1;
   readonly opportunities: ProductionWeekAllocationPlanV1_1["opportunities"];
+  readonly responsibilityPacking?: ProductionWeekResponsibilityPackingV1_1;
 }): ProductionWeekAllocationPlanV1_1 {
+  const packing = input.responsibilityPacking ?? "distributed_across_opportunities";
+  const packedOpportunityCount = Math.min(input.opportunities.length,
+    Math.max(0, ...input.intent.objectives.map((objective) => Math.max(
+      objective.frequencyIntent.minimumAllocatedSessions,
+      objective.frequencyIntent.targetAllocatedSessions,
+    ))));
+  const packedOpportunities = input.opportunities.slice(0, packedOpportunityCount);
   const reservations = input.intent.objectives.flatMap((objective, objectiveIndex) => {
     const desired = Math.min(objective.frequencyIntent.targetAllocatedSessions,
       input.opportunities.length);
@@ -29,7 +38,9 @@ export function composeSupportedPurposeWeekV1_1(input: {
       input.opportunities.length);
     const count = Math.max(minimum, desired);
     return Array.from({ length: count }, (_, index) => {
-      const opportunity = input.opportunities[(objectiveIndex + index) % input.opportunities.length];
+      const opportunity = packing === "coherent_shared_sessions"
+        ? (packedOpportunities.length ? packedOpportunities[index % packedOpportunities.length] : undefined)
+        : input.opportunities[(objectiveIndex + index) % input.opportunities.length];
       if (!opportunity) return null;
       return Object.freeze({
         responsibilityId: `week-v1_1:responsibility:${objective.objectiveId}:${opportunity.opportunityId}`,

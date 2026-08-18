@@ -1,5 +1,5 @@
 {
-  "count": 61,
+  "count": 67,
   "acceptedDownstreamRescueCount": 0,
   "cases": [
     {
@@ -304,6 +304,36 @@
     },
     {
       "mutationId": "chunk_h_marked_complete",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "get_stronger_reduced_to_horizontal_push",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "availability_filled_as_required_sessions",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "weekly_selection_target_lost_at_session_boundary",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "commercial_gym_infers_unconfirmed_capabilities",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "first_prescription_block_presented_as_complete_dose",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "semantic_incomplete_program_ready_for_approval",
       "semanticChange": true,
       "result": "REJECTED"
     }

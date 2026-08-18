@@ -45,6 +45,9 @@
 .session h3 { margin: 0 0 6px; font-size: 16px; letter-spacing: 0; }
 .exercise { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 12px 0;
   border-top: 1px solid #e1e3e6; }
+.doseBlocks { display: grid; gap: 12px; min-width: min(100%, 360px); }
+.doseBlock + .doseBlock { border-top: 1px solid #e1e3e6; padding-top: 12px; }
+.doseBlock p { margin: 5px 0 0; }
 .technical { margin-top: 20px; }
 .technical summary { cursor: pointer; font-weight: 700; min-height: 40px; }
 .code { overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
