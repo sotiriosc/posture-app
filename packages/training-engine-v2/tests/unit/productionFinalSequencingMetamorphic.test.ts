@@ -233,11 +233,14 @@ describe("production Final Session Sequencing metamorphic behavior", () => {
       }],
     });
     expect(recovery.duration.knownLowerBoundSeconds).toBe(initial.duration.knownLowerBoundSeconds + 23);
-    expect(plan({
+    const overBudget = sequenceFinalSession({
       ...base,
       intent: { ...base.intent, availableMinutes: 1 },
       availableMinutes: 1,
-    }).duration.status).toBe("definitely_over_budget");
+    });
+    expect(overBudget.status).toBe("required_work_duration_infeasible");
+    expect(overBudget.plan).toBeNull();
+    expect(overBudget.decisionTrace.duration).toContain("definitely_over_budget");
 
     const assignmentBuild = buildProductionSequencingAssignmentFacts(base);
     const originalTransitions = buildProductionSequencingTransitionFacts({

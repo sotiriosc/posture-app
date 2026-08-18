@@ -3,6 +3,7 @@ export * from "./compatibilityProjection";
 export * from "./contracts";
 export * from "./dependencyGraph";
 export * from "./durationInterval";
+export * from "./durationRecomposition";
 export * from "./evaluation";
 export * from "./exactSearch";
 export * from "./interference";

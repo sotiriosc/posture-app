@@ -17,6 +17,7 @@ import {
 } from "./contracts";
 import { buildProductionSequencingDependencyGraph } from "./dependencyGraph";
 import { buildSequencedSessionDurationInterval } from "./durationInterval";
+import { planDurationAwareRecomposition } from "./durationRecomposition";
 import { searchExactFinalSessionSequence } from "./exactSearch";
 import { buildFinalSessionSequencePlanId } from "./planIdentity";
 import { buildProductionFinalSequenceRevision } from "./planRevisions";
@@ -408,6 +409,28 @@ export function sequenceFinalSession(
     transitionInstructions,
     availableMinutes: input.availableMinutes,
   });
+  if (duration.status === "definitely_over_budget" || duration.status === "possibly_over_budget") {
+    const recomposition = planDurationAwareRecomposition({
+      intent: input.intent,
+      skeleton: input.skeleton,
+      prescription: input.prescriptionSession,
+      finalDuration: duration,
+    });
+    const canRemoveSessionLocalWork = recomposition.status === "session_local_recomposition_required";
+    return failure({
+      status: canRemoveSessionLocalWork
+        ? "duration_recomposition_required"
+        : duration.status === "definitely_over_budget"
+          ? "required_work_duration_infeasible"
+          : "duration_recomposition_required",
+      sequencePlanId,
+      policyRef,
+      reasons: recomposition.reasonCodes,
+      trace: withTrace(trace, {
+        duration: [duration.status, ...duration.unknownComponents, ...recomposition.reasonCodes],
+      }),
+    });
+  }
   const steps: readonly ProductionSequencedAssignmentStep[] = search.order.map((fact, sequenceIndex) => ({
     sequenceIndex,
     assignmentId: fact.assignmentId,

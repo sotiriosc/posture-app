@@ -85,6 +85,8 @@ export const PRODUCTION_FINAL_SESSION_SEQUENCING_STATUSES = [
   "unsupported_prescription_compiler_contract_version",
   "transition_fact_conflict",
   "invalid_sequence_revision_context",
+  "duration_recomposition_required",
+  "required_work_duration_infeasible",
 ] as const;
 
 export type ProductionFinalSessionSequencingStatus =
