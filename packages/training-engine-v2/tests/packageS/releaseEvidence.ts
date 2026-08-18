@@ -16,7 +16,10 @@ import {
   STANDARD_GYM_COMFORT_PROFILES,
   compareStandardGymComfortCandidates,
 } from "../../src/candidate/standardGymComfort";
-import { validateHomeComfortProfileCoverage } from "../../src/candidate/homeComfort";
+import {
+  HOME_COMFORT_PROFILES,
+  validateHomeComfortProfileCoverage,
+} from "../../src/candidate/homeComfort";
 import {
   MACHINE_IDS,
   evaluateEquipmentRequirement,
@@ -76,15 +79,17 @@ export const selectedPackageRows = Object.freeze(PACKAGE_S_SELECTED_EXERCISE_IDS
   return row;
 }));
 
+const packageSProductionCatalog = Object.freeze(REFERENCE_EXERCISES.slice(0, 64));
+
 export const catalogInventory = Object.freeze({
   beforeRowCount: 53,
-  afterRowCount: REFERENCE_EXERCISES.length,
-  uniqueIdCount: new Set(REFERENCE_EXERCISES.map((row) => row.id)).size,
-  duplicateIdCount: REFERENCE_EXERCISES.length - new Set(REFERENCE_EXERCISES.map((row) => row.id)).size,
+  afterRowCount: packageSProductionCatalog.length,
+  uniqueIdCount: new Set(packageSProductionCatalog.map((row) => row.id)).size,
+  duplicateIdCount: packageSProductionCatalog.length - new Set(packageSProductionCatalog.map((row) => row.id)).size,
   selectedRowCount: selectedPackageRows.length,
-  unselectedNewRowCount: REFERENCE_EXERCISES.slice(53).filter((row) => !PACKAGE_S_SELECTED_EXERCISE_IDS.includes(row.id)).length,
-  idsBefore: Object.freeze(REFERENCE_EXERCISES.slice(0, 53).map((row) => row.id)),
-  idsAfter: Object.freeze(REFERENCE_EXERCISES.map((row) => row.id)),
+  unselectedNewRowCount: packageSProductionCatalog.slice(53).filter((row) => !PACKAGE_S_SELECTED_EXERCISE_IDS.includes(row.id)).length,
+  idsBefore: Object.freeze(packageSProductionCatalog.slice(0, 53).map((row) => row.id)),
+  idsAfter: Object.freeze(packageSProductionCatalog.map((row) => row.id)),
 });
 
 const packageSFallbacks = projectCompactFallbacks(PACKAGE_S_KNOWLEDGE_ENTRIES);
@@ -226,7 +231,7 @@ export const cohortRegistry = Object.freeze({
 const sections = ["warmup", "activation", "main", "accessory", "cooldown"] as const;
 const experiences = ["beginner", "intermediate", "advanced"] as const;
 const knowledgeCategories = ["focus", "cues", "setup", "during", "pattern", "watchFor"] as const;
-export const holdoutManifest = Object.freeze(REFERENCE_EXERCISES.flatMap((row, rowIndex) =>
+export const holdoutManifest = Object.freeze(packageSProductionCatalog.flatMap((row, rowIndex) =>
   Array.from({ length: 15 }, (_, caseIndex) => Object.freeze({
     id: `package-s-holdout-${String(rowIndex + 1).padStart(2, "0")}-${String(caseIndex + 1).padStart(2, "0")}`,
     exerciseId: row.id,
@@ -396,10 +401,13 @@ export const packageSFingerprints = Object.freeze({
 });
 
 export const packageSValidationSummary = Object.freeze({
-  catalogFindings: validateExerciseCatalog(REFERENCE_EXERCISES),
-  catalogErrorCount: validateExerciseCatalog(REFERENCE_EXERCISES).filter((finding) => finding.severity === "error").length,
+  catalogFindings: validateExerciseCatalog(packageSProductionCatalog),
+  catalogErrorCount: validateExerciseCatalog(packageSProductionCatalog).filter((finding) => finding.severity === "error").length,
   knowledgeFindings: validateKnowledgeCore(PRODUCTION_64_KNOWLEDGE_CORE),
-  homeComfortFindings: validateHomeComfortProfileCoverage(REFERENCE_EXERCISES.map((row) => row.id)),
+  homeComfortFindings: validateHomeComfortProfileCoverage(
+    packageSProductionCatalog.map((row) => row.id),
+    Object.freeze(Object.fromEntries(Object.entries(HOME_COMFORT_PROFILES).slice(0, 64))),
+  ),
   pressAngleFindings: PRESS_SUPPORT_ANGLE_REALIZATIONS.flatMap(validatePressSupportAngleRealization),
   assistanceFindings: validatePullUpAssistanceRealizations(),
   controlledScenarioCount: controlledScenarios.length,

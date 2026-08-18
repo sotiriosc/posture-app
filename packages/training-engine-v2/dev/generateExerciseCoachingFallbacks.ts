@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  PRODUCTION_64_KNOWLEDGE_ENTRIES,
+  PRODUCTION_69_KNOWLEDGE_ENTRIES,
   projectCompactFallbacks,
 } from "../../praxis-knowledge-core/src";
 
@@ -16,7 +16,7 @@ export const generatedFallbackPath = resolve(
 );
 
 export function renderGeneratedExerciseCoachingFallbacks(): string {
-  const rows = projectCompactFallbacks(PRODUCTION_64_KNOWLEDGE_ENTRIES);
+  const rows = projectCompactFallbacks(PRODUCTION_69_KNOWLEDGE_ENTRIES);
   const registry = Object.fromEntries(rows.map((row) => [row.exerciseId, {
     summary: row.summary,
     coachingFocus: row.coachingFocus,

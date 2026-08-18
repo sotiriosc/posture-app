@@ -160,6 +160,19 @@ const stableSupportSurface: EquipmentRequirement = {
   allOf: ["stable_support_surface"],
 };
 
+const stableUpperLimbSupport: EquipmentRequirement = {
+  id: "stable-upper-limb-support",
+  label: "Stable wall, raised support, or floor space",
+  allOf: ["bodyweight"],
+  oneOf: ["wall", "stable_support_surface", "floor_space"],
+};
+
+const bodyweightStandingSpace: EquipmentRequirement = {
+  id: "bodyweight-standing-space",
+  label: "Bodyweight with stable standing space",
+  allOf: ["bodyweight", "stable_loaded_standing_space"],
+};
+
 const floorOrBenchSupport: EquipmentRequirement = {
   id: "floor-or-bench-support",
   label: "Floor space or stable flat/adjustable bench",
@@ -211,6 +224,8 @@ const PACKAGE_R_OWNER_DECISION_REF =
   "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md";
 const PACKAGE_S_OWNER_DECISION_REF =
   "docs/training-engine-v2/PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION.md";
+const PREPARATION_FOUNDATION_OWNER_DECISION_REF =
+  "owner-decision:preparation-intelligence-v1";
 const PACKAGE_R_SELECTED_ID_SET = new Set([
   "dumbbell-floor-press",
   "dumbbell-triceps-extension",
@@ -234,12 +249,20 @@ const PACKAGE_S_SELECTED_ID_SET = new Set([
   "overhead-cable-triceps-extension",
   "straight-arm-cable-pulldown",
 ]);
+const PREPARATION_FOUNDATION_SELECTED_ID_SET = new Set([
+  "moving-ninety-ninety-hip-switch",
+  "quadruped-hip-rock-back",
+  "scapular-push-up",
+  "bodyweight-squat-rehearsal",
+  "half-kneeling-hip-flexor-stretch",
+]);
 
 const BREATHING_IDS = new Set(["ninety-ninety-breathing"]);
 const TIMED_HOLD_IDS = new Set([
   "forearm-plank",
   "forearm-side-plank",
   "single-leg-balance-rehearsal",
+  "half-kneeling-hip-flexor-stretch",
 ]);
 const LOCOMOTOR_CARRY_IDS = new Set(["farmer-carry", "suitcase-carry"]);
 const STATIONARY_MARCH_IDS = new Set(["wall-supported-suitcase-march"]);
@@ -314,6 +337,8 @@ function prescriptionKnowledgeProvenance(
       ? PACKAGE_R_OWNER_DECISION_REF
       : PACKAGE_S_SELECTED_ID_SET.has(exerciseId)
         ? PACKAGE_S_OWNER_DECISION_REF
+        : PREPARATION_FOUNDATION_SELECTED_ID_SET.has(exerciseId)
+          ? PREPARATION_FOUNDATION_OWNER_DECISION_REF
         : PRESCRIPTION_KNOWLEDGE_OWNER_DECISION_REF,
     evidenceBasis: [evidence],
     reviewerId: "sotiriosc",
@@ -5425,6 +5450,122 @@ const REFERENCE_EXERCISE_DEFINITIONS = [
     resistanceNotes: "The high-cable shoulder-extension path is distinct from Lat Pulldown and Row and never satisfies required vertical-pull strength coverage.",
     transitions: [transition({ targetExerciseId: "lat-pulldown", direction: "lateral", classification: "context_dependent", purposes: ["increase_loadability", "change_resistance_path", "feature_shift"], notes: "Lat Pulldown adds elbow flexion and owns vertical-pull coverage; this relationship is accessory-only and never automatic.", provenance: [PACKAGE_S_OWNER_DECISION_REF] })],
   }),
+  {
+    id: "moving-ninety-ninety-hip-switch",
+    name: "Moving 90/90 Hip Switch",
+    summary: generatedCoachingFallback("moving-ninety-ninety-hip-switch").summary,
+    family: "mobility_preparation",
+    movementRoles: ["mobility"],
+    actionFunctions: actionsWithSource(PREPARATION_FOUNDATION_OWNER_DECISION_REF, "hip_internal_rotation", "hip_external_rotation"),
+    trainingRoles: ["preparation"],
+    muscleContributions: contributions({ primary: [], contextual: ["glutes", "hip_adductors"] }, PREPARATION_FOUNDATION_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "knee"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ warmup: good("Provides dynamic hip-rotation range preparation when a typed range need owns it.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: { loadability: "none", loadingPotential: "low", skillDemand: "low", stabilityDemand: "low", coordinationDemand: "moderate", localFatigue: "low", systemicFatigue: "low", axialLoading: "low", jointStressTags: [] },
+    mechanics: mechanics({
+      support: { basePosition: "seated", stance: "bilateral", orientation: "upright", supportContacts: [{ bodyRegion: "seat", source: "floor", mode: "weight_bearing", side: "side_neutral", taskRole: "primary" }, { bodyRegion: "foot", source: "floor", mode: "positioning", side: "bilateral", taskRole: "secondary" }, { bodyRegion: "hand", source: "floor", mode: "balance_assist", side: "bilateral", taskRole: "secondary" }], supportAmount: "prescription_modifiable", supportRelationship: "bilateral", reviewStatus: "accepted", notes: "Hand support may be prescribed without changing the alternating seated hip-rotation identity." },
+      resistancePath: { resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high", laterality: "alternating", fitDependency: "setup_geometry", reviewStatus: "accepted", notes: "The knees move together side to side without external load.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] },
+      demands: { trunk_control: demand("moderate", "The torso remains organized through the hip switch."), scapular_control: demand("low", "Optional hand support is not a scapular purpose."), stability: demand("low", "Seated floor support keeps stability demand low."), coordination: demand("moderate", "Both hips rotate through an alternating path."), range: demand("high", "Hip internal and external rotation range is the direct purpose."), joint_control: demand("moderate", "Hip and knee paths remain controlled.") },
+    }),
+    progression: { progressionAxes: ["range", "reps", "tempo", "support_reduction", "coordination"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("moving-ninety-ninety-hip-switch").coachingFocus,
+  },
+  {
+    id: "quadruped-hip-rock-back",
+    name: "Quadruped Hip Rock-Back",
+    summary: generatedCoachingFallback("quadruped-hip-rock-back").summary,
+    family: "mobility_preparation",
+    movementRoles: ["mobility"],
+    actionFunctions: actionsWithSource(PREPARATION_FOUNDATION_OWNER_DECISION_REF, "hip_flexion"),
+    trainingRoles: ["preparation"],
+    muscleContributions: contributions({ primary: [], contextual: ["glutes", "trunk"] }, PREPARATION_FOUNDATION_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "lumbar_spine", "knee", "wrist"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ warmup: good("Provides supported dynamic hip-flexion range preparation when explicitly required.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: { loadability: "none", loadingPotential: "low", skillDemand: "low", stabilityDemand: "low", coordinationDemand: "low", localFatigue: "low", systemicFatigue: "low", axialLoading: "low", jointStressTags: ["upper_limb_support_loading"] },
+    mechanics: mechanics({
+      support: { basePosition: "quadruped", stance: "bilateral", orientation: "prone", supportContacts: [{ bodyRegion: "hand", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }, { bodyRegion: "knee", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }], supportAmount: "substantial", supportRelationship: "bilateral", reviewStatus: "accepted", notes: "A forearm-supported realization may reduce wrist loading while preserving the quadruped rock-back identity." },
+      resistancePath: { resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high", laterality: "bilateral_linked", fitDependency: "setup_geometry", reviewStatus: "accepted", notes: "The hips move toward the heels without external resistance.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] },
+      demands: { trunk_control: demand("moderate", "Trunk and pelvic position bound the selected hip range."), scapular_control: demand("low", "Upper-limb support is not a scapular training purpose."), stability: demand("low", "Four support contacts provide a stable base."), coordination: demand("low", "The rocking path is simple."), range: demand("high", "Supported hip-flexion range is the direct purpose."), joint_control: demand("moderate", "Hip, knee, and wrist comfort constrain the range.") },
+    }),
+    progression: { progressionAxes: ["range", "reps", "tempo", "support_reduction"], transitionRelationships: [] },
+    cautionStressTags: ["upper_limb_support_loading"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("quadruped-hip-rock-back").coachingFocus,
+  },
+  {
+    id: "scapular-push-up",
+    name: "Scapular Push-Up",
+    summary: generatedCoachingFallback("scapular-push-up").summary,
+    family: "scapular_preparation",
+    movementRoles: ["scapular_control", "anti_extension_core"],
+    actionFunctions: actionsWithSource(PREPARATION_FOUNDATION_OWNER_DECISION_REF, "scapular_protraction"),
+    trainingRoles: ["preparation", "activation"],
+    muscleContributions: contributions({ primary: [], keySecondary: ["serratus"], contextual: ["trunk"] }, PREPARATION_FOUNDATION_OWNER_DECISION_REF),
+    bodyRegions: ["shoulder", "ribcage", "wrist", "elbow"],
+    equipmentRequirements: [stableUpperLimbSupport], optionalEquipment: [], prerequisites: [],
+    sectionSuitability: sections({ warmup: good("Provides support-scaled scapular control preparation."), activation: excellent("Provides low-load serratus and scapular protraction control when required.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: { loadability: "limited", loadingPotential: "low", skillDemand: "moderate", stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "low", systemicFatigue: "low", axialLoading: "low", jointStressTags: ["wrist_extension_loading", "upper_limb_support_loading"] },
+    mechanics: mechanics({
+      support: { basePosition: "prone", stance: "bilateral", orientation: "prone", supportContacts: [{ bodyRegion: "hand", source: "stable_support_surface", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }, { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "secondary" }], supportAmount: "prescription_modifiable", supportRelationship: "bilateral", reviewStatus: "accepted", notes: "Wall, elevated, and floor support scale the lever while preserving straight-elbow scapular motion." },
+      resistancePath: { resistancePath: "bodyweight", trajectoryFreedom: "moderate", lineOfPullAdjustability: "high", laterality: "bilateral_linked", fitDependency: "setup_geometry", reviewStatus: "accepted", notes: "Support height changes bodyweight exposure without turning the task into a press repetition.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] },
+      demands: { trunk_control: demand("moderate", "The selected body line remains steady."), scapular_control: demand("high", "Scapular protraction and return are the direct task."), stability: demand("moderate", "Upper-limb support and body angle create stability demand."), coordination: demand("moderate", "Scapular movement occurs while elbow and trunk positions remain stable."), range: demand("moderate", "Only controlled scapular range is used."), joint_control: demand("moderate", "Shoulder, elbow, and wrist loading remain controlled.") },
+      scapularMechanics: scapularMechanics({ serratusContribution: demand("high", "Serratus contribution is central to supported protraction."), upwardRotationControl: demand("moderate", "Upward-rotation demand depends on support angle."), retractionDemand: demand("moderate", "Controlled return includes scapular retraction without pinching."), loadedScapularControl: demand("moderate", "Bodyweight support loads scapular control."), preparationSuitability: "excellent", reviewStatus: "accepted", notes: "Support-scaled protraction control is distinct from a full Push-Up." }),
+    }),
+    progression: { progressionAxes: ["reps", "sets", "tempo", "lever", "support_reduction", "range"], transitionRelationships: [transition({ targetExerciseId: "push-up", direction: "progression", classification: "context_dependent", purposes: ["increase_loadability", "movement_pattern_development"], notes: "A reviewed context may transition scapular control to full horizontal pressing without implying readiness.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] })] },
+    cautionStressTags: ["wrist_extension_loading", "upper_limb_support_loading"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("scapular-push-up").coachingFocus,
+  },
+  {
+    id: "bodyweight-squat-rehearsal",
+    name: "Bodyweight Squat Rehearsal",
+    summary: generatedCoachingFallback("bodyweight-squat-rehearsal").summary,
+    family: "squat_pattern",
+    movementRoles: ["squat", "knee_dominant"],
+    actionFunctions: actionsWithSource(PREPARATION_FOUNDATION_OWNER_DECISION_REF, "knee_extension", "hip_extension"),
+    trainingRoles: ["preparation", "activation"],
+    muscleContributions: contributions({ primary: [], keySecondary: ["quads", "glutes"], contextual: ["trunk", "calves"] }, PREPARATION_FOUNDATION_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "knee", "ankle", "pelvis"],
+    equipmentRequirements: [bodyweightStandingSpace], optionalEquipment: [stableSupportSurface], prerequisites: [],
+    sectionSuitability: sections({ warmup: excellent("Provides unloaded squat-pattern rehearsal without a box."), activation: good("Provides low-fatigue squat control practice when required.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: { loadability: "none", loadingPotential: "low", skillDemand: "low", stabilityDemand: "moderate", coordinationDemand: "moderate", localFatigue: "low", systemicFatigue: "low", axialLoading: "low", jointStressTags: ["deep_knee_flexion"] },
+    mechanics: mechanics({
+      support: { basePosition: "standing", stance: "bilateral", orientation: "upright", supportContacts: [{ bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "bilateral", taskRole: "primary" }, { bodyRegion: "hand", source: "stable_support_surface", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" }], supportAmount: "prescription_modifiable", supportRelationship: "bilateral", reviewStatus: "accepted", notes: "Light hand support is optional; no box or external load is part of this identity." },
+      resistancePath: { resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high", laterality: "bilateral_linked", fitDependency: "low", reviewStatus: "accepted", notes: "The unloaded squat path is selected by Prescription.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] },
+      demands: { trunk_control: demand("moderate", "Trunk organization supports the squat path."), scapular_control: demand("low", "Optional hand support is not a scapular purpose."), stability: demand("moderate", "Unsupported standing balance is required unless support is prescribed."), coordination: demand("moderate", "Hip, knee, ankle, and trunk motion coordinate."), range: demand("moderate", "The prescribed squat depth is owned by the session context."), joint_control: demand("moderate", "Knee, hip, ankle, and foot paths remain controlled.") },
+    }),
+    progression: { progressionAxes: ["range", "reps", "tempo", "support_reduction", "coordination"], transitionRelationships: [transition({ targetExerciseId: "goblet-squat", direction: "progression", classification: "context_dependent", purposes: ["preparation_to_loaded_training", "increase_loadability", "movement_pattern_development"], notes: "A reviewed context may transition unloaded rehearsal toward loaded squatting without automatic selection.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] })] },
+    cautionStressTags: ["deep_knee_flexion"], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("bodyweight-squat-rehearsal").coachingFocus,
+  },
+  {
+    id: "half-kneeling-hip-flexor-stretch",
+    name: "Half-Kneeling Hip-Flexor Stretch",
+    summary: generatedCoachingFallback("half-kneeling-hip-flexor-stretch").summary,
+    family: "mobility_preparation",
+    movementRoles: ["mobility"],
+    actionFunctions: actionsWithSource(PREPARATION_FOUNDATION_OWNER_DECISION_REF, "hip_extension"),
+    trainingRoles: ["preparation", "recovery"],
+    muscleContributions: contributions({ primary: [], contextual: ["glutes", "trunk"] }, PREPARATION_FOUNDATION_OWNER_DECISION_REF),
+    bodyRegions: ["hip", "pelvis", "knee", "lumbar_spine"],
+    equipmentRequirements: [bodyweight], optionalEquipment: [stableSupportSurface], prerequisites: [],
+    sectionSuitability: sections({ warmup: possible("Provides bounded static hip-extension range only when a typed limitation owns it and dynamic or task-specific work follows."), cooldown: good("Provides optional comfortable hip-extension range exposure without a recovery guarantee.") }),
+    phaseSuitability: {}, phaseSuitabilityAnnotations: [],
+    loading: { loadability: "none", loadingPotential: "low", skillDemand: "low", stabilityDemand: "low", coordinationDemand: "low", localFatigue: "low", systemicFatigue: "low", axialLoading: "low", jointStressTags: [] },
+    mechanics: mechanics({
+      support: { basePosition: "half_kneeling", stance: "half_kneeling_lead_side", orientation: "upright", supportContacts: [{ bodyRegion: "knee", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" }, { bodyRegion: "foot", source: "floor", mode: "weight_bearing", side: "prescription_side", taskRole: "primary" }, { bodyRegion: "hand", source: "stable_support_surface", mode: "balance_assist", side: "side_neutral", taskRole: "secondary" }], supportAmount: "prescription_modifiable", supportRelationship: "alternating", reviewStatus: "accepted", notes: "Knee padding and light hand support may be prescribed; couch-stretch bench geometry remains outside this identity's accepted realizations." },
+      resistancePath: { resistancePath: "bodyweight", trajectoryFreedom: "high", lineOfPullAdjustability: "high", laterality: "unilateral", fitDependency: "setup_geometry", reviewStatus: "accepted", notes: "A small pelvic shift creates the prescribed static hip-extension range exposure.", provenance: [PREPARATION_FOUNDATION_OWNER_DECISION_REF] },
+      demands: { trunk_control: demand("moderate", "Trunk and pelvic position bound the hip range."), scapular_control: demand("low", "Optional support is not a scapular purpose."), stability: demand("low", "Half-kneeling plus optional support keeps stability demand low."), coordination: demand("low", "The static position has low coordination demand."), range: demand("high", "Hip-extension range is the direct purpose."), joint_control: demand("moderate", "Hip, knee contact, and lumbar position remain comfortable and controlled.") },
+    }),
+    progression: { progressionAxes: ["duration", "range", "support_reduction"], transitionRelationships: [] },
+    cautionStressTags: [], contraindicatedStressTags: [],
+    coachingFocus: generatedCoachingFallback("half-kneeling-hip-flexor-stretch").coachingFocus,
+  },
 ] satisfies readonly CanonicalExerciseDefinition[];
 
 export const REFERENCE_EXERCISES: readonly ExerciseDefinition[] =

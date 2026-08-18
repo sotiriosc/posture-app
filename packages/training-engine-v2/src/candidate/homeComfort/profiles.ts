@@ -56,6 +56,13 @@ const cableStation = (id: string) => profile(id, {
   setupComplexity: "high", environmentalAnchorDependence: "high", equipmentAmbiguity: "high",
   supportConfidence: "moderate", firstSessionComfortDisposition: "poor",
 });
+const preparationProfile = (id: string, input: ProfileInput = {}) => Object.freeze({
+  ...profile(id, input),
+  provenance: Object.freeze([
+    "EXERCISE_CATALOG_COVERAGE_AND_HOME_COMFORT_CURATION_V1",
+    "PREPARATION_INTELLIGENCE_FOUNDATION_V1",
+  ]),
+});
 
 export const HOME_COMFORT_PROFILES: Readonly<Record<string, HomeComfortProductionProfile>> = Object.freeze({
   "ninety-ninety-breathing": simpleFloor("ninety-ninety-breathing"),
@@ -122,6 +129,11 @@ export const HOME_COMFORT_PROFILES: Readonly<Record<string, HomeComfortProductio
   "cable-lateral-raise": cableStation("cable-lateral-raise"),
   "overhead-cable-triceps-extension": cableStation("overhead-cable-triceps-extension"),
   "straight-arm-cable-pulldown": cableStation("straight-arm-cable-pulldown"),
+  "moving-ninety-ninety-hip-switch": preparationProfile("moving-ninety-ninety-hip-switch", { setupComplexity: "low", supportConfidence: "high", balanceStabilityBurden: "low", transitionComplexity: "moderate", firstSessionComfortDisposition: "excellent" }),
+  "quadruped-hip-rock-back": preparationProfile("quadruped-hip-rock-back", { setupComplexity: "low", supportConfidence: "high", balanceStabilityBurden: "low", transitionComplexity: "moderate", firstSessionComfortDisposition: "good" }),
+  "scapular-push-up": preparationProfile("scapular-push-up", { setupComplexity: "moderate", supportConfidence: "moderate", balanceStabilityBurden: "moderate", coordinationBurden: "moderate", transitionComplexity: "moderate", firstSessionComfortDisposition: "good" }),
+  "bodyweight-squat-rehearsal": preparationProfile("bodyweight-squat-rehearsal", { setupComplexity: "low", supportConfidence: "moderate", balanceStabilityBurden: "moderate", coordinationBurden: "moderate", firstSessionComfortDisposition: "good" }),
+  "half-kneeling-hip-flexor-stretch": preparationProfile("half-kneeling-hip-flexor-stretch", { setupComplexity: "moderate", supportConfidence: "high", balanceStabilityBurden: "low", coordinationBurden: "low", transitionComplexity: "moderate", firstSessionComfortDisposition: "good" }),
 });
 
 export const PRE_PACKAGE_S_HOME_COMFORT_PROFILES: Readonly<Record<string, HomeComfortProductionProfile>> =

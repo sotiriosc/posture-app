@@ -64,7 +64,7 @@ describe("Package S standard commercial-gym production admission", () => {
     expect(PACKAGE_S_CONTRACT.packageId).toBe("PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_V1");
     expect(PACKAGE_S_SELECTED_EXERCISE_IDS).toHaveLength(11);
     expect(selectedPackageRows).toHaveLength(11);
-    expect(REFERENCE_EXERCISES.slice(53).map((row) => row.id)).toEqual(PACKAGE_S_SELECTED_EXERCISE_IDS);
+    expect(REFERENCE_EXERCISES.slice(53, 64).map((row) => row.id)).toEqual(PACKAGE_S_SELECTED_EXERCISE_IDS);
     expect(catalogInventory).toMatchObject({ beforeRowCount: 53, afterRowCount: 64, uniqueIdCount: 64, duplicateIdCount: 0, selectedRowCount: 11, unselectedNewRowCount: 0 });
     expect(packageSValidationSummary.catalogErrorCount).toBe(0);
   });
@@ -137,7 +137,7 @@ describe("Package S standard commercial-gym production admission", () => {
     expect(PACKAGE_S_KNOWLEDGE_ENTRIES).toHaveLength(11);
     expect(PRODUCTION_64_KNOWLEDGE_ENTRIES).toHaveLength(64);
     expect(packageSValidationSummary.knowledgeFindings).toEqual([]);
-    expect(Object.keys(HOME_COMFORT_PROFILES)).toHaveLength(64);
+    expect(Object.keys(HOME_COMFORT_PROFILES)).toHaveLength(69);
     expect(packageSValidationSummary.homeComfortFindings).toEqual([]);
     expect(generatedExerciseCoachingFallbackStatus()).toMatchObject({ exists: true, stale: false });
     expect(projectCompactFallbacks(PRODUCTION_64_KNOWLEDGE_ENTRIES)).toHaveLength(64);

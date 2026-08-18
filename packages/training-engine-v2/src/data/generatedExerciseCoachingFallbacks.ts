@@ -103,6 +103,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "bodyweight-hip-hinge-rehearsal.cue.1"
     ]
   },
+  "bodyweight-squat-rehearsal": {
+    "summary": "Unloaded squat-pattern movement rehearsal.",
+    "coachingFocus": [
+      "Rehearse depth with whole-foot pressure",
+      "Control the knee path"
+    ],
+    "sourceFactIds": [
+      "bodyweight-squat-rehearsal.pattern",
+      "bodyweight-squat-rehearsal.focus",
+      "bodyweight-squat-rehearsal.cue.1"
+    ]
+  },
   "cable-chest-fly": {
     "summary": "Cable chest isolation with adjustable line of pull.",
     "coachingFocus": [
@@ -341,6 +353,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "half-kneeling-high-to-low-cable-chop.cue.1"
     ]
   },
+  "half-kneeling-hip-flexor-stretch": {
+    "summary": "Half-kneeling static hip-extension range exposure.",
+    "coachingFocus": [
+      "Use a comfortable front-of-hip range",
+      "Keep the trunk stacked"
+    ],
+    "sourceFactIds": [
+      "half-kneeling-hip-flexor-stretch.pattern",
+      "half-kneeling-hip-flexor-stretch.focus",
+      "half-kneeling-hip-flexor-stretch.cue.1"
+    ]
+  },
   "lat-pulldown": {
     "summary": "Machine/cable vertical pull.",
     "coachingFocus": [
@@ -495,6 +519,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "machine-shoulder-press.cue.back-supported"
     ]
   },
+  "moving-ninety-ninety-hip-switch": {
+    "summary": "Seated dynamic hip-rotation range preparation.",
+    "coachingFocus": [
+      "Rotate through a controlled hip range",
+      "Move smoothly side to side"
+    ],
+    "sourceFactIds": [
+      "moving-ninety-ninety-hip-switch.pattern",
+      "moving-ninety-ninety-hip-switch.focus",
+      "moving-ninety-ninety-hip-switch.cue.1"
+    ]
+  },
   "ninety-ninety-breathing": {
     "summary": "Supine breathing drill for ribcage and pelvis position.",
     "coachingFocus": [
@@ -567,6 +603,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
       "push-up.cue.1"
     ]
   },
+  "quadruped-hip-rock-back": {
+    "summary": "Floor-supported dynamic hip-flexion range preparation.",
+    "coachingFocus": [
+      "Rock back through a controlled hip range",
+      "Keep support points secure"
+    ],
+    "sourceFactIds": [
+      "quadruped-hip-rock-back.pattern",
+      "quadruped-hip-rock-back.focus",
+      "quadruped-hip-rock-back.cue.1"
+    ]
+  },
   "reverse-pec-deck": {
     "summary": "Machine-supported rear-delt and upper-back isolation.",
     "coachingFocus": [
@@ -575,6 +623,18 @@ export const GENERATED_EXERCISE_COACHING_FALLBACKS: Readonly<Record<string, Gene
     "sourceFactIds": [
       "reverse-pec-deck.pattern",
       "reverse-pec-deck.focus"
+    ]
+  },
+  "scapular-push-up": {
+    "summary": "Upper-limb-supported scapular protraction control drill.",
+    "coachingFocus": [
+      "Push away without bending the elbows",
+      "Keep the trunk steady"
+    ],
+    "sourceFactIds": [
+      "scapular-push-up.pattern",
+      "scapular-push-up.focus",
+      "scapular-push-up.cue.1"
     ]
   },
   "seated-cable-row": {

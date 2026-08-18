@@ -1,0 +1,111 @@
+import { defineCuratedEntry, fact } from "./shared";
+
+const entry = defineCuratedEntry;
+const REVIEW_REF = "human-review:preparation-intelligence-v1:2026-08-18";
+const OWNER_BASIS = "The owner authorized a compact preparation foundation with causal selection and no clinical or recovery claims.";
+const provenanceContext = {
+  humanReviewRef: REVIEW_REF,
+  ownerEvidenceBasis: OWNER_BASIS,
+  compactEvidenceBasis: "The compact fallback is generated from the accepted preparation Knowledge entry.",
+};
+
+export const PREPARATION_FOUNDATION_KNOWLEDGE_ENTRIES = Object.freeze([
+  entry({
+    exerciseId: "moving-ninety-ninety-hip-switch",
+    canonicalName: "Moving 90/90 Hip Switch",
+    legacySummary: "Seated dynamic hip-rotation range preparation.",
+    focus: fact("Rotate both hips through the range you can control without forcing the knees down.", { compact: "Rotate through a controlled hip range" }),
+    cues: [fact("Keep the movement smooth instead of dropping from side to side.", { compact: "Move smoothly side to side" }), fact("Use the hands for support when needed to keep the range controlled.")],
+    setup: [fact("Sit on clear floor space with both knees bent and the feet placed wide enough to switch sides."), fact("Choose supported or unsupported hand contact before starting."), fact("This identity requires floor space and no external load.", { kind: "equipment_boundary", source: "equipment" })],
+    during: [fact("Move the knees together toward one side as the hips rotate."), fact("Return through the middle and repeat toward the other side without bouncing.")],
+    pattern: "A moving 90/90 hip switch is a seated dynamic hip internal- and external-rotation range task.",
+    watchFor: [fact("Watch for forcing either knee toward the floor."), fact("Watch for using momentum or a painful range to complete the switch.", { kind: "safety_boundary" })],
+    compactCoachingRefs: ["focus", "cue.1"],
+    mechanics: ["support.seated-floor", "range.hip-rotation", "laterality.alternating"],
+    roles: ["mobility"], actions: ["hip_internal_rotation", "hip_external_rotation"], stress: [],
+    painTopics: ["hip-response-context", "knee-response-context"],
+    provenanceContext,
+  }),
+  entry({
+    exerciseId: "quadruped-hip-rock-back",
+    canonicalName: "Quadruped Hip Rock-Back",
+    legacySummary: "Floor-supported dynamic hip-flexion range preparation.",
+    focus: fact("Rock the hips back only while the selected trunk and hip position stays controlled.", { compact: "Rock back through a controlled hip range" }),
+    cues: [fact("Keep both hands and knees secure on the floor.", { compact: "Keep support points secure" }), fact("Return forward smoothly without dropping into the shoulders.")],
+    setup: [fact("Begin on hands and knees on clear floor space."), fact("Set the prescribed knee width and comfortable wrist or forearm support before moving."), fact("Floor space is required; a forearm-supported realization may be used only when prescribed.", { kind: "equipment_boundary", source: "equipment" })],
+    during: [fact("Send the hips back toward the heels through the selected range."), fact("Return to the quadruped start while keeping the support contacts steady.")],
+    pattern: "A quadruped hip rock-back is a supported dynamic hip-flexion range task with a quiet trunk.",
+    watchFor: [fact("Watch for continuing after the pelvis or low back begins to substitute for hip motion."), fact("Watch for painful wrist, knee, or hip pressure.", { kind: "safety_boundary" })],
+    compactCoachingRefs: ["focus", "cue.1"],
+    overrides: [{ id: "forearm", realizationId: "forearm-supported", facts: [
+      { suffix: "setup", category: "setup", statement: "For forearm support, place both forearms securely before beginning the rock-back." },
+      { suffix: "watch", category: "watchFor", statement: "Watch for the forearms sliding as the hips move back." },
+    ] }],
+    mechanics: ["support.quadruped", "range.hip-flexion", "resistance.bodyweight"],
+    roles: ["mobility"], actions: ["hip_flexion"], stress: ["upper_limb_support_loading"],
+    painTopics: ["hip-response-context", "knee-response-context", "wrist-response-context"],
+    provenanceContext,
+  }),
+  entry({
+    exerciseId: "scapular-push-up",
+    canonicalName: "Scapular Push-Up",
+    legacySummary: "Upper-limb-supported scapular protraction control drill.",
+    focus: fact("Push the support away by moving the shoulder blades without bending the elbows.", { compact: "Push away without bending the elbows" }),
+    cues: [fact("Keep the selected trunk position steady.", { compact: "Keep the trunk steady" }), fact("Move only through the shoulder-blade range that remains controlled.")],
+    setup: [fact("Place both hands on the prescribed stable wall, elevated support, or floor."), fact("Set the approved body angle before loading the arms."), fact("The exact stable support and clear space are required; support height is a realization fact.", { kind: "equipment_boundary", source: "equipment" })],
+    during: [fact("Allow the chest to move slightly toward the support as the shoulder blades glide together."), fact("Press the support away as the shoulder blades move around the ribcage, keeping the elbows straight.")],
+    pattern: "A scapular push-up is an upper-limb-supported scapular protraction and retraction control task, not a horizontal press repetition.",
+    watchFor: [fact("Watch for bending the elbows until the task becomes a push-up."), fact("Watch for wrist or shoulder discomfort, trunk sag, or forced end range.", { kind: "safety_boundary" })],
+    compactCoachingRefs: ["focus", "cue.1"],
+    overrides: [
+      { id: "wall", realizationId: "wall-supported", facts: [{ suffix: "setup", category: "setup", statement: "For wall support, verify the wall and hand position before stepping to the prescribed body angle." }] },
+      { id: "elevated", realizationId: "elevated-support", facts: [{ suffix: "setup", category: "setup", statement: "For elevated support, verify the surface cannot slide or tip before loading the hands." }] },
+    ],
+    mechanics: ["support.upper-limb", "scapular.protraction", "elbow.position-stable"],
+    roles: ["scapular_control"], actions: ["scapular_protraction"],
+    stress: ["wrist_extension_loading", "upper_limb_support_loading"],
+    painTopics: ["shoulder-response-context", "wrist-response-context"],
+    provenanceContext,
+  }),
+  entry({
+    exerciseId: "bodyweight-squat-rehearsal",
+    canonicalName: "Bodyweight Squat Rehearsal",
+    legacySummary: "Unloaded squat-pattern movement rehearsal.",
+    focus: fact("Rehearse the selected squat depth with whole-foot pressure and no external load.", { compact: "Rehearse depth with whole-foot pressure" }),
+    cues: [fact("Keep the knees moving through the prescribed controlled path.", { compact: "Control the knee path" }), fact("Use a stable support for balance only when it is prescribed.")],
+    setup: [fact("Stand on clear stable floor space with the prescribed stance."), fact("Place a hand on a stable support only for the supported realization."), fact("No external load or box is part of this identity.", { kind: "equipment_boundary", source: "equipment" })],
+    during: [fact("Lower through the selected hip, knee, and ankle range under control."), fact("Stand back up while maintaining the selected foot pressure and balance support.")],
+    pattern: "A bodyweight squat rehearsal is an unloaded squat-pattern task; a box squat or loaded goblet squat remains a different identity.",
+    watchFor: [fact("Watch for losing foot contact or balance before the selected depth."), fact("Watch for forcing painful knee, hip, or ankle range.", { kind: "safety_boundary" })],
+    compactCoachingRefs: ["focus", "cue.1"],
+    overrides: [{ id: "supported", realizationId: "hand-supported", facts: [
+      { suffix: "setup", category: "setup", statement: "For hand support, verify the surface is stable and use only the prescribed amount of assistance." },
+      { suffix: "during", category: "during", statement: "Use the hand contact for balance without pulling the body through the squat." },
+    ] }],
+    mechanics: ["support.standing", "pattern.squat", "resistance.bodyweight"],
+    roles: ["squat", "knee_dominant"], actions: ["knee_extension", "hip_extension"],
+    stress: ["deep_knee_flexion"], painTopics: ["knee-response-context", "hip-response-context", "ankle-response-context"],
+    provenanceContext,
+  }),
+  entry({
+    exerciseId: "half-kneeling-hip-flexor-stretch",
+    canonicalName: "Half-Kneeling Hip-Flexor Stretch",
+    legacySummary: "Half-kneeling static hip-extension range exposure.",
+    focus: fact("Use a small pelvic shift to reach a comfortable front-of-hip stretch without forcing the range.", { compact: "Use a comfortable front-of-hip range" }),
+    cues: [fact("Keep the trunk stacked instead of leaning back.", { compact: "Keep the trunk stacked" }), fact("Use padding or stable hand support when prescribed.")],
+    setup: [fact("Take a half-kneeling position on clear floor space with the target side prescribed."), fact("Use knee padding and light stable hand support when needed."), fact("Floor space is required; a bench-supported couch-stretch realization is not assumed.", { kind: "equipment_boundary", source: "equipment" })],
+    during: [fact("Gently shift the pelvis forward through the selected hip-extension range."), fact("Hold without bouncing, then leave the position under control.")],
+    pattern: "This is a static half-kneeling hip-extension range exposure, not an activation or developmental strength exercise.",
+    watchFor: [fact("Watch for lumbar extension replacing the selected hip range."), fact("Watch for painful pressure at the kneeling knee or front of the hip.", { kind: "safety_boundary" })],
+    compactCoachingRefs: ["focus", "cue.1"],
+    mechanics: ["support.half-kneeling", "range.hip-extension", "dose.static-hold"],
+    roles: ["mobility"], actions: ["hip_extension"], stress: [],
+    painTopics: ["hip-response-context", "knee-contact-response-context", "lumbar-response-context"],
+    unresolvedClaims: ["Couch-stretch bench or wall geometry remains a deferred realization requiring exact setup review."],
+    provenanceContext,
+  }),
+]);
+
+export const PREPARATION_FOUNDATION_KNOWLEDGE_IDS = Object.freeze(
+  PREPARATION_FOUNDATION_KNOWLEDGE_ENTRIES.map((entry) => entry.exerciseId),
+);

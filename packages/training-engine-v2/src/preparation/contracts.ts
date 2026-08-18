@@ -1,5 +1,10 @@
 import type { ExerciseActionFunction } from "../domain/exercise";
-import type { BodyRegion, MovementRole } from "../domain/primitives";
+import type {
+  BodyRegion,
+  JointStressTag,
+  MovementRole,
+  MuscleGroup,
+} from "../domain/primitives";
 import type { SessionSection } from "../domain/session";
 
 export const PREPARATION_CATEGORIES = [
@@ -65,7 +70,10 @@ export interface PreparationKnowledgeProfile {
   readonly categories: readonly PreparationCategory[];
   readonly movementRoles: readonly MovementRole[];
   readonly actionFunctions: readonly ExerciseActionFunction[];
+  readonly targetMuscles: readonly MuscleGroup[];
   readonly bodyRegions: readonly BodyRegion[];
+  readonly mechanicalStressTags: readonly JointStressTag[];
+  readonly equipmentRequirementIds: readonly string[];
   readonly setupComplexity: PreparationSetupComplexity;
   readonly fatigueCost: PreparationFatigueCost;
   readonly intendedSections: readonly SessionSection[];
