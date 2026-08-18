@@ -7,6 +7,7 @@ import {
   createInMemoryOwnerEnrollmentProfileRepository,
   createBufferedControlledOwnerObservability,
   loadControlledOwnerDeliveryMigrations,
+  normalizeProposedOwnerPainRegionFact,
   parseConfiguredOwnerReference,
   proposeOwnerImportsFromTrainingSnapshot,
   resolveConfiguredOwnerEligibility,
@@ -14,6 +15,7 @@ import {
   resolveOwnerDeliveryModeFromEnvironment,
 } from "../../src/controlledOwnerDelivery";
 import type { StoredUser } from "../../src/userStore";
+import { buildAssessmentReport } from "../../src/assessmentEngine";
 
 const NOW = "2026-08-17T10:00:00.000Z";
 const USER: StoredUser = {
@@ -118,7 +120,7 @@ describe("controlled owner identity and profile foundation", () => {
   it("projects restricted proposed facts without persisting a raw snapshot", () => {
     const facts = proposeOwnerImportsFromTrainingSnapshot({
       snapshot: {
-        questionnaire: { daysPerWeek: 3, equipment: ["gym"], painAreas: ["shoulder"],
+        questionnaire: { daysPerWeek: 3, equipment: ["gym"], painAreas: ["Lower back"],
           experience: "intermediate", sessionMinutes: 60, exactLoad: 40 },
         assessment: { observations: [{ id: "pose-shoulder-asymmetry", confidence: "high" }],
           priorities: ["pose-shoulder-asymmetry"] },
@@ -134,6 +136,25 @@ describe("controlled owner identity and profile foundation", () => {
     expect(JSON.stringify(facts)).not.toContain("sessionMinutes");
     expect(facts.find((fact) => fact.field === "assessment_reference")?.structuredValue)
       .toBe("assessment:observation:pose-shoulder-asymmetry");
+    expect(normalizeProposedOwnerPainRegionFact(facts.find((fact) => fact.field === "pain_region")!))
+      .toMatchObject({ regionId: "lumbar_spine", sourceRevision: "product-snapshot:synthetic-1" });
+  });
+
+  it("carries Product's lower-back observation beside its typed pain-region proposal", () => {
+    const assessment = buildAssessmentReport({ questionnaire: { goals: "Get stronger",
+      painAreas: ["Lower back"], experience: "Advanced", equipment: ["dumbbells"], daysPerWeek: 3 } });
+    const facts = proposeOwnerImportsFromTrainingSnapshot({ snapshot: { questionnaire: {
+      painAreas: ["Lower back"] }, assessment }, sourceRevision: "product-snapshot:lower-back" });
+
+    expect(assessment.observations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "pain-lower-back" }),
+    ]));
+    expect(facts).toEqual(expect.arrayContaining([
+      expect.objectContaining({ field: "pain_region", structuredValue: "Lower back",
+        status: "requires_confirmation" }),
+      expect.objectContaining({ field: "assessment_reference",
+        structuredValue: "assessment:observation:pain-lower-back" }),
+    ]));
   });
 
   it("locks the isolated enrollment/profile migration and contains no email column", () => {

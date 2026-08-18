@@ -1,4 +1,9 @@
-import { stableId, uniqueSorted, type ProposedOwnerImportFact } from "@praxis/training-engine-v2";
+import {
+  stableId,
+  uniqueSorted,
+  type BodyRegion,
+  type ProposedOwnerImportFact,
+} from "@praxis/training-engine-v2";
 import type { TrainingSnapshot } from "../trainingStateModel";
 import type { OwnerProductImportAdapter } from "./contracts";
 
@@ -17,6 +22,41 @@ function assessmentObservationIds(value: unknown): readonly string[] {
     const id = (entry as Record<string, unknown>).id;
     return typeof id === "string" && id.trim() ? [id.trim()] : [];
   })));
+}
+
+const PRODUCT_PAIN_REGION_VALUES: Readonly<Record<string, BodyRegion>> = Object.freeze({
+  Neck: "neck",
+  neck: "neck",
+  "Upper back": "thoracic_spine",
+  "upper back": "thoracic_spine",
+  thoracic_spine: "thoracic_spine",
+  "Lower back": "lumbar_spine",
+  "lower back": "lumbar_spine",
+  low_back: "lumbar_spine",
+  lumbar_spine: "lumbar_spine",
+  Shoulders: "shoulder",
+  shoulders: "shoulder",
+  shoulder: "shoulder",
+  Hips: "hip",
+  hips: "hip",
+  hip: "hip",
+  Knees: "knee",
+  knees: "knee",
+  knee: "knee",
+});
+
+export interface NormalizedOwnerPainRegionFact {
+  readonly factId: string;
+  readonly regionId: BodyRegion;
+  readonly sourceRevision: string;
+}
+
+export function normalizeProposedOwnerPainRegionFact(
+  fact: ProposedOwnerImportFact,
+): NormalizedOwnerPainRegionFact | null {
+  if (fact.field !== "pain_region" || typeof fact.structuredValue !== "string") return null;
+  const regionId = PRODUCT_PAIN_REGION_VALUES[fact.structuredValue];
+  return regionId ? Object.freeze({ factId: fact.factId, regionId, sourceRevision: fact.sourceRevision }) : null;
 }
 
 export function proposeOwnerImportsFromTrainingSnapshot(input: {

@@ -1,11 +1,37 @@
 import { describe, expect, it } from "vitest";
+import { buildTrainingReadinessTrace } from "@praxis/training-engine-v2";
 import {
   mapProductAssessmentReportToV2,
   projectProductAssessmentReportForShadow,
 } from "../../src/productAssessmentAdapter";
 import { mapProductAssessment } from "../../src/controlledProductShadow";
 import { mapProductAssessmentV2 } from "../../src/controlledProductShadowGoalRealization";
-import { buildControlledOwnerAssessmentHandoff } from "../../src/controlledOwnerDelivery";
+import { buildControlledOwnerAssessmentHandoff, proposeOwnerImportsFromTrainingSnapshot } from
+  "../../src/controlledOwnerDelivery";
+
+const NOW = "2026-08-17T14:00:00.000Z";
+
+const handoff = (input: {
+  readonly profileAssessmentReferences: readonly string[];
+  readonly assessmentReport: Record<string, unknown> | null;
+  readonly sourceProductRevisionId: string;
+  readonly proposedProductFacts?: ReturnType<typeof proposeOwnerImportsFromTrainingSnapshot>;
+  readonly painContext?: {
+    readonly regionIds: readonly string[];
+    readonly limitationIds: readonly string[];
+    readonly confirmed: boolean;
+    readonly diagnosticClaimCount: 0;
+    readonly sourceFactIds?: readonly string[];
+    readonly sourceRevision?: string;
+  };
+}) => buildControlledOwnerAssessmentHandoff({
+  ...input,
+  profilePainContext: input.painContext ?? {
+    regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0,
+  },
+  proposedProductFacts: input.proposedProductFacts ?? [],
+  evaluationTime: NOW,
+});
 
 const report = () => ({
   observations: [
@@ -97,12 +123,12 @@ describe("typed Product AssessmentReport adapter", () => {
   });
 
   it("admits only explicitly confirmed owner observation references and fails stale references closed", () => {
-    const unconfirmed = buildControlledOwnerAssessmentHandoff({ profileAssessmentReferences: [],
+    const unconfirmed = handoff({ profileAssessmentReferences: [],
       assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
     expect(unconfirmed.assessment.signals).toEqual([]);
     expect(unconfirmed.opaqueTextConsumed).toBe(false);
 
-    const confirmed = buildControlledOwnerAssessmentHandoff({
+    const confirmed = handoff({
       profileAssessmentReferences: ["assessment:observation:pose-shoulder-asymmetry"],
       assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
     expect(confirmed.assessment.signals.map((signal) => signal.id))
@@ -111,12 +137,42 @@ describe("typed Product AssessmentReport adapter", () => {
       "product-state:test-1:observation:pose-shoulder-asymmetry",
     ]);
 
-    const stale = buildControlledOwnerAssessmentHandoff({
+    const stale = handoff({
       profileAssessmentReferences: ["assessment:observation:removed-observation"],
       assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
     expect(stale.assessment.signals).toEqual([]);
     expect(stale.unresolvedConfirmedReferences).toEqual([
       "assessment:observation:removed-observation",
     ]);
+  });
+
+  it("transfers confirmed typed pain facts and derives unresolved Safety without parsing reference meaning", () => {
+    const sourceRevision = "product-state:pain-transfer-1";
+    const proposedProductFacts = proposeOwnerImportsFromTrainingSnapshot({
+      snapshot: { questionnaire: { painAreas: ["Lower back"] }, assessment: report() },
+      sourceRevision,
+    });
+    const painFact = proposedProductFacts.find((fact) => fact.field === "pain_region")!;
+    const reference = "assessment:observation:pain-shoulder";
+    const unresolved = handoff({ profileAssessmentReferences: [reference], assessmentReport: report(),
+      sourceProductRevisionId: sourceRevision, proposedProductFacts });
+
+    expect(unresolved.painOwnership).toMatchObject({ status: "review_required",
+      expectedPainFactIds: [painFact.factId], canonicalPainRegionIds: ["lumbar_spine"] });
+    expect(buildTrainingReadinessTrace({ trainingSafety: unresolved.trainingSafety }))
+      .toMatchObject({ status: "REVIEW_REQUIRED_BEFORE_ORDINARY_TRAINING",
+        downstreamTrainingAllowed: false });
+    expect(unresolved.unresolvedConfirmedReferences).toContain(reference);
+
+    const transferred = handoff({ profileAssessmentReferences: [reference], assessmentReport: report(),
+      sourceProductRevisionId: sourceRevision, proposedProductFacts,
+      painContext: { regionIds: ["lumbar_spine"], limitationIds: [], confirmed: true,
+        diagnosticClaimCount: 0, sourceFactIds: [painFact.factId], sourceRevision } });
+    expect(transferred.painOwnership).toMatchObject({ status: "transferred",
+      confirmedPainFactIds: [painFact.factId], canonicalPainRegionIds: ["lumbar_spine"],
+      resolvedAssessmentReferences: [reference] });
+    expect(transferred.unresolvedConfirmedReferences).not.toContain(reference);
+    expect(buildTrainingReadinessTrace({ trainingSafety: transferred.trainingSafety }))
+      .toMatchObject({ status: "TRAINING_ALLOWED", downstreamTrainingAllowed: true });
   });
 });

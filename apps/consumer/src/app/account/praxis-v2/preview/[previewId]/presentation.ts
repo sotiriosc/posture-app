@@ -31,7 +31,7 @@ const PRACTICE_MODE_LABELS: Readonly<Record<string, string>> = Object.freeze({
 const READINESS_LABELS: Readonly<Record<string, string>> = Object.freeze({
   ready_for_approval: "Ready for approval",
   preview_only_unknown_duration: "Preview only - duration unknown",
-  blocked: "Blocked",
+  blocked: "Preview needs review",
 });
 
 export interface OwnerWeekObjectivePresentation {
@@ -74,8 +74,18 @@ export function presentPracticeMode(value: string): string {
   return PRACTICE_MODE_LABELS[value] ?? value;
 }
 
-export function presentReadiness(value: string): string {
+export function presentReadiness(value: string, unresolvedFacts: readonly string[] = []): string {
+  if (unresolvedFacts.some((fact) => fact.startsWith("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED") ||
+    fact.startsWith("OWNER_PAIN_FACT_"))) {
+    return "Pain or safety information needs review";
+  }
   return READINESS_LABELS[value] ?? value;
+}
+
+export function presentUnresolvedFact(value: string): string {
+  return value.startsWith("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED") || value.startsWith("OWNER_PAIN_FACT_")
+    ? "Pain or safety information needs review"
+    : presentDiagnosticIdentity(value);
 }
 
 export function presentExerciseIdentity(value: string): string {

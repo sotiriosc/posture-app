@@ -35,10 +35,17 @@ export async function POST(request: Request) {
             assessmentReport: current.snapshot.assessment ?? null };
         },
       });
-      if (!generated.preview) return ownerJson({ ok: false, error: { code: generated.status.toUpperCase(),
-        message: generated.status === "profile_not_ready" ? "Confirm the owner profile first." :
-          "Preview could not be generated." }, reasonCodes: generated.reasonCodes },
-      generated.status === "conflict" ? 409 : 422);
+      if (!generated.preview) {
+        const safetyReviewRequired = generated.reasonCodes.some((reason) =>
+          reason.startsWith("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED") ||
+          reason.startsWith("OWNER_PAIN_FACT_"));
+        return ownerJson({ ok: false, error: { code: safetyReviewRequired ? "SAFETY_REVIEW_REQUIRED" :
+          generated.status.toUpperCase(), message: safetyReviewRequired ?
+            "Review and confirm the current pain or safety information before generating a preview." :
+            generated.status === "profile_not_ready" ? "Confirm the owner profile first." :
+              "Preview could not be generated." }, reasonCodes: generated.reasonCodes },
+        generated.status === "conflict" ? 409 : 422);
+      }
       return ownerJson({ ok: true, status: generated.status, previewId: generated.preview.previewId,
         previewFingerprint: generated.preview.previewFingerprint });
     });

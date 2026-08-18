@@ -4,12 +4,18 @@ import {
   buildOwnerProgramPreview,
   evaluateOwnerProfileReadiness,
   runControlledOwnerProductionPipeline,
+  stableId,
+  uniqueSorted,
   type ControlledOwnerV2ProgramPreview,
   type OwnerDeliveryMode,
+  type OwnerPainContext,
+  type ProposedOwnerImportFact,
+  type TrainingSafetyState,
 } from "@praxis/training-engine-v2";
 import { mapProductAssessmentReportToV2 } from "../productAssessmentAdapter";
 import type { OwnerDeliveryRepository, OwnerEnrollmentProfileRepository, OwnerProductImportAdapter } from "./contracts";
 import type { ControlledOwnerRequestGateResult } from "./gate";
+import { normalizeProposedOwnerPainRegionFact } from "./productImport";
 
 export interface OwnerGenerationSourceContext {
   readonly sourceProductSnapshotId: string;
@@ -20,8 +26,11 @@ export interface OwnerGenerationSourceContext {
 
 export function buildControlledOwnerAssessmentHandoff(input: {
   readonly profileAssessmentReferences: readonly string[];
+  readonly profilePainContext: OwnerPainContext;
+  readonly proposedProductFacts: readonly ProposedOwnerImportFact[];
   readonly assessmentReport: Record<string, unknown> | null;
   readonly sourceProductRevisionId: string;
+  readonly evaluationTime: string;
 }) {
   const mapped = mapProductAssessmentReportToV2({ assessment: input.assessmentReport,
     sourceRevision: input.sourceProductRevisionId });
@@ -30,12 +39,78 @@ export function buildControlledOwnerAssessmentHandoff(input: {
   const confirmedTrace = mapped.mappingTrace.filter((entry) => confirmed.has(referenceFor(entry.sourceObservationId)));
   const confirmedSignalIds = new Set(confirmedTrace.map((entry) => entry.signalId));
   const mappedReferences = new Set(mapped.mappingTrace.map((entry) => referenceFor(entry.sourceObservationId)));
-  const unresolvedReferences = new Set(mapped.unresolvedObservations.flatMap((entry) =>
+  const painFacts = input.proposedProductFacts.filter((fact) => fact.field === "pain_region");
+  const normalizedPainFacts = painFacts.map(normalizeProposedOwnerPainRegionFact);
+  const expectedPainFactIds = uniqueSorted(painFacts.map((fact) => fact.factId));
+  const confirmedPainFactIds = uniqueSorted(input.profilePainContext.sourceFactIds ?? []);
+  const canonicalPainRegionIds = uniqueSorted(normalizedPainFacts.flatMap((fact) => fact ? [fact.regionId] : []));
+  const painOwnedObservations = mapped.unresolvedObservations.filter((entry) =>
+    entry.reason === "pain_owned_by_pain_state");
+  const painOwnershipPresent = painFacts.length > 0 || painOwnedObservations.length > 0 ||
+    confirmedPainFactIds.length > 0;
+  const painOwnershipReasonCodes = uniqueSorted([
+    ...(normalizedPainFacts.some((fact) => fact === null) ? ["OWNER_PAIN_FACT_UNSUPPORTED"] : []),
+    ...(painFacts.length > 0 && !input.profilePainContext.sourceRevision
+      ? ["OWNER_PAIN_FACT_PROVENANCE_REQUIRED"] : []),
+    ...(painFacts.some((fact) => fact.sourceRevision !== input.sourceProductRevisionId) ||
+      input.profilePainContext.sourceRevision &&
+      input.profilePainContext.sourceRevision !== input.sourceProductRevisionId
+      ? ["OWNER_PAIN_FACT_SOURCE_STALE"] : []),
+    ...(JSON.stringify(confirmedPainFactIds) !== JSON.stringify(expectedPainFactIds)
+      ? ["OWNER_PAIN_FACT_CONFIRMATION_REQUIRED"] : []),
+    ...(canonicalPainRegionIds.some((regionId) => !input.profilePainContext.regionIds.includes(regionId))
+      ? ["OWNER_PAIN_FACT_CANONICAL_TRANSFER_INCOMPLETE"] : []),
+    ...(painOwnedObservations.length > 0 && painFacts.length === 0
+      ? ["OWNER_PAIN_FACT_MISSING_FOR_PAIN_OBSERVATION"] : []),
+  ]);
+  const painTransferComplete = painOwnershipPresent && input.profilePainContext.confirmed &&
+    input.profilePainContext.sourceRevision === input.sourceProductRevisionId &&
+    painFacts.every((fact) => fact.sourceRevision === input.sourceProductRevisionId) &&
+    normalizedPainFacts.every((fact) => fact !== null) &&
+    JSON.stringify(confirmedPainFactIds) === JSON.stringify(expectedPainFactIds) &&
+    canonicalPainRegionIds.every((regionId) => input.profilePainContext.regionIds.includes(regionId)) &&
+    (painOwnedObservations.length === 0 || painFacts.length > 0);
+  const effectiveUnresolved = mapped.unresolvedObservations.filter((entry) =>
+    entry.reason !== "pain_owned_by_pain_state" || !painTransferComplete);
+  const unresolvedReferences = new Set(effectiveUnresolved.flatMap((entry) =>
     entry.sourceObservationId && confirmed.has(referenceFor(entry.sourceObservationId))
       ? [referenceFor(entry.sourceObservationId)] : []));
   for (const reference of confirmed) {
     if (!mappedReferences.has(reference) && !unresolvedReferences.has(reference)) unresolvedReferences.add(reference);
   }
+  if (painTransferComplete) {
+    for (const entry of painOwnedObservations) {
+      if (entry.sourceObservationId) unresolvedReferences.delete(referenceFor(entry.sourceObservationId));
+    }
+  }
+  const painSafetyReviewRequired = painOwnershipPresent && !painTransferComplete;
+  const trainingSafety: TrainingSafetyState = painSafetyReviewRequired ? Object.freeze({
+    signals: Object.freeze([Object.freeze({
+      signalId: stableId("owner-pain-handoff-safety", {
+        sourceProductRevisionId: input.sourceProductRevisionId,
+        expectedPainFactIds,
+        confirmedPainFactIds,
+        painOwnedSourceRefs: painOwnedObservations.map((entry) => entry.sourceRef),
+      }),
+      requestedReviewLevel: "review_required_before_ordinary_training" as const,
+      authority: Object.freeze({
+        source: "upstream_safety_system" as const,
+        sourceRef: `controlled-owner-pain-handoff:${input.sourceProductRevisionId}`,
+        evidenceBasis: Object.freeze(uniqueSorted([
+          `product-revision:${input.sourceProductRevisionId}`,
+          ...painFacts.map((fact) => `product-pain-fact:${fact.factId}`),
+          ...confirmedPainFactIds.map((factId) => `profile-pain-fact:${factId}`),
+          ...painOwnedObservations.map((entry) => entry.sourceRef),
+        ])),
+        reportedBy: "controlled_owner_product_import",
+        reportedAt: input.evaluationTime,
+      }),
+      resolution: Object.freeze({ state: "unresolved" as const }),
+      notes: Object.freeze(["Typed Product pain information requires explicit owner confirmation and canonical transfer."]),
+    })]),
+  }) : Object.freeze({ signals: Object.freeze([]) });
+  const effectiveMappingStatus = mapped.status === "mapped_with_unresolved_observations" &&
+    effectiveUnresolved.length === 0 ? "mapped" : mapped.status;
   return Object.freeze({
     assessment: Object.freeze({
       signals: Object.freeze(mapped.assessment.signals.filter((signal) => confirmedSignalIds.has(signal.id))),
@@ -45,7 +120,22 @@ export function buildControlledOwnerAssessmentHandoff(input: {
     confirmedAssessmentReferences: Object.freeze([...confirmed].sort()),
     mappingTraceRefs: Object.freeze(confirmedTrace.map((entry) => entry.sourceRef).sort()),
     unresolvedConfirmedReferences: Object.freeze([...unresolvedReferences].sort()),
-    mappingStatus: mapped.status,
+    mappingStatus: effectiveMappingStatus,
+    trainingSafety,
+    painOwnership: Object.freeze({
+      status: painTransferComplete ? "transferred" as const : painSafetyReviewRequired ? "review_required" as const :
+        "not_present" as const,
+      expectedPainFactIds: Object.freeze(expectedPainFactIds),
+      confirmedPainFactIds: Object.freeze(confirmedPainFactIds),
+      canonicalPainRegionIds: Object.freeze(canonicalPainRegionIds),
+      reasonCodes: Object.freeze(painOwnershipReasonCodes),
+      resolvedAssessmentReferences: Object.freeze(painTransferComplete ? painOwnedObservations.flatMap((entry) =>
+        entry.sourceObservationId ? [referenceFor(entry.sourceObservationId)] : []).sort() : []),
+      sourceRefs: Object.freeze(uniqueSorted([
+        ...painFacts.map((fact) => `product-pain-fact:${fact.factId}`),
+        ...painOwnedObservations.map((entry) => entry.sourceRef),
+      ])),
+    }),
     opaqueTextConsumed: false as const,
     diagnosticInferenceCount: 0 as const,
   });
@@ -108,8 +198,11 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
   ]);
   const assessmentHandoff = buildControlledOwnerAssessmentHandoff({
     profileAssessmentReferences: profile.assessmentReferences,
+    profilePainContext: profile.painContext,
+    proposedProductFacts,
     assessmentReport: source.assessmentReport ?? null,
     sourceProductRevisionId: source.sourceProductRevisionId,
+    evaluationTime: input.evaluationTime,
   });
   const command = buildOwnerGenerationCommand({ userId: gate.userId,
     enrollmentRevisionId: enrollment.revisionId, profileRevisionId: profile.revisionId,

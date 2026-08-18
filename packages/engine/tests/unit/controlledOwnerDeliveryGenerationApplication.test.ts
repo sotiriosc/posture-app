@@ -3,7 +3,10 @@ import {
   buildOwnerEnrollmentRevision,
   buildOwnerProfileRevision,
   buildOwnerProgramPreview,
+  buildControlledOwnerPainAndInjuryState,
   CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
+  type OwnerPainContext,
+  type ProposedOwnerImportFact,
 } from "@praxis/training-engine-v2";
 import {
   applyControlledOwnerGetStrongerApproval,
@@ -15,6 +18,7 @@ import {
   generateControlledOwnerGetStrongerPreview,
   loadControlledOwnerDeliveryMigrations,
   recordControlledOwnerSessionDraft,
+  proposeOwnerImportsFromTrainingSnapshot,
   resolveOwnerPreviewReadinessStatus,
   rollbackControlledOwnerProgram,
   reviseControlledOwnerSessionMode,
@@ -33,7 +37,8 @@ const gate = (mode: "preview" | "apply"): ControlledOwnerRequestGateResult => Ob
 
 async function fixture(input: { readonly mode: "preview" | "apply"; readonly knownMinutes: boolean;
   readonly assessmentReferences?: readonly string[]; readonly assessmentReport?: Record<string, unknown> | null;
-  readonly capabilityIds?: readonly string[] }) {
+  readonly capabilityIds?: readonly string[]; readonly painContext?: OwnerPainContext;
+  readonly proposedProductFacts?: readonly ProposedOwnerImportFact[] }) {
   const enrollmentProfiles = createInMemoryOwnerEnrollmentProfileRepository();
   const delivery = createInMemoryOwnerDeliveryRepository();
   const enrollment = buildOwnerEnrollmentRevision({ userId: USER_ID, basedOnRevisionId: null,
@@ -50,7 +55,8 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
       capabilityIds: input.capabilityIds ?? ["commercial_gym", "dumbbells", "adjustable_bench"], confirmed: true,
       sourceRevision: "owner-equipment:synthetic-1" }, coarseExperience: "beginner", familiarity: [],
-    painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
+    painContext: input.painContext ??
+      { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
     assessmentReferences: input.assessmentReferences ?? [], trainingSafety: "clear",
     continuityReferences: [], evaluationTime: NOW,
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-profile"] },
@@ -66,7 +72,7 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     engineVersion: context.currentEngineVersion, policyVersions: context.currentPolicyVersions,
     idempotencyKey: `preview-${input.mode}-${input.knownMinutes}`,
     gate: async () => gate(input.mode), enrollmentProfiles, delivery,
-    productImport: { loadProposedFacts: async () => [] },
+    productImport: { loadProposedFacts: async () => input.proposedProductFacts ?? [] },
     loadSourceContext: async () => ({ sourceProductSnapshotId: "product-snapshot:synthetic-1",
       sourceProductRevisionId: context.currentProductRevisionId,
       activeLegacyProgramRevisionId: context.currentLegacyProgramRevisionId,
@@ -141,6 +147,59 @@ describe("controlled owner genuine generation and application", () => {
     expect(preparation).toEqual([expect.objectContaining({ exerciseId: "scapular-push-up",
       preparationCategories: ["activation_control"] })]);
     expect(JSON.stringify(value.generated.preview)).not.toContain("Opaque description");
+  });
+
+  it("hands confirmed typed pain into the canonical candidate pain model", async () => {
+    const sourceRevision = "product-revision:synthetic-1";
+    const assessmentReport = { observations: [{ id: "pain-lower-back", confidence: "medium" }],
+      priorities: ["pain-lower-back"] };
+    const proposedProductFacts = proposeOwnerImportsFromTrainingSnapshot({
+      snapshot: { questionnaire: { painAreas: ["Lower back"] }, assessment: assessmentReport },
+      sourceRevision,
+    });
+    const painFact = proposedProductFacts.find((fact) => fact.field === "pain_region")!;
+    const value = await fixture({ mode: "preview", knownMinutes: true, assessmentReport,
+      assessmentReferences: ["assessment:observation:pain-lower-back"], proposedProductFacts,
+      painContext: { regionIds: ["lumbar_spine"], limitationIds: [], confirmed: true,
+        diagnosticClaimCount: 0, sourceFactIds: [painFact.factId], sourceRevision } });
+
+    expect(value.generated.status).toBe("generation_blocked");
+    expect(value.generated.reasonCodes).toContain("OWNER_PRESCRIPTION_BLOCKED:incomplete");
+    expect(value.generated.reasonCodes).not.toContain(
+      "OWNER_ASSESSMENT_REFERENCE_UNRESOLVED:assessment:observation:pain-lower-back");
+    expect(buildControlledOwnerPainAndInjuryState(value.profile)).toMatchObject({
+      historicalSensitivities: [{ id: "owner-pain-context:0:lumbar_spine", region: "lumbar_spine",
+        stressTags: ["loaded_hinge"], preferredModification: "monitor" }],
+    });
+  });
+
+  it("fails stale or missing pain ownership closed before Candidate Intelligence", async () => {
+    const sourceRevision = "product-revision:synthetic-1";
+    const assessmentReport = { observations: [{ id: "pain-lower-back", confidence: "medium" }],
+      priorities: ["pain-lower-back"] };
+    const proposedProductFacts = proposeOwnerImportsFromTrainingSnapshot({
+      snapshot: { questionnaire: { painAreas: ["Lower back"] }, assessment: assessmentReport },
+      sourceRevision,
+    });
+    const painFact = proposedProductFacts.find((fact) => fact.field === "pain_region")!;
+    const missing = await fixture({ mode: "preview", knownMinutes: false, assessmentReport,
+      assessmentReferences: ["assessment:observation:pain-lower-back"], proposedProductFacts });
+
+    expect(missing.generated).toMatchObject({ status: "generation_blocked", preview: null });
+    expect(missing.generated.reasonCodes).toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
+    expect(missing.generated.reasonCodes).toEqual(expect.arrayContaining([
+      "OWNER_PAIN_FACT_CONFIRMATION_REQUIRED", "OWNER_PAIN_FACT_PROVENANCE_REQUIRED",
+    ]));
+    expect(missing.generated.reasonCodes).not.toEqual(["OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN"]);
+    expect(await missing.enrollmentProfiles.readCurrentProfile(USER_ID)).toEqual(missing.profile);
+
+    const stale = await fixture({ mode: "preview", knownMinutes: true, assessmentReport,
+      assessmentReferences: ["assessment:observation:pain-lower-back"], proposedProductFacts,
+      painContext: { regionIds: ["lumbar_spine"], limitationIds: [], confirmed: true,
+        diagnosticClaimCount: 0, sourceFactIds: [painFact.factId], sourceRevision: "product-revision:stale" } });
+    expect(stale.generated).toMatchObject({ status: "generation_blocked", preview: null });
+    expect(stale.generated.reasonCodes).toContain("OWNER_PAIN_FACT_SOURCE_STALE");
+    expect(stale.generated.reasonCodes).toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
   });
 
   it("keeps approval separate, then atomically creates envelope, application, pointer, and audit", async () => {

@@ -1,11 +1,13 @@
 import { deriveAlignmentPriorities } from "../alignment";
 import type { AssessmentState } from "../domain/assessment";
-import { buildTrainingReadinessTrace, NO_TRAINING_SAFETY_SIGNALS } from "../domain/trainingSafety";
+import { buildTrainingReadinessTrace, NO_TRAINING_SAFETY_SIGNALS,
+  type TrainingSafetyState } from "../domain/trainingSafety";
 import { EMPTY_TRAINING_HISTORY } from "../domain/history";
 import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury";
 import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
 import type { EquipmentCapabilities } from "../domain/equipment";
+import { BODY_REGIONS, type BodyRegion, type JointStressTag } from "../domain/primitives";
 import type { CurrentSessionEquipment, SessionAllocationDirective } from "../domain/sessionPlanningDirective";
 import { getPreparationKnowledgeProfile } from "../preparation";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
@@ -105,6 +107,16 @@ export interface ControlledOwnerAssessmentHandoff {
   readonly mappingTraceRefs: readonly string[];
   readonly unresolvedConfirmedReferences: readonly string[];
   readonly mappingStatus: "mapped" | "mapped_with_unresolved_observations" | "absent" | "unsupported_shape";
+  readonly trainingSafety?: TrainingSafetyState;
+  readonly painOwnership?: {
+    readonly status: "not_present" | "review_required" | "transferred";
+    readonly expectedPainFactIds: readonly string[];
+    readonly confirmedPainFactIds: readonly string[];
+    readonly canonicalPainRegionIds: readonly string[];
+    readonly reasonCodes: readonly string[];
+    readonly resolvedAssessmentReferences: readonly string[];
+    readonly sourceRefs: readonly string[];
+  };
   readonly opaqueTextConsumed: false;
   readonly diagnosticInferenceCount: 0;
 }
@@ -209,20 +221,33 @@ export function buildOwnerEquipmentCapabilities(profile: OwnerGetStrongerProfile
   });
 }
 
-function painFor(profile: OwnerGetStrongerProfileRevision): PainAndInjuryState {
+const painStressTags = (...tags: JointStressTag[]): readonly JointStressTag[] => Object.freeze(tags);
+const OWNER_PAIN_STRESS_TAGS: Readonly<Partial<Record<BodyRegion, readonly JointStressTag[]>>> = Object.freeze({
+  shoulder: painStressTags("horizontal_pressing"),
+  lumbar_spine: painStressTags("loaded_hinge"),
+  knee: painStressTags("loaded_knee_flexion"),
+  ankle: painStressTags("high_impact"),
+});
+
+function canonicalPainRegion(value: string): BodyRegion | null {
+  return BODY_REGIONS.includes(value as BodyRegion) ? value as BodyRegion : null;
+}
+
+export function buildControlledOwnerPainAndInjuryState(
+  profile: OwnerGetStrongerProfileRevision,
+): PainAndInjuryState {
   return Object.freeze({ ...NO_PAIN_OR_INJURY,
-    historicalSensitivities: Object.freeze(profile.painContext.regionIds.map((region, index) => Object.freeze({
-      kind: "historical_sensitivity" as const,
-      id: `owner-pain-context:${index}:${region}`,
-      region: region.includes("shoulder") ? "shoulder" as const :
-        region.includes("knee") ? "knee" as const :
-          region.includes("lumbar") || region.includes("back") ? "lumbar_spine" as const : "ankle" as const,
-      stressTags: region.includes("shoulder") ? ["horizontal_pressing" as const] :
-        region.includes("knee") ? ["loaded_knee_flexion" as const] :
-          region.includes("lumbar") || region.includes("back") ? ["loaded_hinge" as const] : ["high_impact" as const],
-      preferredModification: "monitor" as const,
-      description: "Confirmed structured owner limitation context.",
-    }))) });
+    historicalSensitivities: Object.freeze(profile.painContext.regionIds.flatMap((value, index) => {
+      const region = canonicalPainRegion(value);
+      return region ? [Object.freeze({
+        kind: "historical_sensitivity" as const,
+        id: `owner-pain-context:${index}:${region}`,
+        region,
+        stressTags: OWNER_PAIN_STRESS_TAGS[region] ?? Object.freeze([]),
+        preferredModification: "monitor" as const,
+        description: "Confirmed structured owner limitation context.",
+      })] : [];
+    })) });
 }
 
 export function buildOwnerGetStrongerWeeklyPriorities(
@@ -388,6 +413,7 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
   const athlete = athleteFor(input.profile);
   const assessment = input.assessmentHandoff?.assessment ??
     Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
+  const trainingSafety = input.assessmentHandoff?.trainingSafety ?? NO_TRAINING_SAFETY_SIGNALS;
   const grouped = new Map<string, MaterializedAllocatedObjectiveV1_1[]>();
   weekPlan.reservations.map(materializeSupportedPurposeObjectiveV1_1).forEach((entry) => {
     grouped.set(entry.opportunityId, [...(grouped.get(entry.opportunityId) ?? []), entry]);
@@ -399,7 +425,7 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
         directive: directive({ command: input.command, profile: input.profile, opportunityId,
           minutes: opportunity.minutes, objectives, intent }), athlete,
         phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
-        assessment, painAndInjury: painFor(input.profile), trainingSafety: NO_TRAINING_SAFETY_SIGNALS,
+        assessment, painAndInjury: buildControlledOwnerPainAndInjuryState(input.profile), trainingSafety,
         currentEquipment: Object.freeze({ capabilities: equipment, provenance: "profile_default",
           sourceRef: input.profile.equipmentCapabilitySnapshot.sourceRevision }) satisfies CurrentSessionEquipment,
         history: EMPTY_TRAINING_HISTORY,
@@ -410,6 +436,9 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
       const planning = planSessionIntent(plannerInput);
       if (planning.status !== "planned" || !planning.sessionIntent) {
         throw new Error(`OWNER_SESSION_INTENT_BLOCKED:${planning.status}`);
+      }
+      if (!planning.trainingReadiness.downstreamTrainingAllowed) {
+        throw new Error("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
       }
       const candidates = buildSessionCandidateResults(planning.sessionIntent, {
         athlete, assessment, alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
@@ -652,7 +681,8 @@ export function runControlledOwnerProductionPipeline(
     ? ["OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN"] : [];
   unresolvedFacts = uniqueSorted([...unresolvedFacts,
     ...(input.assessmentHandoff?.unresolvedConfirmedReferences.map((reference) =>
-      `OWNER_ASSESSMENT_REFERENCE_UNRESOLVED:${reference}`) ?? [])]);
+      `OWNER_ASSESSMENT_REFERENCE_UNRESOLVED:${reference}`) ?? []),
+    ...(input.assessmentHandoff?.painOwnership?.reasonCodes ?? [])]);
   try {
     if (input.assessmentHandoff && (input.assessmentHandoff.sourceProductRevisionId !==
       input.command.sourceProductRevisionId ||
@@ -671,6 +701,8 @@ export function runControlledOwnerProductionPipeline(
         mappedSignalIds: input.assessmentHandoff.assessment.signals.map((signal) => signal.id),
         mappingTraceRefs: input.assessmentHandoff.mappingTraceRefs,
         unresolvedConfirmedReferences: input.assessmentHandoff.unresolvedConfirmedReferences,
+        trainingSafetySignalIds: input.assessmentHandoff.trainingSafety?.signals.map((signal) => signal.signalId) ?? [],
+        painOwnership: input.assessmentHandoff.painOwnership ?? null,
         opaqueTextConsumed: input.assessmentHandoff.opaqueTextConsumed,
         diagnosticInferenceCount: input.assessmentHandoff.diagnosticInferenceCount,
       }) : null });

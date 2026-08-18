@@ -250,6 +250,24 @@ describe("owner preview exact page and API reads", () => {
     expect(text).toContain("Confirmed shoulder control supports low-fatigue preparation.");
   });
 
+  it("presents unresolved pain Safety as review-required rather than duration-only", async () => {
+    const safetyPreview: ControlledOwnerV2ProgramPreview = { ...PREVIEW,
+      readinessStatus: "preview_only_unknown_duration",
+      unresolvedFacts: ["OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE"] };
+    harness.previews.set(key(OWNER_ID, PREVIEW_ID), safetyPreview);
+
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const status = document.querySelector("[aria-label='Preview readiness status']")?.textContent ?? "";
+    expect(status).toContain("Pain or safety information needs review");
+    expect(status).not.toContain("duration unknown");
+    const primary = document.querySelector("[data-testid='owner-preview-presentation']")!.cloneNode(true) as Element;
+    primary.querySelectorAll("details").forEach((details) => details.remove());
+    expect(primary.textContent).not.toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
+    expect(document.querySelector("[data-testid='owner-preview-technical-details']")?.textContent)
+      .toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
+    expect(document.body.textContent).toContain("Application is unavailable in preview mode.");
+  });
+
   it("keeps raw reason codes out of the primary reading flow and available in closed disclosures", async () => {
     const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
     const primaryReadingFlow = document.querySelector("[data-testid='owner-preview-presentation']")!.cloneNode(true) as Element;

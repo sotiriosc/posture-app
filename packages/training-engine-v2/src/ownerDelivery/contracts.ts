@@ -118,6 +118,8 @@ export interface OwnerPainContext {
   readonly limitationIds: readonly string[];
   readonly confirmed: boolean;
   readonly diagnosticClaimCount: 0;
+  readonly sourceFactIds?: readonly string[];
+  readonly sourceRevision?: string;
 }
 
 export interface OwnerGetStrongerProfileRevision {
@@ -558,6 +560,9 @@ export function buildOwnerProfileRevision(input: Omit<OwnerGetStrongerProfileRev
       ...input.painContext,
       regionIds: Object.freeze(uniqueSorted(input.painContext.regionIds)),
       limitationIds: Object.freeze(uniqueSorted(input.painContext.limitationIds)),
+      ...(input.painContext.sourceFactIds
+        ? { sourceFactIds: Object.freeze(uniqueSorted(input.painContext.sourceFactIds)) }
+        : {}),
     }),
     assessmentReferences: Object.freeze(uniqueSorted(input.assessmentReferences)),
     continuityReferences: Object.freeze(uniqueSorted(input.continuityReferences)),
@@ -582,6 +587,9 @@ export function evaluateOwnerProfileReadiness(profile: OwnerGetStrongerProfileRe
     reasons.push("OWNER_PROFILE_EXACT_EQUIPMENT_REQUIRED");
   }
   if (!profile.painContext.confirmed) reasons.push("OWNER_PROFILE_PAIN_CONTEXT_CONFIRMATION_REQUIRED");
+  if (profile.painContext.sourceFactIds && !profile.painContext.sourceRevision) {
+    reasons.push("OWNER_PROFILE_PAIN_CONTEXT_PROVENANCE_INCOMPLETE");
+  }
   if (profile.trainingSafety === "blocked") reasons.push("OWNER_PROFILE_TRAINING_SAFETY_BLOCKED");
   if (profile.trainingSafety === "review_required") reasons.push("OWNER_PROFILE_TRAINING_SAFETY_REVIEW_REQUIRED");
   const status = reasons.includes("OWNER_PROFILE_TRAINING_SAFETY_BLOCKED")

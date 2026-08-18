@@ -27,6 +27,7 @@ export default function OwnerProfileClient(input: {
   const [safetyConfirmed, setSafetyConfirmed] = useState(profile?.trainingSafety === "clear");
   const [assessmentReferences, setAssessmentReferences] = useState<string[]>(
     [...(profile?.assessmentReferences ?? [])]);
+  const [painFactIds, setPainFactIds] = useState<string[]>([...(profile?.painContext.sourceFactIds ?? [])]);
   const [consent, setConsent] = useState(false);
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState("");
@@ -50,9 +51,10 @@ export default function OwnerProfileClient(input: {
         sessionMinutes: unknownMinutes ? { status: "explicit_unknown", minutes: null } :
           { status: "known", minutes }, equipmentEnvironment: environment, capabilityIds: capabilities,
         coarseExperience: experience, painConfirmed, safetyConfirmed,
-        assessmentReferences,
+        assessmentReferences, painFactIds,
       });
-      if (!response.ok) throw new Error("Profile could not be saved.");
+      const payload = await response.json() as { error?: { message?: string } };
+      if (!response.ok) throw new Error(payload.error?.message ?? "Profile could not be saved.");
       setMessage("Profile revision saved.");
       router.refresh();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Profile could not be saved."); }
@@ -75,6 +77,11 @@ export default function OwnerProfileClient(input: {
       [fact.structuredValue] : []));
   const staleAssessmentReferences = assessmentReferences.filter((reference) =>
     !proposedAssessmentReferences.has(reference));
+  const proposedPainFacts = input.proposedFacts.filter((fact) => fact.field === "pain_region");
+  const proposedPainFactIds = new Set(proposedPainFacts.map((fact) => fact.factId));
+  const stalePainFactIds = painFactIds.filter((factId) => !proposedPainFactIds.has(factId));
+  const allPainFactsConfirmed = proposedPainFacts.every((fact) => painFactIds.includes(fact.factId)) &&
+    stalePainFactIds.length === 0;
 
   return <>
     <section className={styles.section}>
@@ -124,7 +131,13 @@ export default function OwnerProfileClient(input: {
     <section className={styles.section}>
       <h2>Current Product facts</h2>
       <ul className={styles.facts}>{input.proposedFacts.map((fact) => <li className={styles.fact} key={fact.factId}>
-        {fact.field === "assessment_reference" && typeof fact.structuredValue === "string" ?
+        {fact.field === "pain_region" && typeof fact.structuredValue === "string" ?
+          <label className={styles.check}><input type="checkbox"
+            checked={painFactIds.includes(fact.factId)}
+            onChange={(event) => setPainFactIds((current) => event.target.checked ?
+              [...new Set([...current, fact.factId])] : current.filter((entry) => entry !== fact.factId))} />
+            <span>Pain region: {fact.structuredValue}</span>
+          </label> : fact.field === "assessment_reference" && typeof fact.structuredValue === "string" ?
           <label className={styles.check}><input type="checkbox"
             checked={assessmentReferences.includes(fact.structuredValue)}
             onChange={(event) => setAssessmentReferences((current) => event.target.checked ?
@@ -133,6 +146,11 @@ export default function OwnerProfileClient(input: {
             <span>{fact.structuredValue.replace("assessment:observation:", "Assessment: ").replaceAll("-", " ")}</span>
           </label> : <span>{fact.field.replaceAll("_", " ")}</span>}
         <span className={styles.status}>{fact.status.replaceAll("_", " ")}</span>
+      </li>)}{stalePainFactIds.map((factId) => <li className={styles.fact} key={factId}>
+        <label className={styles.check}><input type="checkbox" checked
+          onChange={() => setPainFactIds((current) => current.filter((entry) => entry !== factId))} />
+          <span>Previously confirmed pain fact</span>
+        </label><span className={styles.status}>stale - remove to save</span>
       </li>)}{staleAssessmentReferences.map((reference) => <li className={styles.fact} key={reference}>
         <label className={styles.check}><input type="checkbox" checked
           onChange={() => setAssessmentReferences((current) => current.filter((entry) => entry !== reference))} />
@@ -143,7 +161,8 @@ export default function OwnerProfileClient(input: {
     <label className={styles.check}><input type="checkbox" checked={consent}
       onChange={(event) => setConsent(event.target.checked)} /><span>Enroll in controlled Praxis V2 owner delivery</span></label>
     <div className={styles.actions}>
-      <button className={styles.button} type="button" disabled={working || !consent || !painConfirmed || !safetyConfirmed || !capabilities.length}
+      <button className={styles.button} type="button" disabled={working || !consent || !painConfirmed ||
+        !allPainFactsConfirmed || !safetyConfirmed || !capabilities.length}
         onClick={() => void save()}>Save profile</button>
       <button className={`${styles.button} ${styles.buttonSecondary}`} type="button" disabled={working || !profile}
         onClick={() => void generate()}>Generate preview</button>

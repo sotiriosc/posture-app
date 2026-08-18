@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { resolveOwnerExerciseDoseBlocks, type ControlledOwnerV2ProgramPreview } from "@praxis/training-engine-v2";
-import { presentBlockPurpose, presentDiagnosticIdentity, presentExerciseIdentity, presentOwnerWeekObjectives,
-  presentPracticeMode, presentPreparationCategory, presentReadiness, presentSessionPurpose } from "./presentation";
+import { presentBlockPurpose, presentExerciseIdentity, presentOwnerWeekObjectives,
+  presentPracticeMode, presentPreparationCategory, presentReadiness, presentSessionPurpose,
+  presentUnresolvedFact } from "./presentation";
 
 export interface OwnerPreviewPresentationProps {
   readonly preview: ControlledOwnerV2ProgramPreview;
@@ -62,7 +63,7 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
       </div>
       <div className={styles.statusPanel} role="status" aria-label="Preview readiness status">
         <span className={styles.statusLabel}>Preview status</span>
-        <strong className={styles.status}>{presentReadiness(preview.readinessStatus)}</strong>
+        <strong className={styles.status}>{presentReadiness(preview.readinessStatus, preview.unresolvedFacts)}</strong>
       </div>
     </header>
 
@@ -146,7 +147,7 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
     {preview.unresolvedFacts.length ? <section className={styles.previewSection}>
       <h2>Unresolved facts</h2>
       <ul className={styles.unresolvedList}>{preview.unresolvedFacts.map((fact) =>
-        <li key={fact}>{presentDiagnosticIdentity(fact)}</li>)}</ul>
+        <li key={fact}>{presentUnresolvedFact(fact)}</li>)}</ul>
     </section> : null}
 
     <details className={styles.technical} data-testid="owner-preview-technical-details">
@@ -162,6 +163,9 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
           <div className={styles.technicalFact}><dt>Canonical Week objective IDs</dt><dd><ul>{
             preview.productProjection.weekObjectiveIds.map((id) =>
               <li className={styles.code} key={id}>{id}</li>)}</ul></dd></div>
+          {preview.unresolvedFacts.length ? <div className={styles.technicalFact}><dt>Diagnostic identifiers</dt>
+            <dd><ul>{preview.unresolvedFacts.map((fact) =>
+              <li className={styles.code} key={fact}>{fact}</li>)}</ul></dd></div> : null}
         </dl>
       </div>
     </details>
