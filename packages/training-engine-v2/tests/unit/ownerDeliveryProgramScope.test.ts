@@ -13,6 +13,7 @@ import {
   runControlledOwnerProductionPipeline,
   type OwnerGetStrongerProfileRevision,
   type OwnerPipelineStageArtifact,
+  type AssessmentState,
 } from "../../src";
 
 const NOW = "2026-08-17T20:00:00.000Z";
@@ -27,6 +28,7 @@ function fixture(input: {
   readonly painRegions?: readonly string[];
   readonly familiarity?: OwnerGetStrongerProfileRevision["familiarity"];
   readonly continuityReferences?: readonly string[];
+  readonly assessment?: AssessmentState;
 } = {}) {
   const days = input.days ?? 5;
   const minutes = input.minutes === undefined ? 90 : input.minutes;
@@ -49,7 +51,9 @@ function fixture(input: {
     coarseExperience: input.experience ?? "advanced", familiarity: input.familiarity ?? [],
     painContext: { regionIds: input.painRegions ?? [], limitationIds: [], confirmed: true,
       diagnosticClaimCount: 0 },
-    assessmentReferences: [], trainingSafety: "clear",
+    assessmentReferences: input.assessment?.signals.map((signal) =>
+      `assessment:observation:${signal.provenance?.sourceObservationId ?? signal.id}`) ?? [],
+    trainingSafety: "clear",
     continuityReferences: input.continuityReferences ?? [], evaluationTime: NOW,
     provenance: { source: "owner_confirmation", sourceRefs: ["frozen-owner-scope-fixture"] },
     reviewState: "confirmed", createdAt: NOW });
@@ -59,8 +63,28 @@ function fixture(input: {
     engineVersion: "training-engine-v2@owner-scope-test",
     policyVersions: CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
     evaluationTime: NOW, requestedAt: NOW });
+  const assessmentHandoff = input.assessment ? {
+    assessment: input.assessment, sourceProductRevisionId: command.sourceProductRevisionId,
+    confirmedAssessmentReferences: profile.assessmentReferences,
+    mappingTraceRefs: input.assessment.signals.flatMap((signal) => signal.provenance?.evidenceRefs ?? []),
+    unresolvedConfirmedReferences: [], mappingStatus: "mapped" as const, opaqueTextConsumed: false as const,
+    diagnosticInferenceCount: 0 as const,
+  } : undefined;
   return { profile, command, result: runControlledOwnerProductionPipeline({ command, profile,
-    proposedProductFacts: [] }) };
+    proposedProductFacts: [], ...(assessmentHandoff ? { assessmentHandoff } : {}) }) };
+}
+
+function assessmentSignal(input: { readonly id: string; readonly region: "shoulder" | "hip" | "lumbar_spine";
+  readonly movementRole: "scapular_control" | "single_leg" | "anti_extension_core" }) {
+  return Object.freeze({ id: `product-assessment:${input.id}`, type: "control_finding" as const,
+    source: "photo_assessment" as const, confidence: "high" as const, priority: "primary" as const,
+    region: input.region, movementRole: input.movementRole,
+    description: `Structured ${input.id} control observation.`,
+    provenance: Object.freeze({ sourceSystem: "product_assessment_report" as const,
+      sourceObservationId: input.id, sourceRevision: "product-revision:frozen",
+      mappingRuleId: `product-assessment-report-v1:${input.id}`,
+      evidenceRefs: Object.freeze([`product-revision:frozen:observation:${input.id}`]),
+      opaqueTextConsumed: false as const }) });
 }
 
 function stage<T>(stages: readonly OwnerPipelineStageArtifact[], name: OwnerPipelineStageArtifact["stage"]): T {
@@ -72,7 +96,9 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     const { result } = fixture({ id: "live-equivalent" });
 
     expect(result.status, JSON.stringify(result.unresolvedFacts)).toBe("complete");
-    expect(result.approvalAllowed).toBe(true);
+    expect(result.approvalAllowed).toBe(false);
+    expect(result.unresolvedFacts.some((fact) =>
+      fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
     const intent = stage<{ readonly objectives: readonly { readonly objectiveId: string;
       readonly target: { readonly targetMovementRoles: readonly string[] } }[] }>(result.stages, "week_intent");
     expect(intent.objectives.map((objective) => [...objective.target.targetMovementRoles].sort())).toEqual([
@@ -100,6 +126,8 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     expect(exerciseIds[1]).toEqual(exerciseIds[0]);
     expect(result.projection!.sessions.every((session) =>
       session.practiceModes.join("|") === "full|lighter|recovery")).toBe(true);
+    expect(result.projection!.sessions.every((session) =>
+      session.availableMinutes === 90 && session.calculatedDuration?.noInventedTime)).toBe(true);
   });
 
   it("preserves every ordered Prescription block as readable, calibration-honest display truth", () => {
@@ -153,6 +181,44 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     expect(genericGym.bands).toEqual({ types: [], anchors: [] });
     expect(genericGym.cables).toMatchObject({ available: true, adjustableHeight: false,
       availableHeights: [] });
+    expect(genericGym.bodyweight.wallAvailable).toBe(false);
+    const wall = buildOwnerEquipmentCapabilities(fixture({ id: "exact-wall",
+      capabilityIds: ["commercial_gym", "wall"] }).profile);
+    expect(wall.bodyweight.wallAvailable).toBe(true);
+    expect(wall.supportSurfaces).toEqual(["wall"]);
+  });
+
+  it("uses confirmed assessment facts for causal shared preparation without manufacturing defaults", () => {
+    const noAssessment = fixture({ id: "no-assessment" }).result;
+    expect(noAssessment.projection!.sessions.flatMap((session) => session.exerciseAssignments)
+      .filter((assignment) => assignment.section === "warmup" || assignment.section === "activation")).toEqual([]);
+
+    const upper = fixture({ id: "upper-preparation",
+      capabilityIds: ["commercial_gym", "bodyweight", "wall", "stable_loaded_standing_space",
+        "dumbbells", "adjustable_bench"],
+      assessment: { signals: [assessmentSignal({ id: "pose-shoulder-asymmetry", region: "shoulder",
+        movementRole: "scapular_control" })], historicalWeaknesses: [] } }).result;
+    expect(upper.status, JSON.stringify(upper.unresolvedFacts)).toBe("complete");
+    for (const session of upper.projection!.sessions) {
+      const preparation = session.exerciseAssignments.filter((assignment) => assignment.section === "activation");
+      expect(preparation).toHaveLength(1);
+      expect(preparation[0]).toMatchObject({ exerciseId: "scapular-push-up",
+        preparationCategories: ["activation_control"] });
+      expect(preparation[0]!.doseBlocks?.some((block) => block.purpose === "developmental_work")).toBe(false);
+    }
+
+    const lower = fixture({ id: "lower-preparation",
+      capabilityIds: ["commercial_gym", "bodyweight", "stable_loaded_standing_space",
+        "dumbbells", "adjustable_bench"],
+      assessment: { signals: [
+        assessmentSignal({ id: "pose-hip-shift", region: "hip", movementRole: "single_leg" }),
+        assessmentSignal({ id: "pose-trunk-bias", region: "lumbar_spine", movementRole: "anti_extension_core" }),
+      ], historicalWeaknesses: [] } }).result;
+    const lowerPreparation = lower.projection!.sessions.flatMap((session) => session.exerciseAssignments)
+      .filter((assignment) => assignment.section === "activation");
+    expect(lowerPreparation.map((assignment) => assignment.exerciseId)).toEqual(
+      expect.arrayContaining(["dead-bug", "single-leg-balance-rehearsal"]));
+    expect(lowerPreparation.every((assignment) => assignment.dependencyIds?.length)).toBe(true);
   });
 
   it("retains the complete floor-press dose when that realization is the best legal answer", () => {
@@ -176,6 +242,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
       sessionNeedCoverageComplete: true, assignmentCoverageComplete: true,
       developmentalPrescriptionCoverageComplete: true, projectionCoverageComplete: true,
       availabilityNotAutomaticallyFilled: true, exactEquipmentCapabilityPreserved: true,
+      supportingWorkCarriesNoDevelopmentalCredit: true, durationProjectionTruthful: true,
     } as const;
     expect(evaluateOwnerProgramSemanticCompleteness(complete)).toMatchObject({ approvalAllowed: true,
       reasonCodes: [] });

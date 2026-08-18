@@ -13,9 +13,9 @@ describe("controlled owner delivery hardening evidence", () => {
   it("locks controlled scenarios, fixed cohorts, and the 1,350-case holdout", () => {
     const evidence = validateEvidenceManifests();
     expect(evidence).toMatchObject({ controlledScenarioCount: 900, fixedShellCohortCount: 1140,
-      holdoutCount: 1350, stateCount: 23, exerciseCount: 64, validTransitionEvidence: true });
+      holdoutCount: 1350, stateCount: 23, exerciseCount: 69, validTransitionEvidence: true });
     expect(OWNER_DELIVERY_STATES).toHaveLength(23);
-    expect(REFERENCE_EXERCISES).toHaveLength(64);
+    expect(REFERENCE_EXERCISES).toHaveLength(69);
     expect(FIXED_SHELL_COHORT_COUNTS).toEqual({ identity_mode: 160, enrollment_profile: 140,
       generation_preview: 140, approval_application: 140, owner_week_session: 140,
       practice_outcome: 120, rollback_kill_switch: 100, security_privacy: 100,

@@ -31,7 +31,8 @@ export async function POST(request: Request) {
           const current = await loadProduct();
           return { sourceProductSnapshotId: current.sourceProductSnapshotId,
             sourceProductRevisionId: current.sourceProductRevisionId,
-            activeLegacyProgramRevisionId: current.activeLegacyProgramRevisionId };
+            activeLegacyProgramRevisionId: current.activeLegacyProgramRevisionId,
+            assessmentReport: current.snapshot.assessment ?? null };
         },
       });
       if (!generated.preview) return ownerJson({ ok: false, error: { code: generated.status.toUpperCase(),

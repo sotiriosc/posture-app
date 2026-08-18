@@ -8,6 +8,17 @@ function stringArray(value: unknown): readonly string[] {
     : Object.freeze([]);
 }
 
+function assessmentObservationIds(value: unknown): readonly string[] {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return Object.freeze([]);
+  const observations = (value as Record<string, unknown>).observations;
+  if (!Array.isArray(observations)) return Object.freeze([]);
+  return Object.freeze(uniqueSorted(observations.flatMap((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+    const id = (entry as Record<string, unknown>).id;
+    return typeof id === "string" && id.trim() ? [id.trim()] : [];
+  })));
+}
+
 export function proposeOwnerImportsFromTrainingSnapshot(input: {
   readonly snapshot: TrainingSnapshot;
   readonly sourceRevision: string;
@@ -34,7 +45,8 @@ export function proposeOwnerImportsFromTrainingSnapshot(input: {
   painRegions.forEach((region) => add("pain_region", region));
   add("experience", typeof questionnaire.experience === "string" ? questionnaire.experience : null,
     typeof questionnaire.experience === "string" ? "requires_confirmation" : "unknown");
-  Object.keys(assessment).sort().forEach((key) => add("assessment_reference", `assessment:${key}`));
+  assessmentObservationIds(assessment).forEach((observationId) =>
+    add("assessment_reference", `assessment:observation:${observationId}`));
   const continuity = Object.keys(input.snapshot.meta?.sessionUpdatedAtById ?? {}).sort();
   continuity.forEach((sessionId) => add("continuity_reference", `legacy-session:${sessionId}`));
   return Object.freeze(facts);

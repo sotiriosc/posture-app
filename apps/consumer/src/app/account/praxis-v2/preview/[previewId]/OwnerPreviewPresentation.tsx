@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { resolveOwnerExerciseDoseBlocks, type ControlledOwnerV2ProgramPreview } from "@praxis/training-engine-v2";
 import { presentBlockPurpose, presentDiagnosticIdentity, presentExerciseIdentity, presentOwnerWeekObjectives,
-  presentPracticeMode, presentReadiness, presentSessionPurpose } from "./presentation";
+  presentPracticeMode, presentPreparationCategory, presentReadiness, presentSessionPurpose } from "./presentation";
 
 export interface OwnerPreviewPresentationProps {
   readonly preview: ControlledOwnerV2ProgramPreview;
@@ -21,6 +21,35 @@ function DoseFacts(input: { readonly styles: Readonly<Record<string, string>>; r
   return <dl className={input.styles.doseFacts}>{facts.map(([label, value]) =>
     <div className={input.styles.doseFact} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>;
 }
+
+function durationText(session: ControlledOwnerV2ProgramPreview["productProjection"]["sessions"][number]): string {
+  const available = typeof session.availableMinutes === "number" ? `${session.availableMinutes} minutes available` :
+    "Available time unknown";
+  const calculated = session.calculatedDuration;
+  if (!calculated) {
+    return session.durationStatus === "known" && typeof session.durationMinutes === "number" ?
+      `${session.durationMinutes} minutes` : "Duration unknown";
+  }
+  const time = (seconds: number) => seconds % 60 === 0 ? `${seconds / 60} minutes` :
+    `${Math.floor(seconds / 60)} minutes ${seconds % 60} seconds`;
+  if (calculated.knownUpperBoundSeconds === null) {
+    return `${available} · Calculated at least ${time(calculated.knownLowerBoundSeconds)}; final duration unresolved`;
+  }
+  const range = calculated.knownLowerBoundSeconds === calculated.knownUpperBoundSeconds ?
+    time(calculated.knownLowerBoundSeconds) :
+    `${time(calculated.knownLowerBoundSeconds)} to ${time(calculated.knownUpperBoundSeconds)}`;
+  return `${available} · Calculated ${range}`;
+}
+
+function sectionGroup(section: string | undefined): "prepare" | "main" | "supporting" | "cooldown" {
+  if (section === "warmup" || section === "activation") return "prepare";
+  if (section === "accessory") return "supporting";
+  if (section === "cooldown") return "cooldown";
+  return "main";
+}
+
+const SECTION_LABELS = Object.freeze({ prepare: "Prepare", main: "Main work",
+  supporting: "Supporting work", cooldown: "Cooldown" });
 
 export default function OwnerPreviewPresentation({ preview, actions, styles }: OwnerPreviewPresentationProps) {
   const objectives = presentOwnerWeekObjectives(preview.productProjection.weekObjectiveIds);
@@ -55,16 +84,22 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
           <header className={styles.sessionHeader}>
             <h3>Session {sessionIndex + 1}</h3>
             <p className={styles.sessionMeta}>{presentSessionPurpose(session.purpose)} · {
-              session.durationStatus === "known" && typeof session.durationMinutes === "number" ?
-                `${session.durationMinutes} minutes` : "Duration unknown"}</p>
+              durationText(session)}</p>
           </header>
 
-          <div className={styles.exerciseList}>{session.exerciseAssignments.map((exercise) => {
+          <div className={styles.exerciseList}>{session.exerciseAssignments.map((exercise, exerciseIndex) => {
             const doseBlocks = resolveOwnerExerciseDoseBlocks(preview, exercise);
-            return <article className={styles.previewExercise} data-testid="owner-preview-exercise"
+            const group = sectionGroup(exercise.section);
+            const previousGroup = exerciseIndex === 0 ? null :
+              sectionGroup(session.exerciseAssignments[exerciseIndex - 1]?.section);
+            const categories = exercise.preparationCategories ?? [];
+            return <div className={styles.sessionSectionGroup} key={exercise.assignmentId}>
+              {group !== previousGroup ? <h4 className={styles.sessionSectionHeading}>{SECTION_LABELS[group]}</h4> : null}
+              <article className={styles.previewExercise} data-testid="owner-preview-exercise"
               key={exercise.assignmentId}>
               <header className={styles.exerciseHeader}>
-                <p className={styles.exerciseKicker}>Exercise</p>
+                <p className={styles.exerciseKicker}>{categories.length ?
+                  categories.map(presentPreparationCategory).join(" · ") : "Exercise"}</p>
                 <h4 className={styles.exerciseTitle}>{presentExerciseIdentity(exercise.exerciseId)}</h4>
               </header>
 
@@ -91,7 +126,12 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
                 <ul className={styles.traceList}>{exercise.reasonCodes.map((reason) =>
                   <li className={styles.code} key={reason}>{reason}</li>)}</ul>
               </details> : null}
-            </article>;
+              {exercise.dependencyReasons?.length ? <details className={styles.trace}>
+                <summary>Why this preparation?</summary>
+                <ul className={styles.traceList}>{exercise.dependencyReasons.map((reason) =>
+                  <li key={reason}>{reason}</li>)}</ul>
+              </details> : null}
+            </article></div>;
           })}</div>
 
           <aside className={styles.sessionOptions} data-testid="owner-preview-session-options"

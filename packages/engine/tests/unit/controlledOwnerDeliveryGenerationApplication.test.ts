@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildOwnerEnrollmentRevision,
   buildOwnerProfileRevision,
+  buildOwnerProgramPreview,
   CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
 } from "@praxis/training-engine-v2";
 import {
@@ -30,7 +31,9 @@ const gate = (mode: "preview" | "apply"): ControlledOwnerRequestGateResult => Ob
   databaseWriteCount: 0,
 });
 
-async function fixture(input: { readonly mode: "preview" | "apply"; readonly knownMinutes: boolean }) {
+async function fixture(input: { readonly mode: "preview" | "apply"; readonly knownMinutes: boolean;
+  readonly assessmentReferences?: readonly string[]; readonly assessmentReport?: Record<string, unknown> | null;
+  readonly capabilityIds?: readonly string[] }) {
   const enrollmentProfiles = createInMemoryOwnerEnrollmentProfileRepository();
   const delivery = createInMemoryOwnerDeliveryRepository();
   const enrollment = buildOwnerEnrollmentRevision({ userId: USER_ID, basedOnRevisionId: null,
@@ -45,10 +48,11 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     sessionMinutes: input.knownMinutes ? { status: "known", minutes: 45 } :
       { status: "explicit_unknown", minutes: null },
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
-      capabilityIds: ["commercial_gym", "dumbbells", "adjustable_bench"], confirmed: true,
+      capabilityIds: input.capabilityIds ?? ["commercial_gym", "dumbbells", "adjustable_bench"], confirmed: true,
       sourceRevision: "owner-equipment:synthetic-1" }, coarseExperience: "beginner", familiarity: [],
     painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
-    assessmentReferences: [], trainingSafety: "clear", continuityReferences: [], evaluationTime: NOW,
+    assessmentReferences: input.assessmentReferences ?? [], trainingSafety: "clear",
+    continuityReferences: [], evaluationTime: NOW,
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-profile"] },
     reviewState: "confirmed", createdAt: NOW });
   await enrollmentProfiles.appendProfile(profile);
@@ -65,8 +69,25 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     productImport: { loadProposedFacts: async () => [] },
     loadSourceContext: async () => ({ sourceProductSnapshotId: "product-snapshot:synthetic-1",
       sourceProductRevisionId: context.currentProductRevisionId,
-      activeLegacyProgramRevisionId: context.currentLegacyProgramRevisionId }) });
+      activeLegacyProgramRevisionId: context.currentLegacyProgramRevisionId,
+      assessmentReport: input.assessmentReport ?? null }) });
   return { generated, enrollmentProfiles, delivery, profile, context };
+}
+
+async function reviewedDurationPreview(value: Awaited<ReturnType<typeof fixture>>) {
+  const generated = value.generated.preview!;
+  const preview = buildOwnerProgramPreview({ userId: generated.userId,
+    generationCommandId: generated.generationCommandId, profileId: generated.profileId,
+    profileRevisionId: generated.profileRevisionId,
+    sourceProductSnapshotId: generated.sourceProductSnapshotId,
+    sourceProductRevisionId: generated.sourceProductRevisionId,
+    activeLegacyProgramRevisionId: generated.activeLegacyProgramRevisionId,
+    engineVersion: generated.engineVersion, policyVersions: generated.policyVersions,
+    completeProgramSnapshot: generated.completeProgramSnapshot,
+    productProjection: generated.productProjection, unresolvedFacts: [],
+    readinessStatus: "ready_for_approval", safetyState: generated.safetyState, createdAt: generated.createdAt });
+  await value.delivery.appendPreview(preview);
+  return preview;
 }
 
 describe("controlled owner genuine generation and application", () => {
@@ -89,7 +110,9 @@ describe("controlled owner genuine generation and application", () => {
     ]);
     expect(value.generated).toMatchObject({ productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
     expect(value.generated.preview).toMatchObject({ counterfactual: true, applied: false, stale: false,
-      readinessStatus: "ready_for_approval" });
+      readinessStatus: "preview_only_unknown_duration" });
+    expect(value.generated.preview?.unresolvedFacts.some((fact) =>
+      fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
     expect(JSON.stringify(value.generated.preview)).not.toContain("owner@example");
   });
 
@@ -100,9 +123,29 @@ describe("controlled owner genuine generation and application", () => {
     expect(value.generated.preview?.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
   });
 
+  it("carries a confirmed structured Product assessment into causal owner preparation", async () => {
+    const value = await fixture({ mode: "preview", knownMinutes: true,
+      capabilityIds: ["commercial_gym", "bodyweight", "dumbbells", "adjustable_bench"],
+      assessmentReferences: ["assessment:observation:pose-shoulder-asymmetry"],
+      assessmentReport: { observations: [{ id: "pose-shoulder-asymmetry", confidence: "high",
+        title: "Opaque title", description: "Opaque description" }],
+      priorities: ["pose-shoulder-asymmetry"], summary: "Opaque summary", disclaimers: [] } });
+    const mapping = value.generated.preview?.completeProgramSnapshot.find((entry) =>
+      entry.stage === "product_mapping")?.payload as { readonly assessmentHandoff?: {
+        readonly mappedSignalIds: readonly string[]; readonly opaqueTextConsumed: boolean } };
+    expect(mapping.assessmentHandoff).toMatchObject({
+      mappedSignalIds: ["product-assessment:pose-shoulder-asymmetry"], opaqueTextConsumed: false,
+    });
+    const preparation = value.generated.preview?.productProjection.sessions.flatMap((session) =>
+      session.exerciseAssignments).filter((assignment) => assignment.section === "activation");
+    expect(preparation).toEqual([expect.objectContaining({ exerciseId: "scapular-push-up",
+      preparationCategories: ["activation_control"] })]);
+    expect(JSON.stringify(value.generated.preview)).not.toContain("Opaque description");
+  });
+
   it("keeps approval separate, then atomically creates envelope, application, pointer, and audit", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
-    const preview = value.generated.preview!;
+    const preview = await reviewedDurationPreview(value);
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
       idempotencyKey: "approve-key-1", approvedAt: NOW, gate: async () => gate("apply"),
@@ -141,7 +184,7 @@ describe("controlled owner genuine generation and application", () => {
 
   it("rejects stale source revisions before approval", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
-    const preview = value.generated.preview!;
+    const preview = await reviewedDurationPreview(value);
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
       idempotencyKey: "stale-key", approvedAt: NOW, gate: async () => gate("apply"),
@@ -154,7 +197,7 @@ describe("controlled owner genuine generation and application", () => {
 
   it("executes and resumes an exact owner V2 Full session without touching legacy drafts", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
-    const preview = value.generated.preview!;
+    const preview = await reviewedDurationPreview(value);
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
       idempotencyKey: "session-approve", approvedAt: NOW, gate: async () => gate("apply"),
@@ -216,7 +259,7 @@ describe("controlled owner genuine generation and application", () => {
 
   it("rolls the active pointer back atomically without deleting V2 lineage", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
-    const preview = value.generated.preview!;
+    const preview = await reviewedDurationPreview(value);
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
       idempotencyKey: "rollback-approve", approvedAt: NOW, gate: async () => gate("apply"),

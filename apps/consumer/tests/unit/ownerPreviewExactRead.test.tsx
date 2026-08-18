@@ -202,10 +202,11 @@ describe("owner preview exact page and API reads", () => {
     expect(output).toContain("Session 2");
     expect(output.match(/Strength development · 90 minutes/g)).toHaveLength(2);
     expect(output).toContain("Dumbbell bench press");
-    expect(output).toContain("Preparatory acclimation block");
+    expect(output).toContain("Lift acclimation");
+    expect(output).toContain("Main work");
     expect(output).toContain("1 set");
     expect(output).toContain("60-180 seconds before strength work");
-    expect(output).toContain("Developmental work block");
+    expect(output).toContain("Main work");
     expect(output).toContain("2 sets");
     expect(output).toContain("5-10 reps");
     expect(output).toContain("90-180 seconds between strength sets");
@@ -219,6 +220,34 @@ describe("owner preview exact page and API reads", () => {
     expect(output).toContain("Application is unavailable in preview mode.");
     expect(document.querySelectorAll("[data-testid='owner-preview-dose-block']")).toHaveLength(4);
     expect(document.querySelectorAll("[data-testid='owner-preview-session-options']")).toHaveLength(2);
+  });
+
+  it("renders ordered preparation sections and keeps available time separate from calculated duration", async () => {
+    const preparation = { ...assignment(9, "scapular-push-up"), section: "activation" as const,
+      role: "activation" as const, preparationCategories: ["activation_control"],
+      dependencyIds: ["assessment-dependency:shoulder-control"],
+      dependencyReasons: ["Confirmed shoulder control supports low-fatigue preparation."],
+      doseBlocks: [{ blockId: "activation:9", order: 0, purpose: "technique_quality_work",
+        volume: "1 set", target: "4-8 reps", rest: "30-60 seconds", effort: "Low fatigue",
+        tempo: "Controlled", load: "Bodyweight", calibrationRequired: false }] };
+    const main = { ...assignment(10, "dumbbell-bench-press"), section: "main" as const,
+      role: "primary_strength" as const };
+    const projection = PREVIEW.productProjection;
+    const preparedPreview: ControlledOwnerV2ProgramPreview = { ...PREVIEW,
+      productProjection: { ...projection, sessions: [{ ...projection.sessions[0]!,
+        durationStatus: "unknown", durationMinutes: null, availableMinutes: 90,
+        calculatedDuration: { status: "unknown_due_to_setup_transition", knownLowerBoundSeconds: 1_800,
+          knownUpperBoundSeconds: null, unknownComponents: ["setup:SETUP_DURATION_NOT_EXPLICIT"],
+          accountedAssignmentIds: [preparation.assignmentId, main.assignmentId], noInventedTime: true },
+        exerciseAssignments: [preparation, main] }] } };
+    harness.previews.set(key(OWNER_ID, PREVIEW_ID), preparedPreview);
+
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const text = document.body.textContent ?? "";
+    expect(text).toContain("90 minutes available · Calculated at least 30 minutes; final duration unresolved");
+    expect(text.indexOf("Prepare")).toBeLessThan(text.indexOf("Main work"));
+    expect(text).toContain("Activation / control");
+    expect(text).toContain("Confirmed shoulder control supports low-fatigue preparation.");
   });
 
   it("keeps raw reason codes out of the primary reading flow and available in closed disclosures", async () => {

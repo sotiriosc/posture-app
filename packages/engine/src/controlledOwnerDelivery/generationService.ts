@@ -7,6 +7,7 @@ import {
   type ControlledOwnerV2ProgramPreview,
   type OwnerDeliveryMode,
 } from "@praxis/training-engine-v2";
+import { mapProductAssessmentReportToV2 } from "../productAssessmentAdapter";
 import type { OwnerDeliveryRepository, OwnerEnrollmentProfileRepository, OwnerProductImportAdapter } from "./contracts";
 import type { ControlledOwnerRequestGateResult } from "./gate";
 
@@ -14,6 +15,40 @@ export interface OwnerGenerationSourceContext {
   readonly sourceProductSnapshotId: string;
   readonly sourceProductRevisionId: string;
   readonly activeLegacyProgramRevisionId: string | null;
+  readonly assessmentReport?: Record<string, unknown> | null;
+}
+
+export function buildControlledOwnerAssessmentHandoff(input: {
+  readonly profileAssessmentReferences: readonly string[];
+  readonly assessmentReport: Record<string, unknown> | null;
+  readonly sourceProductRevisionId: string;
+}) {
+  const mapped = mapProductAssessmentReportToV2({ assessment: input.assessmentReport,
+    sourceRevision: input.sourceProductRevisionId });
+  const confirmed = new Set(input.profileAssessmentReferences);
+  const referenceFor = (observationId: string) => `assessment:observation:${observationId}`;
+  const confirmedTrace = mapped.mappingTrace.filter((entry) => confirmed.has(referenceFor(entry.sourceObservationId)));
+  const confirmedSignalIds = new Set(confirmedTrace.map((entry) => entry.signalId));
+  const mappedReferences = new Set(mapped.mappingTrace.map((entry) => referenceFor(entry.sourceObservationId)));
+  const unresolvedReferences = new Set(mapped.unresolvedObservations.flatMap((entry) =>
+    entry.sourceObservationId && confirmed.has(referenceFor(entry.sourceObservationId))
+      ? [referenceFor(entry.sourceObservationId)] : []));
+  for (const reference of confirmed) {
+    if (!mappedReferences.has(reference) && !unresolvedReferences.has(reference)) unresolvedReferences.add(reference);
+  }
+  return Object.freeze({
+    assessment: Object.freeze({
+      signals: Object.freeze(mapped.assessment.signals.filter((signal) => confirmedSignalIds.has(signal.id))),
+      historicalWeaknesses: Object.freeze([]),
+    }),
+    sourceProductRevisionId: input.sourceProductRevisionId,
+    confirmedAssessmentReferences: Object.freeze([...confirmed].sort()),
+    mappingTraceRefs: Object.freeze(confirmedTrace.map((entry) => entry.sourceRef).sort()),
+    unresolvedConfirmedReferences: Object.freeze([...unresolvedReferences].sort()),
+    mappingStatus: mapped.status,
+    opaqueTextConsumed: false as const,
+    diagnosticInferenceCount: 0 as const,
+  });
 }
 
 export interface GenerateControlledOwnerPreviewResult {
@@ -71,6 +106,11 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     input.loadSourceContext(gate.userId),
     input.productImport.loadProposedFacts(gate.userId),
   ]);
+  const assessmentHandoff = buildControlledOwnerAssessmentHandoff({
+    profileAssessmentReferences: profile.assessmentReferences,
+    assessmentReport: source.assessmentReport ?? null,
+    sourceProductRevisionId: source.sourceProductRevisionId,
+  });
   const command = buildOwnerGenerationCommand({ userId: gate.userId,
     enrollmentRevisionId: enrollment.revisionId, profileRevisionId: profile.revisionId,
     sourceProductSnapshotId: source.sourceProductSnapshotId,
@@ -78,7 +118,8 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     activeLegacyProgramRevisionId: source.activeLegacyProgramRevisionId,
     engineVersion: input.engineVersion, policyVersions: input.policyVersions,
     evaluationTime: input.evaluationTime, requestedAt: input.requestedAt });
-  const pipeline = runControlledOwnerProductionPipeline({ command, profile, proposedProductFacts });
+  const pipeline = runControlledOwnerProductionPipeline({ command, profile, proposedProductFacts,
+    assessmentHandoff });
   if (pipeline.status !== "complete" || !pipeline.projection) {
     return result("generation_blocked", null, pipeline.unresolvedFacts);
   }
@@ -92,7 +133,7 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     unresolvedFacts: pipeline.unresolvedFacts,
     readinessStatus: resolveOwnerPreviewReadinessStatus({
       programSemanticCompletenessSatisfied: pipeline.programSemanticCompletenessSatisfied,
-      profileApprovalAllowed: readiness.approvalAllowed }),
+      profileApprovalAllowed: readiness.approvalAllowed && pipeline.approvalAllowed }),
     safetyState: profile.trainingSafety, createdAt: input.requestedAt });
   const requestFingerprint = createHash("sha256").update(JSON.stringify({ userId: gate.userId,
     enrollmentRevisionId: enrollment.revisionId, profileRevisionId: profile.revisionId,

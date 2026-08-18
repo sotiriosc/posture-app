@@ -232,6 +232,13 @@ export interface OwnerProgramExerciseProjection {
   readonly doseBlocks?: readonly OwnerProgramDoseBlockProjection[];
   readonly equipmentRequirementIds: readonly string[];
   readonly reasonCodes: readonly string[];
+  /** Present on projections created after ordered owner section support was introduced. */
+  readonly section?: "warmup" | "activation" | "main" | "accessory" | "cooldown";
+  readonly role?: "preparation" | "activation" | "primary_strength" | "secondary_strength" |
+    "hypertrophy_accessory" | "capacity" | "recovery";
+  readonly preparationCategories?: readonly string[];
+  readonly dependencyIds?: readonly string[];
+  readonly dependencyReasons?: readonly string[];
 }
 
 export interface OwnerProgramDoseBlockProjection {
@@ -253,6 +260,19 @@ export interface OwnerProgramSessionProjection {
   readonly purpose: string;
   readonly durationStatus: "known" | "unknown";
   readonly durationMinutes: number | null;
+  /** Available time and calculated work are separate facts. Optional for immutable older previews. */
+  readonly availableMinutes?: number | null;
+  readonly calculatedDuration?: {
+    readonly status: "fully_determinable" | "bounded" | "unknown_due_to_prescription" |
+      "unknown_due_to_setup_transition" | "unknown_due_to_interexercise_recovery" |
+      "unknown_due_to_section_transition" | "definitely_over_budget" | "possibly_over_budget" |
+      "fits_known_bound";
+    readonly knownLowerBoundSeconds: number;
+    readonly knownUpperBoundSeconds: number | null;
+    readonly unknownComponents: readonly string[];
+    readonly accountedAssignmentIds: readonly string[];
+    readonly noInventedTime: true;
+  };
   readonly exerciseAssignments: readonly OwnerProgramExerciseProjection[];
   readonly practiceModes: readonly ["full", "lighter", "recovery"];
 }

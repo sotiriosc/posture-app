@@ -29,7 +29,9 @@ test("owner preview is readable and responsive inside the dark account layout", 
     await expect(page.getByRole("heading", { name: "Session 1" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Session 2" })).toBeVisible();
     await expect(page.getByText("Application is unavailable in preview mode.")).toBeVisible();
-    await expect(page.getByTestId("owner-preview-dose-block")).toHaveCount(16);
+    await expect(page.getByTestId("owner-preview-dose-block")).toHaveCount(18);
+    await expect(page.getByRole("heading", { name: "Prepare" }).first()).toBeVisible();
+    await expect(page.getByText("90 minutes available", { exact: false }).first()).toBeVisible();
     await expect(page.getByTestId("owner-preview-prescription-trace").first()).not.toHaveAttribute("open", "");
     await expect(page.getByTestId("owner-preview-technical-details")).not.toHaveAttribute("open", "");
 

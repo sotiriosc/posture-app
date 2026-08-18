@@ -1,4 +1,5 @@
 import { deriveAlignmentPriorities } from "../alignment";
+import type { AssessmentState } from "../domain/assessment";
 import { buildTrainingReadinessTrace, NO_TRAINING_SAFETY_SIGNALS } from "../domain/trainingSafety";
 import { EMPTY_TRAINING_HISTORY } from "../domain/history";
 import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury";
@@ -6,6 +7,7 @@ import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
 import type { EquipmentCapabilities } from "../domain/equipment";
 import type { CurrentSessionEquipment, SessionAllocationDirective } from "../domain/sessionPlanningDirective";
+import { getPreparationKnowledgeProfile } from "../preparation";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
 import { composeSessionSkeleton } from "../sessionComposer/composeSessionSkeleton";
@@ -96,10 +98,22 @@ interface SessionExecution {
   readonly sequence: Sequence;
 }
 
+export interface ControlledOwnerAssessmentHandoff {
+  readonly assessment: AssessmentState;
+  readonly sourceProductRevisionId: string;
+  readonly confirmedAssessmentReferences: readonly string[];
+  readonly mappingTraceRefs: readonly string[];
+  readonly unresolvedConfirmedReferences: readonly string[];
+  readonly mappingStatus: "mapped" | "mapped_with_unresolved_observations" | "absent" | "unsupported_shape";
+  readonly opaqueTextConsumed: false;
+  readonly diagnosticInferenceCount: 0;
+}
+
 export interface ControlledOwnerProductionPipelineInput {
   readonly command: OwnerGenerationCommand;
   readonly profile: OwnerGetStrongerProfileRevision;
   readonly proposedProductFacts: readonly ProposedOwnerImportFact[];
+  readonly assessmentHandoff?: ControlledOwnerAssessmentHandoff;
 }
 
 export interface ControlledOwnerProductionPipelineResult {
@@ -131,6 +145,8 @@ export interface OwnerProgramSemanticCompletenessInput {
   readonly projectionCoverageComplete: boolean;
   readonly availabilityNotAutomaticallyFilled: boolean;
   readonly exactEquipmentCapabilityPreserved: boolean;
+  readonly supportingWorkCarriesNoDevelopmentalCredit: boolean;
+  readonly durationProjectionTruthful: boolean;
 }
 
 export function evaluateOwnerProgramSemanticCompleteness(input: OwnerProgramSemanticCompletenessInput) {
@@ -151,6 +167,10 @@ export function evaluateOwnerProgramSemanticCompleteness(input: OwnerProgramSema
       satisfied: input.availabilityNotAutomaticallyFilled }),
     Object.freeze({ id: "OWNER_EXACT_EQUIPMENT_CAPABILITIES_PRESERVED",
       satisfied: input.exactEquipmentCapabilityPreserved }),
+    Object.freeze({ id: "OWNER_SUPPORTING_WORK_HAS_NO_DEVELOPMENTAL_CREDIT",
+      satisfied: input.supportingWorkCarriesNoDevelopmentalCredit }),
+    Object.freeze({ id: "OWNER_CALCULATED_DURATION_DISTINCT_FROM_AVAILABLE",
+      satisfied: input.durationProjectionTruthful }),
   ]);
   const reasonCodes = Object.freeze(definitions.filter((entry) => !entry.satisfied).map((entry) => entry.id));
   return Object.freeze({ approvalAllowed: reasonCodes.length === 0, invariants: definitions, reasonCodes });
@@ -170,12 +190,13 @@ export function buildOwnerEquipmentCapabilities(profile: OwnerGetStrongerProfile
   const barbellRack = ids.has("barbell_rack");
   const adjustableBench = ids.has("adjustable_bench");
   const cables = ids.has("cables");
+  const wall = ids.has("wall");
   return Object.freeze({
     environment: profile.equipmentCapabilitySnapshot.environment === "commercial_gym" ?
       "commercial_gym" : "home",
     trainingSpace: Object.freeze({ stableLoadedStandingSpace: ids.has("stable_loaded_standing_space"),
       loadedGait: Object.freeze({ available: false }) }),
-    bodyweight: Object.freeze({ floorSpace: bodyweight, wallAvailable: false,
+    bodyweight: Object.freeze({ floorSpace: bodyweight, wallAvailable: wall,
       pullUpBar: ids.has("pull_up_station") }),
     bench: Object.freeze({ types: Object.freeze(adjustableBench ? ["adjustable" as const] : []),
       stable: adjustableBench }),
@@ -184,7 +205,7 @@ export function buildOwnerEquipmentCapabilities(profile: OwnerGetStrongerProfile
     cables: Object.freeze({ available: cables, adjustableHeight: false, availableHeights: Object.freeze([]) }),
     bands: Object.freeze({ types: Object.freeze([]), anchors: Object.freeze([]) }),
     machines: Object.freeze({ availableMachineIds: Object.freeze([]) }),
-    supportSurfaces: Object.freeze([]),
+    supportSurfaces: Object.freeze(wall ? ["wall" as const] : []),
   });
 }
 
@@ -288,22 +309,48 @@ function directive(input: { readonly command: OwnerGenerationCommand; readonly p
   evaluationAsOf: input.command.evaluationTime });
 }
 
-function compilationContext(): PrescriptionCompilationContextFacts {
-  return { familiarity: "unknown", returnAfterAbsence: false, painAwareLoadToleranceRegressionPermitted: false,
+function compilationContext(input: { readonly assignment: Handoff["assignments"][number];
+  readonly intent: NonNullable<Planning["sessionIntent"]>; readonly profile: OwnerGetStrongerProfileRevision;
+  readonly assessment: AssessmentState }): PrescriptionCompilationContextFacts {
+  const needs = input.intent.needs.filter((need) => input.assignment.satisfiedNeedIds.includes(need.id));
+  const dependencies = needs.flatMap((need) => need.dependencies);
+  const assessmentPriorityIds = uniqueSorted(dependencies.flatMap((entry) => entry.assessmentSignalIds));
+  const alignmentPriorityIds = deriveAlignmentPriorities(input.assessment).priorities
+    .filter((priority) => priority.sourceAssessmentSignalIds.some((id) => assessmentPriorityIds.includes(id)))
+    .map((priority) => priority.id);
+  const preparation = getPreparationKnowledgeProfile(input.assignment.exerciseId);
+  const familiarity = input.profile.familiarity.find((entry) => entry.exerciseId === input.assignment.exerciseId);
+  const explicitControl = dependencies.some((entry) => entry.actionFunctions.length > 0 ||
+    entry.movementRoles.length > 0 || (entry.rangeRequirements?.length ?? 0) > 0);
+  return { familiarity: familiarity?.status === "known" ? "known_productive" :
+    familiarity?.status === "calibration_required" ? "unfamiliar" : "unknown",
+    returnAfterAbsence: false, painAwareLoadToleranceRegressionPermitted: false,
     reliablePriorPerformance: false, reviewedRegression: false, adverseResponseSupportsReducedDose: false,
-    newEquipmentRealization: false, requiredPreparationDependency: false, reviewedRangeOrControlDependency: false,
-    sharedPreparationDependency: false, successfulBoundedPriorPreparation: false,
-    requiredActivationDependency: false, explicitControlRequirement: false, lowFatigueActivationSuitable: false,
+    newEquipmentRealization: false,
+    requiredPreparationDependency: input.assignment.section === "warmup" &&
+      dependencies.some((entry) => entry.required),
+    reviewedRangeOrControlDependency: dependencies.some((entry) =>
+      entry.rangeRequirements?.some((requirement) => requirement.reviewStatus === "accepted") ?? false) ||
+      explicitControl,
+    sharedPreparationDependency: dependencies.some((entry) => entry.ownership === "shared"),
+    successfulBoundedPriorPreparation: false,
+    requiredActivationDependency: input.assignment.section === "activation" &&
+      dependencies.some((entry) => entry.required),
+    explicitControlRequirement: input.assignment.section === "activation" && explicitControl,
+    lowFatigueActivationSuitable: input.assignment.section === "activation" &&
+      (preparation?.fatigueCost === "minimal" || preparation?.fatigueCost === "low"),
     adverseActivationFatigueResponse: false, mainWorkPreserved: true, secondaryObjectiveRequired: false,
     secondaryWeeklyPriority: false, secondaryCapacitySupported: true, secondaryHigherPriorityConflict: false,
     secondaryNonRedundantUpstream: true, accessoryPriority: "optional", accessoryUniquePurposeActive: true,
     accessoryCoherencePreserved: true, overlappingExposureRepresented: false, firstExposure: true,
     insufficientResponseHistory: true, directObjectiveConfirmedUpstream: false,
-    allocatedRecoveryResponsibility: false, successfulBreathResponse: false, sessionCapacityPreservesMainWork: true,
+    allocatedRecoveryResponsibility: input.assignment.section === "cooldown",
+    successfulBreathResponse: false, sessionCapacityPreservesMainWork: true,
     carryPurpose: "accessory", stationaryMarchRealization: "count", reviewedAcclimationBlockCount: null,
     requestedTempoIntent: "natural", explicitPowerObjective: null,
-    powerIntentPermittedByExerciseKnowledge: false, assessmentPriorityIds: [], alignmentPriorityIds: [],
-    provenanceRefs: ["controlled-owner-delivery:confirmed-profile"] };
+    powerIntentPermittedByExerciseKnowledge: false, assessmentPriorityIds, alignmentPriorityIds,
+    provenanceRefs: uniqueSorted(["controlled-owner-delivery:confirmed-profile",
+      ...dependencies.flatMap((entry) => entry.provenance?.evidenceRefs ?? [])]) };
 }
 
 function compileSession(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
@@ -319,7 +366,8 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
     trainingReadiness: buildTrainingReadinessTrace({ trainingSafety: input.plannerInput.trainingSafety }),
     executionRequirements: [],
     contextByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
-      [assignment.handoffId, compilationContext()])),
+      [assignment.handoffId, compilationContext({ assignment, intent, profile: input.profile,
+        assessment: input.plannerInput.assessment })])),
     continuityEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
       [assignment.handoffId, null])),
     priorRealizationEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
@@ -338,7 +386,8 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
   weekPlan: WeekPlan): readonly SessionExecution[] {
   const equipment = buildOwnerEquipmentCapabilities(input.profile);
   const athlete = athleteFor(input.profile);
-  const assessment = Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
+  const assessment = input.assessmentHandoff?.assessment ??
+    Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
   const grouped = new Map<string, MaterializedAllocatedObjectiveV1_1[]>();
   weekPlan.reservations.map(materializeSupportedPurposeObjectiveV1_1).forEach((entry) => {
     grouped.set(entry.opportunityId, [...(grouped.get(entry.opportunityId) ?? []), entry]);
@@ -468,10 +517,23 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
     weekObjectiveIds: intent.objectives.map((objective) => objective.objectiveId),
     sessions: Object.freeze(sessions.map((session) => Object.freeze({
       sessionId: session.planning.sessionIntent!.id, opportunityId: session.opportunityId,
-      purpose: "strength_development", durationStatus: session.minutes === null ? "unknown" : "known",
-      durationMinutes: session.minutes,
-      exerciseAssignments: Object.freeze(session.handoff.assignments.map((assignment) => {
-        const plan = session.compilation.plans.find((entry) => entry.exerciseId === assignment.exerciseId);
+      purpose: "strength_development",
+      durationStatus: session.sequence.plan!.duration.status === "fully_determinable" ? "known" : "unknown",
+      durationMinutes: session.sequence.plan!.duration.status === "fully_determinable" ?
+        session.sequence.plan!.duration.knownLowerBoundSeconds / 60 : null,
+      availableMinutes: session.minutes,
+      calculatedDuration: Object.freeze({
+        status: session.sequence.plan!.duration.status,
+        knownLowerBoundSeconds: session.sequence.plan!.duration.knownLowerBoundSeconds,
+        knownUpperBoundSeconds: session.sequence.plan!.duration.knownUpperBoundSeconds,
+        unknownComponents: Object.freeze([...session.sequence.plan!.duration.unknownComponents]),
+        accountedAssignmentIds: Object.freeze(session.sequence.plan!.steps.map((step) => step.assignmentId)),
+        noInventedTime: true as const,
+      }),
+      exerciseAssignments: Object.freeze(session.sequence.plan!.steps.map((step) => {
+        const assignment = session.handoff.assignments.find((entry) => entry.handoffId === step.assignmentId)!;
+        const plan = session.compilation.plans.find((entry) =>
+          entry.sourceExposureEvent.sessionAssignmentId === assignment.handoffId);
         const block = plan?.doseBlocks.find((entry) => entry.purpose === "developmental_work") ??
           plan?.doseBlocks[0];
         const doseBlocks = plan ? projectOwnerPrescriptionDoseBlocks(plan) : Object.freeze([]);
@@ -484,6 +546,8 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
         const repetitionTarget = dose && "repetitions" in dose ? dose.repetitions :
           dose && "steps" in dose ? dose.steps : dose && "duration" in dose ? dose.duration : null;
         const rest = dose?.rest;
+        const dependencies = session.planning.sessionIntent!.needs
+          .filter((need) => assignment.satisfiedNeedIds.includes(need.id)).flatMap((need) => need.dependencies);
         return Object.freeze({ assignmentId: assignment.handoffId, exerciseId: assignment.exerciseId,
           realizationId: realization?.realizationId ?? null,
           sourceEventId: plan?.sourceExposureEvent.sourceExposureEventId ?? null,
@@ -495,7 +559,13 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
           doseBlocks,
           equipmentRequirementIds: Object.freeze(realization?.requirementTraces.map((trace) =>
             trace.requirementId) ?? []),
-          reasonCodes: Object.freeze(plan?.rationaleReasonCodes ?? []) });
+          reasonCodes: Object.freeze(plan?.rationaleReasonCodes ?? []),
+          section: assignment.section, role: assignment.role,
+          preparationCategories: Object.freeze(uniqueSorted(dependencies.flatMap((entry) =>
+            entry.requiredPreparationCategories ?? []))),
+          dependencyIds: Object.freeze(uniqueSorted(dependencies.map((entry) => entry.dependencyId))),
+          dependencyReasons: Object.freeze(uniqueSorted(dependencies.flatMap((entry) =>
+            entry.explanation ? [entry.explanation] : []))) });
       })), practiceModes: Object.freeze(["full", "lighter", "recovery"] as const) }))),
     unresolvedFacts, safetyState: input.profile.trainingSafety, engineVersion: input.command.engineVersion,
     policyVersions: input.command.policyVersions });
@@ -537,8 +607,11 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       session.planning.sessionIntent!.needs.some((need) =>
         need.plannerProvenance?.objectiveIds.includes(materialized.allocatedObjectiveId)))),
     assignmentCoverageComplete: requiredNeedIds.every((needId) => coveredNeedIds.has(needId)),
-    developmentalPrescriptionCoverageComplete: allPlans.length === projectedAssignments.length &&
-      allPlans.every((plan) => plan.doseBlocks.some((block) => block.purpose === "developmental_work")),
+    developmentalPrescriptionCoverageComplete: input.sessions.every((session) => session.skeleton.assignments
+      .filter((assignment) => assignment.section === "main" || assignment.section === "accessory")
+      .every((assignment) => session.compilation.plans.some((plan) =>
+        plan.sourceExposureEvent.sessionAssignmentId === assignment.routinePrescriptionHandoffId &&
+        plan.doseBlocks.some((block) => block.purpose === "developmental_work")))),
     projectionCoverageComplete: projectedAssignments.every((assignment) => {
       const plan = allPlans.find((entry) => entry.prescriptionRevisionId === assignment.prescriptionRevisionId);
       return Boolean(plan && assignment.doseBlocks && assignment.doseBlocks.length === plan.doseBlocks.length &&
@@ -554,7 +627,20 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       exactEquipment.bench.stable === capabilityIds.has("adjustable_bench") &&
       exactEquipment.barbell.available === capabilityIds.has("barbell_rack") &&
       exactEquipment.cables.available === capabilityIds.has("cables") &&
-      exactEquipment.bodyweight.pullUpBar === capabilityIds.has("pull_up_station"),
+      exactEquipment.bodyweight.pullUpBar === capabilityIds.has("pull_up_station") &&
+      exactEquipment.bodyweight.wallAvailable === capabilityIds.has("wall") &&
+      exactEquipment.supportSurfaces.includes("wall") === capabilityIds.has("wall"),
+    supportingWorkCarriesNoDevelopmentalCredit: input.sessions.every((session) => session.skeleton.assignments
+      .filter((assignment) => ["warmup", "activation", "cooldown"].includes(assignment.section))
+      .every((assignment) => session.compilation.plans.some((plan) =>
+        plan.sourceExposureEvent.sessionAssignmentId === assignment.routinePrescriptionHandoffId &&
+        !plan.doseBlocks.some((block) => block.purpose === "developmental_work")))),
+    durationProjectionTruthful: input.projection.sessions.every((session) =>
+      session.availableMinutes !== undefined && session.calculatedDuration !== undefined &&
+      session.calculatedDuration.noInventedTime &&
+      session.calculatedDuration.accountedAssignmentIds.length === session.exerciseAssignments.length &&
+      (session.durationStatus === "known") ===
+        (session.calculatedDuration.status === "fully_determinable")),
   });
 }
 
@@ -562,14 +648,32 @@ export function runControlledOwnerProductionPipeline(
   input: ControlledOwnerProductionPipelineInput,
 ): ControlledOwnerProductionPipelineResult {
   const stages: OwnerPipelineStageArtifact[] = [];
-  const unresolvedFacts = input.profile.sessionMinutes.status === "explicit_unknown"
+  let unresolvedFacts: readonly string[] = input.profile.sessionMinutes.status === "explicit_unknown"
     ? ["OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN"] : [];
+  unresolvedFacts = uniqueSorted([...unresolvedFacts,
+    ...(input.assessmentHandoff?.unresolvedConfirmedReferences.map((reference) =>
+      `OWNER_ASSESSMENT_REFERENCE_UNRESOLVED:${reference}`) ?? [])]);
   try {
+    if (input.assessmentHandoff && (input.assessmentHandoff.sourceProductRevisionId !==
+      input.command.sourceProductRevisionId ||
+      JSON.stringify(uniqueSorted(input.assessmentHandoff.confirmedAssessmentReferences)) !==
+        JSON.stringify(uniqueSorted(input.profile.assessmentReferences)))) {
+      throw new Error("OWNER_ASSESSMENT_HANDOFF_SOURCE_OR_CONFIRMATION_MISMATCH");
+    }
     const mapping = Object.freeze({ sourceGoal: "get_stronger", trainingOutcome: "strength",
       sourceProductSnapshotId: input.command.sourceProductSnapshotId,
       sourceProductRevisionId: input.command.sourceProductRevisionId,
       proposedFactReferences: input.proposedProductFacts.map((fact) => Object.freeze({ factId: fact.factId,
-        status: fact.status, sourceRevision: fact.sourceRevision })) });
+        status: fact.status, sourceRevision: fact.sourceRevision })),
+      assessmentHandoff: input.assessmentHandoff ? Object.freeze({
+        mappingStatus: input.assessmentHandoff.mappingStatus,
+        confirmedAssessmentReferences: input.assessmentHandoff.confirmedAssessmentReferences,
+        mappedSignalIds: input.assessmentHandoff.assessment.signals.map((signal) => signal.id),
+        mappingTraceRefs: input.assessmentHandoff.mappingTraceRefs,
+        unresolvedConfirmedReferences: input.assessmentHandoff.unresolvedConfirmedReferences,
+        opaqueTextConsumed: input.assessmentHandoff.opaqueTextConsumed,
+        diagnosticInferenceCount: input.assessmentHandoff.diagnosticInferenceCount,
+      }) : null });
     stages.push(artifact("product_mapping", "mapGetStrongerProductGoalToStrength", mapping));
     const horizon = Object.freeze({ horizonId: stableId("owner-product-horizon", input.command),
       athleteId: input.profile.userId, opportunityIds: input.profile.sessionOpportunities.map((entry) =>
@@ -588,6 +692,11 @@ export function runControlledOwnerProductionPipeline(
       responsibilityPacking: "coherent_shared_sessions" });
     stages.push(artifact("week_allocation", "composeSupportedPurposeWeekV1_1", weekPlan));
     const sessions = executeSessions(input, intent, weekPlan);
+    unresolvedFacts = uniqueSorted([...unresolvedFacts, ...sessions.flatMap((session) => {
+      const status = session.sequence.plan!.duration.status;
+      return status === "fully_determinable" || status === "fits_known_bound" ? [] :
+        [`OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:${session.opportunityId}:${status}`];
+    })]);
     stages.push(artifact("session_intent", "planSessionIntent", sessions.map((entry) => entry.planning)));
     stages.push(artifact("candidate_intelligence", "buildSessionCandidateResults",
       sessions.map((entry) => entry.candidates)));

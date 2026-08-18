@@ -120,7 +120,8 @@ describe("controlled owner identity and profile foundation", () => {
       snapshot: {
         questionnaire: { daysPerWeek: 3, equipment: ["gym"], painAreas: ["shoulder"],
           experience: "intermediate", sessionMinutes: 60, exactLoad: 40 },
-        assessment: { shoulderControl: { status: "reviewed" } },
+        assessment: { observations: [{ id: "pose-shoulder-asymmetry", confidence: "high" }],
+          priorities: ["pose-shoulder-asymmetry"] },
         meta: { sessionUpdatedAtById: { "legacy-session-1": NOW } },
       },
       sourceRevision: "product-snapshot:synthetic-1",
@@ -131,6 +132,8 @@ describe("controlled owner identity and profile foundation", () => {
     ]));
     expect(JSON.stringify(facts)).not.toContain("exactLoad");
     expect(JSON.stringify(facts)).not.toContain("sessionMinutes");
+    expect(facts.find((fact) => fact.field === "assessment_reference")?.structuredValue)
+      .toBe("assessment:observation:pose-shoulder-asymmetry");
   });
 
   it("locks the isolated enrollment/profile migration and contains no email column", () => {

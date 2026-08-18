@@ -16,8 +16,10 @@ const SESSION_PURPOSE_LABELS: Readonly<Record<string, string>> = Object.freeze({
 });
 
 const BLOCK_PURPOSE_LABELS: Readonly<Record<string, string>> = Object.freeze({
-  preparatory_acclimation: "Preparatory acclimation block",
-  developmental_work: "Developmental work block",
+  preparatory_acclimation: "Lift acclimation",
+  developmental_work: "Main work",
+  technique_quality_work: "Preparation practice",
+  recovery_or_downregulation: "Cooldown / downshift",
 });
 
 const PRACTICE_MODE_LABELS: Readonly<Record<string, string>> = Object.freeze({
@@ -84,4 +86,18 @@ export function presentExerciseIdentity(value: string): string {
 export function presentDiagnosticIdentity(value: string): string {
   const words = value.split("_").filter(Boolean).join(" ").toLowerCase();
   return words ? `${words[0]!.toUpperCase()}${words.slice(1)}` : value;
+}
+
+export function presentPreparationCategory(value: string): string {
+  const labels: Readonly<Record<string, string>> = Object.freeze({
+    general_readiness: "General readiness",
+    breathing_position: "Breathing / position",
+    dynamic_mobility: "Dynamic mobility",
+    range_access: "Range access",
+    activation_control: "Activation / control",
+    movement_rehearsal: "Movement rehearsal",
+    exercise_acclimation: "Lift acclimation",
+    cooldown_downshift: "Cooldown / downshift",
+  });
+  return labels[value] ?? presentDiagnosticIdentity(value);
 }

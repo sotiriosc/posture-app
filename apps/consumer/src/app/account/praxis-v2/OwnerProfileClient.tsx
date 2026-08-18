@@ -6,7 +6,7 @@ import type { OwnerGetStrongerProfileRevision, ProposedOwnerImportFact } from "@
 import styles from "./owner-v2.module.css";
 
 const CAPABILITIES = ["commercial_gym", "bodyweight", "dumbbells", "adjustable_bench", "barbell_rack",
-  "cables", "bands", "selectorized_machines", "pull_up_station"] as const;
+  "cables", "bands", "selectorized_machines", "pull_up_station", "wall"] as const;
 
 export default function OwnerProfileClient(input: {
   readonly profile: OwnerGetStrongerProfileRevision | null;
@@ -25,6 +25,8 @@ export default function OwnerProfileClient(input: {
   const [experience, setExperience] = useState(profile?.coarseExperience ?? "beginner");
   const [painConfirmed, setPainConfirmed] = useState(profile?.painContext.confirmed ?? false);
   const [safetyConfirmed, setSafetyConfirmed] = useState(profile?.trainingSafety === "clear");
+  const [assessmentReferences, setAssessmentReferences] = useState<string[]>(
+    [...(profile?.assessmentReferences ?? [])]);
   const [consent, setConsent] = useState(false);
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState("");
@@ -48,6 +50,7 @@ export default function OwnerProfileClient(input: {
         sessionMinutes: unknownMinutes ? { status: "explicit_unknown", minutes: null } :
           { status: "known", minutes }, equipmentEnvironment: environment, capabilityIds: capabilities,
         coarseExperience: experience, painConfirmed, safetyConfirmed,
+        assessmentReferences,
       });
       if (!response.ok) throw new Error("Profile could not be saved.");
       setMessage("Profile revision saved.");
@@ -66,6 +69,12 @@ export default function OwnerProfileClient(input: {
     } catch (error) { setMessage(error instanceof Error ? error.message : "Preview could not be generated."); }
     finally { setWorking(false); }
   };
+
+  const proposedAssessmentReferences = new Set(input.proposedFacts.flatMap((fact) =>
+    fact.field === "assessment_reference" && typeof fact.structuredValue === "string" ?
+      [fact.structuredValue] : []));
+  const staleAssessmentReferences = assessmentReferences.filter((reference) =>
+    !proposedAssessmentReferences.has(reference));
 
   return <>
     <section className={styles.section}>
@@ -115,7 +124,20 @@ export default function OwnerProfileClient(input: {
     <section className={styles.section}>
       <h2>Current Product facts</h2>
       <ul className={styles.facts}>{input.proposedFacts.map((fact) => <li className={styles.fact} key={fact.factId}>
-        <span>{fact.field.replaceAll("_", " ")}</span><span className={styles.status}>{fact.status.replaceAll("_", " ")}</span>
+        {fact.field === "assessment_reference" && typeof fact.structuredValue === "string" ?
+          <label className={styles.check}><input type="checkbox"
+            checked={assessmentReferences.includes(fact.structuredValue)}
+            onChange={(event) => setAssessmentReferences((current) => event.target.checked ?
+              [...new Set([...current, fact.structuredValue as string])] :
+              current.filter((entry) => entry !== fact.structuredValue))} />
+            <span>{fact.structuredValue.replace("assessment:observation:", "Assessment: ").replaceAll("-", " ")}</span>
+          </label> : <span>{fact.field.replaceAll("_", " ")}</span>}
+        <span className={styles.status}>{fact.status.replaceAll("_", " ")}</span>
+      </li>)}{staleAssessmentReferences.map((reference) => <li className={styles.fact} key={reference}>
+        <label className={styles.check}><input type="checkbox" checked
+          onChange={() => setAssessmentReferences((current) => current.filter((entry) => entry !== reference))} />
+          <span>{reference.replace("assessment:observation:", "Assessment: ").replaceAll("-", " ")}</span>
+        </label><span className={styles.status}>stale - remove to save</span>
       </li>)}</ul>
     </section>
     <label className={styles.check}><input type="checkbox" checked={consent}

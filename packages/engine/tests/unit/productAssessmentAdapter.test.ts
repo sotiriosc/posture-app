@@ -5,6 +5,7 @@ import {
 } from "../../src/productAssessmentAdapter";
 import { mapProductAssessment } from "../../src/controlledProductShadow";
 import { mapProductAssessmentV2 } from "../../src/controlledProductShadowGoalRealization";
+import { buildControlledOwnerAssessmentHandoff } from "../../src/controlledOwnerDelivery";
 
 const report = () => ({
   observations: [
@@ -93,5 +94,29 @@ describe("typed Product AssessmentReport adapter", () => {
     ]);
     expect(mapProductAssessmentV2(legacy).signals.map((entry) => entry.signalId))
       .toEqual(["legacy-1", "legacy-2"]);
+  });
+
+  it("admits only explicitly confirmed owner observation references and fails stale references closed", () => {
+    const unconfirmed = buildControlledOwnerAssessmentHandoff({ profileAssessmentReferences: [],
+      assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
+    expect(unconfirmed.assessment.signals).toEqual([]);
+    expect(unconfirmed.opaqueTextConsumed).toBe(false);
+
+    const confirmed = buildControlledOwnerAssessmentHandoff({
+      profileAssessmentReferences: ["assessment:observation:pose-shoulder-asymmetry"],
+      assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
+    expect(confirmed.assessment.signals.map((signal) => signal.id))
+      .toEqual(["product-assessment:pose-shoulder-asymmetry"]);
+    expect(confirmed.mappingTraceRefs).toEqual([
+      "product-state:test-1:observation:pose-shoulder-asymmetry",
+    ]);
+
+    const stale = buildControlledOwnerAssessmentHandoff({
+      profileAssessmentReferences: ["assessment:observation:removed-observation"],
+      assessmentReport: report(), sourceProductRevisionId: "product-state:test-1" });
+    expect(stale.assessment.signals).toEqual([]);
+    expect(stale.unresolvedConfirmedReferences).toEqual([
+      "assessment:observation:removed-observation",
+    ]);
   });
 });

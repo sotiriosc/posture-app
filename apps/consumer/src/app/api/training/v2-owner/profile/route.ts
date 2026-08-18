@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { buildOwnerProfileRevision } from "@praxis/training-engine-v2";
-import { withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
-import { authorizeOwnerMutation, authorizeOwnerRead, ownerJson, rejectsIdentityFields } from
+import { proposeOwnerImportsFromTrainingSnapshot,
+  withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
+import { authorizeOwnerMutation, authorizeOwnerRead, loadOwnerProductRuntimeContext, ownerJson, rejectsIdentityFields } from
   "@/server/controlledOwnerDelivery";
 
 export const dynamic = "force-dynamic";
@@ -34,12 +35,14 @@ export async function POST(request: Request) {
   const environment = body.equipmentEnvironment;
   const capabilityIds = body.capabilityIds;
   const experience = body.coarseExperience;
+  const assessmentReferences = body.assessmentReferences;
   const validMinutes = sessionMinutes?.status === "explicit_unknown" && sessionMinutes.minutes === null ||
     sessionMinutes?.status === "known" && typeof sessionMinutes.minutes === "number" &&
       sessionMinutes.minutes >= 15 && sessionMinutes.minutes <= 180;
   if (!Number.isInteger(days) || Number(days) < 1 || Number(days) > 7 || !Array.isArray(opportunities) ||
       opportunities.length !== days || !validMinutes || !["home", "commercial_gym", "mixed"].includes(String(environment)) ||
       !Array.isArray(capabilityIds) || !capabilityIds.length || !capabilityIds.every((value) => typeof value === "string") ||
+      !Array.isArray(assessmentReferences) || !assessmentReferences.every((value) => typeof value === "string") ||
       !["beginner", "intermediate", "advanced"].includes(String(experience)) || body.painConfirmed !== true) {
     return ownerJson({ ok: false, error: { code: "INVALID_PROFILE", message: "Profile is invalid." } }, 400);
   }
@@ -49,6 +52,15 @@ export async function POST(request: Request) {
   }));
   try {
     return await withControlledOwnerRepositories(async ({ enrollmentProfiles }) => {
+      const product = await loadOwnerProductRuntimeContext(authorization.userId);
+      const allowedAssessmentReferences = new Set(proposeOwnerImportsFromTrainingSnapshot({
+        snapshot: product.snapshot, sourceRevision: product.sourceProductRevisionId,
+      }).filter((fact) => fact.field === "assessment_reference" && typeof fact.structuredValue === "string")
+        .map((fact) => fact.structuredValue as string));
+      if ((assessmentReferences as string[]).some((reference) => !allowedAssessmentReferences.has(reference))) {
+        return ownerJson({ ok: false, error: { code: "INVALID_ASSESSMENT_REFERENCE",
+          message: "Assessment confirmation is stale or invalid." } }, 409);
+      }
       const current = await enrollmentProfiles.readCurrentProfile(authorization.userId);
       const sourceRevision = `owner-equipment:${createHash("sha256").update(JSON.stringify({ environment,
         capabilityIds: [...new Set(capabilityIds as string[])].sort() })).digest("hex")}`;
@@ -63,7 +75,7 @@ export async function POST(request: Request) {
         familiarity: current?.familiarity ?? [],
         painContext: { regionIds: current?.painContext.regionIds ?? [],
           limitationIds: current?.painContext.limitationIds ?? [], confirmed: true, diagnosticClaimCount: 0 },
-        assessmentReferences: current?.assessmentReferences ?? [], trainingSafety: body.safetyConfirmed === true
+        assessmentReferences: assessmentReferences as string[], trainingSafety: body.safetyConfirmed === true
           ? "clear" : "review_required", continuityReferences: current?.continuityReferences ?? [],
         evaluationTime: authorization.evaluatedAt,
         provenance: { source: "owner_confirmation", sourceRefs: ["owner-account-profile"] },
