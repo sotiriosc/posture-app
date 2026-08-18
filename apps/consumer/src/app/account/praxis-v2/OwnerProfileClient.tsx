@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { OwnerGetStrongerProfileRevision, ProposedOwnerImportFact } from "@praxis/training-engine-v2";
+import {
+  isOwnerAvailableTrainingDays,
+  OWNER_AVAILABLE_TRAINING_DAYS,
+  type OwnerGetStrongerProfileRevision,
+  type ProposedOwnerImportFact,
+} from "@praxis/training-engine-v2";
 import styles from "./owner-v2.module.css";
 
 const CAPABILITIES = ["commercial_gym", "bodyweight", "dumbbells", "adjustable_bench", "barbell_rack",
@@ -16,7 +21,7 @@ export default function OwnerProfileClient(input: {
 }) {
   const router = useRouter();
   const profile = input.profile;
-  const [days, setDays] = useState(profile?.daysPerWeek ?? 3);
+  const [days, setDays] = useState<number>(profile?.daysPerWeek ?? 3);
   const [unknownMinutes, setUnknownMinutes] = useState(profile?.sessionMinutes.status === "explicit_unknown");
   const [minutes, setMinutes] = useState(profile?.sessionMinutes.status === "known" ? profile.sessionMinutes.minutes : 45);
   const [environment, setEnvironment] = useState(profile?.equipmentCapabilitySnapshot.environment ?? "commercial_gym");
@@ -43,11 +48,8 @@ export default function OwnerProfileClient(input: {
       const enrollment = await mutate("/api/training/v2-owner/enrollment", "enrollment", {
         explicitConsent: consent, permission: input.canApply ? "apply_allowed" : "preview_only" });
       if (!enrollment.ok) throw new Error("Enrollment could not be saved.");
-      const opportunityMinutes = unknownMinutes ? null : minutes;
       const response = await mutate("/api/training/v2-owner/profile", "profile", {
         daysPerWeek: days,
-        sessionOpportunities: Array.from({ length: days }, (_, index) => ({
-          opportunityId: `owner-opportunity-${index + 1}`, order: index + 1, minutes: opportunityMinutes })),
         sessionMinutes: unknownMinutes ? { status: "explicit_unknown", minutes: null } :
           { status: "known", minutes }, equipmentEnvironment: environment, capabilityIds: capabilities,
         coarseExperience: experience, painConfirmed, safetyConfirmed,
@@ -82,6 +84,8 @@ export default function OwnerProfileClient(input: {
   const stalePainFactIds = painFactIds.filter((factId) => !proposedPainFactIds.has(factId));
   const allPainFactsConfirmed = proposedPainFacts.every((fact) => painFactIds.includes(fact.factId)) &&
     stalePainFactIds.length === 0;
+  const availabilityConfirmed = isOwnerAvailableTrainingDays(days);
+  const persistedAvailabilityConfirmed = profile ? isOwnerAvailableTrainingDays(profile.daysPerWeek) : false;
 
   return <>
     <section className={styles.section}>
@@ -91,7 +95,8 @@ export default function OwnerProfileClient(input: {
         <div className={styles.field}><label htmlFor="owner-mode">Mode</label><input id="owner-mode" value="Develop" disabled /></div>
         <div className={styles.field}><label htmlFor="owner-days">Days per week</label>
           <select id="owner-days" value={days} onChange={(event) => setDays(Number(event.target.value))}>
-            {[1, 2, 3, 4, 5, 6, 7].map((value) => <option key={value} value={value}>{value}</option>)}
+            {!availabilityConfirmed && <option value={days} disabled>{days} (reconfirmation required)</option>}
+            {OWNER_AVAILABLE_TRAINING_DAYS.map((value) => <option key={value} value={value}>{value}</option>)}
           </select></div>
         <div className={styles.field}><label htmlFor="owner-minutes">Minutes per session</label>
           <input id="owner-minutes" type="number" min={15} max={180} step={5} disabled={unknownMinutes}
@@ -162,9 +167,10 @@ export default function OwnerProfileClient(input: {
       onChange={(event) => setConsent(event.target.checked)} /><span>Enroll in controlled Praxis V2 owner delivery</span></label>
     <div className={styles.actions}>
       <button className={styles.button} type="button" disabled={working || !consent || !painConfirmed ||
-        !allPainFactsConfirmed || !safetyConfirmed || !capabilities.length}
+        !allPainFactsConfirmed || !safetyConfirmed || !capabilities.length || !availabilityConfirmed}
         onClick={() => void save()}>Save profile</button>
-      <button className={`${styles.button} ${styles.buttonSecondary}`} type="button" disabled={working || !profile}
+      <button className={`${styles.button} ${styles.buttonSecondary}`} type="button"
+        disabled={working || !profile || !persistedAvailabilityConfirmed}
         onClick={() => void generate()}>Generate preview</button>
     </div>
     <p aria-live="polite" className={styles.muted}>{message}</p>

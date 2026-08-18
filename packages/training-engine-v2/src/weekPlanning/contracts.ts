@@ -447,6 +447,25 @@ export interface ProductionWeeklyRecoverySpacingRequirement {
   readonly policySourceRef: string;
 }
 
+export interface ProductionWeekTopologyPolicyReference {
+  readonly policyId: string;
+  readonly version: string;
+}
+
+export interface ProductionWeekTopologyCoherenceGroup {
+  readonly groupId: string;
+  readonly objectiveIds: readonly string[];
+}
+
+export interface ProductionWeekTopologyPolicy {
+  readonly reference: ProductionWeekTopologyPolicyReference;
+  readonly scope: "controlled_owner_get_stronger_four_required_strength_responsibilities";
+  readonly eligibleObjectiveIds: readonly string[];
+  readonly preferredMaximumRequiredResponsibilitiesPerSession: number;
+  readonly coherenceGroups: readonly ProductionWeekTopologyCoherenceGroup[];
+  readonly provenance: ProductionWeekProvenance;
+}
+
 export interface ProductionWeekAllocationComposerInput {
   readonly composerContract: typeof PRODUCTION_WEEK_ALLOCATION_COMPOSER_CONTRACT_REFERENCE;
   readonly weeklyIntent: ProductionWeeklyIntent;
@@ -457,6 +476,7 @@ export interface ProductionWeekAllocationComposerInput {
   readonly policy: ProductionWeekPolicyInput;
   readonly policyRegistry?: ProductionWeekPolicyRegistry;
   readonly spacingRequirements: readonly ProductionWeeklyRecoverySpacingRequirement[];
+  readonly topologyPolicy?: ProductionWeekTopologyPolicy;
   readonly feasibilityOracle?: ProductionSessionFeasibilityOracle;
   readonly precomputedFeasibilityResults?: readonly ProductionSessionFeasibilityResult[];
   readonly searchResourcePolicy: ProductionWeekSearchResourcePolicy;
@@ -478,6 +498,13 @@ export interface ProductionWeekEvaluationVector {
   readonly requiredMinimumVector: readonly boolean[];
   readonly opportunityLegalityVector: readonly boolean[];
   readonly requiredSpacingVector: readonly boolean[];
+  readonly topologyPolicyReference?: ProductionWeekTopologyPolicyReference;
+  readonly requiredTargetExposureVector?: readonly boolean[];
+  readonly requiredResponsibilityConcentrationVector?: readonly number[];
+  readonly occupiedSessionCount?: number;
+  readonly withinWeekPrimaryEmphasisBalanceVector?: readonly number[];
+  readonly primaryEmphasisFingerprint?: string;
+  readonly topologyProvenance?: readonly string[];
   readonly feasibilityVector: readonly ProductionSessionFeasibilityStatus[];
   readonly continuityVector: readonly boolean[];
   readonly requiredFrequencyVector: readonly number[];

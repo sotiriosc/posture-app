@@ -1,4 +1,5 @@
 import {
+  isOwnerAvailableTrainingDays,
   stableId,
   uniqueSorted,
   type BodyRegion,
@@ -78,7 +79,8 @@ export function proposeOwnerImportsFromTrainingSnapshot(input: {
   };
   const days = questionnaire.daysPerWeek;
   add("days", typeof days === "number" && Number.isInteger(days) ? days : null,
-    typeof days === "number" ? "requires_confirmation" : "unknown");
+    typeof days !== "number" ? "unknown" : isOwnerAvailableTrainingDays(days) ?
+      "requires_confirmation" : "incompatible");
   const equipment = stringArray(questionnaire.equipment);
   add("top_level_equipment", equipment, equipment.length ? "requires_confirmation" : "unknown");
   const painRegions = stringArray(questionnaire.painAreas ?? questionnaire.painRegions);

@@ -28,6 +28,7 @@ import {
   type ProductionWeekAllocationStatus,
   type ProductionWeekEvaluationVector,
   type ProductionWeekObjectiveSatisfactionState,
+  type ProductionWeekTopologyPolicy,
   type ProductionWeekTrainingOpportunity,
   type ProductionWeeklyDevelopmentObjective,
   type ProductionWeeklyRecoverySpacingRequirement,
@@ -140,6 +141,120 @@ function objectiveIdsAt(assignment: Assignment, opportunityId: string): readonly
     .map(([objectiveId]) => objectiveId).sort();
 }
 
+function topologyPrimarySequence(policy: ProductionWeekTopologyPolicy): readonly string[] {
+  const sequence: string[] = [];
+  const maximumGroupSize = Math.max(0, ...policy.coherenceGroups.map((group) => group.objectiveIds.length));
+  for (let index = 0; index < maximumGroupSize; index += 1) {
+    for (const group of policy.coherenceGroups) {
+      const objectiveId = group.objectiveIds[index];
+      if (objectiveId) sequence.push(objectiveId);
+    }
+  }
+  return Object.freeze(sequence);
+}
+
+function primaryObjectivesForAssignment(
+  input: ProductionWeekAllocationComposerInput,
+  assignment: Assignment,
+  opportunities: readonly ProductionWeekTrainingOpportunity[],
+): ReadonlyMap<string, string> {
+  if (!input.topologyPolicy) return new Map();
+  const eligible = new Set(input.topologyPolicy.eligibleObjectiveIds);
+  const sequence = topologyPrimarySequence(input.topologyPolicy);
+  const sequenceRank = new Map(sequence.map((objectiveId, index) => [objectiveId, index]));
+  const primaryCounts = new Map(sequence.map((objectiveId) => [objectiveId, 0]));
+  const selected = new Map<string, string>();
+  const active = opportunities.filter((opportunity) =>
+    objectiveIdsAt(assignment, opportunity.opportunityId).length > 0);
+  for (const [index, opportunity] of active.entries()) {
+    const candidates = objectiveIdsAt(assignment, opportunity.opportunityId).filter((id) => eligible.has(id));
+    if (candidates.length === 0) continue;
+    const desired = sequence[index % sequence.length];
+    const primary = [...candidates].sort((left, right) => {
+      if ((left === desired) !== (right === desired)) return left === desired ? -1 : 1;
+      const countDifference = (primaryCounts.get(left) ?? 0) - (primaryCounts.get(right) ?? 0);
+      if (countDifference !== 0) return countDifference;
+      return (sequenceRank.get(left) ?? Number.MAX_SAFE_INTEGER) -
+        (sequenceRank.get(right) ?? Number.MAX_SAFE_INTEGER) || left.localeCompare(right);
+    })[0]!;
+    selected.set(opportunity.opportunityId, primary);
+    primaryCounts.set(primary, (primaryCounts.get(primary) ?? 0) + 1);
+  }
+  return selected;
+}
+
+function topologyEvaluation(
+  input: ProductionWeekAllocationComposerInput,
+  assignment: Assignment,
+  opportunities: readonly ProductionWeekTrainingOpportunity[],
+): Partial<Pick<ProductionWeekEvaluationVector, "topologyPolicyReference" | "requiredTargetExposureVector" |
+  "requiredResponsibilityConcentrationVector" | "occupiedSessionCount" |
+  "withinWeekPrimaryEmphasisBalanceVector" | "primaryEmphasisFingerprint" | "topologyProvenance">> {
+  const policy = input.topologyPolicy;
+  if (!policy) return Object.freeze({});
+  const eligible = new Set(policy.eligibleObjectiveIds);
+  const eligibleObjectives = input.weeklyIntent.objectives.filter((objective) => eligible.has(objective.objectiveId))
+    .sort((left, right) => left.priorityOrder - right.priorityOrder || left.objectiveId.localeCompare(right.objectiveId));
+  const active = opportunities.filter((opportunity) =>
+    objectiveIdsAt(assignment, opportunity.opportunityId).length > 0);
+  const concentrations = active.map((opportunity) => objectiveIdsAt(assignment, opportunity.opportunityId)
+    .filter((objectiveId) => eligible.has(objectiveId)).length);
+  const maximumConcentration = Math.max(0, ...concentrations);
+  const concentrationExcess = concentrations.reduce((sum, count) => sum +
+    Math.max(0, count - policy.preferredMaximumRequiredResponsibilitiesPerSession), 0);
+  const concentrationSpread = concentrations.length === 0 ? 0 :
+    maximumConcentration - Math.min(...concentrations);
+  const targetExposureTotal = eligibleObjectives.reduce((sum, objective) =>
+    sum + objective.frequencyIntent.targetAllocatedSessions, 0);
+  const balancedBase = active.length === 0 ? 0 : Math.floor(targetExposureTotal / active.length);
+  const balancedRemainder = active.length === 0 ? 0 : targetExposureTotal % active.length;
+  const orderedBalanceDeviation = concentrations.reduce((sum, count, index) =>
+    sum + Math.abs(count - (balancedBase + (index < balancedRemainder ? 1 : 0))), 0);
+  const primaryByOpportunity = primaryObjectivesForAssignment(input, assignment, opportunities);
+  const primarySequence = topologyPrimarySequence(policy);
+  const primaryCounts = new Map(policy.eligibleObjectiveIds.map((objectiveId) => [objectiveId, 0]));
+  const groupByObjective = new Map(policy.coherenceGroups.flatMap((group) =>
+    group.objectiveIds.map((objectiveId) => [objectiveId, group.groupId] as const)));
+  let mixedGroupSessionCount = 0;
+  let adjacentSameGroupCount = 0;
+  let sequenceMismatchCount = 0;
+  let previousPrimaryGroup: string | null = null;
+  const fingerprint: string[] = [];
+  for (const [index, opportunity] of active.entries()) {
+    const assignedGroups = new Set(objectiveIdsAt(assignment, opportunity.opportunityId)
+      .filter((objectiveId) => eligible.has(objectiveId)).map((objectiveId) => groupByObjective.get(objectiveId))
+      .filter((groupId): groupId is string => Boolean(groupId)));
+    if (assignedGroups.size > 1) mixedGroupSessionCount += 1;
+    const primary = primaryByOpportunity.get(opportunity.opportunityId) ?? "unresolved";
+    fingerprint.push(`${opportunity.opportunityId}:${primary}`);
+    if (primary !== "unresolved") primaryCounts.set(primary, (primaryCounts.get(primary) ?? 0) + 1);
+    const primaryGroup = groupByObjective.get(primary) ?? null;
+    if (primaryGroup && previousPrimaryGroup === primaryGroup) adjacentSameGroupCount += 1;
+    if (primaryGroup) previousPrimaryGroup = primaryGroup;
+    if (primary !== primarySequence[index % primarySequence.length]) sequenceMismatchCount += 1;
+  }
+  const missingPrimaryCount = [...primaryCounts.values()].filter((count) => count === 0).length;
+  const repeatedPrimaryCount = [...primaryCounts.values()].reduce((sum, count) => sum + Math.max(0, count - 1), 0);
+  return Object.freeze({ topologyPolicyReference: policy.reference,
+    requiredTargetExposureVector: Object.freeze(eligibleObjectives.map((objective) =>
+      (assignment[objective.objectiveId]?.length ?? 0) === objective.frequencyIntent.targetAllocatedSessions)),
+    requiredResponsibilityConcentrationVector: Object.freeze([
+      maximumConcentration, concentrationExcess, concentrationSpread, orderedBalanceDeviation,
+    ]),
+    occupiedSessionCount: active.length,
+    withinWeekPrimaryEmphasisBalanceVector: Object.freeze([
+      mixedGroupSessionCount, adjacentSameGroupCount, missingPrimaryCount, repeatedPrimaryCount,
+      sequenceMismatchCount,
+    ]),
+    primaryEmphasisFingerprint: fingerprint.join("|"),
+    topologyProvenance: Object.freeze([
+      `${policy.reference.policyId}@${policy.reference.version}`,
+      `preferred_maximum:${policy.preferredMaximumRequiredResponsibilitiesPerSession}`,
+      ...policy.coherenceGroups.map((group) => `${group.groupId}:${group.objectiveIds.join(",")}`),
+    ]),
+  });
+}
+
 function sameIds(left: readonly string[], right: readonly string[]): boolean {
   return JSON.stringify([...left].sort()) === JSON.stringify([...right].sort());
 }
@@ -226,6 +341,7 @@ function evaluate(
   const hardValid = requiredMinimumVector.every(Boolean) && opportunityLegalityVector.every(Boolean) &&
     requiredSpacingVector.every(Boolean) && !feasibilityVector.some((status) => forbiddenFeasibility.has(status)) &&
     !incompleteFeasibility;
+  const topology = topologyEvaluation(input, assignment, opportunities);
   const vector: ProductionWeekEvaluationVector = Object.freeze({
     hardValid,
     globalTrainingSafetyAllowed: true,
@@ -233,6 +349,7 @@ function evaluate(
     requiredMinimumVector: Object.freeze(requiredMinimumVector),
     opportunityLegalityVector: Object.freeze(opportunityLegalityVector),
     requiredSpacingVector: Object.freeze(requiredSpacingVector),
+    ...topology,
     feasibilityVector: Object.freeze(feasibilityVector),
     continuityVector: Object.freeze(continuityVector),
     requiredFrequencyVector: Object.freeze(required.map((entry) => assignment[entry.objectiveId]?.length ?? 0)),
@@ -267,6 +384,13 @@ function compareNumbers(left: readonly number[], right: readonly number[]): numb
   return 0;
 }
 
+function compareNumbersAscending(left: readonly number[], right: readonly number[]): number {
+  for (let index = 0; index < Math.max(left.length, right.length); index += 1) {
+    if ((left[index] ?? 0) !== (right[index] ?? 0)) return (left[index] ?? 0) - (right[index] ?? 0);
+  }
+  return 0;
+}
+
 export function compareProductionWeekEvaluations(
   left: ProductionWeekEvaluationVector,
   right: ProductionWeekEvaluationVector,
@@ -279,6 +403,25 @@ export function compareProductionWeekEvaluations(
     [left.requiredSpacingVector, right.requiredSpacingVector]] as const) {
     const compared = compareBooleans(pair[0], pair[1]);
     if (compared !== 0) return compared;
+  }
+  if (left.topologyPolicyReference || right.topologyPolicyReference) {
+    const leftReference = left.topologyPolicyReference ?
+      `${left.topologyPolicyReference.policyId}@${left.topologyPolicyReference.version}` : "";
+    const rightReference = right.topologyPolicyReference ?
+      `${right.topologyPolicyReference.policyId}@${right.topologyPolicyReference.version}` : "";
+    if (leftReference !== rightReference) return leftReference.localeCompare(rightReference);
+    let topologyCompared = compareBooleans(left.requiredTargetExposureVector ?? [],
+      right.requiredTargetExposureVector ?? []);
+    if (topologyCompared !== 0) return topologyCompared;
+    topologyCompared = compareNumbersAscending(left.requiredResponsibilityConcentrationVector ?? [],
+      right.requiredResponsibilityConcentrationVector ?? []);
+    if (topologyCompared !== 0) return topologyCompared;
+    if ((left.occupiedSessionCount ?? 0) !== (right.occupiedSessionCount ?? 0)) {
+      return (left.occupiedSessionCount ?? 0) - (right.occupiedSessionCount ?? 0);
+    }
+    topologyCompared = compareNumbersAscending(left.withinWeekPrimaryEmphasisBalanceVector ?? [],
+      right.withinWeekPrimaryEmphasisBalanceVector ?? []);
+    if (topologyCompared !== 0) return topologyCompared;
   }
   let compared = compareNumbers(left.feasibilityVector.map((entry) => FEASIBILITY_RANK[entry]),
     right.feasibilityVector.map((entry) => FEASIBILITY_RANK[entry]));
@@ -311,12 +454,15 @@ function responsibilityPurpose(objective: ProductionWeeklyDevelopmentObjective, 
 
 function reservationDraft(input: ProductionWeekAllocationComposerInput, assignment: Assignment,
   opportunity: ProductionWeekTrainingOpportunity, objectiveIds: readonly string[], planId: string, planRevisionId: string,
-  reservationIdsByOpportunity: ReadonlyMap<string, string>): ProductionSessionAllocationReservation {
+  reservationIdsByOpportunity: ReadonlyMap<string, string>,
+  primaryObjectiveByOpportunity: ReadonlyMap<string, string>): ProductionSessionAllocationReservation {
   const objectives = objectiveIds.map((id) => input.weeklyIntent.objectives.find((entry) => entry.objectiveId === id)!)
     .sort((left, right) => PRIORITY_RANK[left.priority] - PRIORITY_RANK[right.priority] ||
       left.priorityOrder - right.priorityOrder || left.objectiveId.localeCompare(right.objectiveId));
-  const dominantIndex = objectives.findIndex((entry) => !["assessment_priority_development", "recovery_support",
-    "direct_action_development"].includes(entry.purpose));
+  const reviewedPrimaryObjectiveId = primaryObjectiveByOpportunity.get(opportunity.opportunityId);
+  const dominantIndex = reviewedPrimaryObjectiveId ? objectives.findIndex((entry) =>
+    entry.objectiveId === reviewedPrimaryObjectiveId) : objectives.findIndex((entry) =>
+    !["assessment_priority_development", "recovery_support", "direct_action_development"].includes(entry.purpose));
   const dominant = objectives[dominantIndex] ?? objectives[0]!;
   const primaryRelationships = dominant.goalRelationships.filter((entry) => entry.relationship !== "cross_goal_support");
   const goals = uniqueSorted(primaryRelationships.map((entry) => entry.goal));
@@ -390,6 +536,41 @@ function satisfaction(objective: ProductionWeeklyDevelopmentObjective, count: nu
   return "allocated_minimum_opportunities";
 }
 
+export function validateProductionWeekTopologyPolicy(
+  input: ProductionWeekAllocationComposerInput,
+): readonly string[] {
+  const policy = input.topologyPolicy;
+  if (!policy) return Object.freeze([]);
+  const reasons: string[] = [];
+  if (!policy.reference.policyId.trim() || !policy.reference.version.trim()) {
+    reasons.push("WEEK_TOPOLOGY_POLICY_REFERENCE_REQUIRED");
+  }
+  if (policy.scope !== "controlled_owner_get_stronger_four_required_strength_responsibilities") {
+    reasons.push("WEEK_TOPOLOGY_POLICY_SCOPE_UNSUPPORTED");
+  }
+  if (policy.eligibleObjectiveIds.length !== 4 || new Set(policy.eligibleObjectiveIds).size !== 4) {
+    reasons.push("OWNER_TOPOLOGY_REQUIRES_EXACTLY_FOUR_UNIQUE_RESPONSIBILITIES");
+  }
+  if (policy.preferredMaximumRequiredResponsibilitiesPerSession !== 2) {
+    reasons.push("OWNER_TOPOLOGY_REVIEWED_CONCENTRATION_POLICY_REQUIRED");
+  }
+  const objectiveById = new Map(input.weeklyIntent.objectives.map((objective) => [objective.objectiveId, objective]));
+  if (policy.eligibleObjectiveIds.some((objectiveId) => {
+    const objective = objectiveById.get(objectiveId);
+    return !objective || objective.priority !== "required" || objective.family !== "strength" ||
+      objective.purpose !== "movement_development";
+  })) reasons.push("OWNER_TOPOLOGY_OBJECTIVE_SCOPE_MISMATCH");
+  const groupedObjectiveIds = policy.coherenceGroups.flatMap((group) => group.objectiveIds);
+  if (policy.coherenceGroups.length !== 2 || policy.coherenceGroups.some((group) =>
+    !group.groupId.trim() || group.objectiveIds.length !== 2) ||
+    new Set(policy.coherenceGroups.map((group) => group.groupId)).size !== policy.coherenceGroups.length ||
+    new Set(groupedObjectiveIds).size !== groupedObjectiveIds.length ||
+    JSON.stringify([...groupedObjectiveIds].sort()) !== JSON.stringify([...policy.eligibleObjectiveIds].sort())) {
+    reasons.push("OWNER_TOPOLOGY_COHERENCE_GROUP_PARTITION_INVALID");
+  }
+  return Object.freeze(uniqueSorted(reasons));
+}
+
 function emptyPlan(input: ProductionWeekAllocationComposerInput, status: ProductionWeekAllocationStatus,
   reasons: readonly string[], searchTrace: readonly string[] = []): ProductionWeekAllocationPlan {
   const weekPlanId = deriveWeekPlanId({ athleteId: input.weeklyIntent.athleteId,
@@ -445,6 +626,7 @@ export function composeWeekAllocation(input: ProductionWeekAllocationComposerInp
     ...validateProductionWeekPlanningSourceSnapshot(input.sourceSnapshot),
     ...validateProductionWeekSearchResourcePolicy(input.searchResourcePolicy),
     ...input.spacingRequirements.flatMap(validateProductionSpacingRequirement),
+    ...validateProductionWeekTopologyPolicy(input),
     ...(explicitIsoTime(input.evaluationTime) ? [] : ["WEEK_ALLOCATION_EVALUATION_TIME_INVALID"]),
     ...(input.weeklyIntent.horizonRevisionId === input.sourceSnapshot.horizonRevisionId || input.priorPlanRevision ? [] :
       ["WEEK_INTENT_HORIZON_REVISION_STALE"]),
@@ -486,9 +668,13 @@ export function composeWeekAllocation(input: ProductionWeekAllocationComposerInp
     return emptyPlan(input, "search_inconclusive", ["WEEK_SEARCH_RESOURCE_LIMIT_REACHED"], searchTrace);
   }
   if (search.assignments.length === 0) return emptyPlan(input, "allocation_infeasible", ["NO_LEGAL_ASSIGNMENT"], searchTrace);
-  const evaluated = search.assignments.map((assignment) => ({ assignment, ...evaluate(input, assignment, opportunities) }))
-    .sort((left, right) => compareProductionWeekEvaluations(left.vector, right.vector));
-  const winner = evaluated[0]!;
+  let winner: { readonly assignment: Assignment; readonly vector: ProductionWeekEvaluationVector;
+    readonly feasibility: readonly ProductionSessionFeasibilityResult[] } | null = null;
+  for (const assignment of search.assignments) {
+    const candidate = { assignment, ...evaluate(input, assignment, opportunities) };
+    if (!winner || compareProductionWeekEvaluations(candidate.vector, winner.vector) < 0) winner = candidate;
+  }
+  if (!winner) return emptyPlan(input, "allocation_infeasible", ["NO_LEGAL_ASSIGNMENT"], searchTrace);
   if (!winner.vector.hardValid) {
     const incomplete = winner.feasibility.some((entry) => entry.status === "search_inconclusive");
     return emptyPlan(input, incomplete ? "search_inconclusive" : "allocation_infeasible",
@@ -503,8 +689,10 @@ export function composeWeekAllocation(input: ProductionWeekAllocationComposerInp
     return [opportunity.opportunityId, deriveReservationId({ weekPlanId, opportunityId: opportunity.opportunityId,
       responsibilityLineage: objectiveIds })];
   }));
+  const primaryObjectiveByOpportunity = primaryObjectivesForAssignment(input, winner.assignment, opportunities);
   const revisionDrafts = activeOpportunities.map((opportunity) => reservationDraft(input, winner.assignment, opportunity,
-    objectiveIdsAt(winner.assignment, opportunity.opportunityId), weekPlanId, "PENDING_PLAN_REVISION", reservationIdsByOpportunity));
+    objectiveIdsAt(winner.assignment, opportunity.opportunityId), weekPlanId, "PENDING_PLAN_REVISION",
+    reservationIdsByOpportunity, primaryObjectiveByOpportunity));
   const satisfactionStates = Object.freeze(Object.fromEntries(input.weeklyIntent.objectives.map((objective) =>
     [objective.objectiveId, satisfaction(objective, winner.assignment[objective.objectiveId]?.length ?? 0, winner.feasibility)])));
   const contentForRevision: Omit<ProductionWeekAllocationPlan, "weekPlanRevisionId" | "provenance"> = {
@@ -540,12 +728,16 @@ export function composeWeekAllocation(input: ProductionWeekAllocationComposerInp
     reallocationState: completedReservations.length > 0 ? "completed_history_preserved" : "not_required",
     decisionTrace: Object.freeze(["EXPLICIT_WEEK_POLICY", "EXPLICIT_SESSION_FEASIBILITY_EVIDENCE",
       "EXACT_DETERMINISTIC_SEARCH", "STRICT_LEXICOGRAPHIC_EVALUATION", "REQUIRED_BEFORE_PREFERRED_BEFORE_OPTIONAL",
+      ...(input.topologyPolicy ? [`TOPOLOGY_POLICY:${input.topologyPolicy.reference.policyId}@${input.topologyPolicy.reference.version}`,
+        "REQUIRED_TARGET_BEFORE_CONCENTRATION_BEFORE_FEWEST_OCCUPIED_BEFORE_PRIMARY_BALANCE",
+        "UNUSED_OPPORTUNITIES_ALLOWED"] : []),
       "NO_FIXED_SPLIT_AUTHORITY", "NO_EXERCISE_SELECTION", "NO_DOSE", "NO_APPLICATION"]),
     evaluationTime: input.evaluationTime,
   };
   const weekPlanRevisionId = planRevisionId(contentForRevision);
   const proposed = activeOpportunities.map((opportunity) => reservationDraft(input, winner.assignment, opportunity,
-    objectiveIdsAt(winner.assignment, opportunity.opportunityId), weekPlanId, weekPlanRevisionId, reservationIdsByOpportunity));
+    objectiveIdsAt(winner.assignment, opportunity.opportunityId), weekPlanId, weekPlanRevisionId,
+    reservationIdsByOpportunity, primaryObjectiveByOpportunity));
   const plan: ProductionWeekAllocationPlan = Object.freeze({
     ...contentForRevision,
     weekPlanRevisionId,
@@ -553,7 +745,10 @@ export function composeWeekAllocation(input: ProductionWeekAllocationComposerInp
     provenance: Object.freeze({ owner: "week_allocation_composer", sourceRefs: Object.freeze([
       input.weeklyIntent.intentRevisionId, input.sourceSnapshot.sourceSnapshotRevisionId]),
       ruleRefs: Object.freeze([`${policyResolution.policy.reference.policyId}@${policyResolution.policy.reference.version}`,
-        `${input.searchResourcePolicy.policyId}@${input.searchResourcePolicy.version}`]) }),
+        `${input.searchResourcePolicy.policyId}@${input.searchResourcePolicy.version}`,
+        ...(input.topologyPolicy ? [
+          `${input.topologyPolicy.reference.policyId}@${input.topologyPolicy.reference.version}`,
+        ] : [])]) }),
   });
   const validationReasons = validateProductionWeekAllocationPlan(plan);
   return validationReasons.length === 0 ? plan : emptyPlan(input, "invalid_allocation_input", validationReasons, searchTrace);

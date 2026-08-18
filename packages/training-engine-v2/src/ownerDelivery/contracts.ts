@@ -41,6 +41,14 @@ export type OwnerEnrollmentPermission = "preview_only" | "apply_allowed";
 export type OwnerProfileReviewState = "requires_confirmation" | "confirmed";
 export type OwnerTrainingSafetyState = "clear" | "review_required" | "blocked";
 
+export const OWNER_AVAILABLE_TRAINING_DAYS = Object.freeze([2, 3, 4, 5, 6] as const);
+export type OwnerAvailableTrainingDays = (typeof OWNER_AVAILABLE_TRAINING_DAYS)[number];
+export type OwnerStoredTrainingDays = 1 | OwnerAvailableTrainingDays | 7;
+
+export function isOwnerAvailableTrainingDays(value: unknown): value is OwnerAvailableTrainingDays {
+  return typeof value === "number" && OWNER_AVAILABLE_TRAINING_DAYS.includes(value as OwnerAvailableTrainingDays);
+}
+
 export const OWNER_DELIVERY_STATES = Object.freeze([
   "hidden",
   "ineligible",
@@ -132,7 +140,7 @@ export interface OwnerGetStrongerProfileRevision {
   readonly primaryGoal: "strength";
   readonly trainingMode: "develop";
   readonly secondaryGoal: null;
-  readonly daysPerWeek: number;
+  readonly daysPerWeek: OwnerStoredTrainingDays;
   readonly sessionOpportunities: readonly OwnerSessionOpportunity[];
   readonly sessionMinutes: OwnerSessionMinutes;
   readonly equipmentCapabilitySnapshot: OwnerEquipmentCapabilitySnapshot;
@@ -534,11 +542,18 @@ export function buildOwnerEnrollmentRevision(input: Omit<OwnerEnrollmentRevision
 }
 
 export function buildOwnerProfileRevision(input: Omit<OwnerGetStrongerProfileRevision,
-  "contract" | "revisionContract" | "profileId" | "revisionId" | "semanticFingerprint"> & {
+  "contract" | "revisionContract" | "profileId" | "revisionId" | "semanticFingerprint" | "daysPerWeek"> & {
     readonly profileId?: string;
+    readonly daysPerWeek: OwnerAvailableTrainingDays;
   }): OwnerGetStrongerProfileRevision {
   if (!input.userId.trim() || !explicitIsoTime(input.createdAt) || !explicitIsoTime(input.evaluationTime)) {
     throw new Error("OWNER_PROFILE_IDENTITY_AND_EXPLICIT_TIME_REQUIRED");
+  }
+  if (!isOwnerAvailableTrainingDays(input.daysPerWeek) ||
+      input.sessionOpportunities.length !== input.daysPerWeek ||
+      input.sessionOpportunities.some((entry, index) => !entry.opportunityId.trim() || entry.order !== index + 1) ||
+      new Set(input.sessionOpportunities.map((entry) => entry.opportunityId)).size !== input.sessionOpportunities.length) {
+    throw new Error("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
   }
   const profileId = input.profileId ?? stableId("owner-v2-profile", { userId: input.userId });
   const semantic = Object.freeze({
@@ -578,8 +593,13 @@ export function evaluateOwnerProfileReadiness(profile: OwnerGetStrongerProfileRe
     reasons.push("OWNER_PROFILE_FIXED_GOAL_MODE_CONFLICT");
   }
   if (profile.reviewState !== "confirmed") reasons.push("OWNER_PROFILE_CONFIRMATION_REQUIRED");
-  if (!Number.isInteger(profile.daysPerWeek) || profile.daysPerWeek < 1 || profile.daysPerWeek > 7 ||
-      profile.sessionOpportunities.length !== profile.daysPerWeek) {
+  if (!isOwnerAvailableTrainingDays(profile.daysPerWeek)) {
+    reasons.push("OWNER_PROFILE_AVAILABILITY_RECONFIRMATION_REQUIRED");
+  }
+  if (profile.sessionOpportunities.length !== profile.daysPerWeek ||
+      profile.sessionOpportunities.some((entry, index) => !entry.opportunityId.trim() || entry.order !== index + 1) ||
+      new Set(profile.sessionOpportunities.map((entry) => entry.opportunityId)).size !==
+        profile.sessionOpportunities.length) {
     reasons.push("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
   }
   if (!profile.equipmentCapabilitySnapshot.confirmed ||
@@ -628,6 +648,13 @@ export function validateOwnerProfileRevision(value: OwnerGetStrongerProfileRevis
   }
   if (!value.userId || !explicitIsoTime(value.createdAt) || !explicitIsoTime(value.evaluationTime)) {
     reasons.push("OWNER_PROFILE_INVALID");
+  }
+  if (!isOwnerAvailableTrainingDays(value.daysPerWeek) ||
+      value.sessionOpportunities.length !== value.daysPerWeek ||
+      value.sessionOpportunities.some((entry, index) => !entry.opportunityId.trim() || entry.order !== index + 1) ||
+      new Set(value.sessionOpportunities.map((entry) => entry.opportunityId)).size !==
+        value.sessionOpportunities.length) {
+    reasons.push("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
   }
   if (semanticFingerprint({ ...value, semanticFingerprint: undefined }) !== value.semanticFingerprint) {
     reasons.push("OWNER_PROFILE_FINGERPRINT_INVALID");

@@ -159,8 +159,11 @@ function fixture() {
     acceptedVersions: ["controlled-owner-delivery@1.0.0"],
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-evidence"] }, createdAt: NOW });
   const profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
-    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 1,
-    sessionOpportunities: [{ opportunityId: "evidence-opportunity", order: 1, minutes: 45 }],
+    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
+    sessionOpportunities: [
+      { opportunityId: "evidence-opportunity-1", order: 1, minutes: 45 },
+      { opportunityId: "evidence-opportunity-2", order: 2, minutes: 45 },
+    ],
     sessionMinutes: { status: "known", minutes: 45 }, equipmentCapabilitySnapshot: {
       environment: "commercial_gym", capabilityIds: ["commercial_gym", "dumbbells", "adjustable_bench"],
       confirmed: true, sourceRevision: "evidence-equipment" }, coarseExperience: "beginner", familiarity: [],

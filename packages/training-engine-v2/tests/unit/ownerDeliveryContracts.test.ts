@@ -5,6 +5,7 @@ import {
   buildOwnerEnrollmentRevision,
   buildOwnerProfileRevision,
   evaluateOwnerProfileReadiness,
+  validateOwnerProfileRevision,
   resolveOwnerDeliveryMode,
 } from "../../src";
 
@@ -74,5 +75,43 @@ describe("controlled owner delivery pure contracts", () => {
     expect(OWNER_DELIVERY_STATE_MACHINE.stateCount).toBe(23);
     expect(OWNER_DELIVERY_STATE_MACHINE.automaticApplyTransitions).toBe(0);
     expect(OWNER_DELIVERY_STATE_MACHINE.transitions).toHaveLength(23);
+  });
+
+  it.each([1, 7] as const)("keeps legacy %s-day profiles readable but requires reconfirmation", (days) => {
+    const current = buildOwnerProfileRevision({ basedOnRevisionId: null, userId: "legacy-owner",
+      primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
+      sessionOpportunities: [
+        { opportunityId: "opportunity-1", order: 1, minutes: 90 },
+        { opportunityId: "opportunity-2", order: 2, minutes: 90 },
+      ], sessionMinutes: { status: "known", minutes: 90 },
+      equipmentCapabilitySnapshot: { environment: "commercial_gym", capabilityIds: ["dumbbells"],
+        confirmed: true, sourceRevision: "equipment:legacy" }, coarseExperience: "advanced", familiarity: [],
+      painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
+      assessmentReferences: [], trainingSafety: "clear", continuityReferences: [], evaluationTime: NOW,
+      provenance: { source: "owner_confirmation", sourceRefs: ["legacy-profile"] },
+      reviewState: "confirmed", createdAt: NOW });
+    const legacy = { ...current, daysPerWeek: days,
+      sessionOpportunities: Array.from({ length: days }, (_, index) => ({
+        opportunityId: `legacy-opportunity-${index + 1}`, order: index + 1, minutes: 90,
+      })) } as typeof current;
+    expect(legacy.daysPerWeek).toBe(days);
+    expect(evaluateOwnerProfileReadiness(legacy)).toMatchObject({ status: "profile_incomplete",
+      previewAllowed: false, approvalAllowed: false,
+      reasonCodes: ["OWNER_PROFILE_AVAILABILITY_RECONFIRMATION_REQUIRED"] });
+    expect(validateOwnerProfileRevision(legacy)).toContain("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
+  });
+
+  it.each([1, 7] as const)("rejects new %s-day profile revisions", (days) => {
+    expect(() => buildOwnerProfileRevision({ basedOnRevisionId: null, userId: "new-owner",
+      primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null,
+      daysPerWeek: days as never, sessionOpportunities: Array.from({ length: days }, (_, index) => ({
+        opportunityId: `opportunity-${index + 1}`, order: index + 1, minutes: 90 })),
+      sessionMinutes: { status: "known", minutes: 90 }, equipmentCapabilitySnapshot: {
+        environment: "commercial_gym", capabilityIds: ["dumbbells"], confirmed: true,
+        sourceRevision: "equipment:new" }, coarseExperience: "advanced", familiarity: [],
+      painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
+      assessmentReferences: [], trainingSafety: "clear", continuityReferences: [], evaluationTime: NOW,
+      provenance: { source: "owner_confirmation", sourceRefs: ["new-profile"] },
+      reviewState: "confirmed", createdAt: NOW })).toThrow("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
   });
 });

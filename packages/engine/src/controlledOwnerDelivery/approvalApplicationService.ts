@@ -7,6 +7,7 @@ import {
   buildOwnerProgramEnvelope,
   deriveOwnerApplicationId,
   deriveOwnerPreviewStaleness,
+  evaluateOwnerProfileReadiness,
   type ControlledOwnerV2ProgramApplication,
   type ControlledOwnerV2ProgramApproval,
   type OwnerDeliveryMode,
@@ -66,6 +67,8 @@ export async function approveControlledOwnerGetStrongerPreview(input: {
     input.loadCurrentContext(gate.userId),
   ]);
   if (!preview || !profile) return finish("not_found", null, ["OWNER_EXACT_PREVIEW_AND_PROFILE_REQUIRED"]);
+  const profileReadiness = evaluateOwnerProfileReadiness(profile);
+  if (!profileReadiness.approvalAllowed) return finish("denied", null, profileReadiness.reasonCodes);
   if (preview.previewFingerprint !== input.previewFingerprint || preview.readinessStatus !== "ready_for_approval" ||
       enrollment?.state !== "active" || enrollment.permission !== "apply_allowed") {
     return finish("denied", null, ["OWNER_PREVIEW_NOT_APPROVABLE"]);
@@ -143,6 +146,8 @@ export async function applyControlledOwnerGetStrongerApproval(input: {
     input.delivery.readActivePointer(gate.userId),
   ]);
   if (!preview || !profile) return finish("not_found", null, null, ["OWNER_EXACT_PREVIEW_AND_PROFILE_REQUIRED"]);
+  const profileReadiness = evaluateOwnerProfileReadiness(profile);
+  if (!profileReadiness.approvalAllowed) return finish("denied", null, null, profileReadiness.reasonCodes);
   if (enrollment?.state !== "active" || enrollment.permission !== "apply_allowed" ||
       approval.previewFingerprint !== preview.previewFingerprint || preview.readinessStatus !== "ready_for_approval") {
     return finish("denied", null, null, ["OWNER_APPLICATION_PRECONDITION_FAILED"]);

@@ -17,7 +17,9 @@ import {
   type PrescriptionSessionCompilationResult,
   type ProductionFinalSessionSequencingResult,
   type ProductionPostPrescriptionWeekValidationResult,
+  type ProductionWeekAllocationPlan,
   type ProductionWeeklyIntentV1_1,
+  type ProductionWeeklyIntentPlanningResult,
   type ProductionWeekAllocationPlanV1_1,
   type SessionIntentPlanningResult,
   type SessionPracticeModeV2,
@@ -53,8 +55,11 @@ export function buildOwnerSessionPracticeSource(input: {
   const sequenceStage = stage<readonly ProductionFinalSessionSequencingResult[]>(input.envelope,
     "final_sequencing");
   const gateStage = stage<ProductionPostPrescriptionWeekValidationResult>(input.envelope, "gate_13");
-  const weekIntent = stage<ProductionWeeklyIntentV1_1>(input.envelope, "week_intent");
-  const weekPlan = stage<ProductionWeekAllocationPlanV1_1>(input.envelope, "week_allocation");
+  const weekIntent = stage<ProductionWeeklyIntentV1_1 | ProductionWeeklyIntentPlanningResult>(
+    input.envelope, "week_intent");
+  const weekPlan = stage<ProductionWeekAllocationPlanV1_1 | {
+    readonly weekPlan: ProductionWeekAllocationPlan;
+  }>(input.envelope, "week_allocation");
   const planning = intentStage.payload.find((entry) => entry.sessionIntent?.id === input.sessionId);
   const skeleton = composerStage.payload.find((entry) => entry.skeleton.sessionIntentId === input.sessionId)?.skeleton;
   const sequence = sequenceStage.payload.find((entry) => entry.plan?.sessionIntentId === input.sessionId)?.plan;
@@ -65,6 +70,12 @@ export function buildOwnerSessionPracticeSource(input: {
   const ledger = gateStage.payload.sourceExposureLedger.filter((entry) => entry.sessionIntentId === input.sessionId);
   if (!ledger.length) throw new Error("OWNER_SESSION_GATE_13_LINEAGE_REQUIRED");
   const first = ledger[0]!;
+  const canonicalWeekIntent = "plannerContract" in weekIntent.payload ? null : weekIntent.payload.weeklyIntent;
+  const weekPolicyReference = "plannerContract" in weekIntent.payload ?
+    `${weekIntent.payload.plannerContract.contractId}@${weekIntent.payload.plannerContract.contractVersion}` :
+    canonicalWeekIntent ? `${canonicalWeekIntent.policyReference.policyId}@${canonicalWeekIntent.policyReference.version}` :
+      "PRODUCTION_WEEK_POLICY_REQUIRED";
+  const weekPlanId = "weekPlan" in weekPlan.payload ? weekPlan.payload.weekPlan.weekPlanId : weekPlan.payload.planId;
   const blockMinimums = Object.fromEntries(prescription.plans.flatMap((plan) =>
     plan.doseBlocks.map((block) => [block.blockId, 1])));
   return Object.freeze({
@@ -80,7 +91,7 @@ export function buildOwnerSessionPracticeSource(input: {
     prescriptions: prescription.plans,
     finalSequence: sequence,
     week: { programId: input.envelope.envelopeId, programRevisionId: input.envelope.envelopeRevisionId,
-      weekPlanId: weekPlan.payload.planId, weekPlanRevisionId: weekPlan.fingerprint,
+      weekPlanId, weekPlanRevisionId: weekPlan.fingerprint,
       reservationId: first.reservationId, reservationRevisionId: gateStage.payload.validationRevisionId,
       opportunityId: first.opportunityId,
       responsibilityIds: first.weeklyObjectiveIds,
@@ -90,8 +101,7 @@ export function buildOwnerSessionPracticeSource(input: {
       state: gateStage.payload.status.startsWith("validated_") ? "PASS" as const : "FAIL_STOP" as const,
       sourceExposureEventIds: ledger.map((entry) => entry.sourceExposureEventId) },
     trainingReadiness: planning.trainingReadiness,
-    policyVersionRefs: Object.freeze([...input.envelope.policyVersions,
-      `${weekIntent.payload.plannerContract.contractId}@${weekIntent.payload.plannerContract.contractVersion}`]),
+    policyVersionRefs: Object.freeze([...input.envelope.policyVersions, weekPolicyReference]),
     admittedMinimumCountByBlockId: Object.freeze(blockMinimums),
     currentEquipmentReference: `owner-profile:${input.envelope.profileRevisionId}`,
     capturedAt: input.envelope.createdAt,

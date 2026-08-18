@@ -52,8 +52,11 @@ describePostgres("controlled owner delivery PostgreSQL 16", () => {
     expect(await enrollmentProfiles.appendEnrollment(enrollment)).toBe("appended");
     expect(await enrollmentProfiles.appendEnrollment(enrollment)).toBe("exact_retry");
     const profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
-      primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 1,
-      sessionOpportunities: [{ opportunityId: "pg-opportunity-1", order: 1, minutes: 45 }],
+      primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
+      sessionOpportunities: [
+        { opportunityId: "pg-opportunity-1", order: 1, minutes: 45 },
+        { opportunityId: "pg-opportunity-2", order: 2, minutes: 45 },
+      ],
       sessionMinutes: { status: "known", minutes: 45 }, equipmentCapabilitySnapshot: {
         environment: "commercial_gym", capabilityIds: ["commercial_gym", "dumbbells", "adjustable_bench"],
         confirmed: true, sourceRevision: "pg-equipment-1" }, coarseExperience: "beginner", familiarity: [],

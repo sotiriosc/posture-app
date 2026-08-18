@@ -16,14 +16,19 @@ function count(root: string, pattern: RegExp): number {
   return sourceFiles(root).reduce((sum, path) => sum + (readFileSync(path, "utf8").match(pattern)?.length ?? 0), 0);
 }
 
-describe("production Week permanent nonactivation", () => {
-  it("keeps consumer, gyms, routes, actions, generateProgram, and Product Horizon unwired", () => {
+describe("production Week bounded activation", () => {
+  it("activates only controlled-owner delivery and keeps consumer, gyms, Product, and Product Horizon unwired", () => {
     const liveRoots = [resolve(repositoryRoot, "apps/consumer/src"), resolve(repositoryRoot, "apps/gyms/src"),
       resolve(repositoryRoot, "packages/engine/src")];
-    const weekImport = /training-engine-v2(?:\/week-planning)?["']|weekPlanning|planWeeklyIntent|composeWeekAllocation|materializeSessionAllocation|reallocateRemainingWeek/g;
+    const weekImport = /weekPlanning|planWeeklyIntent|composeWeekAllocation|materializeSessionAllocation|reallocateRemainingWeek/g;
     expect(count(liveRoots[0]!, weekImport)).toBe(0);
     expect(count(liveRoots[1]!, weekImport)).toBe(0);
     expect(count(liveRoots[2]!, /planWeeklyIntent\(|composeWeekAllocation\(|materializeSessionAllocation\(|reallocateRemainingWeek\(/g)).toBe(0);
+    const ownerRoot = resolve(repositoryRoot, "packages/training-engine-v2/src/ownerDelivery");
+    expect(count(ownerRoot, /planWeeklyIntent\(/g)).toBe(1);
+    expect(count(ownerRoot, /composeWeekAllocation\(/g)).toBe(1);
+    expect(count(ownerRoot, /materializeSessionAllocation\(/g)).toBe(1);
+    expect(count(ownerRoot, /reallocateRemainingWeek\(/g)).toBe(0);
     expect(count(liveRoots[0]!, /ProductWeekHorizon|Product Horizon/g) + count(liveRoots[1]!, /ProductWeekHorizon|Product Horizon/g)).toBe(0);
   });
 

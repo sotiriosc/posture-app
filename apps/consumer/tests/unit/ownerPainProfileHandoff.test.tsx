@@ -63,11 +63,10 @@ import { proposeOwnerImportsFromTrainingSnapshot } from "@praxis/engine/controll
 const facts = () => proposeOwnerImportsFromTrainingSnapshot({ snapshot: harness.snapshot,
   sourceRevision: harness.sourceRevision });
 
-const request = (painFactIds: readonly string[]) => new Request(
+const request = (painFactIds: readonly string[], daysPerWeek = 2) => new Request(
   "https://praxis.test/api/training/v2-owner/profile",
   { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
-    daysPerWeek: 1,
-    sessionOpportunities: [{ opportunityId: "owner-opportunity-1", order: 1, minutes: 90 }],
+    daysPerWeek,
     sessionMinutes: { status: "known", minutes: 90 },
     equipmentEnvironment: "commercial_gym",
     capabilityIds: ["commercial_gym", "dumbbells", "adjustable_bench"],
@@ -96,6 +95,15 @@ describe("controlled owner typed pain profile handoff", () => {
     const painLabel = [...document.querySelectorAll("label")].find((label) =>
       label.textContent?.includes("Pain region: Lower back"));
     expect((painLabel?.querySelector("input") as HTMLInputElement | null)?.checked).toBe(false);
+    expect([...document.querySelectorAll("#owner-days option")].map((option) => option.textContent))
+      .toEqual(["2", "3", "4", "5", "6"]);
+  });
+
+  it.each([1, 7])("rejects %s available days without persisting a profile", async (days) => {
+    const painFact = facts().find((fact) => fact.field === "pain_region")!;
+    const response = await POST(request([painFact.factId], days));
+    expect(response.status).toBe(400);
+    expect(harness.appendedProfiles).toEqual([]);
   });
 
   it("does not treat generic pain and Safety confirmation as typed pain-fact confirmation", async () => {
@@ -112,6 +120,11 @@ describe("controlled owner typed pain profile handoff", () => {
 
     expect(response.status).toBe(200);
     expect(harness.currentProfile).toMatchObject({
+      daysPerWeek: 2,
+      sessionOpportunities: [
+        { opportunityId: "owner-opportunity-1", order: 1, minutes: 90 },
+        { opportunityId: "owner-opportunity-2", order: 2, minutes: 90 },
+      ],
       painContext: { regionIds: ["lumbar_spine"], confirmed: true,
         sourceFactIds: [painFact.factId], sourceRevision: harness.sourceRevision },
       provenance: { sourceRefs: ["owner-account-profile", painFact.factId].sort() },
@@ -122,6 +135,21 @@ describe("controlled owner typed pain profile handoff", () => {
       painContext: { regionIds: ["lumbar_spine"], sourceFactIds: [painFact.factId],
         sourceRevision: harness.sourceRevision },
     } });
+  });
+
+  it("renders a legacy availability value as reconfirmation-only and disables generation", () => {
+    const profile = { daysPerWeek: 1, sessionMinutes: { status: "known", minutes: 90 },
+      equipmentCapabilitySnapshot: { environment: "commercial_gym", capabilityIds: ["dumbbells"] },
+      coarseExperience: "advanced", painContext: { confirmed: true, sourceFactIds: [] },
+      trainingSafety: "clear", assessmentReferences: [] } as never;
+    const document = new JSDOM(renderToStaticMarkup(<OwnerProfileClient profile={profile}
+      proposedFacts={facts()} csrf={{ enrollment: "csrf", profile: "csrf", preview: "csrf" }}
+      canApply={false} />)).window.document;
+    expect([...document.querySelectorAll("#owner-days option")].map((option) => option.textContent))
+      .toEqual(["1 (reconfirmation required)", "2", "3", "4", "5", "6"]);
+    const generate = [...document.querySelectorAll("button")].find((button) =>
+      button.textContent === "Generate preview") as HTMLButtonElement;
+    expect(generate.disabled).toBe(true);
   });
 
   it("rejects stale pain-fact IDs without mutating an existing saved profile", async () => {

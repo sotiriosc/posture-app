@@ -96,8 +96,11 @@ describe("controlled owner identity and profile foundation", () => {
       primaryGoal: "strength",
       trainingMode: "develop",
       secondaryGoal: null,
-      daysPerWeek: 1,
-      sessionOpportunities: [{ opportunityId: "opportunity-1", order: 1, minutes: 45 }],
+      daysPerWeek: 2,
+      sessionOpportunities: [
+        { opportunityId: "opportunity-1", order: 1, minutes: 45 },
+        { opportunityId: "opportunity-2", order: 2, minutes: 45 },
+      ],
       sessionMinutes: { status: "known", minutes: 45 },
       equipmentCapabilitySnapshot: { environment: "home", capabilityIds: ["bodyweight"], confirmed: true,
         sourceRevision: "equipment:1" },

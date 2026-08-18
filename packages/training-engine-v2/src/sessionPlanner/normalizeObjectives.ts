@@ -68,6 +68,9 @@ export function normalizeAllocatedObjectives(input: {
       const sourceEvidenceRefs = objective.sourceEvidence
         .flatMap((source) => [source.sourceId, ...source.evidenceRefs])
         .sort();
+      const weeklyObjectiveLineageIds = objective.sourceEvidence
+        .filter((source) => source.sourceKind === "future_week_allocation")
+        .map((source) => source.sourceId);
       const needId = `${input.directiveId}:objective:${objective.id}`;
       return {
         objectiveIds: [objective.id],
@@ -98,7 +101,7 @@ export function normalizeAllocatedObjectives(input: {
             targetBodyRegions: [...objective.selectionTarget.targetBodyRegions].sort(),
           },
           plannerProvenance: {
-            objectiveIds: [objective.id],
+            objectiveIds: [...new Set([objective.id, ...weeklyObjectiveLineageIds])].sort(),
             owner: "session_allocation_directive",
             transformationRuleId: `objective_kind_mapping:${objective.kind}`,
             sourceEvidenceRefs,

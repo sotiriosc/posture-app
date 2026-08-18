@@ -9,7 +9,7 @@ import type { AthleteProfile } from "../domain/athlete";
 import type { EquipmentCapabilities } from "../domain/equipment";
 import type { ExerciseDefinition } from "../domain/exercise";
 import { BODY_REGIONS, type BodyRegion, type JointStressTag } from "../domain/primitives";
-import type { CurrentSessionEquipment, SessionAllocationDirective } from "../domain/sessionPlanningDirective";
+import type { CurrentSessionEquipment } from "../domain/sessionPlanningDirective";
 import { isLowFatigueActivationCandidate } from "../candidate";
 import { REFERENCE_EXERCISES } from "../data/referenceExercises";
 import { buildSessionCandidateResults } from "../sessionComposer/candidatePools";
@@ -20,18 +20,29 @@ import { buildSessionSequencingInput } from "../sessionComposer/sequencingHandof
 import { planSessionIntent } from "../sessionPlanner/planSessionIntent";
 import type { SessionIntentPlannerInput } from "../sessionPlanner/contracts";
 import {
-  materializeSupportedPurposeObjectiveV1_1,
-  planSupportedPurposeWeeklyIntentV1_1,
-  composeSupportedPurposeWeekV1_1,
-  PRODUCTION_WEEK_POLICY_V2,
-  type MaterializedAllocatedObjectiveV1_1,
-  type ProductionExplicitWeeklyPriorityV1_1,
-} from "../weekPlanningV1_1";
+  buildProductionWeekPlanningSourceSnapshot,
+  composeWeekAllocation,
+  deriveWeekOpportunityId,
+  deriveWeekOpportunityRevisionId,
+  deriveWeekPlanningHorizonId,
+  materializeSessionAllocation,
+  planWeeklyIntent,
+  PRODUCTION_SESSION_ALLOCATION_MATERIALIZER_CONTRACT_REFERENCE,
+  PRODUCTION_WEEK_ALLOCATION_COMPOSER_CONTRACT_REFERENCE,
+  PRODUCTION_WEEKLY_INTENT_PLANNER_CONTRACT_REFERENCE,
+  PRODUCTION_WEEK_POLICY_V1,
+  type ProductionExplicitWeeklyPriority,
+  type ProductionReservedSessionObjective,
+  type ProductionSessionAllocationMaterializationResult,
+  type ProductionWeekAllocationPlan,
+  type ProductionWeekPlanningSourceSnapshot,
+  type ProductionWeekTrainingOpportunity,
+  type ProductionWeeklyIntent,
+} from "../weekPlanning";
 import {
   compileSessionPrescription,
   PRESCRIPTION_POLICY_V1,
   type PrescriptionCompilationContextFacts,
-  type PrescriptionLocalPurpose,
   type PrescriptionSessionCompilerInput,
 } from "../prescription";
 import {
@@ -53,6 +64,7 @@ import { buildProductionPhaseProgramSnapshot } from "../phaseContinuity";
 import { deterministicToken, stableId, uniqueSorted } from "../prescription/compiler/utilities";
 import {
   buildOwnerProgramProjection,
+  evaluateOwnerProfileReadiness,
   type OwnerGenerationCommand,
   type OwnerGetStrongerProfileRevision,
   type OwnerPipelineStageArtifact,
@@ -60,9 +72,17 @@ import {
   type ProposedOwnerImportFact,
 } from "./contracts";
 import { projectOwnerPrescriptionDoseBlocks } from "./projection";
+import {
+  buildOwnerGetStrongerTopologyPolicy,
+  buildOwnerWeekFeasibilityOracle,
+  evaluateOwnerWeekTopology,
+  OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE,
+  OWNER_WEEK_TOPOLOGY_SEARCH_POLICY,
+} from "./weekTopology";
 
 const ENGINE_POLICY_VERSIONS = Object.freeze([
-  "PRODUCTION_WEEK_POLICY_V2@2.0.0",
+  "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0",
+  `${OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE.policyId}@${OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE.version}`,
   "PRESCRIPTION_POLICY_V1@1.0.0",
   "SESSION_SEQUENCING_POLICY_V1@1.0.0",
   "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE@1.0.0",
@@ -78,8 +98,8 @@ const OWNER_FINAL_SEQUENCE_SEARCH_POLICY: FinalSequencingSearchResourcePolicy = 
   provenance: Object.freeze({ source: "policy", sourceRef: "controlled-owner-delivery:exact-search" }),
 });
 
-type WeeklyIntent = ReturnType<typeof planSupportedPurposeWeeklyIntentV1_1>;
-type WeekPlan = ReturnType<typeof composeSupportedPurposeWeekV1_1>;
+type WeeklyIntent = ProductionWeeklyIntent;
+type WeekPlan = ProductionWeekAllocationPlan;
 type Planning = ReturnType<typeof planSessionIntent>;
 type Candidates = ReturnType<typeof buildSessionCandidateResults>;
 type Skeleton = ReturnType<typeof composeSessionSkeleton>;
@@ -91,7 +111,8 @@ interface SessionExecution {
   readonly opportunityId: string;
   readonly reservationId: string;
   readonly minutes: number | null;
-  readonly materialized: readonly MaterializedAllocatedObjectiveV1_1[];
+  readonly materialized: readonly ProductionReservedSessionObjective[];
+  readonly allocationMaterialization: ProductionSessionAllocationMaterializationResult;
   readonly plannerInput: SessionIntentPlannerInput;
   readonly planning: Planning;
   readonly candidates: Candidates;
@@ -160,6 +181,7 @@ export interface OwnerProgramSemanticCompletenessInput {
   readonly exactEquipmentCapabilityPreserved: boolean;
   readonly supportingWorkCarriesNoDevelopmentalCredit: boolean;
   readonly durationProjectionTruthful: boolean;
+  readonly topologyQualitySatisfied: boolean;
 }
 
 export function evaluateOwnerProgramSemanticCompleteness(input: OwnerProgramSemanticCompletenessInput) {
@@ -184,6 +206,8 @@ export function evaluateOwnerProgramSemanticCompleteness(input: OwnerProgramSema
       satisfied: input.supportingWorkCarriesNoDevelopmentalCredit }),
     Object.freeze({ id: "OWNER_CALCULATED_DURATION_DISTINCT_FROM_AVAILABLE",
       satisfied: input.durationProjectionTruthful }),
+    Object.freeze({ id: "OWNER_CANONICAL_WEEK_TOPOLOGY_QUALITY_SATISFIED",
+      satisfied: input.topologyQualitySatisfied }),
   ]);
   const reasonCodes = Object.freeze(definitions.filter((entry) => !entry.satisfied).map((entry) => entry.id));
   return Object.freeze({ approvalAllowed: reasonCodes.length === 0, invariants: definitions, reasonCodes });
@@ -253,7 +277,7 @@ export function buildControlledOwnerPainAndInjuryState(
 
 export function buildOwnerGetStrongerWeeklyPriorities(
   profile: OwnerGetStrongerProfileRevision,
-): readonly ProductionExplicitWeeklyPriorityV1_1[] {
+): readonly ProductionExplicitWeeklyPriority[] {
   const definitions = [
     { key: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS[0], roles: ["squat", "single_leg"] as const,
       muscles: ["quads", "glutes"] as const, regions: ["knee", "hip", "ankle"] as const },
@@ -268,8 +292,6 @@ export function buildOwnerGetStrongerWeeklyPriorities(
     priorityId: `owner-strength-responsibility:${definition.key}:${profile.revisionId}`,
     family: "strength" as const,
     purpose: "movement_development" as const,
-    localPrescriptionPurpose: "strength_development" as const,
-    purposeAuthority: "primary_local_purpose" as const,
     target: Object.freeze({ targetMovementRoles: Object.freeze(definition.roles),
       targetActionFunctions: Object.freeze([]), targetMuscles: Object.freeze(definition.muscles),
       muscleRequirement: "any_meaningful_contributor" as const,
@@ -279,8 +301,10 @@ export function buildOwnerGetStrongerWeeklyPriorities(
     goalRelationships: Object.freeze([Object.freeze({ goal: "strength" as const,
       relationship: "primary_weekly_goal" as const,
       sourceEvidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`]) })]),
-    sourceEvidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`, "product-goal:get_stronger",
-      "phase-intent:phase_2:whole-person-strength-capabilities"]),
+    sourceEvidence: Object.freeze([Object.freeze({ sourceKind: "user_explicit_weekly_priority" as const,
+      sourceId: `owner-profile:${profile.revisionId}:${definition.key}`,
+      evidenceRefs: Object.freeze([`owner-profile:${profile.revisionId}`, "product-goal:get_stronger",
+        "phase-intent:phase_2:whole-person-strength-capabilities"]) })]),
   })));
 }
 
@@ -295,44 +319,61 @@ function athleteFor(profile: OwnerGetStrongerProfileRevision): AthleteProfile {
       preferredTrainingDays: Object.freeze([]) }) });
 }
 
-function directive(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
-  readonly opportunityId: string; readonly minutes: number | null;
-  readonly objectives: readonly MaterializedAllocatedObjectiveV1_1[]; readonly intent: WeeklyIntent }): SessionAllocationDirective {
-  return Object.freeze({ id: stableId("owner-session-directive", { commandId: input.command.commandId,
-    opportunityId: input.opportunityId }), source: "future_week_composer", athleteId: input.profile.userId,
-  sessionType: "ordinary_training", outcomeGoal: "strength", programmingContextModes: Object.freeze([]),
-  currentSessionAvailability: Object.freeze({ availableMinutes: input.minutes ?? 45,
-    structuralCapacity: input.minutes === null ? "standard" : input.minutes <= 30 ? "condensed" :
-      input.minutes >= 60 ? "expanded" : "standard", provenance: "week_allocation",
-    sourceRef: `owner-profile-opportunity:${input.opportunityId}` }),
-  allocatedObjectives: Object.freeze(input.objectives.map((objective, index) => {
-    const weeklyObjective = input.intent.objectives.find((entry) =>
-      entry.objectiveId === objective.weeklyObjectiveId);
-    if (!weeklyObjective) throw new Error("OWNER_WEEKLY_OBJECTIVE_TARGET_MISSING");
-    return Object.freeze({
-      id: objective.allocatedObjectiveId,
-      kind: index === 0 ? "dominant_main" as const : "secondary_main" as const,
-      priority: objective.priority,
-      priorityOrder: index,
-      selectionTarget: Object.freeze({
-        ...weeklyObjective.target,
-        targetMovementRoles: Object.freeze([...weeklyObjective.target.targetMovementRoles]),
-        targetActionFunctions: Object.freeze([...weeklyObjective.target.targetActionFunctions]),
-        targetMuscles: Object.freeze([...weeklyObjective.target.targetMuscles]),
-        targetBodyRegions: Object.freeze([...weeklyObjective.target.targetBodyRegions]),
-      }),
-      sourceEvidence: Object.freeze([Object.freeze({ sourceKind: "future_week_allocation" as const,
-        sourceId: objective.weeklyObjectiveId, evidenceRefs: objective.plannerProvenance.sourceEvidenceRefs })]),
-      standaloneAdmissionDirection: "policy_default" as const,
-      reasonCode: "OWNER_WEEK_STRENGTH_ALLOCATION",
-      explanation: "Required strength objective allocated by the production Week planner.",
-    });
-  })),
-  neighboringSessionContextRefs: Object.freeze([]), unresolvedWeeklyContextRefs: Object.freeze([]),
-  weekReallocationEvidenceRefs: Object.freeze([]), unresolvedContextObservations: Object.freeze([]),
-  sourceTrace: Object.freeze({ owner: "future_week_composer", sourceRefs: Object.freeze([input.command.commandId]),
-    transformationRuleIds: Object.freeze(["OWNER_WEEK_V1_1_EXACT_ALLOCATION"]) }),
-  evaluationAsOf: input.command.evaluationTime });
+function ownerStructuralCapacity(minutes: number | null): "condensed" | "standard" | "expanded" {
+  return minutes !== null && minutes <= 30 ? "condensed" : minutes !== null && minutes >= 60 ? "expanded" : "standard";
+}
+
+function buildOwnerWeekSource(input: ControlledOwnerProductionPipelineInput): ProductionWeekPlanningSourceSnapshot {
+  const equipment = buildOwnerEquipmentCapabilities(input.profile);
+  const planningBoundary = Object.freeze({ kind: "ordered_cycle" as const,
+    cycleRef: `owner-profile-week:${input.profile.revisionId}`, startOrder: 1,
+    endOrder: input.profile.sessionOpportunities.length });
+  const horizonLineageAttemptId = input.command.commandId;
+  const horizonId = deriveWeekPlanningHorizonId({ athleteId: input.profile.userId,
+    boundary: planningBoundary, lineageAttemptId: horizonLineageAttemptId });
+  const opportunities: readonly ProductionWeekTrainingOpportunity[] = input.profile.sessionOpportunities.map((entry) => {
+    const intendedWindowRef = `owner-profile-opportunity:${entry.opportunityId}`;
+    const base: Omit<ProductionWeekTrainingOpportunity, "opportunityRevisionId" | "provenance"> = {
+      opportunityId: deriveWeekOpportunityId({ horizonId, intendedWindowRef }),
+      intendedWindowRef,
+      order: entry.order,
+      availabilityStatus: "available",
+      completionStatus: "not_started",
+      expectedAvailableMinutes: entry.minutes,
+      expectedStructuralCapacity: ownerStructuralCapacity(entry.minutes),
+      expectedEquipment: Object.freeze({ kind: "capability_snapshot" as const, capabilities: equipment,
+        sourceRef: input.profile.equipmentCapabilitySnapshot.sourceRevision }),
+      constraints: Object.freeze([Object.freeze({ constraintId: `owner-single-session:${entry.opportunityId}`,
+        kind: "single_session_only" as const, targetOpportunityIds: Object.freeze([]), required: true,
+        sourceRef: `owner-profile:${input.profile.revisionId}` })]),
+      confirmationState: "user_confirmed",
+      sourceAuthority: "owner_decision",
+    };
+    return Object.freeze({ ...base, opportunityRevisionId: deriveWeekOpportunityRevisionId(base),
+      provenance: Object.freeze({ owner: "product_horizon_source" as const,
+        sourceRefs: Object.freeze([input.profile.revisionId, entry.opportunityId]),
+        ruleRefs: Object.freeze(["OWNER_CONFIRMED_ORDERED_OPPORTUNITY", "NO_CALENDAR_SPACING_INFERRED"]) }) });
+  });
+  const unresolvedContext = input.profile.continuityReferences.map((reference) => Object.freeze({
+    observationId: stableId("owner-opaque-continuity-reference", { profileRevisionId: input.profile.revisionId,
+      reference }),
+    category: "programming_policy" as const,
+    owner: "application_orchestration" as const,
+    resolutionState: "requires_typed_input" as const,
+    blocksWeeklyIntent: false,
+    blocksAllocation: false,
+    sourceRef: reference,
+  }));
+  const result = buildProductionWeekPlanningSourceSnapshot({ athleteId: input.profile.userId,
+    planningBoundary, horizonLineageAttemptId, opportunities,
+    evaluationTime: input.command.evaluationTime, priorHorizonRevisionId: null,
+    unresolvedContext, sourceAuthority: "owner_decision",
+    provenance: Object.freeze({ owner: "product_horizon_source" as const,
+      sourceRefs: Object.freeze([input.profile.revisionId, input.command.sourceProductRevisionId]),
+      ruleRefs: Object.freeze(["CONTROLLED_OWNER_CONFIRMED_AVAILABILITY_ADAPTER",
+        "OPAQUE_CONTINUITY_REMAINS_UNRESOLVED", "NO_DATES_OR_RECOVERY_SPACING_FABRICATED"]) }) });
+  if (!result.snapshot) throw new Error(result.reasonCodes.join(","));
+  return result.snapshot;
 }
 
 function compilationContext(input: { readonly assignment: Handoff["assignments"][number];
@@ -380,10 +421,8 @@ function compilationContext(input: { readonly assignment: Handoff["assignments"]
 
 function compileSession(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
   readonly plannerInput: SessionIntentPlannerInput; readonly planning: Planning; readonly skeleton: Skeleton;
-  readonly candidates: Candidates; readonly handoff: Handoff;
-  readonly materialized: readonly MaterializedAllocatedObjectiveV1_1[] }): Compilation {
+  readonly candidates: Candidates; readonly handoff: Handoff }): Compilation {
   const intent = input.planning.sessionIntent!;
-  const purpose: PrescriptionLocalPurpose = input.materialized[0]?.localPrescriptionPurpose ?? "strength_development";
   const compilerInput: PrescriptionSessionCompilerInput = {
     sessionIntent: intent, sessionSkeleton: input.skeleton, handoff: input.handoff,
     athlete: input.plannerInput.athlete, exerciseRegistry: REFERENCE_EXERCISES,
@@ -408,27 +447,49 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
     revisionContextByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
       [assignment.handoffId, null])),
   };
-  void purpose;
   return compileSessionPrescription(compilerInput);
 }
 
-function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: WeeklyIntent,
-  weekPlan: WeekPlan): readonly SessionExecution[] {
+function executeSessions(input: ControlledOwnerProductionPipelineInput, source: ProductionWeekPlanningSourceSnapshot,
+  intent: WeeklyIntent, weekPlan: WeekPlan): readonly SessionExecution[] {
   const equipment = buildOwnerEquipmentCapabilities(input.profile);
   const athlete = athleteFor(input.profile);
   const assessment = input.assessmentHandoff?.assessment ??
     Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
   const trainingSafety = input.assessmentHandoff?.trainingSafety ?? NO_TRAINING_SAFETY_SIGNALS;
-  const grouped = new Map<string, MaterializedAllocatedObjectiveV1_1[]>();
-  weekPlan.reservations.map(materializeSupportedPurposeObjectiveV1_1).forEach((entry) => {
-    grouped.set(entry.opportunityId, [...(grouped.get(entry.opportunityId) ?? []), entry]);
-  });
-  return Object.freeze([...grouped.entries()].sort(([left], [right]) => left.localeCompare(right))
-    .map(([opportunityId, objectives]) => {
-      const opportunity = input.profile.sessionOpportunities.find((entry) => entry.opportunityId === opportunityId)!;
+  return Object.freeze([...weekPlan.reservations].sort((left, right) => {
+    const leftOrder = source.opportunities.find((entry) => entry.opportunityId === left.opportunityId)!.order;
+    const rightOrder = source.opportunities.find((entry) => entry.opportunityId === right.opportunityId)!.order;
+    return leftOrder - rightOrder || left.opportunityId.localeCompare(right.opportunityId);
+  }).map((reservation) => {
+      const sourceOpportunity = source.opportunities.find((entry) =>
+        entry.opportunityId === reservation.opportunityId)!;
+      const opportunity = input.profile.sessionOpportunities.find((entry) =>
+        `owner-profile-opportunity:${entry.opportunityId}` === sourceOpportunity.intendedWindowRef)!;
+      const allocationMaterialization = materializeSessionAllocation({
+        materializerContract: PRODUCTION_SESSION_ALLOCATION_MATERIALIZER_CONTRACT_REFERENCE,
+        reservation,
+        expectedWeekPlanRevisionId: weekPlan.weekPlanRevisionId,
+        actualCurrentAvailability: Object.freeze({ availableMinutes: opportunity.minutes ?? 45,
+          structuralCapacity: ownerStructuralCapacity(opportunity.minutes), provenance: "week_allocation",
+          sourceRef: `owner-profile-opportunity:${opportunity.opportunityId}` }),
+        actualCurrentStructuralCapacity: ownerStructuralCapacity(opportunity.minutes),
+        actualCurrentEquipment: Object.freeze({ capabilities: equipment, provenance: "explicit_today",
+          sourceRef: input.profile.equipmentCapabilitySnapshot.sourceRevision }),
+        actualTrainingSafety: trainingSafety,
+        actualEvaluationTime: input.command.evaluationTime,
+        userCancelled: false,
+        unresolvedCurrentContext: Object.freeze([]),
+        productUpdateRefs: Object.freeze([input.command.sourceProductRevisionId]),
+        materializationAttemptId: stableId("owner-session-materialization", {
+          commandId: input.command.commandId, reservationRevisionId: reservation.reservationRevisionId }),
+      });
+      if (allocationMaterialization.status !== "directive_materialized" || !allocationMaterialization.directive) {
+        throw new Error(`OWNER_SESSION_ALLOCATION_MATERIALIZATION_BLOCKED:${allocationMaterialization.status}`);
+      }
+      const objectives = reservation.allocatedObjectives;
       const plannerInput: SessionIntentPlannerInput = Object.freeze({
-        directive: directive({ command: input.command, profile: input.profile, opportunityId,
-          minutes: opportunity.minutes, objectives, intent }), athlete,
+        directive: allocationMaterialization.directive, athlete,
         phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
         assessment, painAndInjury: buildControlledOwnerPainAndInjuryState(input.profile), trainingSafety,
         currentEquipment: Object.freeze({ capabilities: equipment, provenance: "profile_default",
@@ -456,7 +517,7 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
         candidateResultsByNeed: candidates });
       if (!skeleton.assignments.length || !handoff.assignments.length) throw new Error("OWNER_SESSION_COMPOSER_EMPTY");
       const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput, planning,
-        skeleton, candidates, handoff, materialized: objectives });
+        skeleton, candidates, handoff });
       if (compilation.status !== "compiled") throw new Error(`OWNER_PRESCRIPTION_BLOCKED:${compilation.status}`);
       const facts = deriveCanonicalCompositionFacts({ candidateResultsByNeed: candidates,
         continuity: planning.sessionIntent.continuityEvidence });
@@ -475,65 +536,57 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, intent: 
         searchResourcePolicy: OWNER_FINAL_SEQUENCE_SEARCH_POLICY,
         availableSearchResourcePolicies: [OWNER_FINAL_SEQUENCE_SEARCH_POLICY], revisionContext: null });
       if (!sequence.plan) throw new Error(`OWNER_FINAL_SEQUENCE_BLOCKED:${sequence.status}`);
-      return Object.freeze({ opportunityId,
-        reservationId: stableId("owner-week-reservation", { commandId: input.command.commandId, opportunityId }),
-        minutes: opportunity.minutes, materialized: Object.freeze(objectives), plannerInput, planning, candidates,
+      return Object.freeze({ opportunityId: reservation.opportunityId,
+        reservationId: reservation.reservationId, minutes: opportunity.minutes,
+        materialized: Object.freeze(objectives), allocationMaterialization, plannerInput, planning, candidates,
         skeleton, handoff, compilation, sequence });
     }));
 }
 
-function sourcePurpose(purpose: PrescriptionLocalPurpose): ProductionWeekObjectiveSnapshot["purpose"] {
-  if (purpose === "hypertrophy_development") return "muscle_development";
-  if (purpose === "direct_development") return "direct_action_development";
-  if (purpose === "capacity_development") return "capacity_development";
-  return "movement_development";
-}
-
-function gateInput(input: ControlledOwnerProductionPipelineInput, intent: WeeklyIntent, weekPlan: WeekPlan,
+function gateInput(input: ControlledOwnerProductionPipelineInput, source: ProductionWeekPlanningSourceSnapshot,
+  intent: WeeklyIntent, weekPlan: WeekPlan,
   sessions: readonly SessionExecution[]): ProductionPostPrescriptionWeekValidationInput {
   const provenance = [Object.freeze({ source: "policy" as const,
     sourceRef: `controlled-owner-delivery:${input.command.commandId}` })];
-  const intentById = new Map(intent.objectives.map((objective) => [objective.objectiveId, objective]));
-  const objectives: readonly ProductionWeekObjectiveSnapshot[] = sessions.flatMap((session) =>
-    session.materialized.map((materialized) => {
-      const objective = intentById.get(materialized.weeklyObjectiveId)!;
-      return { objectiveId: materialized.allocatedObjectiveId, purpose: sourcePurpose(objective.localPrescriptionPurpose),
-        target: objective.target, priority: objective.priority, priorityOrder: objective.priorityOrder,
-        goalRelationships: objective.goalRelationships,
-        frequencyIntent: { minimumAllocatedSessions: 1, targetAllocatedSessions: 1,
-          softMaximumAllocatedSessions: 1, sourceRef: materialized.responsibilityId, provenance },
-        supportedPolicyRef: PRODUCTION_WEEK_POLICY_V2.reference,
-        dosePolicyState: "explicit_reviewed_target" as const,
-        spacingState: "SPACING_R0_PRESCRIPTION_PENDING" as const,
-        sourceEvidenceRefs: objective.sourceEvidenceRefs, provenance };
-    }));
+  const objectives: readonly ProductionWeekObjectiveSnapshot[] = intent.objectives.map((objective) => ({
+    objectiveId: objective.objectiveId, purpose: objective.purpose,
+    target: objective.target, priority: objective.priority, priorityOrder: objective.priorityOrder,
+    goalRelationships: objective.goalRelationships,
+    frequencyIntent: { ...objective.frequencyIntent, provenance },
+    supportedPolicyRef: PRODUCTION_WEEK_POLICY_V1.reference,
+    dosePolicyState: objective.dosePolicyState === "not_applicable" ? "not_applicable" as const :
+      "explicit_reviewed_target" as const,
+    spacingState: "SPACING_R0_PRESCRIPTION_PENDING" as const,
+    sourceEvidenceRefs: uniqueSorted(objective.sourceEvidence.flatMap((entry) =>
+      [entry.sourceId, ...entry.evidenceRefs])), provenance }));
   const reservations: readonly ProductionWeekReservationSnapshot[] = sessions.map((session) => ({
     reservationId: session.reservationId, opportunityId: session.opportunityId,
-    allocatedObjectiveIds: session.materialized.map((entry) => entry.allocatedObjectiveId),
+    allocatedObjectiveIds: session.materialized.map((entry) => entry.weeklyObjectiveId),
     expectedSessionGoal: "strength", responsibilityEvidenceRefs: session.materialized.flatMap((entry) =>
-      entry.plannerProvenance.sourceEvidenceRefs), availabilityState: "available", executionState: "not_started",
+      entry.sourceEvidenceRefs), availabilityState: "available", executionState: "not_started",
     invalidationState: "active", provenance }));
   return { validatorContract: PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_CONTRACT_REFERENCE,
     validationPolicy: POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE,
     availableValidationPolicies: [POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE],
     weekSource: { sourceContract: PRODUCTION_PRESCRIBED_WEEK_SOURCE_CONTRACT_REFERENCE,
-      sourceSnapshotId: input.command.sourceProductSnapshotId,
-      sourceSnapshotRevisionId: input.command.sourceProductRevisionId, sourceAuthority: "COMPATIBILITY_ADAPTER",
-      athleteId: input.profile.userId, planningHorizonId: stableId("owner-product-horizon", input.command),
-      weeklyIntentId: intent.intentId, weekAllocationPlanId: weekPlan.planId,
-      horizonBoundary: { startsAt: null, endsAt: null, timezone: "America/Toronto" },
-      opportunities: input.profile.sessionOpportunities.map((entry) => ({ opportunityId: entry.opportunityId,
-        order: entry.order, calendarDateTime: null, availableMinutes: entry.minutes, availabilityState: "available",
+      sourceSnapshotId: source.sourceSnapshotId,
+      sourceSnapshotRevisionId: source.sourceSnapshotRevisionId, sourceAuthority: "PRODUCTION_WEEK_SOURCE_CONTRACT",
+      athleteId: input.profile.userId, planningHorizonId: source.planningHorizonId,
+      weeklyIntentId: intent.intentId, weekAllocationPlanId: weekPlan.weekPlanId,
+      horizonBoundary: { startsAt: null, endsAt: null, timezone: null },
+      opportunities: source.opportunities.map((entry) => ({ opportunityId: entry.opportunityId,
+        order: entry.order, calendarDateTime: null, availableMinutes: entry.expectedAvailableMinutes,
+        availabilityState: "available",
         executionState: "not_started", reservationIds: reservations.filter((reservation) =>
           reservation.opportunityId === entry.opportunityId).map((reservation) => reservation.reservationId), provenance })),
       objectives, reservations,
       allocationTraces: sessions.flatMap((session) => session.materialized.map((objective) => ({
-        allocationTraceId: stableId("owner-allocation-trace", objective), objectiveId: objective.allocatedObjectiveId,
+        allocationTraceId: stableId("owner-allocation-trace", objective), objectiveId: objective.weeklyObjectiveId,
         reservationId: session.reservationId, opportunityId: session.opportunityId,
         sessionDirectiveId: session.planning.sessionIntent?.id ?? null,
         sessionNeedIds: session.planning.sessionIntent!.needs.filter((need) =>
-          need.plannerProvenance?.objectiveIds.includes(objective.allocatedObjectiveId) ?? false).map((need) => need.id),
-        sourceEvidenceRefs: objective.plannerProvenance.sourceEvidenceRefs, provenance }))),
+          need.plannerProvenance?.objectiveIds.includes(objective.weeklyObjectiveId) ?? false).map((need) => need.id),
+        sourceEvidenceRefs: objective.sourceEvidenceRefs, provenance }))),
       unsupportedScopes: [], unresolvedPolicyRefs: [], evaluationTime: input.command.evaluationTime, provenance },
     sessionBundles: sessions.map((session) => ({ reservationId: session.reservationId,
       opportunityId: session.opportunityId, sessionIntentId: session.planning.sessionIntent!.id,
@@ -606,7 +659,8 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
 }
 
 function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfileRevision;
-  readonly intent: WeeklyIntent; readonly weekPlan: WeekPlan; readonly sessions: readonly SessionExecution[];
+  readonly source: ProductionWeekPlanningSourceSnapshot; readonly intent: WeeklyIntent;
+  readonly weekPlan: WeekPlan; readonly sessions: readonly SessionExecution[];
   readonly projection: OwnerProgramProjection }): ReturnType<typeof evaluateOwnerProgramSemanticCompleteness> {
   const expectedTargets = [
     ["single_leg", "squat"],
@@ -617,8 +671,9 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
   const actualTargets = input.intent.objectives.map((objective) =>
     [...objective.target.targetMovementRoles].sort().join("|"));
   const allocationCounts = new Map(input.intent.objectives.map((objective) => [objective.objectiveId, 0]));
-  input.weekPlan.reservations.forEach((reservation) => allocationCounts.set(reservation.weeklyObjectiveId,
-    (allocationCounts.get(reservation.weeklyObjectiveId) ?? 0) + 1));
+  input.weekPlan.reservations.forEach((reservation) => reservation.allocatedObjectives.forEach((objective) =>
+    allocationCounts.set(objective.weeklyObjectiveId,
+      (allocationCounts.get(objective.weeklyObjectiveId) ?? 0) + 1)));
   const requiredNeedIds = input.sessions.flatMap((session) => session.planning.sessionIntent!.needs
     .filter((need) => need.priority === "required").map((need) => need.id));
   const coveredNeedIds = new Set(input.sessions.flatMap((session) => session.handoff.assignments
@@ -627,8 +682,9 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
   const projectedAssignments = input.projection.sessions.flatMap((session) => session.exerciseAssignments);
   const exactEquipment = buildOwnerEquipmentCapabilities(input.profile);
   const capabilityIds = new Set(input.profile.equipmentCapabilitySnapshot.capabilityIds);
-  const targetSessionCount = Math.min(input.profile.sessionOpportunities.length,
-    Math.max(...input.intent.objectives.map((objective) => objective.frequencyIntent.targetAllocatedSessions)));
+  const topology = evaluateOwnerWeekTopology({ plan: input.weekPlan, intent: input.intent,
+    policy: buildOwnerGetStrongerTopologyPolicy(input.intent),
+    opportunityIds: input.source.opportunities.map((entry) => entry.opportunityId) });
   return evaluateOwnerProgramSemanticCompleteness({
     weeklyResponsibilitiesComplete: actualTargets.length === expectedTargets.length &&
       expectedTargets.every((target) => actualTargets.includes(target)),
@@ -639,7 +695,7 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
     }),
     sessionNeedCoverageComplete: input.sessions.every((session) => session.materialized.every((materialized) =>
       session.planning.sessionIntent!.needs.some((need) =>
-        need.plannerProvenance?.objectiveIds.includes(materialized.allocatedObjectiveId)))),
+        need.plannerProvenance?.objectiveIds.includes(materialized.weeklyObjectiveId)))),
     assignmentCoverageComplete: requiredNeedIds.every((needId) => coveredNeedIds.has(needId)),
     developmentalPrescriptionCoverageComplete: input.sessions.every((session) => session.skeleton.assignments
       .filter((assignment) => assignment.section === "main" || assignment.section === "accessory")
@@ -651,7 +707,8 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       return Boolean(plan && assignment.doseBlocks && assignment.doseBlocks.length === plan.doseBlocks.length &&
         assignment.doseBlocks.every((block, index) => block.blockId === plan.doseBlocks[index]?.blockId));
     }),
-    availabilityNotAutomaticallyFilled: input.sessions.length === targetSessionCount,
+    availabilityNotAutomaticallyFilled: input.sessions.length === topology.occupiedSessionCount &&
+      input.sessions.length <= input.profile.sessionOpportunities.length,
     exactEquipmentCapabilityPreserved: exactEquipment.machines.availableMachineIds.length === 0 &&
       exactEquipment.bands.types.length === 0 && exactEquipment.bands.anchors.length === 0 &&
       !exactEquipment.trainingSpace.loadedGait.available &&
@@ -675,6 +732,7 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       session.calculatedDuration.accountedAssignmentIds.length === session.exerciseAssignments.length &&
       (session.durationStatus === "known") ===
         (session.calculatedDuration.status === "fully_determinable")),
+    topologyQualitySatisfied: topology.valid,
   });
 }
 
@@ -689,6 +747,8 @@ export function runControlledOwnerProductionPipeline(
       `OWNER_ASSESSMENT_REFERENCE_UNRESOLVED:${reference}`) ?? []),
     ...(input.assessmentHandoff?.painOwnership?.reasonCodes ?? [])]);
   try {
+    const profileReadiness = evaluateOwnerProfileReadiness(input.profile);
+    if (!profileReadiness.previewAllowed) throw new Error(profileReadiness.reasonCodes.join(","));
     if (input.assessmentHandoff && (input.assessmentHandoff.sourceProductRevisionId !==
       input.command.sourceProductRevisionId ||
       JSON.stringify(uniqueSorted(input.assessmentHandoff.confirmedAssessmentReferences)) !==
@@ -712,23 +772,52 @@ export function runControlledOwnerProductionPipeline(
         diagnosticInferenceCount: input.assessmentHandoff.diagnosticInferenceCount,
       }) : null });
     stages.push(artifact("product_mapping", "mapGetStrongerProductGoalToStrength", mapping));
-    const horizon = Object.freeze({ horizonId: stableId("owner-product-horizon", input.command),
-      athleteId: input.profile.userId, opportunityIds: input.profile.sessionOpportunities.map((entry) =>
-        entry.opportunityId), evaluationTime: input.command.evaluationTime });
-    stages.push(artifact("product_horizon", "buildControlledOwnerProductHorizon", horizon));
+    const source = buildOwnerWeekSource(input);
+    stages.push(artifact("product_horizon", "buildProductionWeekPlanningSourceSnapshot", source));
     const priorities = buildOwnerGetStrongerWeeklyPriorities(input.profile);
-    const intent = planSupportedPurposeWeeklyIntentV1_1({ policy: PRODUCTION_WEEK_POLICY_V2,
-      intentId: stableId("owner-week-intent", input.command), athleteId: input.profile.userId,
-      outcomeGoal: "strength", priorities,
-      evaluationTime: input.command.evaluationTime });
-    stages.push(artifact("week_intent", "planSupportedPurposeWeeklyIntentV1_1", intent));
-    const weekPlan = composeSupportedPurposeWeekV1_1({ intent,
-      opportunities: input.profile.sessionOpportunities.map((entry) => ({ opportunityId: entry.opportunityId,
-        structuralCapacity: entry.minutes === null ? "unknown" : entry.minutes <= 30 ? "condensed" :
-          entry.minutes >= 60 ? "expanded" : "standard" })),
-      responsibilityPacking: "coherent_shared_sessions" });
-    stages.push(artifact("week_allocation", "composeSupportedPurposeWeekV1_1", weekPlan));
-    const sessions = executeSessions(input, intent, weekPlan);
+    const assessment = input.assessmentHandoff?.assessment ??
+      Object.freeze({ signals: Object.freeze([]), historicalWeaknesses: Object.freeze([]) });
+    const trainingSafety = input.assessmentHandoff?.trainingSafety ?? NO_TRAINING_SAFETY_SIGNALS;
+    const intentResult = planWeeklyIntent({ plannerContract: PRODUCTION_WEEKLY_INTENT_PLANNER_CONTRACT_REFERENCE,
+      policy: PRODUCTION_WEEK_POLICY_V1, sourceSnapshot: source, athlete: athleteFor(input.profile),
+      explicitOutcomeGoal: "strength", outcomeGoalLineageId: `product-goal:get_stronger:${input.profile.revisionId}`,
+      orderedSecondaryGoals: Object.freeze([]), programmingContextModes: Object.freeze([]),
+      phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
+      assessment, painAndInjury: buildControlledOwnerPainAndInjuryState(input.profile), trainingSafety,
+      history: EMPTY_TRAINING_HISTORY,
+      trainingResponseHistory: EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
+      explicitWeeklyPriorities: priorities, externalLoadObservations: Object.freeze([]),
+      continuityEvidence: Object.freeze({ priorPlanRevisionId: null, productiveRelationships: Object.freeze([]),
+        completedOpportunityIds: Object.freeze([]), missedOpportunityIds: Object.freeze([]),
+        changeReasonRefs: Object.freeze([]) }),
+      evaluationTime: input.command.evaluationTime,
+      intentAttemptId: stableId("owner-week-intent-attempt", input.command),
+    });
+    stages.push(artifact("week_intent", "planWeeklyIntent", intentResult,
+      intentResult.weeklyIntent ? [] : intentResult.decisionTrace));
+    if (!intentResult.weeklyIntent) throw new Error(`OWNER_WEEK_INTENT_BLOCKED:${intentResult.status}`);
+    const intent = intentResult.weeklyIntent;
+    const topologyPolicy = buildOwnerGetStrongerTopologyPolicy(intent);
+    const weekPlan = composeWeekAllocation({
+      composerContract: PRODUCTION_WEEK_ALLOCATION_COMPOSER_CONTRACT_REFERENCE,
+      weeklyIntent: intent, sourceSnapshot: source, orderedOpportunities: source.opportunities,
+      completionState: Object.freeze(Object.fromEntries(source.opportunities.map((entry) =>
+        [entry.opportunityId, entry.completionStatus]))),
+      previousWeekStructureEvidence: intent.continuityEvidence,
+      policy: PRODUCTION_WEEK_POLICY_V1, spacingRequirements: Object.freeze([]), topologyPolicy,
+      feasibilityOracle: buildOwnerWeekFeasibilityOracle(trainingSafety),
+      searchResourcePolicy: OWNER_WEEK_TOPOLOGY_SEARCH_POLICY,
+      evaluationTime: input.command.evaluationTime,
+      allocationAttemptId: stableId("owner-week-allocation-attempt", input.command),
+    });
+    const topologyEvidence = evaluateOwnerWeekTopology({ plan: weekPlan, intent, policy: topologyPolicy,
+      opportunityIds: source.opportunities.map((entry) => entry.opportunityId) });
+    const weekReasons = weekPlan.status === "allocation_composed" && topologyEvidence.valid ? [] :
+      uniqueSorted([`OWNER_WEEK_ALLOCATION:${weekPlan.status}`, ...topologyEvidence.reasonCodes]);
+    stages.push(artifact("week_allocation", "composeWeekAllocation", Object.freeze({ weekPlan, topologyEvidence }),
+      weekReasons));
+    if (weekReasons.length) throw new Error(weekReasons.join(","));
+    const sessions = executeSessions(input, source, intent, weekPlan);
     unresolvedFacts = uniqueSorted([...unresolvedFacts, ...sessions.flatMap((session) => {
       const status = session.sequence.plan!.duration.status;
       return status === "fully_determinable" || status === "fits_known_bound" ? [] :
@@ -742,7 +831,7 @@ export function runControlledOwnerProductionPipeline(
     stages.push(artifact("prescription_compiler", "compileSessionPrescription",
       sessions.map((entry) => entry.compilation)));
     stages.push(artifact("final_sequencing", "sequenceFinalSession", sessions.map((entry) => entry.sequence)));
-    const validationInput = gateInput(input, intent, weekPlan, sessions);
+    const validationInput = gateInput(input, source, intent, weekPlan, sessions);
     const gate13 = validatePostPrescriptionWeek(validationInput);
     const gateReasons = gate13.status.startsWith("validated_") ? [] : [
       `OWNER_GATE_13:${gate13.status}`,
@@ -761,7 +850,7 @@ export function runControlledOwnerProductionPipeline(
       provenance: ["controlled-owner-delivery:planned-truth-only"] });
     stages.push(artifact("phase_snapshot", "buildProductionPhaseProgramSnapshot", phase));
     let projection = displayProjection(input, intent, sessions, unresolvedFacts);
-    const completeness = semanticCompleteness({ profile: input.profile, intent, weekPlan, sessions, projection });
+    const completeness = semanticCompleteness({ profile: input.profile, source, intent, weekPlan, sessions, projection });
     const finalUnresolvedFacts = uniqueSorted([...unresolvedFacts, ...completeness.reasonCodes]);
     if (finalUnresolvedFacts.length !== unresolvedFacts.length) {
       projection = displayProjection(input, intent, sessions, finalUnresolvedFacts);

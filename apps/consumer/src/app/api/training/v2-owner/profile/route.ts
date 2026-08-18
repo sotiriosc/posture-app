@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { buildOwnerProfileRevision } from "@praxis/training-engine-v2";
+import { buildOwnerProfileRevision, isOwnerAvailableTrainingDays } from "@praxis/training-engine-v2";
 import { normalizeProposedOwnerPainRegionFact, proposeOwnerImportsFromTrainingSnapshot,
   withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
 import { authorizeOwnerMutation, authorizeOwnerRead, loadOwnerProductRuntimeContext, ownerJson, rejectsIdentityFields } from
@@ -30,7 +30,6 @@ export async function POST(request: Request) {
   if (!body || rejectsIdentityFields(body)) return ownerJson({ ok: false,
     error: { code: "INVALID_PROFILE", message: "Profile is invalid." } }, 400);
   const days = body.daysPerWeek;
-  const opportunities = body.sessionOpportunities;
   const sessionMinutes = body.sessionMinutes as { status?: unknown; minutes?: unknown } | null;
   const environment = body.equipmentEnvironment;
   const capabilityIds = body.capabilityIds;
@@ -40,15 +39,15 @@ export async function POST(request: Request) {
   const validMinutes = sessionMinutes?.status === "explicit_unknown" && sessionMinutes.minutes === null ||
     sessionMinutes?.status === "known" && typeof sessionMinutes.minutes === "number" &&
       sessionMinutes.minutes >= 15 && sessionMinutes.minutes <= 180;
-  if (!Number.isInteger(days) || Number(days) < 1 || Number(days) > 7 || !Array.isArray(opportunities) ||
-      opportunities.length !== days || !validMinutes || !["home", "commercial_gym", "mixed"].includes(String(environment)) ||
+  if (!isOwnerAvailableTrainingDays(days) || !validMinutes ||
+      !["home", "commercial_gym", "mixed"].includes(String(environment)) ||
       !Array.isArray(capabilityIds) || !capabilityIds.length || !capabilityIds.every((value) => typeof value === "string") ||
       !Array.isArray(assessmentReferences) || !assessmentReferences.every((value) => typeof value === "string") ||
       !Array.isArray(painFactIds) || !painFactIds.every((value) => typeof value === "string") ||
       !["beginner", "intermediate", "advanced"].includes(String(experience)) || body.painConfirmed !== true) {
     return ownerJson({ ok: false, error: { code: "INVALID_PROFILE", message: "Profile is invalid." } }, 400);
   }
-  const normalizedOpportunities = opportunities.map((_, index) => ({
+  const normalizedOpportunities = Array.from({ length: days }, (_, index) => ({
     opportunityId: `owner-opportunity-${index + 1}`, order: index + 1,
     minutes: sessionMinutes?.status === "known" ? sessionMinutes.minutes as number : null,
   }));
@@ -82,7 +81,7 @@ export async function POST(request: Request) {
         capabilityIds: [...new Set(capabilityIds as string[])].sort() })).digest("hex")}`;
       const profile = buildOwnerProfileRevision({ profileId: current?.profileId, userId: authorization.userId,
         basedOnRevisionId: current?.revisionId ?? null, primaryGoal: "strength", trainingMode: "develop",
-        secondaryGoal: null, daysPerWeek: Number(days), sessionOpportunities: normalizedOpportunities,
+        secondaryGoal: null, daysPerWeek: days, sessionOpportunities: normalizedOpportunities,
         sessionMinutes: sessionMinutes?.status === "known" ? { status: "known", minutes: sessionMinutes.minutes as number } :
           { status: "explicit_unknown", minutes: null },
         equipmentCapabilitySnapshot: { environment: environment as "home" | "commercial_gym" | "mixed",

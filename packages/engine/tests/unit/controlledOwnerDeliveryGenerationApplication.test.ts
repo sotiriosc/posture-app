@@ -47,9 +47,9 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-consent"] }, createdAt: NOW });
   await enrollmentProfiles.appendEnrollment(enrollment);
   const profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
-    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 1,
-    sessionOpportunities: [{ opportunityId: "owner-opportunity-1", order: 1,
-      minutes: input.knownMinutes ? 45 : null }],
+    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
+    sessionOpportunities: [1, 2].map((order) => ({ opportunityId: `owner-opportunity-${order}`, order,
+      minutes: input.knownMinutes ? 45 : null })),
     sessionMinutes: input.knownMinutes ? { status: "known", minutes: 45 } :
       { status: "explicit_unknown", minutes: null },
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
@@ -144,8 +144,9 @@ describe("controlled owner genuine generation and application", () => {
     });
     const preparation = value.generated.preview?.productProjection.sessions.flatMap((session) =>
       session.exerciseAssignments).filter((assignment) => assignment.section === "activation");
-    expect(preparation).toEqual([expect.objectContaining({ exerciseId: "scapular-push-up",
-      preparationCategories: ["activation_control"] })]);
+    expect(preparation).toHaveLength(2);
+    expect(preparation).toEqual(expect.arrayContaining([expect.objectContaining({ exerciseId: "scapular-push-up",
+      preparationCategories: ["activation_control"] })]));
     expect(JSON.stringify(value.generated.preview)).not.toContain("Opaque description");
   });
 
@@ -186,7 +187,7 @@ describe("controlled owner genuine generation and application", () => {
       assessmentReferences: ["assessment:observation:pain-lower-back"], proposedProductFacts });
 
     expect(missing.generated).toMatchObject({ status: "generation_blocked", preview: null });
-    expect(missing.generated.reasonCodes).toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
+    expect(missing.generated.reasonCodes).toContain("OWNER_WEEK_INTENT_BLOCKED:blocked_by_training_readiness");
     expect(missing.generated.reasonCodes).toEqual(expect.arrayContaining([
       "OWNER_PAIN_FACT_CONFIRMATION_REQUIRED", "OWNER_PAIN_FACT_PROVENANCE_REQUIRED",
     ]));
@@ -199,12 +200,23 @@ describe("controlled owner genuine generation and application", () => {
         diagnosticClaimCount: 0, sourceFactIds: [painFact.factId], sourceRevision: "product-revision:stale" } });
     expect(stale.generated).toMatchObject({ status: "generation_blocked", preview: null });
     expect(stale.generated.reasonCodes).toContain("OWNER_PAIN_FACT_SOURCE_STALE");
-    expect(stale.generated.reasonCodes).toContain("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
+    expect(stale.generated.reasonCodes).toContain("OWNER_WEEK_INTENT_BLOCKED:blocked_by_training_readiness");
   });
 
   it("keeps approval separate, then atomically creates envelope, application, pointer, and audit", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
     const preview = await reviewedDurationPreview(value);
+    const legacyAvailabilityProfile = { ...value.profile, daysPerWeek: 1 as const,
+      sessionOpportunities: [value.profile.sessionOpportunities[0]!] };
+    const legacyAvailabilityProfiles = { ...value.enrollmentProfiles,
+      readCurrentProfile: async () => legacyAvailabilityProfile };
+    const availabilityDeniedApproval = await approveControlledOwnerGetStrongerPreview({
+      previewId: preview.previewId, previewFingerprint: preview.previewFingerprint,
+      explicitConfirmation: true, csrfVerified: true, idempotencyKey: "approve-legacy-availability",
+      approvedAt: NOW, gate: async () => gate("apply"), enrollmentProfiles: legacyAvailabilityProfiles,
+      delivery: value.delivery, loadCurrentContext: async () => value.context });
+    expect(availabilityDeniedApproval).toMatchObject({ status: "denied",
+      reasonCodes: ["OWNER_PROFILE_AVAILABILITY_RECONFIRMATION_REQUIRED"] });
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
       idempotencyKey: "approve-key-1", approvedAt: NOW, gate: async () => gate("apply"),
@@ -213,6 +225,13 @@ describe("controlled owner genuine generation and application", () => {
     expect(approved.status).toBe("approved");
     expect(approved.applicationCount).toBe(0);
     expect(await value.delivery.readActivePointer(USER_ID)).toBeNull();
+    const availabilityDeniedApplication = await applyControlledOwnerGetStrongerApproval({
+      approvalId: approved.approval!.approvalId, idempotencyKey: "apply-legacy-availability",
+      csrfVerified: true, appliedAt: NOW, gate: async () => gate("apply"),
+      enrollmentProfiles: legacyAvailabilityProfiles, delivery: value.delivery,
+      loadCurrentContext: async () => value.context });
+    expect(availabilityDeniedApplication).toMatchObject({ status: "denied",
+      reasonCodes: ["OWNER_PROFILE_AVAILABILITY_RECONFIRMATION_REQUIRED"] });
     const applied = await applyControlledOwnerGetStrongerApproval({ approvalId: approved.approval!.approvalId,
       idempotencyKey: "apply-key-1", csrfVerified: true, appliedAt: NOW,
       gate: async () => gate("apply"), enrollmentProfiles: value.enrollmentProfiles,
