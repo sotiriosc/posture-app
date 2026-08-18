@@ -10,8 +10,8 @@ import type {
   SessionIntentPlanningResult,
   SessionIntentPlanningStatus,
 } from "./contracts";
-import { deriveAssessmentEnrichment } from "./assessmentEnrichment";
 import { deriveSessionContinuityEvidence } from "./continuityEvidence";
+import { derivePreparationNeeds } from "./derivePreparationNeeds";
 import { mergeEquivalentNeeds } from "./mergeNeeds";
 import { normalizeAllocatedObjectives } from "./normalizeObjectives";
 import { validateSessionAllocationDirective } from "./validateDirective";
@@ -65,6 +65,7 @@ function decisionTrace(input: SessionIntentPlannerInput): SessionIntentPlannerDe
     rulesApplied: [
       "explicit_allocation_required",
       "fixed_objective_kind_mapping",
+      "typed_causal_preparation_need_derivation",
       "assessment_structured_relevance_enrichment",
       "equivalent_need_truth_merge",
       "active_need_continuity_derivation",
@@ -73,6 +74,7 @@ function decisionTrace(input: SessionIntentPlannerInput): SessionIntentPlannerDe
     ],
     factsConsumed: [
       "SessionAllocationDirective.allocatedObjectives",
+      "AllocatedSessionObjective.preparationDependencies",
       "SessionAllocationDirective.outcomeGoal",
       "SessionAllocationDirective.programmingContextModes",
       "currentSessionAvailability",
@@ -112,7 +114,8 @@ function contextOwnership(input: SessionIntentPlannerInput): readonly PlannerCon
     { factId: "current_session_availability", canonicalOwner: input.directive?.currentSessionAvailability ? "session_allocation_directive" : "athlete_profile_default", receiver: "session_intent_planner", consequence: "sets capacity and duration handoff only", duplicateConsumption: false },
     { factId: "current_session_equipment", canonicalOwner: "current_equipment_snapshot", receiver: "candidate_and_continuity", consequence: "gates candidates and classifies continuity equipment loss", duplicateConsumption: false },
     { factId: "assessment_enrichment", canonicalOwner: "assessment_state", receiver: "session_intent_planner", consequence: "may add one dependent preferred need per relevant structured cluster", duplicateConsumption: false },
-    { factId: "pain_and_training_safety", canonicalOwner: "pain_and_safety_domains", receiver: "candidate_and_readiness", consequence: "passes through without creating session needs", duplicateConsumption: false },
+    { factId: "preparation_dependencies", canonicalOwner: "session_allocation_directive", receiver: "session_intent_planner", consequence: "may add a typed shared or assignment-local preparation need without selecting an exercise identity", duplicateConsumption: false },
+    { factId: "pain_and_training_safety", canonicalOwner: "pain_and_safety_domains", receiver: "planner_candidate_and_readiness", consequence: "may suppress derived preparation and gate candidates or readiness but never creates session needs", duplicateConsumption: false },
     { factId: "schedule_and_missed_sessions", canonicalOwner: "future_week_composer", receiver: "trace_only", consequence: "cannot mutate a session allocation", duplicateConsumption: false },
   ];
 }
@@ -130,6 +133,7 @@ function emptyResult(input: SessionIntentPlannerInput, status: SessionIntentPlan
     omittedObjectiveTraces: [],
     mergedNeedTraces: [],
     assessmentEnrichmentTraces: [],
+    preparationNeedTraces: [],
     continuityTraces: [],
     contextOwnershipFindings: contextOwnership(input),
     unresolvedContextFindings: (input.directive?.unresolvedContextObservations ?? []).map((observation) => ({
@@ -192,13 +196,20 @@ export function planSessionIntent(input: SessionIntentPlannerInput): SessionInte
     objectives: directive.allocatedObjectives,
     capacity: availability.structuralCapacity,
   });
-  const enrichment = deriveAssessmentEnrichment({
+  const preparation = derivePreparationNeeds({
     assessment: input.assessment,
     activeNeeds: objectiveResult.needs,
+    explicitDependencies: objectiveResult.preparationDependencies,
+    athlete: input.athlete,
+    painAndInjury: input.painAndInjury,
+    trainingSafety: input.trainingSafety,
+    equipment: input.currentEquipment.capabilities,
+    history: input.history,
+    availableMinutes: availability.availableMinutes!,
     capacity: availability.structuralCapacity,
     directiveId: directive.id,
   });
-  const painAnnotated = [...objectiveResult.needs, ...enrichment.needs].map((entry) => ({
+  const painAnnotated = [...objectiveResult.needs, ...preparation.needs].map((entry) => ({
     ...entry,
     need: { ...entry.need, relevantPainResponseRequirementRefs: painRefsForNeed(input.painAndInjury, entry.need) },
   }));
@@ -247,7 +258,8 @@ export function planSessionIntent(input: SessionIntentPlannerInput): SessionInte
     includedNeedTraces: objectiveResult.traces,
     omittedObjectiveTraces: [],
     mergedNeedTraces: merged.traces,
-    assessmentEnrichmentTraces: enrichment.traces,
+    assessmentEnrichmentTraces: preparation.assessmentTraces,
+    preparationNeedTraces: preparation.traces,
     continuityTraces: continuity.traces,
     contextOwnershipFindings: contextOwnership(input),
     unresolvedContextFindings,

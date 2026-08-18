@@ -1,6 +1,7 @@
 export * from "./assessmentEnrichment";
 export * from "./contracts";
 export * from "./continuityEvidence";
+export * from "./derivePreparationNeeds";
 export * from "./mergeNeeds";
 export * from "./normalizeObjectives";
 export * from "./orchestration";

@@ -8,7 +8,11 @@ import type {
   StructuralCapacityMode,
   TrainingRole,
 } from "../domain/session";
-import type { NormalizedPlannerNeed, PlannerIncludedNeedTrace } from "./contracts";
+import type {
+  NormalizedPlannerNeed,
+  NormalizedPreparationDependency,
+  PlannerIncludedNeedTrace,
+} from "./contracts";
 
 const OBJECTIVE_PLACEMENT: Readonly<Record<AllocatedSessionObjective["kind"], {
   readonly section: "warmup" | "activation" | "main" | "accessory" | "cooldown";
@@ -53,6 +57,7 @@ export function normalizeAllocatedObjectives(input: {
   readonly capacity: StructuralCapacityMode;
 }): {
   readonly needs: readonly NormalizedPlannerNeed[];
+  readonly preparationDependencies: readonly NormalizedPreparationDependency[];
   readonly traces: readonly PlannerIncludedNeedTrace[];
 } {
   const normalized = [...input.objectives]
@@ -110,8 +115,60 @@ export function normalizeAllocatedObjectives(input: {
         },
       };
     });
+  const needIdByObjectiveId = new Map(normalized.flatMap((entry) =>
+    entry.objectiveIds.map((objectiveId) => [objectiveId, entry.need.id] as const),
+  ));
+  const preparationDependencies = input.objectives.flatMap((objective) =>
+    (objective.preparationDependencies ?? []).map((dependency): NormalizedPreparationDependency => {
+      const targetNeedId = needIdByObjectiveId.get(objective.id)!;
+      const evidenceRefs = [
+        dependency.provenance.sourceId,
+        ...dependency.provenance.evidenceRefs,
+        ...dependency.sourceAssessmentFactIds,
+        ...dependency.rangeRequirements.flatMap((requirement) => [
+          requirement.requirementId,
+          requirement.sourceAssessmentSignalId,
+          requirement.provenance,
+        ]),
+      ].filter(Boolean).sort();
+      return {
+        objectiveIds: [objective.id],
+        sourceEvidenceRefs: [...new Set(evidenceRefs)],
+        dependency: {
+          dependencyId: dependency.id,
+          targetNeedIds: [targetNeedId],
+          targetExerciseIds: [...dependency.targetExerciseIds].sort(),
+          movementRoles: [...dependency.selectionTarget.targetMovementRoles].sort(),
+          actionFunctions: [...dependency.selectionTarget.targetActionFunctions].sort(),
+          bodyRegions: [...dependency.selectionTarget.targetBodyRegions].sort(),
+          targetMuscles: [...dependency.selectionTarget.targetMuscles].sort(),
+          muscleRequirement: dependency.selectionTarget.muscleRequirement,
+          assessmentSignalIds: [...dependency.sourceAssessmentFactIds].sort(),
+          rangeRequirements: [...dependency.rangeRequirements]
+            .sort((left, right) => left.requirementId.localeCompare(right.requirementId)),
+          painResponseRequirementIds: [],
+          required: dependency.required,
+          requiredPreparationCategories: [...dependency.requiredPreparationCategories].sort(),
+          requiredEquipmentCapabilities: [...dependency.requiredEquipmentCapabilities].sort(),
+          intendedSection: dependency.intendedSection,
+          priority: dependency.priority,
+          ownership: dependency.ownership,
+          targetObjectiveIds: [objective.id],
+          familiarityPolicy: dependency.familiarityPolicy,
+          provenance: {
+            ...dependency.provenance,
+            evidenceRefs: [...dependency.provenance.evidenceRefs].sort(),
+          },
+          reasonCode: dependency.reasonCode,
+          explanation: dependency.explanation,
+        },
+      };
+    }),
+  ).sort((left, right) => left.dependency.dependencyId.localeCompare(right.dependency.dependencyId) ||
+    left.objectiveIds[0].localeCompare(right.objectiveIds[0]));
   return {
     needs: normalized,
+    preparationDependencies,
     traces: normalized.map((entry) => ({
       needId: entry.need.id,
       objectiveIds: entry.objectiveIds,

@@ -34,6 +34,9 @@ export function plannerObjective(input: Partial<AllocatedSessionObjective> & Pic
       muscleRequirement: "primary_required",
       targetBodyRegions: ["shoulder", "thoracic_spine"],
     },
+    ...(input.preparationDependencies
+      ? { preparationDependencies: input.preparationDependencies }
+      : {}),
     sourceEvidence: input.sourceEvidence ?? [{
       sourceKind: "standalone_session_brief",
       sourceId: `${input.id}:source`,

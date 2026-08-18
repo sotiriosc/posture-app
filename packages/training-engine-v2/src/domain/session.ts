@@ -4,6 +4,15 @@ import type { PhaseIntent } from "./phase";
 import type { BodyRegion, MovementRole, MuscleGroup, TrainingGoal } from "./primitives";
 import type { ProgrammingContextMode, TrainingOutcomeGoal } from "./sessionPlanningDirective";
 import type { Side } from "./primitives";
+import type { EquipmentCapabilityKey } from "./equipment";
+import type {
+  PreparationCategory,
+} from "../preparation/contracts";
+import type {
+  PreparationDependencyFamiliarityPolicy,
+  PreparationDependencyOwnership,
+  PreparationDependencySourceKind,
+} from "./sessionPlanningDirective";
 
 export const SESSION_SECTIONS = [
   "warmup",
@@ -69,12 +78,29 @@ export interface SessionNeedDependency {
   readonly movementRoles: readonly MovementRole[];
   readonly actionFunctions: readonly ExerciseActionFunction[];
   readonly bodyRegions: readonly BodyRegion[];
+  readonly targetMuscles?: readonly MuscleGroup[];
+  readonly muscleRequirement?: ExerciseSelectionNeed["muscleRequirement"];
   readonly assessmentSignalIds: readonly string[];
   /** @deprecated Planner authority uses rangeRequirements. */
   readonly requiredRangeIds?: readonly string[];
   readonly rangeRequirements?: readonly SessionRangeRequirement[];
   readonly painResponseRequirementIds: readonly string[];
   readonly required: boolean;
+  readonly requiredPreparationCategories?: readonly PreparationCategory[];
+  readonly requiredEquipmentCapabilities?: readonly EquipmentCapabilityKey[];
+  readonly intendedSection?: "warmup" | "activation" | "cooldown";
+  readonly priority?: SessionNeedPriority;
+  readonly ownership?: PreparationDependencyOwnership;
+  readonly targetObjectiveIds?: readonly string[];
+  readonly familiarityPolicy?: PreparationDependencyFamiliarityPolicy;
+  readonly provenance?: {
+    readonly sourceKind: PreparationDependencySourceKind;
+    readonly sourceId: string;
+    readonly evidenceRefs: readonly string[];
+    readonly transformationRuleId: string;
+  };
+  readonly reasonCode?: string;
+  readonly explanation?: string;
 }
 
 export interface SessionRangeRequirement {

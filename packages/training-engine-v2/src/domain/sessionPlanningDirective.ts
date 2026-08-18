@@ -1,12 +1,13 @@
-import type { EquipmentCapabilities } from "./equipment";
-import type { ExerciseActionFunction } from "./exercise";
+import type { EquipmentCapabilities, EquipmentCapabilityKey } from "./equipment";
+import type { ExerciseActionFunction, ExerciseMechanicsReviewStatus } from "./exercise";
 import type { MuscleRelationshipRequirement } from "./exerciseSelectionNeed";
+import type { PreparationCategory } from "../preparation/contracts";
 import type {
   SessionNeedPriority,
   StandaloneAdmission,
   StructuralCapacityMode,
 } from "./session";
-import type { BodyRegion, MovementRole, MuscleGroup } from "./primitives";
+import type { BodyRegion, MovementRole, MuscleGroup, Side } from "./primitives";
 
 export const TRAINING_OUTCOME_GOALS = [
   "strength",
@@ -79,6 +80,60 @@ export interface AllocatedObjectiveSelectionTarget {
   readonly targetBodyRegions: readonly BodyRegion[];
 }
 
+export const PREPARATION_DEPENDENCY_SOURCE_KINDS = [
+  "assessment_fact",
+  "selected_exercise_mechanics",
+  "explicit_range_or_control_requirement",
+  "phase_requirement",
+  "known_successful_preparation_history",
+  "upstream_preparation_handoff",
+] as const;
+
+export type PreparationDependencySourceKind =
+  (typeof PREPARATION_DEPENDENCY_SOURCE_KINDS)[number];
+
+export type PreparationDependencyOwnership = "shared" | "assignment_local";
+export type PreparationDependencyFamiliarityPolicy =
+  | "always_when_owned"
+  | "novice_or_unfamiliar";
+
+export interface AllocatedPreparationRangeRequirement {
+  readonly requirementId: string;
+  readonly sourceAssessmentSignalId: string;
+  readonly bodyRegion: BodyRegion;
+  readonly actionFunction?: ExerciseActionFunction;
+  readonly side?: Side;
+  readonly provenance: string;
+  readonly reviewStatus: ExerciseMechanicsReviewStatus | "unknown";
+  readonly explanation: string;
+}
+
+export interface AllocatedPreparationDependencyProvenance {
+  readonly sourceKind: PreparationDependencySourceKind;
+  readonly sourceId: string;
+  readonly evidenceRefs: readonly string[];
+  readonly transformationRuleId: string;
+}
+
+/** Typed upstream ownership for a separate preparation need serving this objective. */
+export interface AllocatedPreparationDependency {
+  readonly id: string;
+  readonly requiredPreparationCategories: readonly PreparationCategory[];
+  readonly sourceAssessmentFactIds: readonly string[];
+  readonly requiredEquipmentCapabilities: readonly EquipmentCapabilityKey[];
+  readonly intendedSection: "warmup" | "activation";
+  readonly priority: SessionNeedPriority;
+  readonly ownership: PreparationDependencyOwnership;
+  readonly selectionTarget: AllocatedObjectiveSelectionTarget;
+  readonly targetExerciseIds: readonly string[];
+  readonly rangeRequirements: readonly AllocatedPreparationRangeRequirement[];
+  readonly required: boolean;
+  readonly familiarityPolicy: PreparationDependencyFamiliarityPolicy;
+  readonly provenance: AllocatedPreparationDependencyProvenance;
+  readonly reasonCode: string;
+  readonly explanation: string;
+}
+
 export type ObjectiveStandaloneAdmissionDirection =
   | "policy_default"
   | StandaloneAdmission;
@@ -89,6 +144,7 @@ export interface AllocatedSessionObjective {
   readonly priority: SessionNeedPriority;
   readonly priorityOrder: number;
   readonly selectionTarget: AllocatedObjectiveSelectionTarget;
+  readonly preparationDependencies?: readonly AllocatedPreparationDependency[];
   readonly sourceEvidence: readonly SessionObjectiveSourceEvidence[];
   readonly standaloneAdmissionDirection: ObjectiveStandaloneAdmissionDirection;
   readonly reasonCode: string;

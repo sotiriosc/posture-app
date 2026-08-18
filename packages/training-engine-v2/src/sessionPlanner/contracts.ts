@@ -8,7 +8,7 @@ import type {
   SessionAllocationDirective,
   UnresolvedPlannerContextObservation,
 } from "../domain/sessionPlanningDirective";
-import type { SessionIntent, SessionNeed } from "../domain/session";
+import type { SessionIntent, SessionNeed, SessionNeedDependency } from "../domain/session";
 import type { TrainingResponseHistory } from "../domain/trainingResponse";
 import type { TrainingReadinessTrace, TrainingSafetyState } from "../domain/trainingSafety";
 import type { CandidateRankingResult } from "../candidate";
@@ -76,7 +76,31 @@ export interface PlannerAssessmentEnrichmentTrace {
     | "context_only_medium_confidence"
     | "irrelevant_to_allocated_purpose"
     | "direct_volume_requires_allocation"
-    | "insufficient_structured_truth";
+    | "insufficient_structured_truth"
+    | "blocked_by_training_safety"
+    | "blocked_by_pain_or_contraindication"
+    | "no_time_for_optional_preparation";
+}
+
+export interface NormalizedPreparationDependency {
+  readonly dependency: SessionNeedDependency;
+  readonly objectiveIds: readonly string[];
+  readonly sourceEvidenceRefs: readonly string[];
+}
+
+export interface PlannerPreparationNeedTrace {
+  readonly dependencyIds: readonly string[];
+  readonly targetNeedIds: readonly string[];
+  readonly producedNeedId: string | null;
+  readonly disposition:
+    | "need_created"
+    | "merged_shared_dependency"
+    | "blocked_by_training_safety"
+    | "blocked_by_pain_or_contraindication"
+    | "required_equipment_unavailable"
+    | "familiar_movement_rehearsal_not_required"
+    | "no_time_for_optional_preparation";
+  readonly evidenceRefs: readonly string[];
 }
 
 export interface PlannerContinuityTrace {
@@ -126,6 +150,7 @@ export interface SessionIntentPlanningResult {
   readonly omittedObjectiveTraces: readonly PlannerOmittedObjectiveTrace[];
   readonly mergedNeedTraces: readonly PlannerMergedNeedTrace[];
   readonly assessmentEnrichmentTraces: readonly PlannerAssessmentEnrichmentTrace[];
+  readonly preparationNeedTraces: readonly PlannerPreparationNeedTrace[];
   readonly continuityTraces: readonly PlannerContinuityTrace[];
   readonly contextOwnershipFindings: readonly PlannerContextOwnershipFinding[];
   readonly unresolvedContextFindings: readonly PlannerUnresolvedContextFinding[];

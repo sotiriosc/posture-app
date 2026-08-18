@@ -120,6 +120,10 @@ export function deriveAssessmentEnrichment(input: {
     const actions = unique(signals.flatMap((signal) => structuredTruth(signal).actions));
     const regions = unique(signals.flatMap((signal) => structuredTruth(signal).regions));
     const signalIds = signals.map((signal) => signal.id);
+    const assessmentEvidenceRefs = unique(signals.flatMap((signal) => [
+      signal.id,
+      ...(signal.provenance?.evidenceRefs ?? []),
+    ]));
     const needId = `${input.directiveId}:assessment:${encodeURIComponent(key)}`;
     const requirements = signals.flatMap((signal) => {
       const requirement = rangeRequirement(signal, structuredTruth(signal).actions[0]);
@@ -140,10 +144,30 @@ export function deriveAssessmentEnrichment(input: {
         movementRoles: movements,
         actionFunctions: actions,
         bodyRegions: regions,
+        targetMuscles: unique(signals.flatMap((signal) =>
+          signal.muscleGroup ? [signal.muscleGroup] : [])),
+        muscleRequirement: "any_meaningful_contributor",
         assessmentSignalIds: signalIds,
         rangeRequirements: requirements,
         painResponseRequirementIds: [],
         required: false,
+        requiredPreparationCategories: cluster.section === "warmup"
+          ? ["dynamic_mobility", "range_access"]
+          : ["activation_control"],
+        requiredEquipmentCapabilities: [],
+        intendedSection: cluster.section,
+        priority: "preferred",
+        ownership: "shared",
+        targetObjectiveIds: cluster.target.objectiveIds,
+        familiarityPolicy: "always_when_owned",
+        provenance: {
+          sourceKind: "assessment_fact",
+          sourceId: signalIds[0],
+          evidenceRefs: assessmentEvidenceRefs,
+          transformationRuleId: "high_confidence_primary_or_blocking_relevant_cluster",
+        },
+        reasonCode: `assessment_${cluster.section}_enrichment`,
+        explanation: signals.map((signal) => signal.description).join(" "),
       }],
       reasonCode: `assessment_${cluster.section}_enrichment`,
       explanation: signals.map((signal) => signal.description).join(" "),
@@ -159,7 +183,7 @@ export function deriveAssessmentEnrichment(input: {
         objectiveIds: cluster.target.objectiveIds,
         owner: "session_intent_planner_assessment_enrichment",
         transformationRuleId: "high_confidence_primary_or_blocking_relevant_cluster",
-        sourceEvidenceRefs: signalIds,
+        sourceEvidenceRefs: assessmentEvidenceRefs,
         assessmentSignalRefs: signalIds,
         dependencyRefs: [dependencyId],
         mergeHistory: [],
