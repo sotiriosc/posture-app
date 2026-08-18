@@ -1,11 +1,44 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { JSDOM } from "jsdom";
 import type { ControlledOwnerV2ProgramPreview } from "@praxis/training-engine-v2";
 
 const OWNER_ID = "owner-page-fixture";
 const OTHER_OWNER_ID = "other-owner-fixture";
 const PREVIEW_ID = "owner-v2-preview:8dda19cf38065a53";
 const ENCODED_PREVIEW_ID = "owner-v2-preview%3A8dda19cf38065a53";
+const PROFILE_REVISION_ID = "owner-profile-revision:3333333333333333";
+const WEEK_OBJECTIVE_IDS = [
+  `week-v1_1:objective:owner-strength-responsibility:knee_dominant_lower_body:${PROFILE_REVISION_ID}`,
+  `week-v1_1:objective:owner-strength-responsibility:hinge_lower_body:${PROFILE_REVISION_ID}`,
+  `week-v1_1:objective:owner-strength-responsibility:upper_body_push:${PROFILE_REVISION_ID}`,
+  `week-v1_1:objective:owner-strength-responsibility:upper_body_pull:${PROFILE_REVISION_ID}`,
+] as const;
+const REASON_CODES = ["UPSTREAM_ASSIGNMENT_PRESERVED", "ONE_ASSIGNMENT_ONE_SOURCE_EVENT",
+  "ORDERED_BLOCKS_ARE_CANONICAL", "NO_AUTOMATIC_PROGRESSION", "FINAL_DURATION_REQUIRES_SEQUENCING"] as const;
+
+const assignment = (index: number, exerciseId: string) => ({
+  assignmentId: `assignment-${index}`,
+  exerciseId,
+  realizationId: `${exerciseId}:fixture`,
+  sourceEventId: `source-event-${index}`,
+  prescriptionRevisionId: `prescription-revision:${index.toString().padStart(16, "7")}`,
+  sets: 2,
+  reps: "5-10",
+  tempo: "natural tempo",
+  restSeconds: 180,
+  effort: "2-3 reps in reserve",
+  doseBlocks: [{ blockId: `block-preparation-${index}`, order: 0, purpose: "preparatory_acclimation" as const,
+    volume: "1 set", target: "4-8 reps", rest: "60-180 seconds before strength work",
+    effort: "Quality remains the limiting standard.", tempo: "Controlled tempo",
+    load: "Choose load to match the effort target", calibrationRequired: true },
+  { blockId: `block-development-${index}`, order: 1, purpose: "developmental_work" as const,
+    volume: "2 sets", target: "5-10 reps", rest: "90-180 seconds between strength sets",
+    effort: "2-3 reps in reserve", tempo: "Natural",
+    load: "Choose load to match the effort target", calibrationRequired: true }],
+  equipmentRequirementIds: ["dumbbells", "adjustable_bench"],
+  reasonCodes: REASON_CODES,
+});
 
 const harness = vi.hoisted(() => {
   const previews = new Map<string, unknown>();
@@ -69,7 +102,7 @@ const PREVIEW: ControlledOwnerV2ProgramPreview = {
   userId: OWNER_ID,
   generationCommandId: "owner-v2-generation-command:1111111111111111",
   profileId: "owner-profile:2222222222222222",
-  profileRevisionId: "owner-profile-revision:3333333333333333",
+  profileRevisionId: PROFILE_REVISION_ID,
   sourceProductSnapshotId: "product-snapshot:4444444444444444",
   sourceProductRevisionId: "product-revision:5555555555555555",
   activeLegacyProgramRevisionId: "legacy-program:fixture",
@@ -80,35 +113,22 @@ const PREVIEW: ControlledOwnerV2ProgramPreview = {
     projectionContract: { contractId: "CONTROLLED_OWNER_PRODUCT_PROJECTION", contractVersion: "1.0.0" },
     goal: "strength",
     mode: "develop",
-    weekObjectiveIds: ["strength-foundation"],
+    weekObjectiveIds: WEEK_OBJECTIVE_IDS,
     sessions: [{
       sessionId: "owner-session:6666666666666666",
       opportunityId: "owner-opportunity-1",
-      purpose: "upper_strength",
+      purpose: "strength_development",
       durationStatus: "known",
       durationMinutes: 90,
-      exerciseAssignments: [{
-        assignmentId: "assignment-1",
-        exerciseId: "dumbbell-bench-press",
-        realizationId: "dumbbell-bench-press:incline",
-        sourceEventId: "source-event-1",
-        prescriptionRevisionId: "prescription-revision:7777777777777777",
-        sets: 3,
-        reps: "8",
-        tempo: null,
-        restSeconds: 120,
-        effort: "rpe_8",
-        doseBlocks: [{ blockId: "block-preparation", order: 0, purpose: "preparatory_acclimation",
-          volume: "1 set", target: "4-8 reps", rest: "60-180 seconds before strength work",
-          effort: "Quality-limited effort", tempo: "controlled tempo",
-          load: "Choose load to match the effort target", calibrationRequired: true },
-        { blockId: "block-development", order: 1, purpose: "developmental_work",
-          volume: "3 sets", target: "3-6 reps", rest: "180-300 seconds between strength sets",
-          effort: "1-3 reps in reserve", tempo: "natural tempo",
-          load: "Choose load to match the effort target", calibrationRequired: true }],
-        equipmentRequirementIds: ["dumbbells", "adjustable_bench"],
-        reasonCodes: ["STRENGTH_PRIMARY_PRESS"],
-      }],
+      exerciseAssignments: [assignment(1, "dumbbell-bench-press")],
+      practiceModes: ["full", "lighter", "recovery"],
+    }, {
+      sessionId: "owner-session:7777777777777777",
+      opportunityId: "owner-opportunity-2",
+      purpose: "strength_development",
+      durationStatus: "known",
+      durationMinutes: 90,
+      exerciseAssignments: [assignment(2, "chest-supported-dumbbell-row")],
       practiceModes: ["full", "lighter", "recovery"],
     }],
     unresolvedFacts: ["OWNER_LOAD_SELECTION_PENDING"],
@@ -164,24 +184,68 @@ describe("owner preview exact page and API reads", () => {
 
   it("renders an encoded colon preview through the canonical exact persisted ID", async () => {
     const output = renderToStaticMarkup(await page(ENCODED_PREVIEW_ID));
+    const document = new JSDOM(output).window.document;
 
     expect(harness.readPreviewExact).toHaveBeenCalledWith(OWNER_ID, PREVIEW_ID);
-    expect(output).toContain("ready for approval");
-    expect(output).toContain("Week objectives");
-    expect(output).toContain("strength-foundation");
+    expect(output).toContain("Ready for approval");
+    expect(output).toContain("Week responsibilities");
+    expect(document.querySelector("[data-testid='owner-preview-responsibilities']")?.textContent).toContain(
+      "Knee-dominant lower body");
+    expect(document.querySelector("[data-testid='owner-preview-responsibilities']")?.textContent).toContain(
+      "Hinge lower body");
+    expect(document.querySelector("[data-testid='owner-preview-responsibilities']")?.textContent).toContain(
+      "Upper-body push");
+    expect(document.querySelector("[data-testid='owner-preview-responsibilities']")?.textContent).toContain(
+      "Upper-body pull");
     expect(output).toContain("Sessions");
-    expect(output).toContain("dumbbell bench press");
-    expect(output).toContain("preparatory acclimation");
+    expect(output).toContain("Session 1");
+    expect(output).toContain("Session 2");
+    expect(output.match(/Strength development · 90 minutes/g)).toHaveLength(2);
+    expect(output).toContain("Dumbbell bench press");
+    expect(output).toContain("Preparatory acclimation block");
     expect(output).toContain("1 set");
     expect(output).toContain("60-180 seconds before strength work");
-    expect(output).toContain("developmental work");
-    expect(output).toContain("3 sets");
-    expect(output).toContain("1-3 reps in reserve");
+    expect(output).toContain("Developmental work block");
+    expect(output).toContain("2 sets");
+    expect(output).toContain("5-10 reps");
+    expect(output).toContain("90-180 seconds between strength sets");
+    expect(output).toContain("2-3 reps in reserve");
+    expect(output).toContain("Choose load to match the effort target");
     expect(output).not.toContain("&quot;kind&quot;");
-    expect(output).toContain("OWNER LOAD SELECTION PENDING");
+    expect(output).toContain("Owner load selection pending");
     expect(output).toContain("Technical details");
     expect(output).toContain("training-engine-v2@fixture");
     expect(output).toContain("Your legacy Program is unchanged.");
+    expect(output).toContain("Application is unavailable in preview mode.");
+    expect(document.querySelectorAll("[data-testid='owner-preview-dose-block']")).toHaveLength(4);
+    expect(document.querySelectorAll("[data-testid='owner-preview-session-options']")).toHaveLength(2);
+  });
+
+  it("keeps raw reason codes out of the primary reading flow and available in closed disclosures", async () => {
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const primaryReadingFlow = document.querySelector("[data-testid='owner-preview-presentation']")!.cloneNode(true) as Element;
+    primaryReadingFlow.querySelectorAll("details").forEach((details) => details.remove());
+
+    for (const reason of REASON_CODES) expect(primaryReadingFlow.textContent).not.toContain(reason);
+    const traces = [...document.querySelectorAll("[data-testid='owner-preview-prescription-trace']")];
+    expect(traces).toHaveLength(2);
+    expect(traces.every((trace) => !trace.hasAttribute("open"))).toBe(true);
+    for (const trace of traces) for (const reason of REASON_CODES) expect(trace.textContent).toContain(reason);
+    const technical = document.querySelector("[data-testid='owner-preview-technical-details']")!;
+    expect(technical.hasAttribute("open")).toBe(false);
+    for (const objectiveId of WEEK_OBJECTIVE_IDS) expect(technical.textContent).toContain(objectiveId);
+  });
+
+  it("falls back to an unknown canonical Week objective without guessing a label", async () => {
+    const unknownObjectiveId = "week-v1_1:objective:future-owner-responsibility:unknown_identity";
+    const unknownPreview = { ...PREVIEW, productProjection: { ...PREVIEW.productProjection,
+      weekObjectiveIds: [...WEEK_OBJECTIVE_IDS, unknownObjectiveId] } };
+    harness.previews.set(key(OWNER_ID, PREVIEW_ID), unknownPreview);
+
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const responsibilities = document.querySelector("[data-testid='owner-preview-responsibilities']")!;
+    expect(responsibilities.textContent).toContain(unknownObjectiveId);
+    expect(responsibilities.textContent).toContain("Canonical objective");
   });
 
   it("preserves raw canonical preview page behavior", async () => {
