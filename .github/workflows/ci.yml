@@ -2,14 +2,56 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
   schedule:
     # Nightly full suite at 07:00 UTC
     - cron: "0 7 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  draft-fast:
+    name: Draft fast feedback (boundary + critical + consumer)
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pure/server boundary
+        run: npm run validate:pure-server-boundary --workspace=@praxis/training-engine-v2
+
+      - name: Lint changed source files
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$BASE_SHA...$GITHUB_SHA" -- '*.js' '*.jsx' '*.ts' '*.tsx')
+          if ((${#files[@]})); then
+            npx eslint "${files[@]}"
+          else
+            echo "No changed JavaScript or TypeScript source files."
+          fi
+
+      - name: Critical engine tests
+        run: npm run test:critical
+
+      - name: Consumer tests
+        run: npm run test:full:consumer
+
   outcome-source-postgres:
     name: Outcome source, orchestration, and Product shadow PostgreSQL integration
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -58,12 +100,12 @@ jobs:
         run: npm run test:controlled-owner-delivery:postgres --workspace=@praxis/engine
 
   # ─── PR gate ──────────────────────────────────────────────────────────────
-  # Runs on every pull request. Fast enough to be a blocking gate (target:
-  # under 3 minutes — see Phase 6f Commit 6 / ED-6f.8 in
-  # docs/engine-decisions.md for how this set was chosen).
+  # Runs when a pull request is ready for review. Draft pushes use draft-fast;
+  # the complete final proof remains available without paying its cost during
+  # active setup.
   pr-gate:
     name: PR gate (lint + critical tests + smoke e2e + both builds)
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
