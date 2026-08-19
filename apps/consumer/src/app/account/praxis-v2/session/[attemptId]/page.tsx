@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { REFERENCE_EXERCISES } from "@praxis/training-engine-v2";
+import { REFERENCE_EXERCISES, resolveOwnerProgramClassification } from "@praxis/training-engine-v2";
 import { buildControlledOwnerSessionOptions, buildOwnerSessionPracticeSource,
   withControlledOwnerRepositories } from "@praxis/engine/controlled-owner-delivery";
 import { loadActiveOwnerEnvelope, ownerCsrfTokens, requireOwnerPage } from "@/server/controlledOwnerDelivery";
@@ -10,10 +10,43 @@ import styles from "../../owner-v2.module.css";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+function targetText(target: unknown, unit: string): string {
+  if (!target || typeof target !== "object") return `${unit} require calibration`;
+  const value = target as Record<string, unknown>;
+  if (value.kind === "exact" && typeof value.value === "number") return `${value.value} ${unit}`;
+  if (value.kind === "range" && typeof value.min === "number" && typeof value.max === "number") {
+    return `${value.min}-${value.max} ${unit}`;
+  }
+  if (value.kind === "not_prescribed") return `No ${unit} prescribed`;
+  return `${unit} require calibration`;
+}
+
 function doseText(dose: unknown): string {
   if (!dose || typeof dose !== "object") return "Dose unavailable";
   const value = dose as Record<string, unknown>;
-  return `${String(value.mode ?? "dose").replaceAll("_", " ")} · ${JSON.stringify(dose)}`;
+  if (value.mode === "repetition_sets") {
+    return `${targetText(value.sets, "sets")} · ${targetText(value.repetitions, "reps")}`;
+  }
+  if (value.mode === "timed_hold") {
+    return `${targetText(value.sets, "sets")} · ${targetText(value.duration, "seconds")}`;
+  }
+  if (value.mode === "breath_cycles") {
+    return `${targetText(value.rounds, "rounds")} · ${targetText(value.breathCycles, "breath cycles")}`;
+  }
+  if (value.mode === "distance_carry") {
+    return `${targetText(value.trips, "trips")} · ${targetText(value.distancePerTrip, "metres per trip")}`;
+  }
+  if (value.mode === "timed_carry") {
+    return `${targetText(value.trips, "trips")} · ${targetText(value.durationPerTrip, "seconds per trip")}`;
+  }
+  if (value.mode === "step_sets") {
+    return `${targetText(value.sets, "sets")} · ${targetText(value.steps, "steps")}`;
+  }
+  if (value.mode === "step_march") {
+    return `${targetText(value.sets, "sets")} · ${value.steps ? targetText(value.steps, "steps") :
+      targetText(value.duration, "seconds")}`;
+  }
+  return "Dose requires calibration";
 }
 
 export default async function OwnerSessionPage({ params }: { readonly params: Promise<{ attemptId: string }> }) {
@@ -25,7 +58,9 @@ export default async function OwnerSessionPage({ params }: { readonly params: Pr
     const revisions = await sessionPractice.readAttemptRevisions(gate.userId!, attemptId);
     const revision = revisions.at(-1);
     if (!revision || revision.request.sourceProgramId !== active.envelope.envelopeId || !revision.draft) return null;
-    return { ...active, revision };
+    const calibrationCycle = await delivery.readCalibrationCycleForEnvelope(gate.userId!,
+      active.envelope.envelopeRevisionId);
+    return { ...active, revision, calibrationCycle };
   }).catch(() => null);
   if (!state) notFound();
   const draft = state.revision.draft;
@@ -41,10 +76,14 @@ export default async function OwnerSessionPage({ params }: { readonly params: Pr
       const retainedBlocks = state.revision.plan.assignments.find((entry) => entry.assignmentId === step.assignmentId)
         ?.retainedBlockIds ?? [];
       const blocks = prescription.doseBlocks.filter((block) => retainedBlocks.includes(block.blockId));
+      const obligation = state.calibrationCycle?.obligations.find((entry) =>
+        entry.sessionId === state.revision.request.sourceSessionIntentId && entry.assignmentId === step.assignmentId);
       return { assignmentId: step.assignmentId, exerciseId: step.exerciseId, name: definition.name,
         summary: definition.summary, coachingFocus: definition.coachingFocus,
         sourceEventId: step.sourceExposureEventId, blockIds: blocks.map((block) => block.blockId),
-        dose: blocks.map((block) => doseText(block.dose)).join(" | ") };
+        dose: blocks.map((block) => doseText(block.dose)).join(" | "),
+        calibrationObligation: obligation ? { obligationId: obligation.obligationId,
+          doseBlockId: obligation.doseBlockId, requiredSetCount: obligation.requiredSetCount } : null };
     });
   const requestHeaders = await headers();
   const csrf = ownerCsrfTokens({ userId: gate.userId!, cookieHeader: requestHeaders.get("cookie") ?? "",
@@ -59,7 +98,14 @@ export default async function OwnerSessionPage({ params }: { readonly params: Pr
       lifecycleState={state.revision.lifecycle.state} completedStatus={state.revision.completion?.status ?? null}
       exercises={exercises} options={buildControlledOwnerSessionOptions({ envelope: state.envelope,
         sessionId: state.revision.request.sourceSessionIntentId, userId: gate.userId!,
-        evaluatedAt: new Date().toISOString() })} initialPerformance={draft.actualPerformanceState}
+        evaluatedAt: new Date().toISOString(), calibrationCycle: state.calibrationCycle })}
+      calibration={resolveOwnerProgramClassification(state.envelope) === "initial_calibration" &&
+        state.calibrationCycle ? { cycleId: state.calibrationCycle.cycleId,
+          sessionId: state.revision.request.sourceSessionIntentId,
+          state: state.calibrationCycle.state,
+          recoveryPending: state.calibrationCycle.evidenceSufficiency.recoveryPendingSessionIds
+            .includes(state.revision.request.sourceSessionIntentId) } : null}
+      initialPerformance={draft.actualPerformanceState}
       csrf={csrf.session ?? ""} />
   </main>;
 }

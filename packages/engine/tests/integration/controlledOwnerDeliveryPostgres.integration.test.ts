@@ -82,6 +82,7 @@ describePostgres("controlled owner delivery PostgreSQL 16", () => {
     const preview = generated.preview!;
     const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
       previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
+      approvalClassification: "initial_calibration",
       idempotencyKey: `pg-approve-${process.pid}`, approvedAt: NOW, gate: async () => gate(),
       enrollmentProfiles, delivery, loadCurrentContext: async () => context });
     expect(approved.status).toBe("approved");
@@ -94,19 +95,43 @@ describePostgres("controlled owner delivery PostgreSQL 16", () => {
     expect(applied.status).toBe("applied");
     expect(await delivery.readPreviewExact(OTHER_USER_ID, preview.previewId)).toBeNull();
     expect(await delivery.readApplicationExact(OTHER_USER_ID, applied.application!.applicationId)).toBeNull();
+    const calibrationCycle = await delivery.readCalibrationCycleForEnvelope(USER_ID,
+      applied.envelope!.envelopeRevisionId);
+    expect(calibrationCycle).toMatchObject({ state: "calibration_evidence_incomplete",
+      evidenceSufficiency: { status: "missing", reliablePriorPerformancePermitted: false } });
+    expect(await delivery.readCalibrationCycleForEnvelope(OTHER_USER_ID,
+      applied.envelope!.envelopeRevisionId)).toBeNull();
 
     const practice = createSessionPracticePostgresRepository({ queryable: pool });
     const sessionId = applied.envelope!.productProjection.sessions[0]!.sessionId;
     const started = await startControlledOwnerSession({ userId: USER_ID, envelope: applied.envelope!, sessionId,
-      mode: "full", startedAt: NOW, repository: practice });
+      mode: "full", startedAt: NOW, repository: practice, calibrationCycle });
     const initial = started.revision!;
     const retained = initial.plan.assignments.filter((entry) => entry.state !== "omitted");
     const performed = retained.map((entry) => entry.sourceExposureEventId);
     const blocks = retained.flatMap((entry) => entry.retainedBlockIds);
+    const calibrationObservation = Object.freeze({ schemaVersion: "1.0.0" as const,
+      cycleId: calibrationCycle!.cycleId, sessionId,
+      assignments: Object.freeze(calibrationCycle!.obligations.filter((entry) => entry.sessionId === sessionId)
+        .map((obligation) => Object.freeze({ obligationId: obligation.obligationId,
+          assignmentId: obligation.assignmentId, exerciseId: obligation.exerciseId,
+          doseBlockId: obligation.doseBlockId,
+          sets: Object.freeze(Array.from({ length: obligation.requiredSetCount }, (_, index) => Object.freeze({
+            setNumber: index + 1, repetitions: 8,
+            load: Object.freeze({ kind: "recorded" as const, value: 20, unit: "kg" as const }),
+            effort: Object.freeze({ scale: "RIR" as const, value: 3 }),
+            completionState: "completed" as const, painResponse: "none" as const,
+            techniqueResponse: "controlled" as const,
+          }))),
+        }))),
+      session: Object.freeze({ difficulty: 6, energy: "moderate" as const,
+        immediatePainResponse: "none" as const, notes: "" }),
+      reportingAuthority: "athlete_explicit_report" as const });
     const recorded = await recordControlledOwnerSessionDraft({ userId: USER_ID, attemptId: initial.attemptId,
       basedOnPersistenceRevisionId: initial.persistenceRevisionId,
       currentPosition: { exerciseIndex: 0, blockIndex: 0, setIndex: 1 },
-      actualPerformanceState: Object.fromEntries(performed.map((eventId) => [eventId, { completed: true }])),
+      actualPerformanceState: { ...Object.fromEntries(performed.map((eventId) => [eventId, { completed: true }])),
+        calibrationObservation },
       timers: [], executionStarted: true, recordedAt: "2026-08-17T18:01:00.000Z", repository: practice });
 
     const client = await pool.connect();
@@ -157,6 +182,6 @@ describePostgres("controlled owner delivery PostgreSQL 16", () => {
     expect(conflict.status).toBe("conflict");
     expect((await pool.query<{ count: string }>(`SELECT COUNT(*)::text AS count
       FROM information_schema.tables WHERE table_schema='public' AND table_name LIKE 'owner_v2_%'`))
-      .rows[0]?.count).toBe("9");
+      .rows[0]?.count).toBe("10");
   }, 120_000);
 });

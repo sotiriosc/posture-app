@@ -5,12 +5,15 @@ import {
   buildOwnerProgramApplication,
   buildOwnerProgramApproval,
   buildOwnerProgramEnvelope,
+  buildInitialOwnerCalibrationCycle,
   deriveOwnerApplicationId,
   deriveOwnerPreviewStaleness,
   evaluateOwnerProfileReadiness,
+  resolveOwnerProgramClassification,
   type ControlledOwnerV2ProgramApplication,
   type ControlledOwnerV2ProgramApproval,
   type OwnerDeliveryMode,
+  type OwnerProgramClassification,
   type OwnerTrainingSafetyState,
   type OwnerV2ProductProgramEnvelope,
 } from "@praxis/training-engine-v2";
@@ -43,6 +46,7 @@ export async function approveControlledOwnerGetStrongerPreview(input: {
   readonly previewId: string;
   readonly previewFingerprint: string;
   readonly explicitConfirmation: boolean;
+  readonly approvalClassification?: OwnerProgramClassification;
   readonly csrfVerified: boolean;
   readonly idempotencyKey: string;
   readonly approvedAt: string;
@@ -69,7 +73,14 @@ export async function approveControlledOwnerGetStrongerPreview(input: {
   if (!preview || !profile) return finish("not_found", null, ["OWNER_EXACT_PREVIEW_AND_PROFILE_REQUIRED"]);
   const profileReadiness = evaluateOwnerProfileReadiness(profile);
   if (!profileReadiness.approvalAllowed) return finish("denied", null, profileReadiness.reasonCodes);
-  if (preview.previewFingerprint !== input.previewFingerprint || preview.readinessStatus !== "ready_for_approval" ||
+  const previewClassification = resolveOwnerProgramClassification(preview);
+  const approvalClassification = input.approvalClassification ?? "ordinary_program";
+  const expectedReadiness = previewClassification === "initial_calibration" ?
+    "ready_for_initial_calibration_approval" : "ready_for_approval";
+  if (previewClassification !== approvalClassification) {
+    return finish("denied", null, ["OWNER_APPROVAL_CLASSIFICATION_MISMATCH"]);
+  }
+  if (preview.previewFingerprint !== input.previewFingerprint || preview.readinessStatus !== expectedReadiness ||
       enrollment?.state !== "active" || enrollment.permission !== "apply_allowed") {
     return finish("denied", null, ["OWNER_PREVIEW_NOT_APPROVABLE"]);
   }
@@ -86,7 +97,7 @@ export async function approveControlledOwnerGetStrongerPreview(input: {
     currentSafetyState: context.currentSafetyState, deliveryMode: gate.mode });
   if (stale.length) return finish("stale", null, stale);
   const requestFingerprint = digest({ userId: gate.userId, previewId: preview.previewId,
-    previewFingerprint: preview.previewFingerprint, explicitConfirmation: true });
+    previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, approvalClassification });
   const priorIdempotency = await input.delivery.readIdempotency(gate.userId, "approve", input.idempotencyKey);
   if (priorIdempotency) {
     if (priorIdempotency.requestFingerprint !== requestFingerprint) {
@@ -101,7 +112,8 @@ export async function approveControlledOwnerGetStrongerPreview(input: {
   const approval = buildOwnerProgramApproval({ userId: gate.userId, previewId: preview.previewId,
     previewFingerprint: preview.previewFingerprint, profileRevisionId: preview.profileRevisionId,
     sourceProductRevisionId: preview.sourceProductRevisionId, engineVersion: preview.engineVersion,
-    policyVersions: preview.policyVersions, explicitConfirmation: true, approvedAt: input.approvedAt });
+    policyVersions: preview.policyVersions, explicitConfirmation: true,
+    programClassification: approvalClassification, approvedAt: input.approvedAt });
   const record: OwnerIdempotencyRecord = Object.freeze({ userId: gate.userId, action: "approve",
     idempotencyKey: input.idempotencyKey, requestFingerprint,
     responsePayload: Object.freeze({ approvalId: approval.approvalId }), createdAt: input.approvedAt,
@@ -148,8 +160,13 @@ export async function applyControlledOwnerGetStrongerApproval(input: {
   if (!preview || !profile) return finish("not_found", null, null, ["OWNER_EXACT_PREVIEW_AND_PROFILE_REQUIRED"]);
   const profileReadiness = evaluateOwnerProfileReadiness(profile);
   if (!profileReadiness.approvalAllowed) return finish("denied", null, null, profileReadiness.reasonCodes);
+  const previewClassification = resolveOwnerProgramClassification(preview);
+  const approvalClassification = resolveOwnerProgramClassification(approval);
+  const expectedReadiness = previewClassification === "initial_calibration" ?
+    "ready_for_initial_calibration_approval" : "ready_for_approval";
   if (enrollment?.state !== "active" || enrollment.permission !== "apply_allowed" ||
-      approval.previewFingerprint !== preview.previewFingerprint || preview.readinessStatus !== "ready_for_approval") {
+      approval.previewFingerprint !== preview.previewFingerprint ||
+      approvalClassification !== previewClassification || preview.readinessStatus !== expectedReadiness) {
     return finish("denied", null, null, ["OWNER_APPLICATION_PRECONDITION_FAILED"]);
   }
   if (context.activeLegacySession || context.activeV2Session) {
@@ -164,7 +181,7 @@ export async function applyControlledOwnerGetStrongerApproval(input: {
     currentSafetyState: context.currentSafetyState, deliveryMode: gate.mode });
   if (stale.length) return finish("stale", null, null, stale);
   const requestFingerprint = digest({ userId: gate.userId, approvalId: approval.approvalId,
-    previewFingerprint: preview.previewFingerprint });
+    previewFingerprint: preview.previewFingerprint, programClassification: previewClassification });
   const priorIdempotency = await input.delivery.readIdempotency(gate.userId, "apply", input.idempotencyKey);
   if (priorIdempotency) {
     if (priorIdempotency.requestFingerprint !== requestFingerprint) {
@@ -198,7 +215,10 @@ export async function applyControlledOwnerGetStrongerApproval(input: {
     prescriptionRevisionIds: projectionAssignments.flatMap((entry) =>
       entry.prescriptionRevisionId ? [entry.prescriptionRevisionId] : []),
     weekObjectiveIds: preview.productProjection.weekObjectiveIds,
-    practiceModeReferences: ["full", "lighter", "recovery"], createdAt: input.appliedAt });
+    practiceModeReferences: ["full", "lighter", "recovery"],
+    programClassification: previewClassification,
+    calibrationPlan: preview.calibrationPlan ?? null,
+    createdAt: input.appliedAt });
   const application = buildOwnerProgramApplication({ userId: gate.userId, approvalId: approval.approvalId,
     previewId: preview.previewId, envelopeId: envelope.envelopeId,
     envelopeRevisionId: envelope.envelopeRevisionId, priorPointerRevision: priorRevision,
@@ -220,8 +240,12 @@ export async function applyControlledOwnerGetStrongerApproval(input: {
       envelopeId: envelope.envelopeId, envelopeRevisionId: envelope.envelopeRevisionId,
       pointerRevision: pointer.revision }),
     createdAt: input.appliedAt, completedAt: input.appliedAt });
+  const calibrationCycleRevision = previewClassification === "initial_calibration"
+    ? buildInitialOwnerCalibrationCycle({ userId: gate.userId,
+      enrollmentRevisionId: enrollment.revisionId, preview, envelope, createdAt: input.appliedAt })
+    : null;
   const written = await input.delivery.applyApprovedProgram({ preview, approval, application, envelope,
-    pointer, auditEvent, idempotency, expectedPointerRevision: priorRevision });
+    pointer, auditEvent, idempotency, expectedPointerRevision: priorRevision, calibrationCycleRevision });
   return written.status === "conflict" ? finish("conflict", null, null, ["OWNER_APPLICATION_TRANSACTION_CONFLICT"])
     : finish(written.status, written.application, written.envelope, []);
 }

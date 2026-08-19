@@ -432,6 +432,8 @@ export function buildOwnerLoadingEvidence(input: {
   readonly profile: OwnerGetStrongerProfileRevision;
   readonly sourceProductRevisionId: string;
   readonly engineVersion: string;
+  readonly confirmedCalibrationResponsibilityIds?: readonly string[];
+  readonly calibrationEvidenceRevisionIds?: readonly string[];
 }): readonly ProductGetStrongerDevelopLoadingEvidence[] {
   return PRODUCT_GET_STRONGER_DEVELOP_FOUNDATION_KEYS.map((foundationKey) => {
     const responsibilityKey = `foundation:${foundationKey}`;
@@ -441,14 +443,17 @@ export function buildOwnerLoadingEvidence(input: {
           exerciseId: entry.exerciseId }) !== null }));
     const record = records.find(({ entry, valid }) => valid && entry.answer === "yes")?.entry ??
       records.find(({ valid }) => valid)?.entry;
-    const sourceFactIds = [input.profile.revisionId];
+    const confirmedByCalibration = input.confirmedCalibrationResponsibilityIds?.includes(responsibilityKey) ?? false;
+    const sourceFactIds = [input.profile.revisionId,
+      ...(confirmedByCalibration ? input.calibrationEvidenceRevisionIds ?? [] : [])];
     let valid = false;
     if (record) {
       valid = currentOwnerLoadingSuitabilityConfirmation({ ...input, responsibilityKey,
         exerciseId: record.exerciseId }) !== null;
       if (valid) sourceFactIds.push(stableId("owner-loading-suitability-fact", record));
     }
-    const state = valid && record?.answer === "yes" ? "bounded_initial_calibration" as const :
+    const state = confirmedByCalibration ? "confirmed" as const :
+      valid && record?.answer === "yes" ? "bounded_initial_calibration" as const :
       "unresolved" as const;
     return Object.freeze({ evidenceId: stableId("owner-loading-evidence", {
       responsibilityKey, state, sourceFactIds }), responsibilityKey, state,

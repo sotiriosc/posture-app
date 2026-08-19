@@ -5,6 +5,7 @@ import type {
   ControlledOwnerV2ProgramApproval,
   ControlledOwnerV2ProgramPreview,
   OwnerEnrollmentRevision,
+  OwnerCalibrationCycleRevision,
   OwnerGetStrongerProfileRevision,
   OwnerV2ProductProgramEnvelope,
   ProposedOwnerImportFact,
@@ -59,7 +60,7 @@ export type OwnerAppendResult = "appended" | "exact_retry" | "conflict";
 
 export interface OwnerIdempotencyRecord {
   readonly userId: string;
-  readonly action: "preview" | "approve" | "apply" | "rollback" | "practice";
+  readonly action: "preview" | "approve" | "apply" | "rollback" | "practice" | "recovery";
   readonly idempotencyKey: string;
   readonly requestFingerprint: string;
   readonly responsePayload: unknown | null;
@@ -76,6 +77,7 @@ export interface OwnerProgramApplicationTransaction {
   readonly auditEvent: ControlledOwnerDeliveryAuditEvent;
   readonly idempotency: OwnerIdempotencyRecord;
   readonly expectedPointerRevision: number;
+  readonly calibrationCycleRevision: OwnerCalibrationCycleRevision | null;
 }
 
 export interface OwnerProgramApplicationTransactionResult {
@@ -113,6 +115,12 @@ export interface OwnerDeliveryRepository {
   readEnvelopeExact(userId: string, envelopeId: string,
     envelopeRevisionId: string): Promise<OwnerV2ProductProgramEnvelope | null>;
   readActivePointer(userId: string): Promise<ControlledOwnerActiveProgramPointer | null>;
+  appendCalibrationCycleRevision(revision: OwnerCalibrationCycleRevision): Promise<OwnerAppendResult>;
+  readCalibrationCycleCurrent(userId: string, cycleId: string): Promise<OwnerCalibrationCycleRevision | null>;
+  readCalibrationCycleForEnvelope(userId: string,
+    envelopeRevisionId: string): Promise<OwnerCalibrationCycleRevision | null>;
+  readLatestCalibrationCycle(userId: string): Promise<OwnerCalibrationCycleRevision | null>;
+  listCalibrationCycleRevisions(userId: string, cycleId: string): Promise<readonly OwnerCalibrationCycleRevision[]>;
   readIdempotency(userId: string, action: OwnerIdempotencyRecord["action"],
     idempotencyKey: string): Promise<OwnerIdempotencyRecord | null>;
   appendIdempotency(record: OwnerIdempotencyRecord): Promise<OwnerAppendResult>;

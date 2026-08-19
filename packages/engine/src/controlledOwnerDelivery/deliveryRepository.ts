@@ -1,7 +1,7 @@
 import { sameSemanticValue, type ControlledOwnerActiveProgramPointer,
   type ControlledOwnerDeliveryAuditEvent, type ControlledOwnerV2ProgramApplication,
   type ControlledOwnerV2ProgramApproval, type ControlledOwnerV2ProgramPreview,
-  type OwnerV2ProductProgramEnvelope } from "@praxis/training-engine-v2";
+  type OwnerCalibrationCycleRevision, type OwnerV2ProductProgramEnvelope } from "@praxis/training-engine-v2";
 import type { OwnerDeliveryRepository, OwnerIdempotencyRecord,
   OwnerProgramApplicationTransactionResult, OwnerProgramRollbackTransactionResult } from "./contracts";
 
@@ -15,6 +15,13 @@ export function createInMemoryOwnerDeliveryRepository(): OwnerDeliveryRepository
   const pointers = new Map<string, ControlledOwnerActiveProgramPointer>();
   const audits = new Map<string, ControlledOwnerDeliveryAuditEvent>();
   const idempotency = new Map<string, OwnerIdempotencyRecord>();
+  const calibrationCycles = new Map<string, OwnerCalibrationCycleRevision>();
+  const currentCalibrationCycles = (userId: string) => {
+    const userCycles = [...calibrationCycles.values()].filter((entry) => entry.userId === userId);
+    const supersededRevisionIds = new Set(userCycles.flatMap((entry) =>
+      entry.basedOnRevisionId ? [entry.basedOnRevisionId] : []));
+    return userCycles.filter((entry) => !supersededRevisionIds.has(entry.cycleRevisionId));
+  };
   const appendPreview = async (preview: ControlledOwnerV2ProgramPreview) => {
     const recordKey = key(preview.userId, preview.previewId);
     const prior = previews.get(recordKey);
@@ -64,6 +71,29 @@ export function createInMemoryOwnerDeliveryRepository(): OwnerDeliveryRepository
     readEnvelopeExact: async (userId, envelopeId, envelopeRevisionId) =>
       envelopes.get(key(userId, envelopeId, envelopeRevisionId)) ?? null,
     readActivePointer: async (userId) => pointers.get(userId) ?? null,
+    appendCalibrationCycleRevision: async (revision) => {
+      const recordKey = key(revision.userId, revision.cycleId, revision.cycleRevisionId);
+      const prior = calibrationCycles.get(recordKey);
+      if (prior) return sameSemanticValue(prior, revision) ? "exact_retry" : "conflict";
+      if (revision.basedOnRevisionId !== null) {
+        const current = currentCalibrationCycles(revision.userId).find((entry) =>
+          entry.cycleId === revision.cycleId);
+        if (current?.cycleRevisionId !== revision.basedOnRevisionId) return "conflict";
+      }
+      calibrationCycles.set(recordKey, revision);
+      return "appended";
+    },
+    readCalibrationCycleCurrent: async (userId, cycleId) => currentCalibrationCycles(userId)
+      .find((entry) => entry.cycleId === cycleId) ?? null,
+    readCalibrationCycleForEnvelope: async (userId, envelopeRevisionId) => currentCalibrationCycles(userId)
+      .find((entry) => entry.envelopeRevisionId === envelopeRevisionId) ?? null,
+    readLatestCalibrationCycle: async (userId) => currentCalibrationCycles(userId)
+      .sort((left, right) => right.createdAt.localeCompare(left.createdAt) ||
+        right.cycleRevisionId.localeCompare(left.cycleRevisionId))[0] ?? null,
+    listCalibrationCycleRevisions: async (userId, cycleId) => Object.freeze([...calibrationCycles.values()]
+      .filter((entry) => entry.userId === userId && entry.cycleId === cycleId)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt) ||
+        left.cycleRevisionId.localeCompare(right.cycleRevisionId))),
     readIdempotency: async (userId, action, idempotencyKey) =>
       idempotency.get(key(userId, action, idempotencyKey)) ?? null,
     appendIdempotency: async (record) => {
@@ -107,6 +137,9 @@ export function createInMemoryOwnerDeliveryRepository(): OwnerDeliveryRepository
       pointers.set(preview.userId, transaction.pointer);
       audits.set(key(preview.userId, transaction.auditEvent.eventId), transaction.auditEvent);
       idempotency.set(idemKey, transaction.idempotency);
+      if (transaction.calibrationCycleRevision) calibrationCycles.set(key(transaction.calibrationCycleRevision.userId,
+        transaction.calibrationCycleRevision.cycleId, transaction.calibrationCycleRevision.cycleRevisionId),
+      transaction.calibrationCycleRevision);
       return Object.freeze({ status: "applied", application: transaction.application,
         envelope: transaction.envelope, pointer: transaction.pointer });
     },

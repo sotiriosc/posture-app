@@ -6,6 +6,10 @@ import {
   buildControlledOwnerPainAndInjuryState,
   CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
   applyOwnerProfilePreflightAnswers,
+  validateOwnerCalibrationSessionObservation,
+  type NormalizedOutcomeSourceRecord,
+  type OwnerCalibrationCycleRevision,
+  type OwnerCalibrationSessionObservation,
   type OwnerProfilePreflightAnswerSubmission,
   type OwnerPainContext,
   type ProposedOwnerImportFact,
@@ -21,6 +25,7 @@ import {
   loadControlledOwnerDeliveryMigrations,
   recordControlledOwnerSessionDraft,
   proposeOwnerImportsFromTrainingSnapshot,
+  recordControlledOwnerCalibrationRecovery,
   preflightControlledOwnerGetStrongerProfile,
   resolveOwnerPreviewReadinessStatus,
   rollbackControlledOwnerProgram,
@@ -122,6 +127,68 @@ async function reviewedDurationPreview(value: Awaited<ReturnType<typeof fixture>
   return preview;
 }
 
+function createMemoryOutcomeRepository() {
+  const active = new Map<string, NormalizedOutcomeSourceRecord>();
+  const immutableRevisions: NormalizedOutcomeSourceRecord[] = [];
+  const persist = async (input: Parameters<OutcomeSourcePersistencePort["persistNormalizedRevision"]>[0]) => {
+    const prior = active.get(input.normalizedRecord.sourceRecordId);
+    if (!prior) {
+      active.set(input.normalizedRecord.sourceRecordId, input.normalizedRecord);
+      immutableRevisions.push(input.normalizedRecord);
+    }
+    return prior ? Object.freeze({ ...input.result, status: "exact_retry_returned_prior_result" as const,
+      sourceRecordRevisionId: prior.sourceRecordRevisionId, activeRevisionId: prior.sourceRecordRevisionId }) :
+      input.result;
+  };
+  const repository = {
+    persistNormalizedRevision: persist,
+    appendCorrection: persist,
+    appendSupersession: persist,
+    appendWithdrawal: persist,
+    readActiveSourceRecords: async (athleteId: string) => Object.freeze([...active.values()]
+      .filter((entry) => entry.athleteId === athleteId)),
+  } as unknown as OutcomeSourcePersistencePort;
+  return Object.freeze({ repository,
+    readAll: () => Object.freeze([...immutableRevisions]),
+  });
+}
+
+function calibrationObservation(input: {
+  readonly cycle: OwnerCalibrationCycleRevision;
+  readonly sessionId: string;
+  readonly painResponse?: "none" | "discomfort" | "pain" | "session_stopped";
+  readonly techniqueResponse?: "controlled" | "limited" | "stopped";
+}): OwnerCalibrationSessionObservation {
+  const obligations = input.cycle.obligations.filter((entry) => entry.sessionId === input.sessionId);
+  return Object.freeze({
+    schemaVersion: "1.0.0",
+    cycleId: input.cycle.cycleId,
+    sessionId: input.sessionId,
+    assignments: Object.freeze(obligations.map((obligation, assignmentIndex) => Object.freeze({
+      obligationId: obligation.obligationId,
+      assignmentId: obligation.assignmentId,
+      exerciseId: obligation.exerciseId,
+      doseBlockId: obligation.doseBlockId,
+      sets: Object.freeze(Array.from({ length: obligation.requiredSetCount }, (_, setIndex) => Object.freeze({
+        setNumber: setIndex + 1,
+        repetitions: 8,
+        load: assignmentIndex % 2 === 0 ? Object.freeze({ kind: "recorded" as const, value: 20,
+          unit: "kg" as const }) : Object.freeze({ kind: "recorded" as const, value: 45,
+          unit: "lb" as const }),
+        effort: assignmentIndex % 2 === 0 ? Object.freeze({ scale: "RIR" as const, value: 3 }) :
+          Object.freeze({ scale: "RPE" as const, value: 7 }),
+        completionState: "completed" as const,
+        painResponse: setIndex === 0 && assignmentIndex === 0 ? input.painResponse ?? "none" : "none",
+        techniqueResponse: setIndex === 0 && (input.painResponse === undefined || assignmentIndex === 1)
+          ? input.techniqueResponse ?? "controlled" : "controlled",
+      }))),
+    }))),
+    session: Object.freeze({ difficulty: 6, energy: "moderate" as const,
+      immediatePainResponse: input.painResponse ?? "none", notes: "Athlete-entered context only." }),
+    reportingAuthority: "athlete_explicit_report",
+  });
+}
+
 describe("controlled owner genuine generation and application", () => {
   it("keeps profile, pipeline, and approval readiness separate", () => {
     expect(resolveOwnerPreviewReadinessStatus({ programSemanticCompletenessSatisfied: true,
@@ -142,7 +209,11 @@ describe("controlled owner genuine generation and application", () => {
     ]);
     expect(value.generated).toMatchObject({ productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
     expect(value.generated.preview).toMatchObject({ counterfactual: true, applied: false, stale: false,
-      readinessStatus: "ready_for_approval" });
+      programClassification: "initial_calibration",
+      readinessStatus: "ready_for_initial_calibration_approval" });
+    expect(value.generated.preview?.calibrationPlan?.obligations).toHaveLength(8);
+    expect(new Set(value.generated.preview?.calibrationPlan?.obligations.map((entry) => entry.sessionId)).size)
+      .toBe(4);
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
       fact.startsWith("owner-query:loading-suitability:"))).toBe(false);
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
@@ -158,7 +229,7 @@ describe("controlled owner genuine generation and application", () => {
   it("permits explicit unknown duration preview but blocks approval on unresolved truth", async () => {
     const value = await fixture({ mode: "preview", knownMinutes: false });
     expect(value.generated.status, JSON.stringify(value.generated.reasonCodes)).toBe("generated");
-    expect(value.generated.preview?.readinessStatus).toBe("preview_only_unknown_duration");
+    expect(value.generated.preview?.readinessStatus).toBe("blocked_pending_duration");
     expect(value.generated.preview?.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
   });
 
@@ -381,6 +452,267 @@ describe("controlled owner genuine generation and application", () => {
     expect(await practice.listAthleteCurrentRevisions(USER_ID)).toHaveLength(1);
   });
 
+  it("requires explicit calibration consent and carries a complete immutable evidence cycle into a new preview",
+    async () => {
+      const value = await fixture({ mode: "apply", knownMinutes: true });
+      const preview = value.generated.preview!;
+      expect(preview).toMatchObject({ programClassification: "initial_calibration",
+        readinessStatus: "ready_for_initial_calibration_approval", applied: false });
+      expect(preview.calibrationPlan?.obligations).toHaveLength(8);
+      expect(new Set(preview.calibrationPlan?.obligations.map((entry) => entry.sessionId)).size).toBe(4);
+      expect(preview.calibrationPlan?.obligations.every((entry) => entry.provenance.includes(
+        "developmental_work"))).toBe(true);
+
+      const ordinary = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
+        previewFingerprint: preview.previewFingerprint, explicitConfirmation: true, csrfVerified: true,
+        idempotencyKey: "calibration-ordinary-approval", approvedAt: NOW, gate: async () => gate("apply"),
+        enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+        loadCurrentContext: async () => value.context });
+      expect(ordinary).toMatchObject({ status: "denied",
+        reasonCodes: ["OWNER_APPROVAL_CLASSIFICATION_MISMATCH"], applicationCount: 0 });
+
+      const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
+        previewFingerprint: preview.previewFingerprint, explicitConfirmation: true,
+        approvalClassification: "initial_calibration", csrfVerified: true,
+        idempotencyKey: "calibration-explicit-approval", approvedAt: NOW,
+        gate: async () => gate("apply"), enrollmentProfiles: value.enrollmentProfiles,
+        delivery: value.delivery, loadCurrentContext: async () => value.context });
+      expect(approved).toMatchObject({ status: "approved",
+        approval: { programClassification: "initial_calibration",
+          previewFingerprint: preview.previewFingerprint }, applicationCount: 0 });
+      const applied = await applyControlledOwnerGetStrongerApproval({ approvalId: approved.approval!.approvalId,
+        idempotencyKey: "calibration-explicit-application", csrfVerified: true, appliedAt: NOW,
+        gate: async () => gate("apply"), enrollmentProfiles: value.enrollmentProfiles,
+        delivery: value.delivery, loadCurrentContext: async () => value.context });
+      expect(applied).toMatchObject({ status: "applied",
+        envelope: { programClassification: "initial_calibration",
+          legacyFallbackReference: value.context.currentLegacyProgramRevisionId } });
+      const envelope = applied.envelope!;
+      const originalPointer = await value.delivery.readActivePointer(USER_ID);
+      let cycle = await value.delivery.readCalibrationCycleForEnvelope(USER_ID, envelope.envelopeRevisionId);
+      expect(cycle).toMatchObject({ state: "calibration_evidence_incomplete",
+        evidenceSufficiency: { status: "missing", reliablePriorPerformancePermitted: false,
+          progressionAuthorized: false } });
+      expect(cycle?.obligations.map((entry) => entry.obligationFingerprint))
+        .toEqual(preview.calibrationPlan?.obligations.map((entry) => entry.obligationFingerprint));
+      expect(await value.delivery.readCalibrationCycleCurrent("another-user", cycle!.cycleId)).toBeNull();
+
+      const practice = createInMemorySessionPracticePersistenceRepository();
+      const outcomeStore = createMemoryOutcomeRepository();
+      const sessionIds = preview.productProjection.sessions.map((session) => session.sessionId);
+      let firstPersistedRecord = "";
+      for (const [sessionIndex, sessionId] of sessionIds.entries()) {
+        const sessionTime = new Date(Date.parse(NOW) + (sessionIndex + 1) * 60_000).toISOString();
+        const currentOptions = buildControlledOwnerSessionOptions({ envelope, sessionId, userId: USER_ID,
+          evaluatedAt: sessionTime, calibrationCycle: cycle });
+        expect(currentOptions.find((entry) => entry.mode === "full")?.availability.state).toBe("available");
+        expect(currentOptions.filter((entry) => entry.mode !== "full").every((entry) =>
+          entry.availability.state !== "available")).toBe(true);
+        const started = await startControlledOwnerSession({ userId: USER_ID, envelope, sessionId, mode: "full",
+          startedAt: sessionTime, repository: practice, calibrationCycle: cycle });
+        expect(started.status).toBe("started");
+        const initial = started.revision!;
+        const retained = initial.plan.assignments.filter((entry) => entry.state !== "omitted");
+        const performed = retained.map((entry) => entry.sourceExposureEventId);
+        const blocks = retained.flatMap((entry) => entry.retainedBlockIds);
+        const observation = calibrationObservation({ cycle: cycle!, sessionId });
+        expect(validateOwnerCalibrationSessionObservation({ observation,
+          plan: envelope.calibrationPlan!, expectedSessionId: sessionId })).toEqual([]);
+        if (sessionIndex === 0) {
+          const invalidEffort = { ...observation, assignments: observation.assignments.map((assignment,
+            assignmentIndex) => assignmentIndex === 0 ? { ...assignment, sets: assignment.sets.map((set,
+              setIndex) => setIndex === 0 ? { ...set, effort: { scale: "RIR" as const, value: 11 } } : set) } :
+            assignment) };
+          expect(validateOwnerCalibrationSessionObservation({ observation: invalidEffort,
+            plan: envelope.calibrationPlan!, expectedSessionId: sessionId }))
+            .toContain("OWNER_CALIBRATION_EFFORT_INVALID");
+        }
+        const recordedAt = new Date(Date.parse(sessionTime) + 500).toISOString();
+        const recorded = await recordControlledOwnerSessionDraft({ userId: USER_ID,
+          attemptId: initial.attemptId, basedOnPersistenceRevisionId: initial.persistenceRevisionId,
+          currentPosition: { exerciseIndex: 0, blockIndex: 0, setIndex: 1 },
+          actualPerformanceState: Object.freeze({ ...Object.fromEntries(performed.map((eventId) =>
+            [eventId, { completed: true }])), calibrationObservation: observation }), timers: [],
+          executionStarted: true, recordedAt, repository: practice });
+        expect(recorded.status).toBe("appended");
+        expect(recorded.revision?.lifecycle.state, JSON.stringify(recorded.revision?.lifecycle))
+          .toBe("execution_started");
+        if (sessionIndex === 0) expect(outcomeStore.readAll()).toEqual([]);
+        const completedAt = new Date(Date.parse(sessionTime) + 1_000).toISOString();
+        const completed = await completeControlledOwnerSession({ userId: USER_ID,
+          attemptId: initial.attemptId, basedOnPersistenceRevisionId: recorded.revision!.persistenceRevisionId,
+          envelope, performedSourceEventIds: performed, completedBlockIds: blocks,
+          partiallyCompletedBlockIds: [], completedAt, idempotencyKey: `calibration-complete-${sessionIndex}`,
+          repository: practice, delivery: value.delivery, outcomeRepository: outcomeStore.repository });
+        expect(completed, JSON.stringify(completed)).toMatchObject({ status: "completed",
+          outcome: { automaticAdaptationCount: 0, automaticWeekRewriteCount: 0,
+            longitudinalObservation: { observationOnly: true, automaticProgressionApplied: false,
+              automaticReplacementApplied: false } } });
+        cycle = completed.calibrationCycle!;
+        expect(cycle.evidenceSufficiency.reliablePriorPerformancePermitted).toBe(false);
+        expect(cycle.evidenceSufficiency.recoveryPendingSessionIds).toContain(sessionId);
+        if (sessionIndex === 0) {
+          const records = outcomeStore.readAll();
+          const performance = records.filter((entry) => entry.sourceCategory === "block_performance");
+          expect(performance).toHaveLength(2);
+          expect(performance.flatMap((entry) => entry.structuredFacts)
+            .filter((fact) => fact.factType === "actual_load").map((fact) => fact.unit).sort())
+            .toEqual(["kg", "kg", "lb", "lb"]);
+          expect(performance.flatMap((entry) => entry.structuredFacts)
+            .filter((fact) => fact.factType === "actual_effort").map((fact) => fact.unit).sort())
+            .toEqual(["rir", "rir", "rpe", "rpe"]);
+          expect(JSON.stringify(records)).not.toContain("Athlete-entered context only.");
+          expect(records.find((entry) => entry.sourceCategory === "session_completion")?.structuredFacts)
+            .toEqual(expect.arrayContaining([expect.objectContaining({ factType: "session_difficulty", value: 6 }),
+              expect.objectContaining({ factType: "energy_readiness", value: "moderate" })]));
+          firstPersistedRecord = JSON.stringify(records[0]);
+          const replay = await startControlledOwnerSession({ userId: USER_ID, envelope, sessionId, mode: "full",
+            startedAt: completedAt, repository: practice, calibrationCycle: cycle });
+          expect(replay).toMatchObject({ status: "unavailable",
+            reasonCodes: ["OWNER_CALIBRATION_SESSION_ALREADY_COMPLETED"] });
+          const remaining = buildControlledOwnerSessionOptions({ envelope, sessionId: sessionIds[1]!,
+            userId: USER_ID, evaluatedAt: completedAt, calibrationCycle: cycle });
+          expect(remaining.find((entry) => entry.mode === "full")?.availability.state).toBe("available");
+        }
+        const recoveryAt = new Date(Date.parse(sessionTime) + 2_000).toISOString();
+        const recoveryObservation = Object.freeze({ schemaVersion: "1.0.0" as const,
+          cycleId: cycle.cycleId, sessionId, readiness: "explicit_adequate" as const,
+          sleepReport: "restorative" as const, reportingAuthority: "athlete_explicit_report" as const });
+        const recovery = await recordControlledOwnerCalibrationRecovery({ userId: USER_ID,
+          cycleId: cycle.cycleId, observation: recoveryObservation,
+          idempotencyKey: `calibration-recovery-${sessionIndex}`, recordedAt: recoveryAt,
+          delivery: value.delivery, outcomeRepository: outcomeStore.repository });
+        expect(recovery).toMatchObject({ status: "recorded", automaticApplicationCount: 0 });
+        cycle = recovery.cycle!;
+        expect(cycle.evidenceSufficiency.recoveryPendingSessionIds).not.toContain(sessionId);
+        if (sessionIndex === 0) {
+          const retry = await recordControlledOwnerCalibrationRecovery({ userId: USER_ID,
+            cycleId: cycle.cycleId, observation: recoveryObservation,
+            idempotencyKey: "calibration-recovery-0", recordedAt: recoveryAt,
+            delivery: value.delivery, outcomeRepository: outcomeStore.repository });
+          expect(retry.status).toBe("exact_retry");
+          const duplicateWithNewKey = await recordControlledOwnerCalibrationRecovery({ userId: USER_ID,
+            cycleId: cycle.cycleId, observation: recoveryObservation,
+            idempotencyKey: "calibration-recovery-duplicate", recordedAt: recoveryAt,
+            delivery: value.delivery, outcomeRepository: outcomeStore.repository });
+          expect(duplicateWithNewKey).toMatchObject({ status: "invalid",
+            reasonCodes: ["OWNER_CALIBRATION_RECOVERY_ALREADY_RECORDED_USE_CORRECTION"] });
+        }
+      }
+
+      expect(cycle).toMatchObject({ state: "calibration_complete_pending_review",
+        evidenceSufficiency: { status: "sufficient_for_reviewed_subsequent_planning",
+          missingObligationIds: [], recoveryPendingSessionIds: [],
+          reliablePriorPerformancePermitted: true, progressionAuthorized: false } });
+      const completedExerciseCounts = new Map<string, number>();
+      cycle!.obligations.forEach((entry) => completedExerciseCounts.set(entry.exerciseId,
+        (completedExerciseCounts.get(entry.exerciseId) ?? 0) + 1));
+      expect([...completedExerciseCounts.values()].every((count) => count >= 2)).toBe(true);
+      expect(cycle!.obligations.every((entry) => entry.completionState === "complete")).toBe(true);
+      expect(JSON.stringify(outcomeStore.readAll()[0])).toBe(firstPersistedRecord);
+      expect(await outcomeStore.repository.readActiveSourceRecords("another-user", cycle!.createdAt)).toEqual([]);
+      expect(await value.delivery.listCalibrationCycleRevisions(USER_ID, cycle!.cycleId)).toHaveLength(9);
+      expect(await value.delivery.readActivePointer(USER_ID)).toEqual(originalPointer);
+      expect(await value.delivery.listApplications(USER_ID)).toHaveLength(1);
+
+      const successorTime = new Date(Date.parse(NOW) + 10 * 60_000).toISOString();
+      const successorInput = { requestedAt: successorTime, evaluationTime: successorTime,
+        engineVersion: value.context.currentEngineVersion, policyVersions: value.context.currentPolicyVersions,
+        idempotencyKey: "post-calibration-preview", gate: async () => gate("apply"),
+        enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+        productImport: { loadProposedFacts: async () => [] },
+        loadSourceContext: async () => ({ sourceProductSnapshotId: "product-snapshot:synthetic-1",
+          sourceProductRevisionId: "product-revision:synthetic-1",
+          activeLegacyProgramRevisionId: value.context.currentLegacyProgramRevisionId, assessmentReport: null }),
+        loadCalibrationEvidence: async () => ({ cycle: cycle!, records: outcomeStore.readAll() }) };
+      const successor = await generateControlledOwnerGetStrongerPreview(successorInput);
+      expect(successor).toMatchObject({ status: "generated", productShadowCallCount: 0,
+        legacyGenerateProgramCallCount: 0, preview: { programClassification: "ordinary_program",
+          readinessStatus: "ready_for_approval", applied: false } });
+      expect(successor.preview?.previewId).not.toBe(preview.previewId);
+      const performanceRevisionIds = outcomeStore.readAll().filter((entry) =>
+        entry.sourceCategory === "block_performance").map((entry) => entry.sourceRecordRevisionId);
+      expect(JSON.stringify(successor.preview)).toContain(performanceRevisionIds[0]!);
+      const successorLoads = successor.preview?.productProjection.sessions.flatMap((session) =>
+        session.exerciseAssignments.flatMap((assignment) => assignment.doseBlocks?.map((block) => block.load) ?? []));
+      expect(successorLoads).not.toContain("20 kg");
+      expect(successorLoads).not.toContain("45 lb");
+      expect(successor.preview?.activeLegacyProgramRevisionId).toBe(value.context.currentLegacyProgramRevisionId);
+      expect(await value.delivery.readActivePointer(USER_ID)).toEqual(originalPointer);
+      expect(await value.delivery.listApplications(USER_ID)).toHaveLength(1);
+      const successorRetry = await generateControlledOwnerGetStrongerPreview(successorInput);
+      expect(successorRetry).toMatchObject({ status: "exact_retry",
+        preview: { previewId: successor.preview?.previewId } });
+    });
+
+  it("routes painful or technique-limited calibration evidence to canonical Safety review without mutation",
+    async () => {
+      const value = await fixture({ mode: "apply", knownMinutes: true });
+      const preview = value.generated.preview!;
+      const approved = await approveControlledOwnerGetStrongerPreview({ previewId: preview.previewId,
+        previewFingerprint: preview.previewFingerprint, explicitConfirmation: true,
+        approvalClassification: "initial_calibration", csrfVerified: true,
+        idempotencyKey: "safety-calibration-approval", approvedAt: NOW, gate: async () => gate("apply"),
+        enrollmentProfiles: value.enrollmentProfiles, delivery: value.delivery,
+        loadCurrentContext: async () => value.context });
+      const applied = await applyControlledOwnerGetStrongerApproval({ approvalId: approved.approval!.approvalId,
+        idempotencyKey: "safety-calibration-application", csrfVerified: true, appliedAt: NOW,
+        gate: async () => gate("apply"), enrollmentProfiles: value.enrollmentProfiles,
+        delivery: value.delivery, loadCurrentContext: async () => value.context });
+      const envelope = applied.envelope!;
+      const initialCycle = (await value.delivery.readCalibrationCycleForEnvelope(USER_ID,
+        envelope.envelopeRevisionId))!;
+      const sessionId = envelope.productProjection.sessions[0]!.sessionId;
+      const practice = createInMemorySessionPracticePersistenceRepository();
+      const outcomeStore = createMemoryOutcomeRepository();
+      const started = await startControlledOwnerSession({ userId: USER_ID, envelope, sessionId, mode: "full",
+        startedAt: NOW, repository: practice, calibrationCycle: initialCycle });
+      const retained = started.revision!.plan.assignments.filter((entry) => entry.state !== "omitted");
+      const performed = retained.map((entry) => entry.sourceExposureEventId);
+      const observation = calibrationObservation({ cycle: initialCycle, sessionId,
+        painResponse: "discomfort", techniqueResponse: "limited" });
+      const recordedAt = new Date(Date.parse(NOW) + 1_000).toISOString();
+      const recorded = await recordControlledOwnerSessionDraft({ userId: USER_ID,
+        attemptId: started.revision!.attemptId,
+        basedOnPersistenceRevisionId: started.revision!.persistenceRevisionId,
+        currentPosition: { exerciseIndex: 0, blockIndex: 0, setIndex: 1 },
+        actualPerformanceState: { calibrationObservation: observation }, timers: [], executionStarted: true,
+        recordedAt, repository: practice });
+      expect(recorded.revision?.lifecycle.state, JSON.stringify(recorded.revision?.lifecycle))
+        .toBe("execution_started");
+      const completed = await completeControlledOwnerSession({ userId: USER_ID,
+        attemptId: started.revision!.attemptId,
+        basedOnPersistenceRevisionId: recorded.revision!.persistenceRevisionId, envelope,
+        performedSourceEventIds: performed,
+        completedBlockIds: retained.flatMap((entry) => entry.retainedBlockIds),
+        partiallyCompletedBlockIds: [], completedAt: new Date(Date.parse(NOW) + 2_000).toISOString(),
+        idempotencyKey: "safety-calibration-complete",
+        repository: practice, delivery: value.delivery, outcomeRepository: outcomeStore.repository });
+
+      expect(completed, JSON.stringify(completed)).toMatchObject({ status: "completed",
+        calibrationCycle: { state: "calibration_safety_review_required",
+          evidenceSufficiency: { status: "safety_blocked", reliablePriorPerformancePermitted: false,
+            progressionAuthorized: false } },
+        outcome: { automaticAdaptationCount: 0, automaticWeekRewriteCount: 0 } });
+      expect(outcomeStore.readAll().map((entry) => entry.sourceCategory)).toEqual(expect.arrayContaining([
+        "block_performance", "training_response", "training_safety",
+      ]));
+      const techniqueFact = outcomeStore.readAll().flatMap((entry) => entry.structuredFacts)
+        .find((fact) => fact.factType === "technique_response" && fact.value === "limited");
+      expect(techniqueFact).toBeTruthy();
+      expect(outcomeStore.readAll().find((entry) => entry.sourceCategory === "block_performance"))
+        .toMatchObject({ sourceAuthority: "athlete_explicit_report",
+          provenance: expect.arrayContaining(["controlled-owner:athlete-explicit-post-performance"]) });
+      expect(outcomeStore.readAll().find((entry) => entry.sourceCategory === "training_safety")
+        ?.structuredFacts).toEqual(expect.arrayContaining([expect.objectContaining({ factType: "safety_block" })]));
+      const nextSessionOptions = buildControlledOwnerSessionOptions({ envelope,
+        sessionId: envelope.productProjection.sessions[1]!.sessionId, userId: USER_ID,
+        evaluatedAt: NOW, calibrationCycle: completed.calibrationCycle });
+      expect(nextSessionOptions.find((entry) => entry.mode === "full")?.availability.reasonCodes)
+        .toContain("OWNER_CALIBRATION_REVIEW_REQUIRED_BEFORE_CONTINUATION");
+      expect(await value.delivery.listApplications(USER_ID)).toHaveLength(1);
+    });
+
   it("rolls the active pointer back atomically without deleting V2 lineage", async () => {
     const value = await fixture({ mode: "apply", knownMinutes: true });
     const preview = await reviewedDurationPreview(value);
@@ -412,9 +744,9 @@ describe("controlled owner genuine generation and application", () => {
     expect(retry.status).toBe("exact_retry");
   });
 
-  it("locks all nine default-empty PostgreSQL owner tables", () => {
+  it("locks all ten default-empty PostgreSQL owner tables", () => {
     const sql = loadControlledOwnerDeliveryMigrations().map((entry) => entry.sql).join("\n");
-    expect(sql.match(/CREATE TABLE IF NOT EXISTS owner_v2_/g)).toHaveLength(9);
+    expect(sql.match(/CREATE TABLE IF NOT EXISTS owner_v2_/g)).toHaveLength(10);
     expect(sql).not.toMatch(/INSERT INTO/i);
     expect(sql).not.toMatch(/email/i);
   });

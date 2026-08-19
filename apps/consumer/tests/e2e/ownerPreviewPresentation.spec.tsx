@@ -28,6 +28,11 @@ test("owner preview is readable and responsive inside the dark account layout", 
     await expect(root).toBeVisible();
     await expect(page.getByRole("heading", { name: "Session 1" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Session 2" })).toBeVisible();
+    await expect(page.getByText("Ready for initial calibration approval")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "A conservative evidence-building week" })).toBeVisible();
+    await expect(page.getByText("Initial calibration program")).toBeVisible();
+    await expect(page.getByText(/missing reliable performance history/)).toBeVisible();
+    await expect(page.getByText(/not confirmed long-term Advanced volume/)).toBeVisible();
     await expect(page.getByText("Application is unavailable in preview mode.")).toBeVisible();
     await expect(page.getByTestId("owner-preview-dose-block")).toHaveCount(18);
     await expect(page.getByRole("heading", { name: "Prepare" }).first()).toBeVisible();

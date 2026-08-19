@@ -2,7 +2,7 @@ import { deriveAlignmentPriorities } from "../alignment";
 import type { AssessmentState } from "../domain/assessment";
 import { buildTrainingReadinessTrace, NO_TRAINING_SAFETY_SIGNALS,
   type TrainingSafetyState } from "../domain/trainingSafety";
-import { EMPTY_TRAINING_HISTORY } from "../domain/history";
+import { EMPTY_TRAINING_HISTORY, type TrainingHistory } from "../domain/history";
 import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury";
 import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
@@ -51,6 +51,7 @@ import {
   PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1_REFERENCE,
   PRESCRIPTION_POLICY_V1,
   type PrescriptionCompilationContextFacts,
+  type CompletedPrescriptionPerformanceReference,
   type PrescriptionSessionCompilerInput,
 } from "../prescription";
 import {
@@ -307,6 +308,15 @@ export interface ControlledOwnerProductionPipelineInput {
   readonly profile: OwnerGetStrongerProfileRevision;
   readonly proposedProductFacts: readonly ProposedOwnerImportFact[];
   readonly assessmentHandoff?: ControlledOwnerAssessmentHandoff;
+  readonly calibrationEvidence?: {
+    readonly status: "sufficient_for_reviewed_subsequent_planning";
+    readonly cycleId: string;
+    readonly cycleRevisionId: string;
+    readonly sourceRecordRevisionIds: readonly string[];
+    readonly confirmedResponsibilityIds: readonly string[];
+    readonly trainingHistory: TrainingHistory;
+    readonly completedPerformanceReferences: readonly CompletedPrescriptionPerformanceReference[];
+  };
 }
 
 export interface ControlledOwnerProductionPipelineResult {
@@ -543,7 +553,8 @@ function buildOwnerWeekSource(input: ControlledOwnerProductionPipelineInput): Pr
 
 function compilationContext(input: { readonly assignment: Handoff["assignments"][number];
   readonly intent: NonNullable<Planning["sessionIntent"]>; readonly profile: OwnerGetStrongerProfileRevision;
-  readonly assessment: AssessmentState; readonly selectedExercise: ExerciseDefinition | null }): PrescriptionCompilationContextFacts {
+  readonly assessment: AssessmentState; readonly selectedExercise: ExerciseDefinition | null;
+  readonly calibrationEvidence?: ControlledOwnerProductionPipelineInput["calibrationEvidence"] }): PrescriptionCompilationContextFacts {
   const needs = input.intent.needs.filter((need) => input.assignment.satisfiedNeedIds.includes(need.id));
   const dependencies = needs.flatMap((need) => need.dependencies);
   const assessmentPriorityIds = uniqueSorted(dependencies.flatMap((entry) => entry.assessmentSignalIds));
@@ -553,10 +564,12 @@ function compilationContext(input: { readonly assignment: Handoff["assignments"]
   const familiarity = input.profile.familiarity.find((entry) => entry.exerciseId === input.assignment.exerciseId);
   const explicitControl = dependencies.some((entry) => entry.actionFunctions.length > 0 ||
     entry.movementRoles.length > 0 || (entry.rangeRequirements?.length ?? 0) > 0);
-  return { familiarity: familiarity?.status === "known" ? "known_productive" :
+  const reliablePriorPerformance = Boolean(input.calibrationEvidence?.trainingHistory.exerciseHistory
+    .stableExerciseIds.includes(input.assignment.exerciseId));
+  return { familiarity: reliablePriorPerformance || familiarity?.status === "known" ? "known_productive" :
     familiarity?.status === "calibration_required" ? "unfamiliar" : "unknown",
     returnAfterAbsence: false, painAwareLoadToleranceRegressionPermitted: false,
-    reliablePriorPerformance: false, reviewedRegression: false, adverseResponseSupportsReducedDose: false,
+    reliablePriorPerformance, reviewedRegression: false, adverseResponseSupportsReducedDose: false,
     newEquipmentRealization: false,
     requiredPreparationDependency: input.assignment.section === "warmup" &&
       dependencies.some((entry) => entry.required),
@@ -573,20 +586,23 @@ function compilationContext(input: { readonly assignment: Handoff["assignments"]
     adverseActivationFatigueResponse: false, mainWorkPreserved: true, secondaryObjectiveRequired: false,
     secondaryWeeklyPriority: false, secondaryCapacitySupported: true, secondaryHigherPriorityConflict: false,
     secondaryNonRedundantUpstream: true, accessoryPriority: "optional", accessoryUniquePurposeActive: true,
-    accessoryCoherencePreserved: true, overlappingExposureRepresented: false, firstExposure: true,
-    insufficientResponseHistory: true, directObjectiveConfirmedUpstream: false,
+    accessoryCoherencePreserved: true, overlappingExposureRepresented: false,
+    firstExposure: !reliablePriorPerformance,
+    insufficientResponseHistory: !reliablePriorPerformance, directObjectiveConfirmedUpstream: false,
     allocatedRecoveryResponsibility: input.assignment.section === "cooldown",
     successfulBreathResponse: false, sessionCapacityPreservesMainWork: true,
     carryPurpose: "accessory", stationaryMarchRealization: "count", reviewedAcclimationBlockCount: null,
     requestedTempoIntent: "natural", explicitPowerObjective: null,
     powerIntentPermittedByExerciseKnowledge: false, assessmentPriorityIds, alignmentPriorityIds,
     provenanceRefs: uniqueSorted(["controlled-owner-delivery:confirmed-profile",
+      ...(input.calibrationEvidence?.sourceRecordRevisionIds ?? []),
       ...dependencies.flatMap((entry) => entry.provenance?.evidenceRefs ?? [])]) };
 }
 
 function compileSession(input: { readonly command: OwnerGenerationCommand; readonly profile: OwnerGetStrongerProfileRevision;
   readonly plannerInput: SessionIntentPlannerInput; readonly planning: Planning; readonly skeleton: Skeleton;
-  readonly candidates: Candidates; readonly handoff: Handoff }): Compilation {
+  readonly candidates: Candidates; readonly handoff: Handoff;
+  readonly calibrationEvidence?: ControlledOwnerProductionPipelineInput["calibrationEvidence"] }): Compilation {
   const intent = input.planning.sessionIntent!;
   const compilerInput: PrescriptionSessionCompilerInput = {
     sessionIntent: intent, sessionSkeleton: input.skeleton, handoff: input.handoff,
@@ -600,12 +616,20 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
         input.candidates[needId]?.rankedCandidates ?? [])
         .find((candidate) => candidate.exercise.id === assignment.exerciseId)?.exercise ?? null;
       return [assignment.handoffId, compilationContext({ assignment, intent, profile: input.profile,
-        assessment: input.plannerInput.assessment, selectedExercise })];
+        assessment: input.plannerInput.assessment, selectedExercise,
+        calibrationEvidence: input.calibrationEvidence })];
     })),
     continuityEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
-      [assignment.handoffId, null])),
+      [assignment.handoffId, input.calibrationEvidence?.trainingHistory.exerciseHistory.stableExerciseIds
+        .includes(assignment.exerciseId) ? Object.freeze({ exerciseId: assignment.exerciseId, legal: true,
+          productive: true, tolerated: true, assignmentCompatible: true, equipmentCompatible: true,
+          requirementCompatible: true, successfulReExposure: true,
+          adverseResponseRequiresPrescriptionReview: false,
+          sourceRefs: Object.freeze(input.calibrationEvidence.sourceRecordRevisionIds) }) : null])),
     priorRealizationEvidenceByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
-      [assignment.handoffId, null])), completedPerformanceReferences: [], responseReceiverEvidence: [],
+      [assignment.handoffId, null])),
+    completedPerformanceReferences: input.calibrationEvidence?.completedPerformanceReferences ?? [],
+    responseReceiverEvidence: [],
     executionAttemptId: stableId("owner-generation-attempt", { commandId: input.command.commandId,
       intentId: intent.id }), evaluationTime: input.command.evaluationTime, policy: PRESCRIPTION_POLICY_V1,
     availablePolicies: [PRESCRIPTION_POLICY_V1],
@@ -726,8 +750,9 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, source: 
         assessment, painAndInjury: buildControlledOwnerPainAndInjuryState(input.profile), trainingSafety,
         currentEquipment: Object.freeze({ capabilities: equipment, provenance: "profile_default",
           sourceRef: input.profile.equipmentCapabilitySnapshot.sourceRevision }) satisfies CurrentSessionEquipment,
-        history: EMPTY_TRAINING_HISTORY,
-        trainingResponseHistory: EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
+        history: input.calibrationEvidence?.trainingHistory ?? EMPTY_TRAINING_HISTORY,
+        trainingResponseHistory: input.calibrationEvidence?.trainingHistory.trainingResponseHistory ??
+          EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
         satisfiedPrerequisiteIds: ownerSatisfiedPrerequisiteIds({ profile: input.profile,
           sourceProductRevisionId: input.command.sourceProductRevisionId,
           engineVersion: input.command.engineVersion }),
@@ -780,7 +805,8 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, source: 
             unresolved.blockerCodes.length ? unresolved.blockerCodes : [code]);
         }
         const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput,
-          planning: currentPlanning, skeleton, candidates, handoff });
+          planning: currentPlanning, skeleton, candidates, handoff,
+          calibrationEvidence: input.calibrationEvidence });
         if (compilation.status !== "compiled") {
           throw new Error(`OWNER_PRESCRIPTION_BLOCKED:${compilation.status}`);
         }
@@ -893,7 +919,8 @@ function gateInput(input: ControlledOwnerProductionPipelineInput, source: Produc
 }
 
 function displayProjection(input: ControlledOwnerProductionPipelineInput, intent: WeeklyIntent,
-  sessions: readonly SessionExecution[], unresolvedFacts: readonly string[]): OwnerProgramProjection {
+  sessions: readonly SessionExecution[], unresolvedFacts: readonly string[],
+  responsibilityPolicy: ProductGetStrongerDevelopWeeklyPolicyResult): OwnerProgramProjection {
   return buildOwnerProgramProjection({ goal: "strength", mode: "develop",
     weekObjectiveIds: intent.objectives.map((objective) => objective.objectiveId),
     sessions: Object.freeze(sessions.map((session) => Object.freeze({
@@ -940,12 +967,22 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
         const repetitionTarget = dose && "repetitions" in dose ? dose.repetitions :
           dose && "steps" in dose ? dose.steps : dose && "duration" in dose ? dose.duration : null;
         const rest = dose?.rest;
-        const dependencies = session.planning.sessionIntent!.needs
-          .filter((need) => assignment.satisfiedNeedIds.includes(need.id)).flatMap((need) => need.dependencies);
+        const assignmentNeeds = session.planning.sessionIntent!.needs
+          .filter((need) => assignment.satisfiedNeedIds.includes(need.id));
+        const dependencies = assignmentNeeds.flatMap((need) => need.dependencies);
+        const weekObjectiveIds = uniqueSorted(assignmentNeeds.flatMap((need) =>
+          need.plannerProvenance?.objectiveIds ?? []));
+        const sourcePriorityIds = uniqueSorted(intent.objectives.filter((objective) =>
+          weekObjectiveIds.includes(objective.objectiveId)).flatMap((objective) => objective.sourcePriorityIds));
+        const responsibilityIds = uniqueSorted(responsibilityPolicy.responsibilityTraces
+          .filter((trace) => sourcePriorityIds.includes(trace.priorityId)).map((trace) => trace.responsibilityKey));
         return Object.freeze({ assignmentId: assignment.handoffId, exerciseId: assignment.exerciseId,
           realizationId: realization?.realizationId ?? null,
           sourceEventId: plan?.sourceExposureEvent.sourceExposureEventId ?? null,
           prescriptionRevisionId: plan?.prescriptionRevisionId ?? null,
+          prescriptionId: plan?.prescriptionId ?? null,
+          weekObjectiveIds,
+          responsibilityIds,
           sets, reps: projectedBlock?.target ?? (repetitionTarget ? "Calibration required" : "unknown"),
           tempo: projectedBlock?.tempo ?? null,
           restSeconds: rest?.kind === "exact" ? rest.value : null,
@@ -971,6 +1008,7 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
   readonly weekPlan: WeekPlan; readonly sessions: readonly SessionExecution[];
   readonly projection: OwnerProgramProjection;
   readonly responsibilityPolicy: ProductGetStrongerDevelopWeeklyPolicyResult;
+  readonly calibrationEvidence?: ControlledOwnerProductionPipelineInput["calibrationEvidence"];
   readonly gate13: ReturnType<typeof validatePostPrescriptionWeek> }):
   ReturnType<typeof evaluateOwnerProgramSemanticCompleteness> {
   const policyValidationReasons =
@@ -1107,7 +1145,8 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       JSON.stringify(session.plannerInput.satisfiedPrerequisiteIds) === JSON.stringify(ownerSatisfiedPrerequisiteIds({
         profile: input.profile, sourceProductRevisionId: input.command.sourceProductRevisionId,
         engineVersion: input.command.engineVersion })) &&
-      JSON.stringify(session.plannerInput.history) === JSON.stringify(EMPTY_TRAINING_HISTORY)),
+      JSON.stringify(session.plannerInput.history) === JSON.stringify(
+        input.calibrationEvidence?.trainingHistory ?? EMPTY_TRAINING_HISTORY)),
   });
 }
 
@@ -1144,7 +1183,9 @@ export function runControlledOwnerProductionPipeline(
       additionalResponsibilityFacts: Object.freeze([]),
       loadingEvidence: buildOwnerLoadingEvidence({ profile: input.profile,
         sourceProductRevisionId: input.command.sourceProductRevisionId,
-        engineVersion: input.command.engineVersion }),
+        engineVersion: input.command.engineVersion,
+        confirmedCalibrationResponsibilityIds: input.calibrationEvidence?.confirmedResponsibilityIds,
+        calibrationEvidenceRevisionIds: input.calibrationEvidence?.sourceRecordRevisionIds }),
     });
     if (responsibilityPolicy.status !== "resolved") {
       throw new Error(`OWNER_PRODUCT_WEEKLY_POLICY_BLOCKED:${responsibilityPolicy.reasonCodes.join(",")}`);
@@ -1180,8 +1221,9 @@ export function runControlledOwnerProductionPipeline(
       orderedSecondaryGoals: Object.freeze([]), programmingContextModes: Object.freeze([]),
       phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
       assessment, painAndInjury: buildControlledOwnerPainAndInjuryState(input.profile), trainingSafety,
-      history: EMPTY_TRAINING_HISTORY,
-      trainingResponseHistory: EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
+      history: input.calibrationEvidence?.trainingHistory ?? EMPTY_TRAINING_HISTORY,
+      trainingResponseHistory: input.calibrationEvidence?.trainingHistory.trainingResponseHistory ??
+        EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
       explicitWeeklyPriorities: priorities, externalLoadObservations: Object.freeze([]),
       continuityEvidence: Object.freeze({ priorPlanRevisionId: null, productiveRelationships: Object.freeze([]),
         completedOpportunityIds: Object.freeze([]), missedOpportunityIds: Object.freeze([]),
@@ -1246,13 +1288,14 @@ export function runControlledOwnerProductionPipeline(
       evaluationTime: input.command.evaluationTime, basedOnRevisionId: null,
       provenance: ["controlled-owner-delivery:planned-truth-only"] });
     stages.push(artifact("phase_snapshot", "buildProductionPhaseProgramSnapshot", phase));
-    let projection = displayProjection(input, intent, sessions, unresolvedFacts);
+    let projection = displayProjection(input, intent, sessions, unresolvedFacts, responsibilityPolicy);
     const completeness = semanticCompleteness({ profile: input.profile, command: input.command,
       source, intent, weekPlan, sessions,
-      projection, responsibilityPolicy, gate13 });
+      projection, responsibilityPolicy, gate13,
+      ...(input.calibrationEvidence ? { calibrationEvidence: input.calibrationEvidence } : {}) });
     const finalUnresolvedFacts = uniqueSorted([...unresolvedFacts, ...completeness.reasonCodes]);
     if (finalUnresolvedFacts.length !== unresolvedFacts.length) {
-      projection = displayProjection(input, intent, sessions, finalUnresolvedFacts);
+      projection = displayProjection(input, intent, sessions, finalUnresolvedFacts, responsibilityPolicy);
     }
     const readiness = Object.freeze({ approvalAvailable: finalUnresolvedFacts.length === 0,
       unresolvedFacts: Object.freeze(finalUnresolvedFacts), semanticCompleteness: completeness,

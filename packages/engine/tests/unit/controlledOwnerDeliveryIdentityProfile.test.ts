@@ -162,7 +162,7 @@ describe("controlled owner identity and profile foundation", () => {
 
   it("locks the isolated enrollment/profile migration and contains no email column", () => {
     const migrations = loadControlledOwnerDeliveryMigrations();
-    expect(migrations).toHaveLength(2);
+    expect(migrations).toHaveLength(3);
     expect(migrations[0]?.checksum).toBe(
       "40479d0a27dbe0c706608b15b9d4d7624fc0daba609cc4fdd5f4adf9ab8d953a",
     );
@@ -174,5 +174,11 @@ describe("controlled owner identity and profile foundation", () => {
     );
     expect(migrations[1]?.sql).toContain("owner_v2_program_envelopes");
     expect(migrations[1]?.sql).not.toMatch(/email/i);
+    expect(migrations[2]?.checksum).toBe(
+      "6484ba4cbcf7a590c2d6753cfae29cfe42daf2dd0229a759b167c0e88378ba6e",
+    );
+    expect(migrations[2]?.dependency).toBe(migrations[1]?.migrationId);
+    expect(migrations[2]?.sql).toContain("owner_v2_calibration_cycle_revisions");
+    expect(migrations[2]?.sql).not.toMatch(/email/i);
   });
 });

@@ -58,7 +58,7 @@
 .section h2 { margin: 0 0 16px; color: var(--owner-heading, inherit); font-size: 18px; letter-spacing: 0; }
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .field { display: grid; gap: 7px; min-width: 0; }
-.field label, .legend { color: var(--owner-text, inherit); font-size: 14px; font-weight: 700; }
+.field label, .field > span, .legend { color: var(--owner-text, inherit); font-size: 14px; font-weight: 700; }
 .field input, .field select { width: 100%; min-height: 44px; padding: 9px 11px;
   border: 1px solid var(--owner-input-border, #aeb3b9); border-radius: 4px;
   background: var(--owner-input-surface, #fff); color: var(--owner-input-text, #171717); font: inherit; }
@@ -85,11 +85,20 @@
   border-radius: 6px; padding: 16px; }
 .shell:not(.previewShell) fieldset .legend { padding: 0 6px; color: var(--owner-heading); }
 .shell:not(.previewShell) .section > .check { margin-top: 16px; }
-.shell:not(.previewShell) :is(.field input, .field select, .check input, .button, .link):focus-visible {
+.shell:not(.previewShell) :is(.field input, .field select, .field textarea, .check input, .button, .link):focus-visible {
   outline: 2px solid var(--owner-accent);
   outline-offset: 3px;
   box-shadow: var(--focus-ring);
 }
+.field textarea { width: 100%; min-height: 112px; resize: vertical; padding: 10px 11px;
+  border: 1px solid var(--ui-input-border, #73777d); border-radius: 4px;
+  background: var(--ui-input-surface, #fff); color: var(--owner-input-text, #171717); font: inherit; }
+.field textarea:disabled { opacity: 1; color: var(--owner-input-text, #171717);
+  -webkit-text-fill-color: var(--owner-input-text, #171717); cursor: not-allowed; }
+.fieldWide { grid-column: 1 / -1; }
+.calibrationSet { min-width: 0; padding: 14px 0; border-top: 1px solid var(--owner-border, #e1e3e6); }
+.calibrationSet:first-of-type { border-top: 0; }
+.calibrationSet h4 { margin: 0 0 12px; color: var(--owner-heading, inherit); font-size: 15px; letter-spacing: 0; }
 .reviewHeading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
 .reviewHeading h2, .reviewHeading p { margin: 0; }
 .reviewQuestions { display: grid; gap: 14px; margin: 18px 0; }
@@ -344,6 +353,7 @@
   .shell { padding-inline: 16px; }
   .header { display: grid; }
   .grid, .choices { grid-template-columns: 1fr; }
+  .fieldWide { grid-column: auto; }
   .fact, .exercise { grid-template-columns: 1fr; gap: 5px; }
   .button { width: 100%; }
   .reviewHeading, .ceilingValue { display: grid; }

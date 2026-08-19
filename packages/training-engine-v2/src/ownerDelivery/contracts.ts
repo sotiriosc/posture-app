@@ -1,6 +1,7 @@
 import type { EquipmentCapabilityKey, MachineId } from "../domain/equipment";
 import type { ExercisePrerequisiteType } from "../domain/exercise";
 import type { OperationalDurationComponent } from "../prescription/compiler/contracts";
+import type { OwnerCalibrationPlan } from "./calibrationLifecycle";
 import { deterministicToken, explicitIsoTime, sameSemanticValue, stableId, uniqueSorted } from
   "../prescription/compiler/utilities";
 
@@ -38,6 +39,9 @@ export const OWNER_DELIVERY_CONTRACTS = Object.freeze({
   persistence: contract("CONTROLLED_OWNER_DELIVERY_PERSISTENCE"),
   observability: contract("CONTROLLED_OWNER_DELIVERY_OBSERVABILITY"),
   runtime: contract("CONTROLLED_OWNER_DELIVERY_RUNTIME"),
+  calibrationPlan: contract("CONTROLLED_OWNER_INITIAL_CALIBRATION_PLAN"),
+  calibrationCycle: contract("CONTROLLED_OWNER_INITIAL_CALIBRATION_CYCLE"),
+  calibrationEvidence: contract("CONTROLLED_OWNER_INITIAL_CALIBRATION_EVIDENCE"),
 });
 
 export type OwnerDeliveryMode = "off" | "preview" | "apply";
@@ -45,6 +49,7 @@ export type OwnerEnrollmentState = "active" | "suspended" | "revoked";
 export type OwnerEnrollmentPermission = "preview_only" | "apply_allowed";
 export type OwnerProfileReviewState = "requires_confirmation" | "confirmed";
 export type OwnerTrainingSafetyState = "clear" | "review_required" | "blocked";
+export type OwnerProgramClassification = "ordinary_program" | "initial_calibration";
 
 export const OWNER_AVAILABLE_TRAINING_DAYS = Object.freeze([2, 3, 4, 5, 6] as const);
 export type OwnerAvailableTrainingDays = (typeof OWNER_AVAILABLE_TRAINING_DAYS)[number];
@@ -257,6 +262,12 @@ export interface OwnerProfileReadiness {
 
 export type OwnerPreviewReadinessStatus =
   | "ready_for_approval"
+  | "ready_for_initial_calibration_approval"
+  | "blocked_pending_preflight_facts"
+  | "blocked_pending_safety_review"
+  | "blocked_pending_duration"
+  | "calibration_evidence_incomplete"
+  | "calibration_complete_pending_review"
   | "preview_only_unknown_duration"
   | "blocked";
 
@@ -273,6 +284,7 @@ export interface OwnerGenerationCommand {
   readonly policyVersions: readonly string[];
   readonly evaluationTime: string;
   readonly requestedAt: string;
+  readonly calibrationEvidenceRevisionIds?: readonly string[];
 }
 
 export interface OwnerPipelineStageArtifact {
@@ -303,6 +315,9 @@ export interface OwnerProgramExerciseProjection {
   readonly realizationId: string | null;
   readonly sourceEventId: string | null;
   readonly prescriptionRevisionId: string | null;
+  readonly prescriptionId?: string | null;
+  readonly weekObjectiveIds?: readonly string[];
+  readonly responsibilityIds?: readonly string[];
   readonly sets: number | null;
   readonly reps: string;
   readonly tempo: string | null;
@@ -400,6 +415,9 @@ export interface ControlledOwnerV2ProgramPreview {
   readonly productProjection: OwnerProgramProjection;
   readonly unresolvedFacts: readonly string[];
   readonly readinessStatus: OwnerPreviewReadinessStatus;
+  /** Absent only on immutable previews created before calibration classification existed. */
+  readonly programClassification?: OwnerProgramClassification;
+  readonly calibrationPlan?: OwnerCalibrationPlan | null;
   readonly safetyState: OwnerTrainingSafetyState;
   readonly createdAt: string;
   readonly counterfactual: true;
@@ -419,6 +437,8 @@ export interface ControlledOwnerV2ProgramApproval {
   readonly engineVersion: string;
   readonly policyVersions: readonly string[];
   readonly explicitConfirmation: true;
+  /** Absent only on immutable approvals created before classification existed. */
+  readonly programClassification?: OwnerProgramClassification;
   readonly approvedAt: string;
   readonly approvalFingerprint: string;
 }
@@ -445,6 +465,9 @@ export interface OwnerV2ProductProgramEnvelope {
   readonly prescriptionRevisionIds: readonly string[];
   readonly weekObjectiveIds: readonly string[];
   readonly practiceModeReferences: readonly ["full", "lighter", "recovery"];
+  /** Absent only on immutable envelopes created before classification existed. */
+  readonly programClassification?: OwnerProgramClassification;
+  readonly calibrationPlan?: OwnerCalibrationPlan | null;
   readonly createdAt: string;
   readonly envelopeFingerprint: string;
 }
@@ -490,7 +513,9 @@ export function buildOwnerGenerationCommand(input: Omit<OwnerGenerationCommand,
   if (!input.userId.trim() || !explicitIsoTime(input.evaluationTime) || !explicitIsoTime(input.requestedAt)) {
     throw new Error("OWNER_GENERATION_EXPLICIT_IDENTITY_AND_TIME_REQUIRED");
   }
-  const semantic = Object.freeze({ ...input, policyVersions: Object.freeze(uniqueSorted(input.policyVersions)) });
+  const semantic = Object.freeze({ ...input, policyVersions: Object.freeze(uniqueSorted(input.policyVersions)),
+    ...(input.calibrationEvidenceRevisionIds ? { calibrationEvidenceRevisionIds:
+      Object.freeze(uniqueSorted(input.calibrationEvidenceRevisionIds)) } : {}) });
   return Object.freeze({ contract: OWNER_DELIVERY_CONTRACTS.generationCommand,
     commandId: stableId("owner-v2-generation-command", semantic), ...semantic });
 }

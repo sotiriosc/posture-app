@@ -12,8 +12,10 @@ export async function POST(request: Request) {
   if (!authorization.allowed) return authorization.response;
   const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   const idempotencyKey = request.headers.get("idempotency-key")?.trim() ?? "";
+  const approvalClassification = body?.approvalClassification;
   if (!body || rejectsIdentityFields(body) || typeof body.previewId !== "string" ||
-      typeof body.previewFingerprint !== "string" || body.explicitConfirmation !== true || !idempotencyKey) {
+      typeof body.previewFingerprint !== "string" || body.explicitConfirmation !== true ||
+      !["ordinary_program", "initial_calibration"].includes(String(approvalClassification)) || !idempotencyKey) {
     return ownerJson({ ok: false, error: { code: "INVALID_APPROVAL_REQUEST",
       message: "Approval request is invalid." } }, 400);
   }
@@ -21,6 +23,7 @@ export async function POST(request: Request) {
     return await withControlledOwnerRepositories(async ({ enrollmentProfiles, delivery }) => {
       const result = await approveControlledOwnerGetStrongerPreview({ previewId: body.previewId as string,
         previewFingerprint: body.previewFingerprint as string, explicitConfirmation: true, csrfVerified: true,
+        approvalClassification: approvalClassification as "ordinary_program" | "initial_calibration",
         idempotencyKey, approvedAt: authorization.evaluatedAt, gate: async () => authorization.gate,
         enrollmentProfiles, delivery, loadCurrentContext: async (userId) => {
           const [product, profile] = await Promise.all([loadOwnerProductRuntimeContext(userId),

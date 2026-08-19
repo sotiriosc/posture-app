@@ -1,6 +1,7 @@
 import type { ControlledOwnerActiveProgramPointer, ControlledOwnerDeliveryAuditEvent,
   ControlledOwnerV2ProgramApplication, ControlledOwnerV2ProgramApproval,
   ControlledOwnerV2ProgramPreview, OwnerV2ProductProgramEnvelope } from "@praxis/training-engine-v2";
+import type { OwnerCalibrationCycleRevision } from "@praxis/training-engine-v2";
 import type { OwnerDeliveryRepository, OwnerIdempotencyRecord, OwnerPostgresQueryable,
   OwnerProgramApplicationTransactionResult, OwnerProgramRollbackTransactionResult } from "./contracts";
 
@@ -148,6 +149,56 @@ export function createOwnerDeliveryPostgresRepository(input: {
         [userId, envelopeId, envelopeRevisionId])).rows[0]?.payload ?? null,
     readActivePointer: async (userId) => (await db.query<PayloadRow<ControlledOwnerActiveProgramPointer>>(
       `SELECT payload FROM owner_v2_active_program_pointers WHERE user_id = $1`, [userId])).rows[0]?.payload ?? null,
+    appendCalibrationCycleRevision: async (revision) => {
+      const inserted = await db.query(`INSERT INTO owner_v2_calibration_cycle_revisions
+        (user_id,cycle_id,cycle_revision_id,based_on_revision_id,envelope_id,envelope_revision_id,state,
+         cycle_fingerprint,payload,created_at)
+        SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10
+        WHERE $4::text IS NULL OR EXISTS (
+          SELECT 1 FROM owner_v2_calibration_cycle_revisions prior
+          WHERE prior.user_id=$1 AND prior.cycle_id=$2 AND prior.cycle_revision_id=$4
+            AND NOT EXISTS (SELECT 1 FROM owner_v2_calibration_cycle_revisions newer
+              WHERE newer.user_id=$1 AND newer.cycle_id=$2 AND newer.based_on_revision_id=prior.cycle_revision_id))
+        ON CONFLICT (user_id,cycle_id,cycle_revision_id) DO NOTHING`, [revision.userId, revision.cycleId,
+        revision.cycleRevisionId, revision.basedOnRevisionId, revision.envelopeId, revision.envelopeRevisionId,
+        revision.state, revision.cycleFingerprint, JSON.stringify(revision), revision.createdAt]);
+      if ((inserted.rowCount ?? 0) === 1) return "appended";
+      const prior = await db.query<PayloadRow<OwnerCalibrationCycleRevision>>(
+        `SELECT payload FROM owner_v2_calibration_cycle_revisions
+         WHERE user_id=$1 AND cycle_id=$2 AND cycle_revision_id=$3`,
+      [revision.userId, revision.cycleId, revision.cycleRevisionId]);
+      return prior.rows[0]?.payload.cycleFingerprint === revision.cycleFingerprint ? "exact_retry" : "conflict";
+    },
+    readCalibrationCycleCurrent: async (userId, cycleId) =>
+      (await db.query<PayloadRow<OwnerCalibrationCycleRevision>>(
+        `SELECT current.payload FROM owner_v2_calibration_cycle_revisions current
+         WHERE current.user_id=$1 AND current.cycle_id=$2 AND NOT EXISTS (
+           SELECT 1 FROM owner_v2_calibration_cycle_revisions newer
+           WHERE newer.user_id=current.user_id AND newer.cycle_id=current.cycle_id
+             AND newer.based_on_revision_id=current.cycle_revision_id)
+         LIMIT 1`, [userId, cycleId])).rows[0]?.payload ?? null,
+    readCalibrationCycleForEnvelope: async (userId, envelopeRevisionId) =>
+      (await db.query<PayloadRow<OwnerCalibrationCycleRevision>>(
+        `SELECT current.payload FROM owner_v2_calibration_cycle_revisions current
+         WHERE current.user_id=$1 AND current.envelope_revision_id=$2 AND NOT EXISTS (
+           SELECT 1 FROM owner_v2_calibration_cycle_revisions newer
+           WHERE newer.user_id=current.user_id AND newer.cycle_id=current.cycle_id
+             AND newer.based_on_revision_id=current.cycle_revision_id)
+         LIMIT 1`,
+      [userId, envelopeRevisionId])).rows[0]?.payload ?? null,
+    readLatestCalibrationCycle: async (userId) =>
+      (await db.query<PayloadRow<OwnerCalibrationCycleRevision>>(
+        `SELECT current.payload FROM owner_v2_calibration_cycle_revisions current
+         WHERE current.user_id=$1 AND NOT EXISTS (
+           SELECT 1 FROM owner_v2_calibration_cycle_revisions newer
+           WHERE newer.user_id=current.user_id AND newer.cycle_id=current.cycle_id
+             AND newer.based_on_revision_id=current.cycle_revision_id)
+         ORDER BY current.created_at DESC, current.cycle_revision_id DESC LIMIT 1`,
+      [userId])).rows[0]?.payload ?? null,
+    listCalibrationCycleRevisions: async (userId, cycleId) => Object.freeze((await db.query<
+      PayloadRow<OwnerCalibrationCycleRevision>>(
+        `SELECT payload FROM owner_v2_calibration_cycle_revisions WHERE user_id=$1 AND cycle_id=$2
+         ORDER BY created_at ASC, cycle_revision_id ASC`, [userId, cycleId])).rows.map((row) => row.payload)),
     readIdempotency: async (userId, action, idempotencyKey) => {
       const result = await db.query<IdempotencyRow>(`SELECT user_id, action, idempotency_key,
         request_fingerprint, response_payload, created_at, completed_at FROM owner_v2_idempotency
@@ -229,6 +280,14 @@ export function createOwnerDeliveryPostgresRepository(input: {
           transaction.application.previewId, transaction.application.envelopeId,
           transaction.application.applicationFingerprint, JSON.stringify(transaction.application),
           transaction.application.appliedAt]);
+        if (transaction.calibrationCycleRevision) {
+          const cycle = transaction.calibrationCycleRevision;
+          await db.query(`INSERT INTO owner_v2_calibration_cycle_revisions
+            (user_id,cycle_id,cycle_revision_id,based_on_revision_id,envelope_id,envelope_revision_id,state,
+             cycle_fingerprint,payload,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10)`,
+          [cycle.userId, cycle.cycleId, cycle.cycleRevisionId, cycle.basedOnRevisionId, cycle.envelopeId,
+            cycle.envelopeRevisionId, cycle.state, cycle.cycleFingerprint, JSON.stringify(cycle), cycle.createdAt]);
+        }
         const pointerWrite = pointer.rows[0]
           ? await db.query(`UPDATE owner_v2_active_program_pointers SET mode=$2, active_application_id=$3,
               legacy_fallback_reference=$4, revision=$5, pointer_fingerprint=$6, payload=$7::jsonb, updated_at=$8

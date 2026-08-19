@@ -13,6 +13,7 @@ import {
   buildVersionedProductionOutcomeSourceSnapshot,
   createOutcomeSourceRecordRevision,
   createProductionOutcomeSourceAdapterRegistry,
+  deriveCanonicalOutcomeSourceChecksum,
   deriveOutcomeSourceRecordRevisionId,
   normalizeOutcomeSourceEnvelope,
   resolveProductionOutcomeSourceAdapter,
@@ -56,6 +57,57 @@ describe("production outcome source contracts", () => {
       .map((fact) => fact.blockId)).size).toBe(2);
     expect(result.record?.structuredFacts.filter((fact) => fact.factType.startsWith("actual_") &&
       !fact.independentlyObserved)).toEqual([]);
+  });
+
+  it("calibration adapter preserves explicit load units, unloaded work, and RPE versus RIR", () => {
+    const baseline = buildProductionPerformanceEnvelope();
+    const payload = Object.freeze({
+      assignmentId: "assignment-calibration",
+      originalExerciseId: "exercise-calibration",
+      realizedExerciseId: "exercise-calibration",
+      blocks: Object.freeze([
+        Object.freeze({ plannedBlockId: "planned-block-calibration", performedBlockId: "set-kg",
+          completionState: "completed" as const, actualsIndependentlyObserved: true,
+          actualRepsBySet: Object.freeze([8]), actualSets: 1, actualLoad: 20, loadUnit: "kg",
+          actualEffort: 3, effortScale: "RIR" as const, techniqueResponse: "controlled" as const,
+          painResponse: "none" as const, actualOrder: 1 }),
+        Object.freeze({ plannedBlockId: "planned-block-calibration", performedBlockId: "set-lb",
+          completionState: "completed" as const, actualsIndependentlyObserved: true,
+          actualRepsBySet: Object.freeze([8]), actualSets: 1, actualLoad: 45, loadUnit: "lb",
+          actualEffort: 7, effortScale: "RPE" as const, techniqueResponse: "controlled" as const,
+          painResponse: "none" as const, actualOrder: 2 }),
+        Object.freeze({ plannedBlockId: "planned-block-calibration", performedBlockId: "set-unloaded",
+          completionState: "completed" as const, actualsIndependentlyObserved: true,
+          actualRepsBySet: Object.freeze([10]), actualSets: 1, loadNotApplicable: true,
+          actualEffort: 2, effortScale: "RIR" as const, techniqueResponse: "controlled" as const,
+          painResponse: "none" as const, actualOrder: 3 }),
+      ]),
+      substitutionLineage: Object.freeze(["exercise-calibration"]),
+      explicitUnknowns: Object.freeze<string[]>([]),
+      reportingAuthority: "athlete_explicit_report" as const,
+      calibrationContext: Object.freeze({ cycleId: "cycle-1", obligationId: "obligation-1",
+        programFingerprint: "program-fingerprint-1", profileRevisionId: "profile-revision-1" }),
+    });
+    const result = normalizeOutcomeSourceEnvelope({ envelope: { ...baseline,
+      payloadChecksum: deriveCanonicalOutcomeSourceChecksum(payload), structuredPayload: payload },
+    authorization: buildProductionAuthorization(), adapterRegistry: PRODUCTION_SOURCE_ADAPTER_REGISTRY });
+
+    expect(result.reasonCodes).toEqual([]);
+    expect(result.record?.sourceAuthority).toBe("athlete_explicit_report");
+    expect(result.record?.structuredFacts.filter((fact) => fact.factType === "actual_load")
+      .map((fact) => [fact.value, fact.unit])).toEqual([[20, "kg"], [45, "lb"]]);
+    expect(result.record?.structuredFacts.filter((fact) => fact.factType === "actual_load_not_applicable")
+      .map((fact) => fact.value)).toEqual([true]);
+    expect(result.record?.structuredFacts.filter((fact) => fact.factType === "actual_effort")
+      .map((fact) => [fact.value, fact.unit])).toEqual([[3, "rir"], [7, "rpe"], [2, "rir"]]);
+    expect(result.record?.targetIds).toEqual(expect.arrayContaining(["cycle-1", "obligation-1"]));
+
+    const invalidPayload = { ...payload, blocks: [{ ...payload.blocks[0], actualEffort: 11 },
+      { ...payload.blocks[1], effortScale: undefined }] };
+    const invalid = normalizeOutcomeSourceEnvelope({ envelope: { ...baseline,
+      payloadChecksum: deriveCanonicalOutcomeSourceChecksum(invalidPayload), structuredPayload: invalidPayload },
+    authorization: buildProductionAuthorization(), adapterRegistry: PRODUCTION_SOURCE_ADAPTER_REGISTRY });
+    expect(invalid.reasonCodes).toContain("PERFORMANCE_EFFORT_SCALE_OR_RANGE_INVALID");
   });
 
   it("rejects free text, checksum drift, and unobserved actual values", () => {

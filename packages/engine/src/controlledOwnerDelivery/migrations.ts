@@ -25,6 +25,13 @@ export const CONTROLLED_OWNER_DELIVERY_MIGRATION_MANIFEST = Object.freeze({
       transactional: true,
       dependency: "001_owner_v2_enrollment_profile",
     }),
+    Object.freeze({
+      migrationId: "003_owner_v2_calibration_cycle_revisions",
+      filename: "003_owner_v2_calibration_cycle_revisions.sql",
+      checksum: "6484ba4cbcf7a590c2d6753cfae29cfe42daf2dd0229a759b167c0e88378ba6e",
+      transactional: true,
+      dependency: "002_owner_v2_program_delivery",
+    }),
   ]),
 });
 

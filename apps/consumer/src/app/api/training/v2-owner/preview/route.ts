@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   if (rejectsIdentityFields(body) || !idempotencyKey) return ownerJson({ ok: false,
     error: { code: "INVALID_PREVIEW_REQUEST", message: "Preview request is invalid." } }, 400);
   try {
-    return await withControlledOwnerRepositories(async ({ enrollmentProfiles, delivery }) => {
+    return await withControlledOwnerRepositories(async ({ enrollmentProfiles, delivery, outcomeSources }) => {
       let product: Awaited<ReturnType<typeof loadOwnerProductRuntimeContext>> | null = null;
       const loadProduct = async () => product ??= await loadOwnerProductRuntimeContext(authorization.userId);
       const generated = await generateControlledOwnerGetStrongerPreview({
@@ -33,6 +33,12 @@ export async function POST(request: Request) {
             sourceProductRevisionId: current.sourceProductRevisionId,
             activeLegacyProgramRevisionId: current.activeLegacyProgramRevisionId,
             assessmentReport: current.snapshot.assessment ?? null };
+        },
+        loadCalibrationEvidence: async (userId, evaluationTime) => {
+          const cycle = await delivery.readLatestCalibrationCycle(userId);
+          if (!cycle) return null;
+          const records = await outcomeSources.readActiveSourceRecords(userId, evaluationTime);
+          return { cycle, records };
         },
       });
       if (!generated.preview) {

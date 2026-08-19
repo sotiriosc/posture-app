@@ -33,7 +33,11 @@ export interface ProductionPerformanceBlockPayload {
   readonly actualBreathCycles?: number;
   readonly actualLoad?: number;
   readonly loadUnit?: string;
+  readonly loadNotApplicable?: boolean;
   readonly actualEffort?: number;
+  readonly effortScale?: "RPE" | "RIR";
+  readonly techniqueResponse?: "controlled" | "limited" | "stopped";
+  readonly painResponse?: "none" | "discomfort" | "pain" | "session_stopped";
   readonly actualDurationSeconds?: number;
   readonly actualRestSeconds?: number;
   readonly actualTempo?: string;
@@ -51,6 +55,13 @@ export interface ProductionPerformancePayload extends StructuredPayload {
   readonly blocks: readonly ProductionPerformanceBlockPayload[];
   readonly substitutionLineage: readonly string[];
   readonly explicitUnknowns: readonly string[];
+  readonly reportingAuthority?: "athlete_explicit_report" | "independently_observed_performance";
+  readonly calibrationContext?: {
+    readonly cycleId: string;
+    readonly obligationId: string;
+    readonly programFingerprint: string;
+    readonly profileRevisionId: string;
+  };
 }
 
 export interface ProductionSessionCompletionPayload extends StructuredPayload {
@@ -58,6 +69,10 @@ export interface ProductionSessionCompletionPayload extends StructuredPayload {
   readonly state: typeof ADHERENCE_STATES[number];
   readonly targetIds: readonly string[];
   readonly explicitUnknowns: readonly string[];
+  readonly difficulty?: number;
+  readonly energy?: "low" | "moderate" | "high";
+  readonly immediatePainResponse?: "none" | "discomfort" | "pain" | "session_stopped";
+  readonly reportingAuthority?: "authenticated_product_event" | "athlete_explicit_report";
 }
 
 export interface ProductionSubstitutionPayload extends StructuredPayload {
@@ -89,7 +104,7 @@ export interface ProductionRecoveryPayload extends StructuredPayload {
   readonly scope: "localized" | "systemic" | "session" | "exercise" | "unknown";
   readonly readiness: typeof RECOVERY_READINESS_STATES[number];
   readonly sleepReport: "restorative" | "disrupted" | "insufficient" | "unknown";
-  readonly appliesThroughTime: string;
+  readonly appliesThroughTime: string | null;
   readonly explicitUnknowns: readonly string[];
 }
 
@@ -181,6 +196,8 @@ function adapter(input: Omit<ProductionOutcomeSourceAdapter, "normalizedSchemaId
 
 function validatePerformance(payload: StructuredPayload): readonly string[] {
   const reasons: string[] = [];
+  const explicitEffortScaleRequired = payload.reportingAuthority === "athlete_explicit_report" ||
+    payload.calibrationContext !== undefined;
   requiredString(payload, "assignmentId", reasons);
   requiredString(payload, "originalExerciseId", reasons);
   requiredString(payload, "realizedExerciseId", reasons);
@@ -199,13 +216,31 @@ function validatePerformance(payload: StructuredPayload): readonly string[] {
     }
     const actualKeys = ["actualRepsBySet", "actualSets", "actualRounds", "actualTrips", "actualSteps",
       "actualBreathCycles", "actualLoad", "actualEffort", "actualDurationSeconds", "actualRestSeconds",
-      "actualTempo", "actualOrder"];
+      "actualTempo", "actualOrder", "loadNotApplicable", "techniqueResponse", "painResponse"];
     if (actualKeys.some((key) => block[key] !== undefined) && block.actualsIndependentlyObserved !== true) {
       reasons.push("PLANNED_VALUE_CANNOT_BECOME_ACTUAL");
     }
     if (block.actualRepsBySet !== undefined &&
         (!Array.isArray(block.actualRepsBySet) || !block.actualRepsBySet.every(finite))) {
       reasons.push("PERFORMANCE_ACTUAL_REPS_INVALID");
+    }
+    if (block.actualLoad !== undefined && block.loadNotApplicable === true) {
+      reasons.push("PERFORMANCE_LOAD_CONTRADICTORY");
+    }
+    if (block.actualEffort !== undefined &&
+        (!finite(block.actualEffort) ||
+          explicitEffortScaleRequired && !['RPE', 'RIR'].includes(String(block.effortScale)) ||
+          block.effortScale !== undefined && !['RPE', 'RIR'].includes(String(block.effortScale)) ||
+          block.actualEffort < 0 || block.actualEffort > 10)) {
+      reasons.push("PERFORMANCE_EFFORT_SCALE_OR_RANGE_INVALID");
+    }
+    if (block.techniqueResponse !== undefined &&
+        !["controlled", "limited", "stopped"].includes(String(block.techniqueResponse))) {
+      reasons.push("PERFORMANCE_TECHNIQUE_RESPONSE_INVALID");
+    }
+    if (block.painResponse !== undefined &&
+        !["none", "discomfort", "pain", "session_stopped"].includes(String(block.painResponse))) {
+      reasons.push("PERFORMANCE_PAIN_RESPONSE_INVALID");
     }
   }
   if (!strings(payload.substitutionLineage)) reasons.push("PERFORMANCE_SUBSTITUTION_LINEAGE_REQUIRED");
@@ -229,7 +264,11 @@ function performanceFacts(payload: ProductionPerformancePayload): readonly Outco
       ["actual_reps", block.actualRepsBySet, "repetitions"], ["actual_sets", block.actualSets, "sets"],
       ["actual_rounds", block.actualRounds, "rounds"], ["actual_trips", block.actualTrips, "trips"],
       ["actual_steps", block.actualSteps, "steps"], ["actual_breath_cycles", block.actualBreathCycles, "breaths"],
-      ["actual_load", block.actualLoad, block.loadUnit ?? null], ["actual_effort", block.actualEffort, "rpe"],
+      ["actual_load", block.actualLoad, block.loadUnit ?? null],
+      ["actual_load_not_applicable", block.loadNotApplicable === true ? true : undefined, null],
+      ["actual_effort", block.actualEffort, block.effortScale?.toLowerCase() ?? "rpe"],
+      ["technique_response", block.techniqueResponse, null],
+      ["immediate_pain_response", block.painResponse, null],
       ["actual_duration", block.actualDurationSeconds, "seconds"], ["actual_rest", block.actualRestSeconds, "seconds"],
       ["actual_tempo", block.actualTempo, null], ["actual_order", block.actualOrder, "ordinal"],
     ];
@@ -246,13 +285,18 @@ function performanceFacts(payload: ProductionPerformancePayload): readonly Outco
 function createPerformanceAdapter(sourceCategory: "exercise_performance" | "block_performance") {
   return adapter({ adapterId: `production-${sourceCategory.replace(/_/g, "-")}`,
     adapterVersion: "1.0.0", sourceCategory, payloadSchemaId: "production-performance-payload",
-    payloadSchemaVersion: "1.0.0", sourceAuthorityEligible: Object.freeze(["independently_observed_performance"]),
+    payloadSchemaVersion: "1.0.0", sourceAuthorityEligible: Object.freeze([
+      "independently_observed_performance", "athlete_explicit_report"]),
     requiredLineage: Object.freeze(["sourceExposureEventId", "sessionId", "prescriptionId",
       "prescriptionRevisionId", "sequencePlanId", "sequenceRevisionId"]), validatePayload: validatePerformance,
     normalizePayload: (raw) => {
       const payload = raw as ProductionPerformancePayload;
-      return output({ owner: "exercise_performance", authority: "independently_observed_performance",
-        targetIds: [payload.assignmentId, payload.originalExerciseId, payload.realizedExerciseId],
+      const authority = payload.reportingAuthority ?? "independently_observed_performance";
+      return output({ owner: "exercise_performance", authority,
+        targetIds: [payload.assignmentId, payload.originalExerciseId, payload.realizedExerciseId,
+          ...(payload.calibrationContext ? [payload.calibrationContext.cycleId,
+            payload.calibrationContext.obligationId, payload.calibrationContext.programFingerprint,
+            payload.calibrationContext.profileRevisionId] : [])],
         facts: performanceFacts(payload), unknowns: payload.explicitUnknowns,
         provenance: "normalizer:production-performance-v1" });
     } });
@@ -264,6 +308,15 @@ function validateSession(payload: StructuredPayload): readonly string[] {
   targetIds(payload, reasons);
   if (!ADHERENCE_STATES.includes(payload.state as never)) reasons.push("ADHERENCE_STATE_INVALID");
   if (!Array.isArray(payload.explicitUnknowns)) reasons.push("ADHERENCE_EXPLICIT_UNKNOWNS_REQUIRED");
+  if (payload.difficulty !== undefined && (!finite(payload.difficulty) || payload.difficulty < 1 ||
+      payload.difficulty > 10)) reasons.push("SESSION_DIFFICULTY_INVALID");
+  if (payload.energy !== undefined && !["low", "moderate", "high"].includes(String(payload.energy))) {
+    reasons.push("SESSION_ENERGY_INVALID");
+  }
+  if (payload.immediatePainResponse !== undefined &&
+      !["none", "discomfort", "pain", "session_stopped"].includes(String(payload.immediatePainResponse))) {
+    reasons.push("SESSION_PAIN_RESPONSE_INVALID");
+  }
   return uniqueSorted(reasons);
 }
 
@@ -274,8 +327,15 @@ function sessionAdapter(sourceCategory: "session_completion" | "adherence") {
     requiredLineage: Object.freeze(["sessionId"]), validatePayload: validateSession,
     normalizePayload: (raw) => {
       const payload = raw as ProductionSessionCompletionPayload;
-      return output({ owner: sourceCategory, authority: "authenticated_product_event",
-        targetIds: payload.targetIds, facts: [fact("adherence_state", payload.state)],
+      const authority = payload.reportingAuthority ?? "authenticated_product_event";
+      const metricFacts: OutcomeSourceStructuredFact[] = [fact("adherence_state", payload.state)];
+      if (payload.difficulty !== undefined) metricFacts.push(fact("session_difficulty", payload.difficulty));
+      if (payload.energy !== undefined) metricFacts.push(fact("energy_readiness", payload.energy));
+      if (payload.immediatePainResponse !== undefined) {
+        metricFacts.push(fact("immediate_pain_response", payload.immediatePainResponse));
+      }
+      return output({ owner: sourceCategory, authority,
+        targetIds: payload.targetIds, facts: metricFacts,
         unknowns: payload.explicitUnknowns, provenance: `normalizer:production-${sourceCategory}-v1` });
     } });
 }
@@ -340,7 +400,8 @@ const recoveryAdapter = adapter({ adapterId: "production-recovery-readiness", ad
   requiredLineage: Object.freeze([]), validatePayload: (payload) => {
     const reasons: string[] = []; targetIds(payload, reasons);
     if (!RECOVERY_READINESS_STATES.includes(payload.readiness as never)) reasons.push("RECOVERY_READINESS_STATE_INVALID");
-    if (!explicitIsoTime(String(payload.appliesThroughTime ?? ""))) reasons.push("RECOVERY_APPLIES_THROUGH_TIME_INVALID");
+    if (payload.appliesThroughTime !== null &&
+        !explicitIsoTime(String(payload.appliesThroughTime ?? ""))) reasons.push("RECOVERY_APPLIES_THROUGH_TIME_INVALID");
     if (!Array.isArray(payload.explicitUnknowns)) reasons.push("RECOVERY_EXPLICIT_UNKNOWNS_REQUIRED");
     return uniqueSorted(reasons);
   }, normalizePayload: (raw) => {

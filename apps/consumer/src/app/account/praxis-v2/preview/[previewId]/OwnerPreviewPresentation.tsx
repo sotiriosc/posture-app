@@ -81,6 +81,24 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
 
     <p className={styles.notice}>Your legacy Program is unchanged.</p>
 
+    {preview.programClassification === "initial_calibration" ?
+      <section className={styles.previewSection} aria-labelledby="initial-calibration-heading"
+        data-testid="owner-preview-calibration">
+        <p className={styles.kicker}>Initial calibration program</p>
+        <h2 id="initial-calibration-heading">A conservative evidence-building week</h2>
+        <p>This workload reflects missing reliable performance history. It is intended to record actual sets,
+          repetitions, load, effort, technique, pain response, and recovery for a later reviewed Program.</p>
+        <p>It is not confirmed long-term Advanced volume, and no progression or replacement is automatic.</p>
+        <dl className={styles.doseFacts}>
+          <div className={styles.doseFact}><dt>Sessions</dt><dd>{preview.productProjection.sessions.length}</dd></div>
+          <div className={styles.doseFact}><dt>Evidence obligations</dt>
+            <dd>{preview.calibrationPlan?.obligations.length ?? 0} developmental assignments</dd></div>
+          <div className={styles.doseFact}><dt>Planned duration</dt><dd>{preview.productProjection.sessions
+            .map((session, index) => `Session ${index + 1}: ${durationPresentation(session).planning
+              .replace("Planned duration: ", "")}`).join("; ")}</dd></div>
+        </dl>
+      </section> : null}
+
     <section className={styles.previewSection} aria-labelledby="week-responsibilities-heading">
       <h2 id="week-responsibilities-heading">Week responsibilities</h2>
       <ul className={styles.responsibilityList} data-testid="owner-preview-responsibilities">{objectives.map((objective) =>
@@ -177,6 +195,10 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
             <li className={styles.code} key={version}>{version}</li>)}</ul></dd></div>
           <div className={styles.technicalFact}><dt>Preview fingerprint</dt>
             <dd className={styles.code}>{preview.previewFingerprint}</dd></div>
+          <div className={styles.technicalFact}><dt>Program classification</dt>
+            <dd className={styles.code}>{preview.programClassification ?? "ordinary_program"}</dd></div>
+          {preview.calibrationPlan ? <div className={styles.technicalFact}><dt>Calibration plan fingerprint</dt>
+            <dd className={styles.code}>{preview.calibrationPlan.planFingerprint}</dd></div> : null}
           <div className={styles.technicalFact}><dt>Canonical Week objective IDs</dt><dd><ul>{
             preview.productProjection.weekObjectiveIds.map((id) =>
               <li className={styles.code} key={id}>{id}</li>)}</ul></dd></div>

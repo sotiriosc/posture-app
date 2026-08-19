@@ -35,6 +35,12 @@ const PRACTICE_MODE_LABELS: Readonly<Record<string, string>> = Object.freeze({
 
 const READINESS_LABELS: Readonly<Record<string, string>> = Object.freeze({
   ready_for_approval: "Ready for approval",
+  ready_for_initial_calibration_approval: "Ready for initial calibration approval",
+  blocked_pending_preflight_facts: "Blocked - profile facts required",
+  blocked_pending_safety_review: "Blocked - Safety review required",
+  blocked_pending_duration: "Blocked - session duration required",
+  calibration_evidence_incomplete: "Calibration evidence incomplete",
+  calibration_complete_pending_review: "Calibration complete - review required",
   preview_only_unknown_duration: "Preview only - duration unknown",
   blocked: "Preview needs review",
 });

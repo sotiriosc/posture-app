@@ -247,6 +247,49 @@ describe("owner preview exact page and API reads", () => {
     expect(document.querySelectorAll("[data-testid='owner-preview-session-options']")).toHaveLength(2);
   });
 
+  it("presents calibration-specific readiness, purpose, duration, and unchanged legacy state", async () => {
+    const obligations = PREVIEW.productProjection.sessions.map((session, index) => {
+      const exercise = session.exerciseAssignments[0]!;
+      return { obligationId: `calibration-obligation:${index}`, cycleId: "calibration-cycle:fixture",
+        programFingerprint: PREVIEW.productProjection.projectionFingerprint,
+        profileRevisionId: PREVIEW.profileRevisionId, weekObjectiveIds: [WEEK_OBJECTIVE_IDS[index]!],
+        sessionId: session.sessionId, assignmentId: exercise.assignmentId, exerciseId: exercise.exerciseId,
+        responsibilityIds: [`foundation:fixture-${index}`], prescriptionId: `prescription:${index}`,
+        prescriptionRevisionId: exercise.prescriptionRevisionId!, sourceExposureEventId: exercise.sourceEventId!,
+        doseBlockId: exercise.doseBlocks![1]!.blockId, requiredSetCount: exercise.sets!,
+        requiredObservationFields: ["completed_set_number", "completed_repetitions",
+          "actual_load_or_not_applicable", "effort_scale", "effort_value", "completion_state",
+          "pain_response", "technique_response"] as const,
+        completionState: "required" as const, provenance: [exercise.assignmentId, "developmental_work"],
+        obligationFingerprint: `calibration-obligation-fingerprint:${index}` };
+    });
+    const calibrationPreview: ControlledOwnerV2ProgramPreview = { ...PREVIEW,
+      programClassification: "initial_calibration",
+      readinessStatus: "ready_for_initial_calibration_approval",
+      calibrationPlan: { contract: { contractId: "CONTROLLED_OWNER_INITIAL_CALIBRATION_PLAN",
+        contractVersion: "1.0.0" }, cycleId: "calibration-cycle:fixture",
+        programFingerprint: PREVIEW.productProjection.projectionFingerprint,
+        profileRevisionId: PREVIEW.profileRevisionId,
+        evidencePolicyReference: "CONTROLLED_OWNER_INITIAL_CALIBRATION_EVIDENCE_SUFFICIENCY@1.0.0",
+        obligations, planFingerprint: "calibration-plan-fingerprint:fixture" } };
+    harness.previews.set(key(OWNER_ID, PREVIEW_ID), calibrationPreview);
+    const before = snapshotRows();
+
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const calibration = document.querySelector("[data-testid='owner-preview-calibration']")!;
+    expect(document.querySelector("[aria-label='Preview readiness status']")?.textContent)
+      .toContain("Ready for initial calibration approval");
+    expect(calibration.textContent).toContain("Initial calibration program");
+    expect(calibration.textContent).toContain("missing reliable performance history");
+    expect(calibration.textContent).toContain("later reviewed Program");
+    expect(calibration.textContent).toContain("not confirmed long-term Advanced volume");
+    expect(calibration.textContent).toContain("2 developmental assignments");
+    expect(calibration.textContent).toContain("Session 1: 90 minutes");
+    expect(document.body.textContent).toContain("Your legacy Program is unchanged.");
+    expect(document.body.textContent).toContain("Application is unavailable in preview mode.");
+    expect(snapshotRows()).toBe(before);
+  });
+
   it("renders ordered preparation sections and keeps available time separate from calculated duration", async () => {
     const preparation = { ...assignment(9, "scapular-push-up"), section: "activation" as const,
       role: "activation" as const, preparationCategories: ["activation_control"],

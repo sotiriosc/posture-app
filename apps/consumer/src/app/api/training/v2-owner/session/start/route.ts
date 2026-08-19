@@ -23,10 +23,12 @@ export async function POST(request: Request) {
       if (!active || !active.envelope.productProjection.sessions.some((session) => session.sessionId === body.sessionId)) {
         return ownerJson({ ok: false, error: { code: "NOT_FOUND", message: "Not Found" } }, 404);
       }
+      const calibrationCycle = await delivery.readCalibrationCycleForEnvelope(authorization.userId,
+        active.envelope.envelopeRevisionId);
       const result = await startControlledOwnerSession({ userId: authorization.userId,
         envelope: active.envelope, sessionId: body.sessionId as string,
         mode: body.mode as "full" | "lighter" | "recovery", startedAt: authorization.evaluatedAt,
-        repository: sessionPractice });
+        repository: sessionPractice, calibrationCycle });
       return result.revision ? ownerJson({ ok: true, status: result.status,
         attemptId: result.revision.attemptId,
         persistenceRevisionId: result.revision.persistenceRevisionId }) : ownerJson({ ok: false,

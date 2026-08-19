@@ -13,6 +13,11 @@ import {
   SESSION_PRACTICE_OPTIONS_V2_BRIDGE_CONTRACT_REFERENCE,
   selectSessionPracticeMode,
   stableId,
+  resolveOwnerProgramClassification,
+  reviseOwnerCalibrationCycleFromEvidence,
+  validateOwnerCalibrationSessionObservation,
+  type OwnerCalibrationCycleRevision,
+  type OwnerCalibrationSessionObservation,
   type OwnerV2ProductProgramEnvelope,
   type PrescriptionSessionCompilationResult,
   type ProductionFinalSessionSequencingResult,
@@ -122,7 +127,8 @@ function buildMode(input: { readonly source: SessionPracticeSourceSnapshot; read
 }
 
 export function buildControlledOwnerSessionOptions(input: { readonly envelope: OwnerV2ProductProgramEnvelope;
-  readonly sessionId: string; readonly userId: string; readonly evaluatedAt: string }) {
+  readonly sessionId: string; readonly userId: string; readonly evaluatedAt: string;
+  readonly calibrationCycle?: OwnerCalibrationCycleRevision | null }) {
   const source = buildOwnerSessionPracticeSource({ envelope: input.envelope, sessionId: input.sessionId });
   const attemptId = deriveSessionPracticeAttemptId({ athleteId: input.userId, sourceSessionId: input.sessionId,
     sourceSessionRevisionId: source.sourceSessionRevisionId, opportunityId: source.week.opportunityId,
@@ -130,7 +136,18 @@ export function buildControlledOwnerSessionOptions(input: { readonly envelope: O
   return Object.freeze(["full", "lighter", "recovery"].map((mode) => {
     const { plan } = buildMode({ source, userId: input.userId, attemptId,
       mode: mode as SessionPracticeModeV2, selectedAt: input.evaluatedAt, basedOnRevisionId: null });
-    return Object.freeze({ mode, availability: plan.availability, duration: plan.duration,
+    const calibration = resolveOwnerProgramClassification(input.envelope) === "initial_calibration";
+    const sessionComplete = input.calibrationCycle?.obligations.filter((entry) => entry.sessionId === input.sessionId)
+      .every((entry) => entry.completionState === "complete") ?? false;
+    const calibrationUnavailable = calibration && (mode !== "full" || sessionComplete ||
+      input.calibrationCycle?.state === "calibration_safety_review_required" ||
+      input.calibrationCycle?.state === "calibration_evidence_contradictory");
+    const availability = calibrationUnavailable ? Object.freeze({ ...plan.availability,
+      state: "policy_required" as const,
+      reasonCodes: Object.freeze([sessionComplete ? "OWNER_CALIBRATION_SESSION_ALREADY_COMPLETED" :
+        mode !== "full" ? "OWNER_CALIBRATION_FULL_SESSION_REQUIRED" :
+          "OWNER_CALIBRATION_REVIEW_REQUIRED_BEFORE_CONTINUATION"]) }) : plan.availability;
+    return Object.freeze({ mode, availability, duration: plan.duration,
       assignmentCount: plan.assignments.filter((entry) => entry.state !== "omitted").length });
   }));
 }
@@ -142,10 +159,28 @@ export async function startControlledOwnerSession(input: {
   readonly mode: SessionPracticeModeV2;
   readonly startedAt: string;
   readonly repository: SessionPracticePersistenceRepository;
+  readonly calibrationCycle?: OwnerCalibrationCycleRevision | null;
 }) {
   const source = buildOwnerSessionPracticeSource({ envelope: input.envelope, sessionId: input.sessionId });
   const current = await input.repository.listAthleteCurrentRevisions(input.userId);
   const sameSession = current.filter((entry) => entry.request.sourceSessionIntentId === input.sessionId);
+  if (resolveOwnerProgramClassification(input.envelope) === "initial_calibration") {
+    if (!input.calibrationCycle || input.calibrationCycle.envelopeRevisionId !== input.envelope.envelopeRevisionId) {
+      return Object.freeze({ status: "unavailable" as const, revision: null,
+        reasonCodes: Object.freeze(["OWNER_CALIBRATION_CYCLE_REQUIRED"]) });
+    }
+    if (input.mode !== "full") return Object.freeze({ status: "unavailable" as const, revision: null,
+      reasonCodes: Object.freeze(["OWNER_CALIBRATION_FULL_SESSION_REQUIRED"]) });
+    const obligations = input.calibrationCycle.obligations.filter((entry) => entry.sessionId === input.sessionId);
+    if (!obligations.length || obligations.every((entry) => entry.completionState === "complete") ||
+        sameSession.some((entry) => entry.lifecycle.state === "completed")) {
+      return Object.freeze({ status: "unavailable" as const, revision: null,
+        reasonCodes: Object.freeze(["OWNER_CALIBRATION_SESSION_ALREADY_COMPLETED"]) });
+    }
+    if (["calibration_safety_review_required", "calibration_evidence_contradictory"]
+      .includes(input.calibrationCycle.state)) return Object.freeze({ status: "unavailable" as const, revision: null,
+      reasonCodes: Object.freeze(["OWNER_CALIBRATION_REVIEW_REQUIRED_BEFORE_CONTINUATION"]) });
+  }
   const active = sameSession.find((entry) => !["completed", "abandoned", "invalidated"]
     .includes(entry.lifecycle.state));
   if (active) return Object.freeze({ status: "existing" as const, revision: active,
@@ -269,12 +304,29 @@ export async function completeControlledOwnerSession(input: {
   }
   const prior = await latestExact(input);
   if (!prior || !prior.draft || prior.lifecycle.state !== "execution_started") {
-    return Object.freeze({ status: "conflict" as const, revision: null });
+    return Object.freeze({ status: "conflict" as const, revision: null,
+      reasonCodes: Object.freeze(["OWNER_SESSION_COMPLETION_STATE_CONFLICT"]) });
   }
   const source = buildOwnerSessionPracticeSource({ envelope: input.envelope,
     sessionId: prior.request.sourceSessionIntentId });
   if (source.sourceSessionRevisionId !== prior.sourceSessionRevisionId) {
-    return Object.freeze({ status: "conflict" as const, revision: null });
+    return Object.freeze({ status: "conflict" as const, revision: null,
+      reasonCodes: Object.freeze(["OWNER_SESSION_SOURCE_REVISION_CONFLICT"]) });
+  }
+  const calibrationCycle = resolveOwnerProgramClassification(input.envelope) === "initial_calibration"
+    ? await input.delivery.readCalibrationCycleForEnvelope(input.userId, input.envelope.envelopeRevisionId) : null;
+  let calibrationObservation: OwnerCalibrationSessionObservation | null = null;
+  if (resolveOwnerProgramClassification(input.envelope) === "initial_calibration") {
+    if (!calibrationCycle || !input.outcomeRepository || !input.envelope.calibrationPlan || prior.plan.mode !== "full") {
+      return Object.freeze({ status: "conflict" as const, revision: null,
+        reasonCodes: Object.freeze(["OWNER_CALIBRATION_COMPLETION_PRECONDITION_FAILED"]) });
+    }
+    const raw = prior.draft.actualPerformanceState.calibrationObservation;
+    const reasons = validateOwnerCalibrationSessionObservation({ observation: raw,
+      plan: input.envelope.calibrationPlan, expectedSessionId: prior.request.sourceSessionIntentId });
+    if (reasons.length) return Object.freeze({ status: "invalid_calibration_evidence" as const,
+      revision: null, reasonCodes: reasons });
+    calibrationObservation = raw as OwnerCalibrationSessionObservation;
   }
   const evidence = Object.freeze({ attemptId: input.attemptId,
     realizationRevisionId: prior.realizationRevisionId,
@@ -285,7 +337,8 @@ export async function completeControlledOwnerSession(input: {
   const gate13 = receiveSessionPracticeAtGate13({ source, plan: prior.plan });
   const completion = deriveSessionPracticeCompletionDisposition({ source, plan: prior.plan, gate13, evidence });
   if (completion.status === "completion_conflict" || completion.status === "completion_evidence_incomplete") {
-    return Object.freeze({ status: "conflict" as const, revision: null });
+    return Object.freeze({ status: "conflict" as const, revision: null,
+      reasonCodes: completion.reasonCodes });
   }
   const outcomeLink = buildSessionPracticeOutcomeSourceLink({ plan: prior.plan, evidence, completion });
   const lifecycle = Object.freeze({ ...prior.lifecycle, state: "completed" as const });
@@ -299,7 +352,7 @@ export async function completeControlledOwnerSession(input: {
     createdAt: input.completedAt, evaluationTime: input.completedAt });
   const written = await input.repository.appendRevision(revision);
   if (!['appended', 'exact_retry'].includes(written.status)) return Object.freeze({ status: "conflict" as const,
-    revision: null });
+    revision: null, reasonCodes: Object.freeze([`OWNER_SESSION_COMPLETION_${written.status.toUpperCase()}`]) });
   const idempotency: OwnerIdempotencyRecord = Object.freeze({ userId: input.userId, action: "practice",
     idempotencyKey: input.idempotencyKey, requestFingerprint,
     responsePayload: Object.freeze({ persistenceRevisionId: revision.persistenceRevisionId }),
@@ -308,7 +361,17 @@ export async function completeControlledOwnerSession(input: {
   if (idempotencyWrite === "conflict") return Object.freeze({ status: "conflict" as const, revision: null,
     outcome: null });
   const outcome = input.outcomeRepository ? await persistControlledOwnerSessionOutcome({ userId: input.userId,
-    revision, source, repository: input.outcomeRepository, operationTime: input.completedAt }) : null;
+    revision, source, repository: input.outcomeRepository, operationTime: input.completedAt,
+    ...(calibrationCycle && calibrationObservation ? { calibration: { cycle: calibrationCycle,
+      observation: calibrationObservation } } : {}) }) : null;
+  let updatedCalibrationCycle: OwnerCalibrationCycleRevision | null = null;
+  if (calibrationCycle && input.outcomeRepository) {
+    const records = await input.outcomeRepository.readActiveSourceRecords(input.userId, input.completedAt);
+    updatedCalibrationCycle = reviseOwnerCalibrationCycleFromEvidence({ prior: calibrationCycle, records,
+      createdAt: input.completedAt });
+    const cycleWrite = await input.delivery.appendCalibrationCycleRevision(updatedCalibrationCycle);
+    if (cycleWrite === "conflict") throw new Error("OWNER_CALIBRATION_CYCLE_REVISION_CONFLICT");
+  }
   const completionAudit = buildOwnerDeliveryAuditEvent({ userId: input.userId, action: "session_completion",
     targetId: input.attemptId, occurredAt: input.completedAt,
     metadata: { mode: revision.plan.mode, completionDisposition: completion.status,
@@ -343,5 +406,6 @@ export async function completeControlledOwnerSession(input: {
     recordId: outcome.outcome.sourceRecordRevisionId, contractVersion: "1.0.0", mode: null,
     state: outcome.outcome.status, reasonCodes: outcome.outcome.reasonCodes, latencyMs: null,
     fingerprint: null, appSurface: "owner_session" }));
-  return Object.freeze({ status: "completed" as const, revision, outcome });
+  return Object.freeze({ status: "completed" as const, revision, outcome,
+    calibrationCycle: updatedCalibrationCycle });
 }

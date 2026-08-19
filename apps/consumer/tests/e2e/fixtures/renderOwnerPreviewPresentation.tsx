@@ -68,6 +68,23 @@ const exercises = (offset: number) => [
     rest: "90-180 seconds between strength sets", effort: "2-3 reps in reserve" }),
 ];
 
+const CALIBRATION_CYCLE_ID = "owner-v2-calibration-cycle:visualfixture";
+const CALIBRATION_PROGRAM_FINGERPRINT = "projection-fingerprint-visual-fixture";
+const calibrationObligations = [["owner-session:visual-1", 0], ["owner-session:visual-2", 10]]
+  .flatMap(([sessionId, offset]) => exercises(offset as number).filter((exercise) => exercise.section === "main")
+    .map((exercise, index) => ({ obligationId: `owner-v2-calibration-obligation:${offset}-${index}`,
+      cycleId: CALIBRATION_CYCLE_ID, programFingerprint: CALIBRATION_PROGRAM_FINGERPRINT,
+      profileRevisionId: PROFILE_REVISION_ID, weekObjectiveIds: [`weekly-objective:${index}`],
+      sessionId: sessionId as string, assignmentId: exercise.assignmentId, exerciseId: exercise.exerciseId,
+      responsibilityIds: [`foundation:visual-${index}`], prescriptionId: `prescription:${offset}-${index}`,
+      prescriptionRevisionId: exercise.prescriptionRevisionId, sourceExposureEventId: exercise.sourceEventId,
+      doseBlockId: exercise.doseBlocks[1]!.blockId, requiredSetCount: 2,
+      requiredObservationFields: ["completed_set_number", "completed_repetitions",
+        "actual_load_or_not_applicable", "effort_scale", "effort_value", "completion_state",
+        "pain_response", "technique_response"] as const,
+      completionState: "required" as const, provenance: [exercise.assignmentId, "developmental_work"],
+      obligationFingerprint: `owner-v2-calibration-obligation-fingerprint:${offset}-${index}` })));
+
 const preview: ControlledOwnerV2ProgramPreview = {
   contract: { contractId: "CONTROLLED_OWNER_V2_PROGRAM_PREVIEW", contractVersion: "1.0.0" },
   previewId: "owner-v2-preview:visualfixture",
@@ -119,7 +136,13 @@ const preview: ControlledOwnerV2ProgramPreview = {
     projectionFingerprint: "projection-fingerprint-visual-fixture",
   },
   unresolvedFacts: [],
-  readinessStatus: "ready_for_approval",
+  programClassification: "initial_calibration",
+  calibrationPlan: { contract: { contractId: "CONTROLLED_OWNER_INITIAL_CALIBRATION_PLAN",
+    contractVersion: "1.0.0" }, cycleId: CALIBRATION_CYCLE_ID,
+    programFingerprint: CALIBRATION_PROGRAM_FINGERPRINT, profileRevisionId: PROFILE_REVISION_ID,
+    evidencePolicyReference: "CONTROLLED_OWNER_INITIAL_CALIBRATION_EVIDENCE_SUFFICIENCY@1.0.0",
+    obligations: calibrationObligations, planFingerprint: "owner-v2-calibration-plan:visualfixture" },
+  readinessStatus: "ready_for_initial_calibration_approval",
   safetyState: "clear",
   createdAt: "2026-08-18T06:00:00.000Z",
   counterfactual: true,

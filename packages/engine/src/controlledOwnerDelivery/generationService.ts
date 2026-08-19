@@ -1,13 +1,19 @@
 import { createHash } from "node:crypto";
 import {
   buildOwnerGenerationCommand,
+  buildOwnerCalibrationPlan,
+  buildOwnerCalibrationCompletedPerformanceReferences,
+  buildOwnerCalibrationTrainingHistory,
   buildOwnerProgramPreview,
+  evaluateOwnerCalibrationEvidence,
   evaluateOwnerProfileReadiness,
   runControlledOwnerProductionPipeline,
   stableId,
   uniqueSorted,
   type ControlledOwnerV2ProgramPreview,
   type OwnerDeliveryMode,
+  type NormalizedOutcomeSourceRecord,
+  type OwnerCalibrationCycleRevision,
   type OwnerGetStrongerProfileRevision,
   type OwnerPainContext,
   type OwnerProfilePreflight,
@@ -201,9 +207,14 @@ export function preflightControlledOwnerGetStrongerProfile(input: {
 export function resolveOwnerPreviewReadinessStatus(input: {
   readonly programSemanticCompletenessSatisfied: boolean;
   readonly profileApprovalAllowed: boolean;
-}): "ready_for_approval" | "preview_only_unknown_duration" | "blocked" {
+  readonly programClassification?: "ordinary_program" | "initial_calibration";
+}): "ready_for_approval" | "ready_for_initial_calibration_approval" |
+  "blocked_pending_duration" | "preview_only_unknown_duration" | "blocked" {
   if (!input.programSemanticCompletenessSatisfied) return "blocked";
-  return input.profileApprovalAllowed ? "ready_for_approval" : "preview_only_unknown_duration";
+  if (!input.profileApprovalAllowed) return input.programClassification ?
+    "blocked_pending_duration" : "preview_only_unknown_duration";
+  return input.programClassification === "initial_calibration" ?
+    "ready_for_initial_calibration_approval" : "ready_for_approval";
 }
 
 export async function generateControlledOwnerGetStrongerPreview(input: {
@@ -217,6 +228,10 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
   readonly delivery: OwnerDeliveryRepository;
   readonly productImport: OwnerProductImportAdapter;
   readonly loadSourceContext: (userId: string) => Promise<OwnerGenerationSourceContext>;
+  readonly loadCalibrationEvidence?: (userId: string, evaluationTime: string) => Promise<{
+    readonly cycle: OwnerCalibrationCycleRevision;
+    readonly records: readonly NormalizedOutcomeSourceRecord[];
+  } | null>;
 }): Promise<GenerateControlledOwnerPreviewResult> {
   const gate = await input.gate();
   const result = (status: GenerateControlledOwnerPreviewResult["status"],
@@ -233,10 +248,38 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
   if (!profile) return result("profile_not_ready", null, ["OWNER_CONFIRMED_PROFILE_REQUIRED"]);
   const readiness = evaluateOwnerProfileReadiness(profile);
   if (!readiness.previewAllowed) return result("profile_not_ready", null, readiness.reasonCodes);
-  const [source, proposedProductFacts] = await Promise.all([
+  const [source, proposedProductFacts, calibrationEvidenceSource] = await Promise.all([
     input.loadSourceContext(gate.userId),
     input.productImport.loadProposedFacts(gate.userId),
+    input.loadCalibrationEvidence?.(gate.userId, input.evaluationTime) ?? Promise.resolve(null),
   ]);
+  let calibrationEvidence: Parameters<typeof runControlledOwnerProductionPipeline>[0]["calibrationEvidence"];
+  if (calibrationEvidenceSource) {
+    if (calibrationEvidenceSource.cycle.profileRevisionId !== profile.revisionId) {
+      return result("generation_blocked", null, ["OWNER_CALIBRATION_PROFILE_SCOPE_MISMATCH"]);
+    }
+    const evaluated = evaluateOwnerCalibrationEvidence(calibrationEvidenceSource);
+    if (evaluated.status !== "sufficient_for_reviewed_subsequent_planning") {
+      return result("generation_blocked", null, uniqueSorted([
+        `OWNER_CALIBRATION_${evaluated.status.toUpperCase()}`,
+        ...evaluated.reasonCodes,
+      ]));
+    }
+    const trainingHistory = buildOwnerCalibrationTrainingHistory(calibrationEvidenceSource);
+    const completedPerformanceReferences = buildOwnerCalibrationCompletedPerformanceReferences(
+      calibrationEvidenceSource,
+    );
+    calibrationEvidence = Object.freeze({
+      status: "sufficient_for_reviewed_subsequent_planning" as const,
+      cycleId: calibrationEvidenceSource.cycle.cycleId,
+      cycleRevisionId: calibrationEvidenceSource.cycle.cycleRevisionId,
+      sourceRecordRevisionIds: evaluated.sourceRecordRevisionIds,
+      confirmedResponsibilityIds: uniqueSorted(calibrationEvidenceSource.cycle.obligations.flatMap((entry) =>
+        entry.responsibilityIds)),
+      trainingHistory,
+      completedPerformanceReferences,
+    });
+  }
   const assessmentHandoff = buildControlledOwnerAssessmentHandoff({
     profileAssessmentReferences: profile.assessmentReferences,
     profilePainContext: profile.painContext,
@@ -251,9 +294,11 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     sourceProductRevisionId: source.sourceProductRevisionId,
     activeLegacyProgramRevisionId: source.activeLegacyProgramRevisionId,
     engineVersion: input.engineVersion, policyVersions: input.policyVersions,
-    evaluationTime: input.evaluationTime, requestedAt: input.requestedAt });
+    evaluationTime: input.evaluationTime, requestedAt: input.requestedAt,
+    ...(calibrationEvidence ? { calibrationEvidenceRevisionIds: [calibrationEvidence.cycleRevisionId,
+      ...calibrationEvidence.sourceRecordRevisionIds] } : {}) });
   const pipeline = runControlledOwnerProductionPipeline({ command, profile, proposedProductFacts,
-    assessmentHandoff });
+    assessmentHandoff, ...(calibrationEvidence ? { calibrationEvidence } : {}) });
   if (pipeline.status !== "complete" || !pipeline.projection) {
     return result("generation_blocked", null, pipeline.unresolvedFacts);
   }
@@ -264,6 +309,10 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
       ...pipeline.preflight.questions.map((question) => question.questionId),
     ]));
   }
+  const programClassification = calibrationEvidence ? "ordinary_program" as const : "initial_calibration" as const;
+  const calibrationPlan = programClassification === "initial_calibration" ? buildOwnerCalibrationPlan({
+    userId: gate.userId, profileRevisionId: profile.revisionId, projection: pipeline.projection,
+  }) : null;
   const preview = buildOwnerProgramPreview({ userId: gate.userId, generationCommandId: command.commandId,
     profileId: profile.profileId, profileRevisionId: profile.revisionId,
     sourceProductSnapshotId: source.sourceProductSnapshotId,
@@ -272,14 +321,19 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     engineVersion: input.engineVersion, policyVersions: input.policyVersions,
     completeProgramSnapshot: pipeline.stages, productProjection: pipeline.projection,
     unresolvedFacts: pipeline.unresolvedFacts,
+    programClassification,
+    calibrationPlan,
     readinessStatus: resolveOwnerPreviewReadinessStatus({
       programSemanticCompletenessSatisfied: pipeline.programSemanticCompletenessSatisfied,
-      profileApprovalAllowed: readiness.approvalAllowed && pipeline.approvalAllowed }),
+      profileApprovalAllowed: readiness.approvalAllowed && pipeline.approvalAllowed,
+      programClassification }),
     safetyState: profile.trainingSafety, createdAt: input.requestedAt });
   const requestFingerprint = createHash("sha256").update(JSON.stringify({ userId: gate.userId,
     enrollmentRevisionId: enrollment.revisionId, profileRevisionId: profile.revisionId,
     sourceProductRevisionId: source.sourceProductRevisionId, engineVersion: input.engineVersion,
-    policyVersions: input.policyVersions })).digest("hex");
+    policyVersions: input.policyVersions,
+    calibrationEvidenceRevisionIds: calibrationEvidence ? [calibrationEvidence.cycleRevisionId,
+      ...calibrationEvidence.sourceRecordRevisionIds] : [] })).digest("hex");
   const priorIdempotency = await input.delivery.readIdempotency(gate.userId, "preview", input.idempotencyKey);
   if (priorIdempotency) {
     if (priorIdempotency.requestFingerprint !== requestFingerprint) {

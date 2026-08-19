@@ -40,7 +40,9 @@ export default async function OwnerWeekPage({ params }: { readonly params: Promi
     if (!application || pointer?.mode !== "v2_owner" || pointer.activeApplicationId !== application.applicationId) return null;
     const envelope = await delivery.readEnvelopeExact(gate.userId!, application.envelopeId,
       application.envelopeRevisionId);
-    return envelope ? { application, envelope, pointer } : null;
+    const calibrationCycle = envelope ? await delivery.readCalibrationCycleForEnvelope(gate.userId!,
+      envelope.envelopeRevisionId) : null;
+    return envelope ? { application, envelope, pointer, calibrationCycle } : null;
   }).catch(() => null);
   if (!state) notFound();
   const requestHeaders = await headers();
@@ -52,13 +54,25 @@ export default async function OwnerWeekPage({ params }: { readonly params: Promi
       <div><span className={styles.status}>V2 owner</span><br />
         <Link className={styles.link} href="/account/praxis-v2/history">History</Link></div></header>
     <p className={styles.notice}>Legacy Program retained as fallback.</p>
+    {state.calibrationCycle ? <section className={styles.section} aria-labelledby="calibration-progress-heading">
+      <h2 id="calibration-progress-heading">Initial calibration</h2>
+      <p><strong>{state.calibrationCycle.evidenceSufficiency.completedObligationIds.length}</strong> of{
+        ` ${state.calibrationCycle.obligations.length}`} evidence obligations complete</p>
+      <p className={styles.muted}>{state.calibrationCycle.state === "calibration_complete_pending_review" ?
+        "Calibration complete pending review. No Program change is automatic." :
+        "Complete the remaining sessions. Recorded evidence will support a later reviewed Program."}</p>
+      {state.calibrationCycle.evidenceSufficiency.recoveryPendingSessionIds.length ?
+        <p className={styles.warning}>Recovery check-in still needed for {
+          state.calibrationCycle.evidenceSufficiency.recoveryPendingSessionIds.length} completed session(s).</p> : null}
+    </section> : null}
     <section className={styles.section}><h2>This week</h2><div className={styles.sessions}>
       {state.envelope.productProjection.sessions.map((session, index) => <article className={styles.session} key={session.sessionId}>
         <h3>Session {index + 1}</h3><p>{session.purpose.replaceAll("_", " ")}</p>
         <p className={styles.muted}>{durationSummary(session)}</p>
         <OwnerSessionStart applicationId={state.application.applicationId} sessionId={session.sessionId}
           csrf={csrf.session ?? ""} options={buildControlledOwnerSessionOptions({ envelope: state.envelope,
-            sessionId: session.sessionId, userId: gate.userId!, evaluatedAt: new Date().toISOString() })} />
+            sessionId: session.sessionId, userId: gate.userId!, evaluatedAt: new Date().toISOString(),
+            calibrationCycle: state.calibrationCycle })} />
       </article>)}
     </div></section>
     <section className={styles.section}><h2>Program control</h2>

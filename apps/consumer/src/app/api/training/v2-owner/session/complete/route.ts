@@ -37,7 +37,12 @@ export async function POST(request: Request) {
       return result.revision ? ownerJson({ ok: true, status: result.status,
         persistenceRevisionId: result.revision.persistenceRevisionId,
         completion: result.revision.completion }) : ownerJson({ ok: false,
-        error: { code: "SESSION_COMPLETION_CONFLICT", message: "Session completion conflicted." } }, 409);
+        error: { code: result.status === "invalid_calibration_evidence" ? "INVALID_CALIBRATION_EVIDENCE" :
+          "SESSION_COMPLETION_CONFLICT", message: result.status === "invalid_calibration_evidence" ?
+            "Complete every required set and response field before finishing the calibration session." :
+            "Session completion conflicted." },
+        reasonCodes: "reasonCodes" in result ? result.reasonCodes : [] },
+      result.status === "invalid_calibration_evidence" ? 422 : 409);
     });
   } catch {
     return ownerJson({ ok: false, error: { code: "OWNER_DELIVERY_UNAVAILABLE",
