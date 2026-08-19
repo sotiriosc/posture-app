@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GOLDEN_PERSONAS,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   validateExerciseCatalog,
   validateTrainingInput,
 } from "../../src";
@@ -9,7 +9,7 @@ import {
 describe("foundation reference data", () => {
   it("keeps the reference catalog small, representative, and schema-valid", () => {
     expect(REFERENCE_EXERCISES.length).toBeGreaterThanOrEqual(20);
-    expect(REFERENCE_EXERCISES.length).toBeLessThanOrEqual(30);
+    expect(REFERENCE_EXERCISES).toHaveLength(45);
 
     const validationErrors = validateExerciseCatalog(REFERENCE_EXERCISES).filter(
       (finding) => finding.severity === "error",
@@ -26,6 +26,11 @@ describe("foundation reference data", () => {
       "hinge",
       "single_leg",
       "anti_extension_core",
+      "anti_lateral_flexion_core",
+      "trunk_flexion",
+      "trunk_rotation",
+      "loaded_bracing",
+      "carry",
     ]) {
       expect([...movementRoles]).toContain(role);
     }

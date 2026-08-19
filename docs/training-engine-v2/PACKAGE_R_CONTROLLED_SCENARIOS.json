@@ -1,0 +1,3394 @@
+[
+  {
+    "id": "package-r-controlled-01-01",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-02",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-03",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-04",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-05",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-06",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-07",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:ninety-ninety-breathing",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-01-08",
+    "exerciseId": "ninety-ninety-breathing",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:ninety-ninety-breathing",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-02-01",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-02",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-03",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-04",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-05",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-06",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-07",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:serratus-wall-slide",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-02-08",
+    "exerciseId": "serratus-wall-slide",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:serratus-wall-slide",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-03-01",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-02",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-03",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-04",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-05",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-06",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-07",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dead-bug",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-03-08",
+    "exerciseId": "dead-bug",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dead-bug",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-04-01",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-02",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-03",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-04",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-05",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-06",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-07",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:push-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-04-08",
+    "exerciseId": "push-up",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:push-up",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-05-01",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-02",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-03",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-04",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-05",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-06",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-07",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-bench-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-05-08",
+    "exerciseId": "dumbbell-bench-press",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-bench-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-06-01",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-02",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-03",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-04",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-05",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-06",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-07",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:machine-chest-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-06-08",
+    "exerciseId": "machine-chest-press",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:machine-chest-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-07-01",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-02",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-03",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-04",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-05",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-06",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-07",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:cable-chest-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-07-08",
+    "exerciseId": "cable-chest-fly",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:cable-chest-fly",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-08-01",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-02",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-03",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-04",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-05",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-06",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-07",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:chest-supported-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-08-08",
+    "exerciseId": "chest-supported-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:chest-supported-dumbbell-row",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-09-01",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-02",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-03",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-04",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-05",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-06",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-07",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:one-arm-dumbbell-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-09-08",
+    "exerciseId": "one-arm-dumbbell-row",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:one-arm-dumbbell-row",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-10-01",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-02",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-03",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-04",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-05",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-06",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-07",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:machine-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-10-08",
+    "exerciseId": "machine-row",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:machine-row",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-11-01",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-02",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-03",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-04",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-05",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-06",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-07",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:seated-cable-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-11-08",
+    "exerciseId": "seated-cable-row",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:seated-cable-row",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-12-01",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-02",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-03",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-04",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-05",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-06",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-07",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:band-row",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-12-08",
+    "exerciseId": "band-row",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:band-row",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-13-01",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-02",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-03",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-04",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-05",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-06",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-07",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-13-08",
+    "exerciseId": "dumbbell-shoulder-press",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-shoulder-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-14-01",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-02",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-03",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-04",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-05",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-06",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-07",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-14-08",
+    "exerciseId": "lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:lat-pulldown",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-15-01",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-02",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-03",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-04",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-05",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-06",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-07",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:band-lat-pulldown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-15-08",
+    "exerciseId": "band-lat-pulldown",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:band-lat-pulldown",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-16-01",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-02",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-03",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-04",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-05",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-06",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-07",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:goblet-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-16-08",
+    "exerciseId": "goblet-squat",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:goblet-squat",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-17-01",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-02",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-03",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-04",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-05",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-06",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-07",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:leg-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-17-08",
+    "exerciseId": "leg-press",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:leg-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-18-01",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-02",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-03",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-04",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-05",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-06",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-07",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:bodyweight-box-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-18-08",
+    "exerciseId": "bodyweight-box-squat",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:bodyweight-box-squat",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-19-01",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-02",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-03",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-04",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-05",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-06",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-07",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-romanian-deadlift",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-19-08",
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-romanian-deadlift",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-20-01",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-02",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-03",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-04",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-05",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-06",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-07",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:cable-pull-through",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-20-08",
+    "exerciseId": "cable-pull-through",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:cable-pull-through",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-21-01",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-02",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-03",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-04",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-05",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-06",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-07",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:split-squat",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-21-08",
+    "exerciseId": "split-squat",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:split-squat",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-22-01",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-02",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-03",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-04",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-05",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-06",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-07",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:step-up",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-22-08",
+    "exerciseId": "step-up",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:step-up",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-23-01",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-02",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-03",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-04",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-05",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-06",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-07",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:lying-leg-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-23-08",
+    "exerciseId": "lying-leg-curl",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:lying-leg-curl",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-24-01",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-02",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-03",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-04",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-05",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-06",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-07",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:glute-bridge",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-24-08",
+    "exerciseId": "glute-bridge",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:glute-bridge",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-25-01",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-02",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-03",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-04",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-05",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-06",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-07",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-lateral-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-25-08",
+    "exerciseId": "dumbbell-lateral-raise",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-lateral-raise",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-26-01",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-02",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-03",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-04",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-05",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-06",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-07",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:reverse-pec-deck",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-26-08",
+    "exerciseId": "reverse-pec-deck",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:reverse-pec-deck",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-27-01",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-02",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-03",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-04",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-05",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-06",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-07",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:band-face-pull",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-27-08",
+    "exerciseId": "band-face-pull",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:band-face-pull",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-28-01",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-02",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-03",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-04",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-05",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-06",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-07",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-28-08",
+    "exerciseId": "dumbbell-curl",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-curl",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-29-01",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-02",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-03",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-04",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-05",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-06",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-07",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:cable-triceps-pressdown",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-29-08",
+    "exerciseId": "cable-triceps-pressdown",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:cable-triceps-pressdown",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-30-01",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-02",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-03",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-04",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-05",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-06",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-07",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:pallof-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-30-08",
+    "exerciseId": "pallof-press",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:pallof-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-31-01",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-02",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-03",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-04",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-05",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-06",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-07",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:forearm-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-31-08",
+    "exerciseId": "forearm-plank",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:forearm-plank",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-32-01",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-02",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-03",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-04",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-05",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-06",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-07",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:forearm-side-plank",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-32-08",
+    "exerciseId": "forearm-side-plank",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:forearm-side-plank",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-33-01",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-02",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-03",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-04",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-05",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-06",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-07",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:machine-abdominal-crunch",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-33-08",
+    "exerciseId": "machine-abdominal-crunch",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:machine-abdominal-crunch",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-34-01",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-02",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-03",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-04",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-05",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-06",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-07",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:half-kneeling-high-to-low-cable-chop",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-34-08",
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:half-kneeling-high-to-low-cable-chop",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-35-01",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-02",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-03",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-04",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-05",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-06",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-07",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:farmer-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-35-08",
+    "exerciseId": "farmer-carry",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:farmer-carry",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-36-01",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-02",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-03",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-04",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-05",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-06",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-07",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:suitcase-carry",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-36-08",
+    "exerciseId": "suitcase-carry",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:suitcase-carry",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-37-01",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-02",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-03",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-04",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-05",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-06",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-07",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:wall-supported-suitcase-march",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-37-08",
+    "exerciseId": "wall-supported-suitcase-march",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:wall-supported-suitcase-march",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-38-01",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-02",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-03",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-04",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-05",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-06",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-07",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:standing-calf-raise",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-38-08",
+    "exerciseId": "standing-calf-raise",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:standing-calf-raise",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-39-01",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-02",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-03",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-04",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-05",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-06",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-07",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:side-lying-hip-adduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-39-08",
+    "exerciseId": "side-lying-hip-adduction",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:side-lying-hip-adduction",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-40-01",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-02",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-03",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-04",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-05",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-06",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-07",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:loop-band-lateral-walk",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-40-08",
+    "exerciseId": "loop-band-lateral-walk",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:loop-band-lateral-walk",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-41-01",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-02",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-03",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-04",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-05",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-06",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-07",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:side-lying-dumbbell-external-rotation",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-41-08",
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:side-lying-dumbbell-external-rotation",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-42-01",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-02",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-03",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-04",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-05",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-06",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-07",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:supine-hamstring-walkout",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-42-08",
+    "exerciseId": "supine-hamstring-walkout",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:supine-hamstring-walkout",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-43-01",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-02",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-03",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-04",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-05",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-06",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-07",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:wall-ankle-dorsiflexion-rock",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-43-08",
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:wall-ankle-dorsiflexion-rock",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-44-01",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-02",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-03",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-04",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-05",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-06",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-07",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:bodyweight-hip-hinge-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-44-08",
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:bodyweight-hip-hinge-rehearsal",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-45-01",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "identity",
+    "materialInput": "identity:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-02",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "equipment",
+    "materialInput": "equipment:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-03",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-04",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "knowledge",
+    "materialInput": "knowledge:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-05",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-06",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-07",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:single-leg-balance-rehearsal",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-45-08",
+    "exerciseId": "single-leg-balance-rehearsal",
+    "selectedPackageRow": false,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:single-leg-balance-rehearsal",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-46-01",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-02",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-03",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-04",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-05",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-06",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-07",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-floor-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-46-08",
+    "exerciseId": "dumbbell-floor-press",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-floor-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-47-01",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-02",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-03",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-04",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-05",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-06",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-07",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:dumbbell-triceps-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-47-08",
+    "exerciseId": "dumbbell-triceps-extension",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:dumbbell-triceps-extension",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-48-01",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-02",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-03",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-04",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-05",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-06",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-07",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:bent-over-dumbbell-reverse-fly",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-48-08",
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:bent-over-dumbbell-reverse-fly",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-49-01",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-02",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-03",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-04",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-05",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-06",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-07",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:side-lying-hip-abduction",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-49-08",
+    "exerciseId": "side-lying-hip-abduction",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:side-lying-hip-abduction",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-50-01",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-02",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-03",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-04",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-05",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-06",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-07",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:bird-dog",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-50-08",
+    "exerciseId": "bird-dog",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:bird-dog",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-51-01",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-02",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-03",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-04",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-05",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-06",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-07",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:band-biceps-curl",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-51-08",
+    "exerciseId": "band-biceps-curl",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:band-biceps-curl",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-52-01",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-02",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-03",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-04",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-05",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-06",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-07",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:machine-shoulder-press",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-52-08",
+    "exerciseId": "machine-shoulder-press",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:machine-shoulder-press",
+    "expected": "semantic_mutation_rejected"
+  },
+  {
+    "id": "package-r-controlled-53-01",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "identity",
+    "materialInput": "identity:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-02",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "equipment",
+    "materialInput": "equipment:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-03",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "home_comfort",
+    "materialInput": "home_comfort:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-04",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "knowledge",
+    "materialInput": "knowledge:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-05",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "candidate_composer",
+    "materialInput": "candidate_composer:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-06",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "prescription_week",
+    "materialInput": "prescription_week:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-07",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "product_invariance",
+    "materialInput": "product_invariance:machine-leg-extension",
+    "expected": "truthful_result_preserved"
+  },
+  {
+    "id": "package-r-controlled-53-08",
+    "exerciseId": "machine-leg-extension",
+    "selectedPackageRow": true,
+    "lane": "mutation_no_rescue",
+    "materialInput": "mutation_no_rescue:machine-leg-extension",
+    "expected": "semantic_mutation_rejected"
+  }
+]

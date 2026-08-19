@@ -4,6 +4,7 @@ import type { TrainingHistory } from "./history";
 import type { PainAndInjuryState } from "./painInjury";
 import type { PhaseState } from "./phase";
 import type { ExperienceLevel, TrainingGoal } from "./primitives";
+import type { TrainingSafetyState } from "./trainingSafety";
 
 export interface TrainingPreferences {
   readonly preferredExerciseIds: readonly string[];
@@ -38,6 +39,7 @@ export interface TrainingEngineInput {
   readonly athlete: AthleteProfile;
   readonly assessment: AssessmentState;
   readonly painAndInjury: PainAndInjuryState;
+  readonly trainingSafety?: TrainingSafetyState;
   readonly equipment: EquipmentCapabilities;
   readonly history: TrainingHistory;
   readonly currentState: CurrentTrainingState;

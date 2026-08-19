@@ -1,0 +1,325 @@
+{
+  "policyId": "PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE",
+  "version": "1.0.0",
+  "state": "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION",
+  "classification": "PRESCRIPTION_POLICY_V1_READY_FOR_PRODUCTION_COMPILER_IMPLEMENTATION_AUTHORIZATION",
+  "ownerDecision": {
+    "sourceType": "owner_decision",
+    "reviewerId": "sotiriosc",
+    "reviewedAt": "2026-08-13T15:02:00-04:00",
+    "policyId": "PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE",
+    "version": "1.0.0",
+    "state": "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION",
+    "philosophy": [
+      "BALANCED_DEVELOPMENTAL_WORK",
+      "MINIMAL_SUPPORTING_WORK",
+      "CONTEXT_SCOPED_ESCALATION",
+      "STABLE_CONTINUITY",
+      "NO_ARTIFICIAL_DIVERSITY"
+    ],
+    "cagtEvidenceVocabulary": [
+      "admissible",
+      "non_dominated",
+      "dominated",
+      "incomparable",
+      "causal_failure",
+      "insufficient_evidence"
+    ],
+    "ownerDecisionVocabulary": [
+      "selected_for_v1_candidate",
+      "selected_as_scoped_override",
+      "deferred",
+      "rejected_as_default",
+      "retained_for_future_response_led_use"
+    ],
+    "decisions": [
+      {
+        "subject": "balanced developmental doses",
+        "cagtEvidence": "non_dominated",
+        "ownerDecision": "selected_for_v1_candidate"
+      },
+      {
+        "subject": "minimal supporting doses",
+        "cagtEvidence": "non_dominated",
+        "ownerDecision": "selected_for_v1_candidate"
+      },
+      {
+        "subject": "bounded regression and escalation",
+        "cagtEvidence": "incomparable",
+        "ownerDecision": "selected_as_scoped_override"
+      },
+      {
+        "subject": "high-dose and failure defaults",
+        "cagtEvidence": "dominated",
+        "ownerDecision": "rejected_as_default"
+      },
+      {
+        "subject": "response-led third hold set and backoff work",
+        "cagtEvidence": "insufficient_evidence",
+        "ownerDecision": "retained_for_future_response_led_use"
+      },
+      {
+        "subject": "H2 and universal spacing",
+        "cagtEvidence": "insufficient_evidence",
+        "ownerDecision": "deferred"
+      }
+    ],
+    "cagtDidNotSelectPolicy": true,
+    "productionActivationAuthorized": false
+  },
+  "philosophy": "Praxis prescribes the smallest supporting dose that truthfully prepares the person, and a productive developmental dose that serves the session's actual purpose.",
+  "holdout": {
+    "scenarioCount": 132,
+    "genuineMultiAssignmentSessionCount": 121,
+    "compiledFullSessionCount": 129,
+    "manifestFingerprint": "5c083fb746e9110238e8b0ab632401a3d5581c633156de510b11e6d387d692c6",
+    "calibrationAndHoldoutExerciseIdentityCount": 45,
+    "sections": [
+      "accessory",
+      "activation",
+      "cooldown",
+      "main",
+      "warmup"
+    ],
+    "roles": [
+      "activation",
+      "capacity",
+      "hypertrophy_accessory",
+      "preparation",
+      "primary_strength",
+      "recovery",
+      "secondary_strength"
+    ],
+    "doseModes": [
+      "breath_cycles",
+      "distance_carry",
+      "repetition_sets",
+      "step_march",
+      "step_sets",
+      "timed_carry",
+      "timed_hold"
+    ],
+    "goals": [
+      "conditioning",
+      "general_fitness",
+      "hypertrophy",
+      "posture_and_movement_quality",
+      "strength"
+    ],
+    "phases": [
+      "phase_1",
+      "phase_2",
+      "phase_3"
+    ],
+    "equipmentContexts": [
+      "bands",
+      "bodyweight",
+      "dumbbells",
+      "full_gym",
+      "mixed"
+    ],
+    "capacities": [
+      "condensed",
+      "expanded",
+      "standard"
+    ],
+    "expectedNonCompilation": {
+      "missingPolicy": 1,
+      "conflict": 1,
+      "unsupportedContext": 1
+    }
+  },
+  "causal": {
+    "underAdaptationCount": 0,
+    "overAdaptationCount": 0,
+    "wrongLayerEffectCount": 0,
+    "downstreamRescueAttemptCount": 12,
+    "acceptedDownstreamRescueCount": 0,
+    "sourceEventDuplicationCount": 0,
+    "revisionErrorCount": 0,
+    "preparatoryMiscreditCount": 0,
+    "substitutionDoubleCount": 0,
+    "orphanPreparationCount": 0,
+    "missingRequiredPreparationCount": 0,
+    "mainPurposeLossCount": 0,
+    "accessoryPurposeLossCount": 0,
+    "policyCreatedAssignmentCount": 0,
+    "ignoredRequiredModificationCount": 0,
+    "actualAsPlanAssumptionCount": 0,
+    "fakeDurationFindingCount": 0,
+    "candidateIdentityLeakCount": 0,
+    "validationErrorCount": 0
+  },
+  "coherence": {
+    "warmupActivationCompleteSessionResult": "PASS_BOUNDED_AND_SUBORDINATE",
+    "supportingWorkOverwhelmCount": 0,
+    "sameRepResult": "PASS_LEGAL_CONVERGENCE_PRESERVED",
+    "sameTempoResult": "PASS_LEGAL_CONVERGENCE_PRESERVED",
+    "identicalFactsResult": "PASS_EQUIVALENT_PRESCRIPTION",
+    "goalDifferenceResult": "PASS_NO_FORCED_DIFFERENCE",
+    "rampUpCounts": {
+      "zero": 168,
+      "one": 49,
+      "two": 8
+    },
+    "backoffBlockCount": 0
+  },
+  "loadSelection": {
+    "exactPriorLoadRetainedCount": 14,
+    "exactPriorLoadRejectedToFallbackCount": 8,
+    "userSelectedByEffortCount": 211,
+    "automaticProgressionCount": 0
+  },
+  "duration": {
+    "fullyDeterminableCount": 0,
+    "boundedCount": 0,
+    "unknownCount": 398,
+    "definitelyOverBudgetCount": 0,
+    "possiblyOverBudgetCount": 0,
+    "unknownOwners": {
+      "unknown_due_to_breathing_cadence": 22,
+      "unknown_due_to_locomotor_pace": 22,
+      "unknown_due_to_repetition_tempo": 333,
+      "unknown_due_to_sequencing": 398,
+      "unknown_due_to_step_cadence": 22
+    },
+    "unknownClassifiedAsFitOrFailureCount": 0
+  },
+  "performance": {
+    "comparisonCount": 1452,
+    "observationKinds": {
+      "exact_completion": 132,
+      "fewer_reps": 132,
+      "lower_load": 132,
+      "shorter_hold": 132,
+      "altered_tempo": 132,
+      "omitted_acclimation_block": 132,
+      "omitted_developmental_block": 132,
+      "partial_session": 132,
+      "substitution": 132,
+      "unknown_actual_timing": 132,
+      "no_observation": 132
+    },
+    "actualAsPlanAssumptionCount": 0,
+    "planMutationCount": 0,
+    "validationErrorCount": 0,
+    "substitutionDoubleCount": 0,
+    "noObservationPreservedCount": 132,
+    "independentActualFixtureCount": 1452,
+    "fingerprint": "618ae45547100904e8d81b5bf53b1abc794c0b323e56e44c42a790942786de0c"
+  },
+  "stress": {
+    "blindedComparisonCount": 10032,
+    "independentPerformanceComparisonCount": 1452,
+    "fullSessionCompilationCount": 129,
+    "mutationResults": {
+      "policy_order_permutation": "PASS",
+      "rule_order_permutation": "PASS",
+      "assignment_order_permutation": "PASS",
+      "block_order_permutation": "PASS",
+      "catalog_order_permutation": "PASS",
+      "source_evidence_permutation": "PASS",
+      "candidate_name_mutation": "PASS",
+      "policy_name_mutation": "PASS",
+      "owner_decision_label_mutation": "PASS",
+      "prose_mutation": "PASS",
+      "same_rep_convergence": "PASS",
+      "same_tempo_convergence": "PASS",
+      "exact_load_retention": "PASS",
+      "user_selected_load_fallback": "PASS",
+      "warmup_activation_accumulation": "PASS",
+      "ramp_up_duplication": "PASS",
+      "actual_as_plan_rejection": "PASS",
+      "duration_unknown_preservation": "PASS"
+    },
+    "candidateIdentityLeakCount": 0,
+    "randomOutputCount": 0,
+    "repeatedRunFingerprintMatch": true,
+    "fingerprint": "150d19c43cfd0f638f460efbfb5975d65f54707f21ba0243267bd2ab451a274a"
+  },
+  "h1h2": {
+    "h1": "MUSCLE_H1_SINGLE_FLEXIBLE",
+    "h2": "DEFERRED_PENDING_PRESCRIPTION_AND_COMPLETED_RESPONSE_EVIDENCE"
+  },
+  "spacing": "PRESCRIPTION_AND_RESPONSE_DEPENDENT",
+  "scopeCovered": [
+    "context-scoped dose resolution for all seven legal dose modes",
+    "preparation, activation, main, accessory and explicit cooldown assignments",
+    "effort, tempo intent, duration truth, rest placement and block structure",
+    "exact-prior-load retention and user-selected-by-effort fallback",
+    "range, support, side, continuity and structured unresolved requirements",
+    "full-session source-event, revision and independent performance truth"
+  ],
+  "unresolvedScopes": [
+    "production Prescription Compiler implementation and activation",
+    "final Sequencing setup and inter-exercise transitions",
+    "post-Prescription Week validation",
+    "H2 response-led policy and universal spacing",
+    "Longitudinal Adaptation, automatic progression, replacement and rotation"
+  ],
+  "productionBehaviorChanged": false,
+  "productionPolicyActivated": false,
+  "productionFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateRankingMatches": true,
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "candidateComprehensiveMatches": true,
+    "catalogIdentity": "49b38724c2aa562d6471f09d62cb0d1b09b9900b474139a0279c2adb82919c90",
+    "catalogBehaviorMetadata": "bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91",
+    "fullCatalogMetadata": "c79c2360e5a5b39ecebbf91899c248e62a9edd7997ad29e266d4236cf9410a9e",
+    "sessionPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionPlannerMatches": true,
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "sessionComposerMatches": true,
+    "timingFoundation": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "fullPrescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "numericCandidateLattice": "9d7366c054dd01d01de132d7c358b18d4cc506aaaea962dd48d869ea68e5ac07",
+    "numericCandidateManifest": "7d96a67a80ce0b6c16f40523cd6b8f2734128953e781dcfe977dd12aba4c69a8",
+    "evaluatorHardening": "61a01108e0a5c73b0b1fa1847c5891b43f5e8cb583ee4382fd54736a4b53e740",
+    "cagtCore": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e"
+  },
+  "fingerprints": {
+    "ownerDecision": "e273f5cbc440827f6aea5f3c2cd2138d756e519376fe204c0c8b119b729cfac0",
+    "ruleMatrix": "a51c29ae2337e4f7053624a3d126dab5b76c52214fd1fe3d8cb795e9381a2a21",
+    "restPlacement": "96074ef94c06623d7b1788b8a0e7db8eeaeff421925922f545b20630eb08f19e",
+    "specificityOrder": "8939afb83cf279ad8df1aba101e6ac18462f7e91ebc24aafc96e2a0651eb68c6",
+    "frozenValueRefs": "2bbfd7def2f914f3177cce24f6ad93b0b5ea26e8f19cf0b39bb39b90d4928fa2",
+    "holdoutManifest": "5c083fb746e9110238e8b0ab632401a3d5581c633156de510b11e6d387d692c6",
+    "performance": "5b81efef4fd58b890f68ac8cf0aa9f139e8637cf57707930c5b6b6da0fa33cda",
+    "stress": "1ca7688bef4599e3ee73f9a885a750561e15279d01fa47375ff1acc86ec782da",
+    "causal": "003c8ff7d5d804e801c87f33e99ff6611a32e0dc78cd3d9cccee1e4c70ff5c11",
+    "loadSelection": "c6489e28a578b65f8f034a8be119c1b4ee92fb88bf9919fa5b7443b01a177270",
+    "duration": "6c4de9210f899fa82ba940f4492010287a9ca71728efdc7d11f9ea20f078cdeb",
+    "combinedPolicyV1Admission": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8"
+  },
+  "blockersBeforeProductionCompiler": [
+    "Explicit production Compiler implementation authorization.",
+    "A production ReviewedPrescriptionPolicy representation and policy loading boundary.",
+    "Production performance ingestion for exact prior-load evidence."
+  ],
+  "blockersBeforeFinalSequencing": [
+    "Production prescribed sessions from the authorized Compiler.",
+    "Setup and inter-exercise transition ownership.",
+    "Final duration reconciliation without guessed constants."
+  ],
+  "blockersBeforePostPrescriptionWeekValidation": [
+    "Final prescribed and sequenced sessions.",
+    "Source-exposure ledger across the actual Week.",
+    "Completed-performance and response evidence for H2 and spacing."
+  ],
+  "exactNextDependency": "Project-owner authorization to implement, but not yet activate, the production Prescription Compiler against PRESCRIPTION_POLICY_V1_STABLE_ADAPTIVE_CORE@1.0.0.",
+  "expectedFingerprints": {
+    "ownerDecision": "e273f5cbc440827f6aea5f3c2cd2138d756e519376fe204c0c8b119b729cfac0",
+    "ruleMatrix": "a51c29ae2337e4f7053624a3d126dab5b76c52214fd1fe3d8cb795e9381a2a21",
+    "restPlacement": "96074ef94c06623d7b1788b8a0e7db8eeaeff421925922f545b20630eb08f19e",
+    "specificityOrder": "8939afb83cf279ad8df1aba101e6ac18462f7e91ebc24aafc96e2a0651eb68c6",
+    "frozenValueRefs": "2bbfd7def2f914f3177cce24f6ad93b0b5ea26e8f19cf0b39bb39b90d4928fa2",
+    "holdoutManifest": "5c083fb746e9110238e8b0ab632401a3d5581c633156de510b11e6d387d692c6",
+    "performance": "5b81efef4fd58b890f68ac8cf0aa9f139e8637cf57707930c5b6b6da0fa33cda",
+    "stress": "1ca7688bef4599e3ee73f9a885a750561e15279d01fa47375ff1acc86ec782da",
+    "causal": "003c8ff7d5d804e801c87f33e99ff6611a32e0dc78cd3d9cccee1e4c70ff5c11",
+    "loadSelection": "c6489e28a578b65f8f034a8be119c1b4ee92fb88bf9919fa5b7443b01a177270",
+    "duration": "6c4de9210f899fa82ba940f4492010287a9ca71728efdc7d11f9ea20f078cdeb",
+    "combinedPolicyV1Admission": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8"
+  }
+}

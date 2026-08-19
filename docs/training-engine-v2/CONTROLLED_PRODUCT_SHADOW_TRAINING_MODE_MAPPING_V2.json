@@ -1,0 +1,64 @@
+{
+  "reference": {
+    "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+    "contractVersion": "2.0.0"
+  },
+  "entries": [
+    {
+      "reference": {
+        "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceIntent": "build",
+      "mode": "develop",
+      "programmingContexts": [],
+      "status": "mapped",
+      "reasonCodes": [],
+      "diagnosticInferenceCount": 0
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceIntent": "maintain",
+      "mode": "maintain",
+      "programmingContexts": [],
+      "status": "policy_required",
+      "reasonCodes": [
+        "MAINTENANCE_WEEK_AND_LONGITUDINAL_POLICY_REQUIRED"
+      ],
+      "diagnosticInferenceCount": 0
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceIntent": "rehab",
+      "mode": "return_or_rebuild",
+      "programmingContexts": [
+        "pain_aware_return"
+      ],
+      "status": "mapped",
+      "reasonCodes": [
+        "RETURN_OR_REBUILD_REQUIRED_FACTS_REMAIN_EXPLICIT"
+      ],
+      "diagnosticInferenceCount": 0
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_TRAINING_MODE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceIntent": "unknown",
+      "mode": null,
+      "programmingContexts": [],
+      "status": "mapping_required",
+      "reasonCodes": [
+        "PRODUCT_TRAINING_MODE_MAPPING_REQUIRED"
+      ],
+      "diagnosticInferenceCount": 0
+    }
+  ]
+}

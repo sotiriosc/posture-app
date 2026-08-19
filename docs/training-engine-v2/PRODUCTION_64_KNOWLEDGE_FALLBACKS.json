@@ -1,0 +1,1082 @@
+[
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-biceps-curl",
+    "summary": "Self-anchored band elbow-flexion accessory.",
+    "coachingFocus": [
+      "Bend the elbows with steady upper arms",
+      "Keep the band secure underfoot"
+    ],
+    "sourceFactIds": [
+      "band-biceps-curl.pattern.anchorless-curl",
+      "band-biceps-curl.focus.elbow-flexion",
+      "band-biceps-curl.cue.stand-on-band"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-face-pull",
+    "summary": "Anchored-band rear-delt and scapular-control exercise.",
+    "coachingFocus": [
+      "Pull toward face without shrugging"
+    ],
+    "sourceFactIds": [
+      "band-face-pull.pattern",
+      "band-face-pull.focus"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-lat-pulldown",
+    "summary": "High-anchor band vertical pull.",
+    "coachingFocus": [
+      "Use a secure high anchor",
+      "Keep ribs stacked"
+    ],
+    "sourceFactIds": [
+      "band-lat-pulldown.pattern",
+      "band-lat-pulldown.focus",
+      "band-lat-pulldown.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "band-row",
+    "summary": "Anchored-band horizontal pull.",
+    "coachingFocus": [
+      "Anchor securely",
+      "Pull without rib flare"
+    ],
+    "sourceFactIds": [
+      "band-row.pattern",
+      "band-row.focus",
+      "band-row.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "summary": "Bent-over rear-delt horizontal-abduction accessory, not a row.",
+    "coachingFocus": [
+      "Sweep the arms outward without rowing",
+      "Keep a soft fixed elbow"
+    ],
+    "sourceFactIds": [
+      "bent-over-dumbbell-reverse-fly.pattern.rear-delt-accessory",
+      "bent-over-dumbbell-reverse-fly.focus.rear-delt-arc",
+      "bent-over-dumbbell-reverse-fly.cue.soft-elbows"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bird-dog",
+    "summary": "Quadruped contralateral trunk-control task.",
+    "coachingFocus": [
+      "Reach opposite limbs without shifting the trunk",
+      "Press the support points down"
+    ],
+    "sourceFactIds": [
+      "bird-dog.pattern.contralateral-trunk",
+      "bird-dog.focus.contralateral-reach",
+      "bird-dog.cue.push-floor"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-box-squat",
+    "summary": "Supported squat pattern to a box.",
+    "coachingFocus": [
+      "Sit to a consistent target",
+      "Stand with whole-foot pressure"
+    ],
+    "sourceFactIds": [
+      "bodyweight-box-squat.pattern",
+      "bodyweight-box-squat.focus",
+      "bodyweight-box-squat.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "summary": "Unloaded standing hip-hinge pattern preparation.",
+    "coachingFocus": [
+      "Send the hips back",
+      "Keep the trunk organized"
+    ],
+    "sourceFactIds": [
+      "bodyweight-hip-hinge-rehearsal.pattern",
+      "bodyweight-hip-hinge-rehearsal.focus",
+      "bodyweight-hip-hinge-rehearsal.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-chest-fly",
+    "summary": "Cable chest isolation with adjustable line of pull.",
+    "coachingFocus": [
+      "Keep range shoulder-friendly",
+      "Move through chest, not front shoulder"
+    ],
+    "sourceFactIds": [
+      "cable-chest-fly.pattern",
+      "cable-chest-fly.focus",
+      "cable-chest-fly.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-lateral-raise",
+    "summary": "Cable shoulder-abduction accessory with explicit anchor and laterality.",
+    "coachingFocus": [
+      "Raise through the controlled cable path",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "cable-lateral-raise.pattern",
+      "cable-lateral-raise.focus",
+      "cable-lateral-raise.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-pull-through",
+    "summary": "Cable hinge pattern with posterior loading.",
+    "coachingFocus": [
+      "Let hips move back",
+      "Finish tall without overextending"
+    ],
+    "sourceFactIds": [
+      "cable-pull-through.pattern",
+      "cable-pull-through.focus",
+      "cable-pull-through.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "cable-triceps-pressdown",
+    "summary": "Cable elbow-extension accessory.",
+    "coachingFocus": [
+      "Keep upper arm still",
+      "Finish without shoulder roll"
+    ],
+    "sourceFactIds": [
+      "cable-triceps-pressdown.pattern",
+      "cable-triceps-pressdown.focus",
+      "cable-triceps-pressdown.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "chest-supported-dumbbell-row",
+    "summary": "Bench-supported horizontal pull with low lumbar stabilization demand.",
+    "coachingFocus": [
+      "Pull elbows toward hips",
+      "Keep chest supported"
+    ],
+    "sourceFactIds": [
+      "chest-supported-dumbbell-row.pattern",
+      "chest-supported-dumbbell-row.focus",
+      "chest-supported-dumbbell-row.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dead-bug",
+    "summary": "Supine anti-extension core drill.",
+    "coachingFocus": [
+      "Move limbs without losing spine position"
+    ],
+    "sourceFactIds": [
+      "dead-bug.pattern",
+      "dead-bug.focus"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "summary": "Bench-supported horizontal press with external loading.",
+    "coachingFocus": [
+      "Control the bottom range",
+      "Press without shoulder glide"
+    ],
+    "sourceFactIds": [
+      "dumbbell-bench-press.pattern",
+      "dumbbell-bench-press.focus",
+      "dumbbell-bench-press.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-curl",
+    "summary": "Dumbbell elbow-flexion accessory.",
+    "coachingFocus": [
+      "Control the lowering",
+      "Do not swing"
+    ],
+    "sourceFactIds": [
+      "dumbbell-curl.pattern",
+      "dumbbell-curl.focus",
+      "dumbbell-curl.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-floor-press",
+    "summary": "Floor-supported horizontal press with a bounded lowering range.",
+    "coachingFocus": [
+      "Press up from a floor-bounded bottom position",
+      "Stack wrists over elbows"
+    ],
+    "sourceFactIds": [
+      "dumbbell-floor-press.pattern.horizontal-press",
+      "dumbbell-floor-press.focus.floor-bounded-press",
+      "dumbbell-floor-press.cue.wrist-over-elbow"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-lateral-raise",
+    "summary": "Dumbbell side-delt isolation.",
+    "coachingFocus": [
+      "Lead with elbows softly",
+      "Stay in comfortable range"
+    ],
+    "sourceFactIds": [
+      "dumbbell-lateral-raise.pattern",
+      "dumbbell-lateral-raise.focus",
+      "dumbbell-lateral-raise.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "summary": "Loaded hinge emphasizing hamstrings and glutes.",
+    "coachingFocus": [
+      "Hips back",
+      "Keep load close",
+      "Stop before spine position changes"
+    ],
+    "sourceFactIds": [
+      "dumbbell-romanian-deadlift.pattern",
+      "dumbbell-romanian-deadlift.focus",
+      "dumbbell-romanian-deadlift.cue.1",
+      "dumbbell-romanian-deadlift.cue.2"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-shoulder-press",
+    "summary": "External-load vertical push.",
+    "coachingFocus": [
+      "Press in pain-free range",
+      "Avoid leaning back"
+    ],
+    "sourceFactIds": [
+      "dumbbell-shoulder-press.pattern",
+      "dumbbell-shoulder-press.focus",
+      "dumbbell-shoulder-press.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-triceps-extension",
+    "summary": "Direct elbow-extension accessory using one overhead dumbbell.",
+    "coachingFocus": [
+      "Extend at the elbows with a steady upper-arm path",
+      "Keep a secure two-hand grip"
+    ],
+    "sourceFactIds": [
+      "dumbbell-triceps-extension.pattern.direct-extension",
+      "dumbbell-triceps-extension.focus.elbow-extension",
+      "dumbbell-triceps-extension.cue.secure-grip"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "farmer-carry",
+    "summary": "Bilateral one-implement-per-hand loaded walking carry.",
+    "coachingFocus": [
+      "Walk tall with quiet implements",
+      "Use controlled turns and set-downs"
+    ],
+    "sourceFactIds": [
+      "farmer-carry.pattern",
+      "farmer-carry.focus",
+      "farmer-carry.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-plank",
+    "summary": "Stationary forearm-supported anti-extension trunk exercise.",
+    "coachingFocus": [
+      "Keep ribs and pelvis organized",
+      "Press through the forearms"
+    ],
+    "sourceFactIds": [
+      "forearm-plank.pattern",
+      "forearm-plank.focus",
+      "forearm-plank.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-side-plank",
+    "summary": "Forearm-supported side plank for anti-lateral-flexion control.",
+    "coachingFocus": [
+      "Keep a long side line",
+      "Press through the forearm"
+    ],
+    "sourceFactIds": [
+      "forearm-side-plank.pattern",
+      "forearm-side-plank.focus",
+      "forearm-side-plank.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "glute-bridge",
+    "summary": "Supine hip-extension glute exercise.",
+    "coachingFocus": [
+      "Finish with glutes, not low back"
+    ],
+    "sourceFactIds": [
+      "glute-bridge.pattern",
+      "glute-bridge.focus"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "goblet-squat",
+    "summary": "Dumbbell-loaded squat pattern.",
+    "coachingFocus": [
+      "Use range you can own",
+      "Keep pressure through whole foot"
+    ],
+    "sourceFactIds": [
+      "goblet-squat.pattern",
+      "goblet-squat.focus",
+      "goblet-squat.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "hack-squat",
+    "summary": "Machine-guided squat and knee-dominant strength pattern.",
+    "coachingFocus": [
+      "Squat through the guided range",
+      "Keep feet secure on the platform"
+    ],
+    "sourceFactIds": [
+      "hack-squat.pattern",
+      "hack-squat.focus",
+      "hack-squat.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "summary": "Half-kneeling high-cable controlled trunk-rotation exercise.",
+    "coachingFocus": [
+      "Rotate through the trunk with control",
+      "Follow the high-to-low path"
+    ],
+    "sourceFactIds": [
+      "half-kneeling-high-to-low-cable-chop.pattern",
+      "half-kneeling-high-to-low-cable-chop.focus",
+      "half-kneeling-high-to-low-cable-chop.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "lat-pulldown",
+    "summary": "Machine/cable vertical pull.",
+    "coachingFocus": [
+      "Pull elbows down",
+      "Avoid neck tension"
+    ],
+    "sourceFactIds": [
+      "lat-pulldown.pattern",
+      "lat-pulldown.focus",
+      "lat-pulldown.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "leg-press",
+    "summary": "Machine-guided bilateral squat pattern.",
+    "coachingFocus": [
+      "Control depth",
+      "Do not chase load past owned range"
+    ],
+    "sourceFactIds": [
+      "leg-press.pattern",
+      "leg-press.focus",
+      "leg-press.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "loop-band-lateral-walk",
+    "summary": "Standing lateral stepping against unanchored loop-band resistance.",
+    "coachingFocus": [
+      "Step without letting the knees collapse",
+      "Keep steady band tension"
+    ],
+    "sourceFactIds": [
+      "loop-band-lateral-walk.pattern",
+      "loop-band-lateral-walk.focus",
+      "loop-band-lateral-walk.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "lying-leg-curl",
+    "summary": "Machine hamstring knee-flexion isolation.",
+    "coachingFocus": [
+      "Control the return",
+      "Keep hips settled"
+    ],
+    "sourceFactIds": [
+      "lying-leg-curl.pattern",
+      "lying-leg-curl.focus",
+      "lying-leg-curl.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-abdominal-crunch",
+    "summary": "Machine-guided controlled trunk-flexion exercise.",
+    "coachingFocus": [
+      "Flex through the trunk with control",
+      "Return without dropping the stack"
+    ],
+    "sourceFactIds": [
+      "machine-abdominal-crunch.pattern",
+      "machine-abdominal-crunch.focus",
+      "machine-abdominal-crunch.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-chest-fly",
+    "summary": "Machine-guided shoulder horizontal-adduction accessory.",
+    "coachingFocus": [
+      "Fly through the guided range",
+      "Stay connected to the support"
+    ],
+    "sourceFactIds": [
+      "machine-chest-fly.pattern",
+      "machine-chest-fly.focus",
+      "machine-chest-fly.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-chest-press",
+    "summary": "Machine-guided horizontal press.",
+    "coachingFocus": [
+      "Set seat to comfortable shoulder path"
+    ],
+    "sourceFactIds": [
+      "machine-chest-press.pattern",
+      "machine-chest-press.focus"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-hip-abduction",
+    "summary": "Seated machine-guided hip-abduction accessory.",
+    "coachingFocus": [
+      "Abduct through the selected machine range",
+      "Keep the pelvis supported"
+    ],
+    "sourceFactIds": [
+      "machine-hip-abduction.pattern",
+      "machine-hip-abduction.focus",
+      "machine-hip-abduction.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-hip-adduction",
+    "summary": "Seated machine-guided hip-adduction accessory.",
+    "coachingFocus": [
+      "Adduct through the selected machine range",
+      "Keep the pelvis supported"
+    ],
+    "sourceFactIds": [
+      "machine-hip-adduction.pattern",
+      "machine-hip-adduction.focus",
+      "machine-hip-adduction.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-hip-thrust",
+    "summary": "Machine-supported loaded hip-extension strength exercise.",
+    "coachingFocus": [
+      "Extend the hips through the guided path",
+      "Keep feet secure"
+    ],
+    "sourceFactIds": [
+      "machine-hip-thrust.pattern",
+      "machine-hip-thrust.focus",
+      "machine-hip-thrust.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-leg-extension",
+    "summary": "Supported direct knee-extension accessory, not a squat.",
+    "coachingFocus": [
+      "Extend the knees from a stable machine setup",
+      "Stay connected to the seat"
+    ],
+    "sourceFactIds": [
+      "machine-leg-extension.pattern.direct-knee-extension",
+      "machine-leg-extension.focus.knee-extension",
+      "machine-leg-extension.cue.seat-contact"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-row",
+    "summary": "Machine-based horizontal pull with machine-specific path and fit constraints.",
+    "coachingFocus": [
+      "Set pad height cleanly",
+      "Pull without neck tension"
+    ],
+    "sourceFactIds": [
+      "machine-row.pattern",
+      "machine-row.focus",
+      "machine-row.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-shoulder-press",
+    "summary": "Supported machine-guided vertical push.",
+    "coachingFocus": [
+      "Press through the guided path from a stable setup",
+      "Stay connected to the back support"
+    ],
+    "sourceFactIds": [
+      "machine-shoulder-press.pattern.supported-vertical-push",
+      "machine-shoulder-press.focus.guided-press",
+      "machine-shoulder-press.cue.back-supported"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "ninety-ninety-breathing",
+    "summary": "Supine breathing drill for ribcage and pelvis position.",
+    "coachingFocus": [
+      "Exhale fully",
+      "Keep ribs stacked over pelvis"
+    ],
+    "sourceFactIds": [
+      "ninety-ninety-breathing.pattern",
+      "ninety-ninety-breathing.focus",
+      "ninety-ninety-breathing.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "one-arm-dumbbell-row",
+    "summary": "Unsupported or lightly supported dumbbell horizontal pull with more trunk demand.",
+    "coachingFocus": [
+      "Support as needed",
+      "Keep torso position steady"
+    ],
+    "sourceFactIds": [
+      "one-arm-dumbbell-row.pattern",
+      "one-arm-dumbbell-row.focus",
+      "one-arm-dumbbell-row.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "overhead-cable-triceps-extension",
+    "summary": "Overhead cable elbow-extension accessory with exact high anchor.",
+    "coachingFocus": [
+      "Extend the elbows through the overhead path",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "overhead-cable-triceps-extension.pattern",
+      "overhead-cable-triceps-extension.focus",
+      "overhead-cable-triceps-extension.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pallof-press",
+    "summary": "Anti-rotation core press using cable or anchored band.",
+    "coachingFocus": [
+      "Resist rotation",
+      "Stay tall without rib flare"
+    ],
+    "sourceFactIds": [
+      "pallof-press.pattern",
+      "pallof-press.focus",
+      "pallof-press.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pull-up",
+    "summary": "Vertical body pull with exact unassisted or machine-assisted apparatus.",
+    "coachingFocus": [
+      "Pull through the prescribed vertical range",
+      "Keep a secure grip"
+    ],
+    "sourceFactIds": [
+      "pull-up.pattern",
+      "pull-up.focus",
+      "pull-up.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "push-up",
+    "summary": "Bodyweight horizontal push.",
+    "coachingFocus": [
+      "Press the floor away",
+      "Keep trunk organized"
+    ],
+    "sourceFactIds": [
+      "push-up.pattern",
+      "push-up.focus",
+      "push-up.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "reverse-pec-deck",
+    "summary": "Machine-supported rear-delt and upper-back isolation.",
+    "coachingFocus": [
+      "Move shoulder blades and rear delts, not neck"
+    ],
+    "sourceFactIds": [
+      "reverse-pec-deck.pattern",
+      "reverse-pec-deck.focus"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "seated-cable-row",
+    "summary": "Cable-anchored horizontal pull with setup-dependent line of pull.",
+    "coachingFocus": [
+      "Own the reach",
+      "Finish with shoulder blades moving cleanly"
+    ],
+    "sourceFactIds": [
+      "seated-cable-row.pattern",
+      "seated-cable-row.focus",
+      "seated-cable-row.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "seated-calf-raise",
+    "summary": "Seated machine-supported ankle plantar-flexion accessory.",
+    "coachingFocus": [
+      "Raise the heels from stable seated support",
+      "Keep forefeet secure"
+    ],
+    "sourceFactIds": [
+      "seated-calf-raise.pattern",
+      "seated-calf-raise.focus",
+      "seated-calf-raise.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "seated-leg-curl",
+    "summary": "Seated machine-supported knee-flexion accessory.",
+    "coachingFocus": [
+      "Curl from stable seated support",
+      "Keep thighs supported"
+    ],
+    "sourceFactIds": [
+      "seated-leg-curl.pattern",
+      "seated-leg-curl.focus",
+      "seated-leg-curl.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "serratus-wall-slide",
+    "summary": "Wall-supported scapular upward-rotation and serratus control drill.",
+    "coachingFocus": [
+      "Reach without shrugging",
+      "Keep ribs quiet"
+    ],
+    "sourceFactIds": [
+      "serratus-wall-slide.pattern",
+      "serratus-wall-slide.focus",
+      "serratus-wall-slide.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "summary": "Supported direct shoulder external-rotation accessory exercise.",
+    "coachingFocus": [
+      "Rotate from the shoulder",
+      "Keep the elbow position quiet"
+    ],
+    "sourceFactIds": [
+      "side-lying-dumbbell-external-rotation.pattern",
+      "side-lying-dumbbell-external-rotation.focus",
+      "side-lying-dumbbell-external-rotation.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-hip-abduction",
+    "summary": "Floor-supported bodyweight hip abduction for the top leg.",
+    "coachingFocus": [
+      "Lift from the hip with the pelvis stacked",
+      "Keep the top leg long"
+    ],
+    "sourceFactIds": [
+      "side-lying-hip-abduction.pattern.floor-abduction",
+      "side-lying-hip-abduction.focus.lateral-lift",
+      "side-lying-hip-abduction.cue.long-leg"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-hip-adduction",
+    "summary": "Floor-supported direct hip-adduction accessory exercise.",
+    "coachingFocus": [
+      "Lift with the inner thigh",
+      "Keep the pelvis stacked"
+    ],
+    "sourceFactIds": [
+      "side-lying-hip-adduction.pattern",
+      "side-lying-hip-adduction.focus",
+      "side-lying-hip-adduction.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "single-leg-balance-rehearsal",
+    "summary": "Stationary single-leg stance-control preparation with prescription-modifiable support.",
+    "coachingFocus": [
+      "Use only the support you need",
+      "Keep the stance side controlled"
+    ],
+    "sourceFactIds": [
+      "single-leg-balance-rehearsal.pattern",
+      "single-leg-balance-rehearsal.focus",
+      "single-leg-balance-rehearsal.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "split-squat",
+    "summary": "Unilateral lower-body squat pattern.",
+    "coachingFocus": [
+      "Use support if balance dominates",
+      "Own depth before load"
+    ],
+    "sourceFactIds": [
+      "split-squat.pattern",
+      "split-squat.focus",
+      "split-squat.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "standing-calf-raise",
+    "summary": "Equipment-neutral standing ankle plantar-flexion accessory exercise.",
+    "coachingFocus": [
+      "Rise through the ball of the foot",
+      "Control the full return"
+    ],
+    "sourceFactIds": [
+      "standing-calf-raise.pattern",
+      "standing-calf-raise.focus",
+      "standing-calf-raise.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "step-up",
+    "summary": "Unilateral lower-body step pattern.",
+    "coachingFocus": [
+      "Control the descent",
+      "Match box height to owned range"
+    ],
+    "sourceFactIds": [
+      "step-up.pattern",
+      "step-up.focus",
+      "step-up.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "straight-arm-cable-pulldown",
+    "summary": "High-cable shoulder-extension accessory, not a vertical-pull replacement.",
+    "coachingFocus": [
+      "Pull straight arms down from the shoulders",
+      "Keep a stable stance"
+    ],
+    "sourceFactIds": [
+      "straight-arm-cable-pulldown.pattern",
+      "straight-arm-cable-pulldown.focus",
+      "straight-arm-cable-pulldown.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "suitcase-carry",
+    "summary": "Unilateral side-specific loaded walking carry.",
+    "coachingFocus": [
+      "Stay tall over each step",
+      "Keep the load side controlled"
+    ],
+    "sourceFactIds": [
+      "suitcase-carry.pattern",
+      "suitcase-carry.focus",
+      "suitcase-carry.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "supine-hamstring-walkout",
+    "summary": "Floor-supported bridge-position heel walkout for direct hamstring work.",
+    "coachingFocus": [
+      "Keep the hips controlled",
+      "Walk only as far as you can own"
+    ],
+    "sourceFactIds": [
+      "supine-hamstring-walkout.pattern",
+      "supine-hamstring-walkout.focus",
+      "supine-hamstring-walkout.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "summary": "Wall-referenced ankle dorsiflexion preparation exercise.",
+    "coachingFocus": [
+      "Guide the knee forward over the foot",
+      "Keep the heel grounded"
+    ],
+    "sourceFactIds": [
+      "wall-ankle-dorsiflexion-rock.pattern",
+      "wall-ankle-dorsiflexion-rock.focus",
+      "wall-ankle-dorsiflexion-rock.cue.1"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_COMPACT_FALLBACK_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "wall-supported-suitcase-march",
+    "summary": "Stationary alternating loaded march with opposite-hand wall support.",
+    "coachingFocus": [
+      "Use light wall support",
+      "March without drifting toward the load"
+    ],
+    "sourceFactIds": [
+      "wall-supported-suitcase-march.pattern",
+      "wall-supported-suitcase-march.focus",
+      "wall-supported-suitcase-march.cue.1"
+    ]
+  }
+]

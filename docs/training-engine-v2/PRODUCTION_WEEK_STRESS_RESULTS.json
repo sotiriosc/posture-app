@@ -1,0 +1,23 @@
+{
+  "intentEvaluations": 10000,
+  "allocationEvaluations": 10000,
+  "policyEvaluations": 10000,
+  "exactSearchComparisons": 5000,
+  "boundedSearchComparisons": 5000,
+  "pipelineEvaluations": 1000,
+  "materializationEvaluations": 1000,
+  "reallocationEvaluations": 1000,
+  "completedHistoryValidations": 1000,
+  "antiBloatValidations": 1000,
+  "warmupActivationValidations": 1000,
+  "gate13ProjectionValidations": 1000,
+  "noRescueMutations": 1000,
+  "intentFingerprint": "weekly-intent-revision:2ee2aedd9cebd0b9",
+  "allocationFingerprint": "week-plan-revision:c40886fba6cddd5f",
+  "failures": [],
+  "repeatedRunDeterministic": true,
+  "productionRandomnessCount": 0,
+  "hiddenClockCount": 0,
+  "downstreamRescueCount": 0,
+  "fingerprint": "677e7561d7883011059a0557eed01b66d8f441f80ab762eeb2778ec42c00ab04"
+}

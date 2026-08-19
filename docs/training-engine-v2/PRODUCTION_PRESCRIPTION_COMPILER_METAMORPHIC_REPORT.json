@@ -1,0 +1,59 @@
+{
+  "caseCount": 13,
+  "invariantCount": 13,
+  "cases": [
+    {
+      "name": "policy_rule_ordering",
+      "invariant": true
+    },
+    {
+      "name": "assignment_ordering",
+      "invariant": true
+    },
+    {
+      "name": "catalog_ordering",
+      "invariant": true
+    },
+    {
+      "name": "evidence_reference_ordering",
+      "invariant": true
+    },
+    {
+      "name": "provenance_array_ordering",
+      "invariant": true
+    },
+    {
+      "name": "label_changes",
+      "invariant": true
+    },
+    {
+      "name": "display_name_changes",
+      "invariant": true
+    },
+    {
+      "name": "explanatory_prose_changes",
+      "invariant": true
+    },
+    {
+      "name": "candidate_rank_changes_after_assignment",
+      "invariant": true
+    },
+    {
+      "name": "irrelevant_pain",
+      "invariant": true
+    },
+    {
+      "name": "irrelevant_assessment",
+      "invariant": true
+    },
+    {
+      "name": "irrelevant_history",
+      "invariant": true
+    },
+    {
+      "name": "non_semantic_id_changes",
+      "invariant": true
+    }
+  ],
+  "fingerprint": "2e3d361a1b6b4bd6be13c5b9afb1700c4f6fa0525ff83567809eae58fcf3e38a"
+}

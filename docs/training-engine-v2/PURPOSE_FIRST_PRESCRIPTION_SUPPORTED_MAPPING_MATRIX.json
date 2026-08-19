@@ -1,0 +1,177 @@
+[
+  {
+    "authorityRequirement": "primary_or_secondary_local",
+    "doseModes": [
+      "repetition_sets"
+    ],
+    "localPurpose": "strength_development",
+    "mappingId": "purpose-v1:strength",
+    "roles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "sections": [
+      "main",
+      "accessory"
+    ],
+    "useCases": [
+      "main_strength",
+      "secondary_strength"
+    ]
+  },
+  {
+    "authorityRequirement": "primary_or_secondary_local",
+    "doseModes": [
+      "repetition_sets"
+    ],
+    "localPurpose": "hypertrophy_development",
+    "mappingId": "purpose-v1:hypertrophy",
+    "roles": [
+      "primary_strength",
+      "hypertrophy_accessory"
+    ],
+    "sections": [
+      "main",
+      "accessory"
+    ],
+    "useCases": [
+      "main_hypertrophy",
+      "hypertrophy_accessory"
+    ]
+  },
+  {
+    "authorityRequirement": "primary_or_secondary_local",
+    "doseModes": [
+      "repetition_sets"
+    ],
+    "localPurpose": "direct_development",
+    "mappingId": "purpose-v1:direct",
+    "roles": [
+      "hypertrophy_accessory"
+    ],
+    "sections": [
+      "accessory"
+    ],
+    "useCases": [
+      "direct_accessory"
+    ]
+  },
+  {
+    "authorityRequirement": "primary_or_secondary_local",
+    "doseModes": [
+      "distance_carry",
+      "timed_carry",
+      "step_march",
+      "step_sets",
+      "timed_hold"
+    ],
+    "localPurpose": "capacity_development",
+    "mappingId": "purpose-v1:capacity",
+    "roles": [
+      "capacity"
+    ],
+    "sections": [
+      "main",
+      "accessory"
+    ],
+    "useCases": [
+      "capacity_carry",
+      "accessory_carry",
+      "developmental_stationary_march",
+      "developmental_counted_steps",
+      "timed_hold"
+    ]
+  },
+  {
+    "authorityRequirement": "dependency_support",
+    "doseModes": [
+      "repetition_sets",
+      "timed_hold",
+      "breath_cycles",
+      "step_march",
+      "step_sets"
+    ],
+    "localPurpose": "preparation",
+    "mappingId": "purpose-v1:preparation",
+    "roles": [
+      "preparation"
+    ],
+    "sections": [
+      "warmup"
+    ],
+    "useCases": [
+      "preparation",
+      "supporting_stationary_march",
+      "supporting_counted_steps"
+    ]
+  },
+  {
+    "authorityRequirement": "dependency_support",
+    "doseModes": [
+      "repetition_sets",
+      "timed_hold",
+      "step_march",
+      "step_sets"
+    ],
+    "localPurpose": "activation",
+    "mappingId": "purpose-v1:activation",
+    "roles": [
+      "activation"
+    ],
+    "sections": [
+      "activation"
+    ],
+    "useCases": [
+      "activation",
+      "supporting_stationary_march",
+      "supporting_counted_steps"
+    ]
+  },
+  {
+    "authorityRequirement": "explicit_local_or_dependency",
+    "doseModes": [
+      "breath_cycles",
+      "timed_hold"
+    ],
+    "localPurpose": "recovery",
+    "mappingId": "purpose-v1:recovery",
+    "roles": [
+      "recovery"
+    ],
+    "sections": [
+      "cooldown"
+    ],
+    "useCases": [
+      "recovery_cooldown"
+    ]
+  },
+  {
+    "authorityRequirement": "explicit_local_or_dependency",
+    "doseModes": [
+      "timed_hold",
+      "breath_cycles",
+      "step_march",
+      "step_sets"
+    ],
+    "localPurpose": "technique_or_control",
+    "mappingId": "purpose-v1:technique-control",
+    "roles": [
+      "preparation",
+      "activation",
+      "hypertrophy_accessory",
+      "recovery"
+    ],
+    "sections": [
+      "warmup",
+      "activation",
+      "accessory",
+      "cooldown"
+    ],
+    "useCases": [
+      "timed_hold",
+      "breath_cycles",
+      "supporting_stationary_march",
+      "supporting_counted_steps"
+    ]
+  }
+]

@@ -1,0 +1,1144 @@
+[
+  {
+    "addDuringRefs": [
+      "push-up.realization.wall.during"
+    ],
+    "addSetupRefs": [
+      "push-up.realization.wall.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "push-up",
+    "id": "push-up.realization.wall",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing push-up identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "push-up language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "wall-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "push-up.realization.elevated.setup"
+    ],
+    "addWatchForRefs": [
+      "push-up.realization.elevated.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "push-up",
+    "id": "push-up.realization.elevated",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing push-up identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "push-up language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "elevated-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "push-up.realization.knees.during"
+    ],
+    "addSetupRefs": [
+      "push-up.realization.knees.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "push-up",
+    "id": "push-up.realization.knees",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing push-up identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "push-up language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "knee-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "dumbbell-bench-press.realization.incline.during"
+    ],
+    "addSetupRefs": [
+      "dumbbell-bench-press.realization.incline.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "id": "dumbbell-bench-press.realization.incline",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing dumbbell-bench-press identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "dumbbell-bench-press language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "adjustable-bench-incline",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "one-arm-dumbbell-row.realization.bench.setup"
+    ],
+    "addWatchForRefs": [
+      "one-arm-dumbbell-row.realization.bench.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "one-arm-dumbbell-row",
+    "id": "one-arm-dumbbell-row.realization.bench",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing one-arm-dumbbell-row identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "one-arm-dumbbell-row language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "bench-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "one-arm-dumbbell-row.realization.unsupported.during"
+    ],
+    "addSetupRefs": [
+      "one-arm-dumbbell-row.realization.unsupported.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "one-arm-dumbbell-row",
+    "id": "one-arm-dumbbell-row.realization.unsupported",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing one-arm-dumbbell-row identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "one-arm-dumbbell-row language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "unsupported-split-stance",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "dumbbell-shoulder-press.realization.seated.during"
+    ],
+    "addSetupRefs": [
+      "dumbbell-shoulder-press.realization.seated.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-shoulder-press",
+    "id": "dumbbell-shoulder-press.realization.seated",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing dumbbell-shoulder-press identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "dumbbell-shoulder-press language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "seated-bench-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "split-squat.realization.supported.during"
+    ],
+    "addSetupRefs": [
+      "split-squat.realization.supported.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "split-squat",
+    "id": "split-squat.realization.supported",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing split-squat identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "split-squat language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "stable-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "split-squat.realization.dumbbell.setup"
+    ],
+    "addWatchForRefs": [
+      "split-squat.realization.dumbbell.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "split-squat",
+    "id": "split-squat.realization.dumbbell",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing split-squat identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "split-squat language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "dumbbell-loaded",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "step-up.realization.supported.during"
+    ],
+    "addSetupRefs": [
+      "step-up.realization.supported.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "step-up",
+    "id": "step-up.realization.supported",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing step-up identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "step-up language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "stable-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "step-up.realization.dumbbell.setup"
+    ],
+    "addWatchForRefs": [
+      "step-up.realization.dumbbell.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "step-up",
+    "id": "step-up.realization.dumbbell",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing step-up identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "step-up language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "dumbbell-loaded",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "glute-bridge.realization.dumbbell.setup"
+    ],
+    "addWatchForRefs": [
+      "glute-bridge.realization.dumbbell.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "glute-bridge",
+    "id": "glute-bridge.realization.dumbbell",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing glute-bridge identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "glute-bridge language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "dumbbell-loaded",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "glute-bridge.realization.loop-band.during"
+    ],
+    "addSetupRefs": [
+      "glute-bridge.realization.loop-band.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "glute-bridge",
+    "id": "glute-bridge.realization.loop-band",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing glute-bridge identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "glute-bridge language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "loop-band-loaded",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "standing-calf-raise.realization.supported.during"
+    ],
+    "addSetupRefs": [
+      "standing-calf-raise.realization.supported.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "standing-calf-raise",
+    "id": "standing-calf-raise.realization.supported",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing standing-calf-raise identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "standing-calf-raise language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "stable-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "standing-calf-raise.realization.dumbbell.setup"
+    ],
+    "addWatchForRefs": [
+      "standing-calf-raise.realization.dumbbell.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "standing-calf-raise",
+    "id": "standing-calf-raise.realization.dumbbell",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing standing-calf-raise identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "standing-calf-raise language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "dumbbell-loaded",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "pallof-press.realization.cable.during"
+    ],
+    "addSetupRefs": [
+      "pallof-press.realization.cable.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pallof-press",
+    "id": "pallof-press.realization.cable",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing pallof-press identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "pallof-press language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "cable-stack",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "pallof-press.realization.band.setup"
+    ],
+    "addWatchForRefs": [
+      "pallof-press.realization.band.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "pallof-press",
+    "id": "pallof-press.realization.band",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing pallof-press identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "pallof-press language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "mid-anchored-band",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "forearm-plank.realization.knees.during"
+    ],
+    "addSetupRefs": [
+      "forearm-plank.realization.knees.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-plank",
+    "id": "forearm-plank.realization.knees",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing forearm-plank identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "forearm-plank language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "knee-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "forearm-side-plank.realization.bent-knee.during"
+    ],
+    "addSetupRefs": [
+      "forearm-side-plank.realization.bent-knee.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "forearm-side-plank",
+    "id": "forearm-side-plank.realization.bent-knee",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing forearm-side-plank identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "forearm-side-plank language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "bent-knee-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "loop-band-lateral-walk.realization.supported.during"
+    ],
+    "addSetupRefs": [
+      "loop-band-lateral-walk.realization.supported.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "loop-band-lateral-walk",
+    "id": "loop-band-lateral-walk.realization.supported",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing loop-band-lateral-walk identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "loop-band-lateral-walk language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "stable-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "side-lying-dumbbell-external-rotation.realization.floor.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "id": "side-lying-dumbbell-external-rotation.realization.floor",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing side-lying-dumbbell-external-rotation identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "side-lying-dumbbell-external-rotation language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "floor-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "side-lying-dumbbell-external-rotation.realization.bench.setup"
+    ],
+    "addWatchForRefs": [
+      "side-lying-dumbbell-external-rotation.realization.bench.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "id": "side-lying-dumbbell-external-rotation.realization.bench",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing side-lying-dumbbell-external-rotation identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "side-lying-dumbbell-external-rotation language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "bench-supported",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "bodyweight-hip-hinge-rehearsal.realization.wall.during"
+    ],
+    "addSetupRefs": [
+      "bodyweight-hip-hinge-rehearsal.realization.wall.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "id": "bodyweight-hip-hinge-rehearsal.realization.wall",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing bodyweight-hip-hinge-rehearsal identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "bodyweight-hip-hinge-rehearsal language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "wall-target",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "bodyweight-hip-hinge-rehearsal.realization.support.during"
+    ],
+    "addSetupRefs": [
+      "bodyweight-hip-hinge-rehearsal.realization.support.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "id": "bodyweight-hip-hinge-rehearsal.realization.support",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing bodyweight-hip-hinge-rehearsal identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "bodyweight-hip-hinge-rehearsal language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "stable-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "single-leg-balance-rehearsal.realization.substantial.during"
+    ],
+    "addSetupRefs": [
+      "single-leg-balance-rehearsal.realization.substantial.setup"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "single-leg-balance-rehearsal",
+    "id": "single-leg-balance-rehearsal.realization.substantial",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing single-leg-balance-rehearsal identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "single-leg-balance-rehearsal language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "substantial-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addSetupRefs": [
+      "single-leg-balance-rehearsal.realization.light-touch.setup"
+    ],
+    "addWatchForRefs": [
+      "single-leg-balance-rehearsal.realization.light-touch.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "single-leg-balance-rehearsal",
+    "id": "single-leg-balance-rehearsal.realization.light-touch",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "The owner authorized Knowledge completion while preserving the existing single-leg-balance-rehearsal identity boundary."
+        ],
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "single-leg-balance-rehearsal language was reviewed for exercise identity, category meaning, plain language, and non-clinical boundaries."
+        ],
+        "sourceRef": "human-review:pre-g2k:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      }
+    ],
+    "realizationId": "light-touch-support",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "dumbbell-floor-press.realization.single.during"
+    ],
+    "addSetupRefs": [
+      "dumbbell-floor-press.realization.single.setup"
+    ],
+    "addWatchForRefs": [
+      "dumbbell-floor-press.realization.single.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-floor-press",
+    "id": "dumbbell-floor-press.realization.one-dumbbell",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Owner selected and bounded the dumbbell-floor-press production identity."
+        ],
+        "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Setup, execution, pattern, and observation language for dumbbell-floor-press was independently reviewed as non-diagnostic coaching content."
+        ],
+        "sourceRef": "human-review:package-r:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Resistance exercise selection and progression remain specific to goals, capacity, and training status; this source does not prescribe row-specific technique."
+        ],
+        "sourceRef": "https://pubmed.ncbi.nlm.nih.gov/11828249/",
+        "sourceType": "external_reference"
+      }
+    ],
+    "realizationId": "one-dumbbell-unilateral",
+    "reviewStatus": "accepted"
+  },
+  {
+    "addDuringRefs": [
+      "bird-dog.realization.alternating.during"
+    ],
+    "addWatchForRefs": [
+      "bird-dog.realization.alternating.watch"
+    ],
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "bird-dog",
+    "id": "bird-dog.realization.alternating",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Owner selected and bounded the bird-dog production identity."
+        ],
+        "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+        "sourceType": "owner_decision"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Setup, execution, pattern, and observation language for bird-dog was independently reviewed as non-diagnostic coaching content."
+        ],
+        "sourceRef": "human-review:package-r:2026-08-16",
+        "sourceType": "human_exercise_science_review"
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "evidenceBasis": [
+          "Bird-dog is a trunk-demanding sensorimotor task; the study does not establish treatment effects."
+        ],
+        "sourceRef": "https://pubmed.ncbi.nlm.nih.gov/29290418/",
+        "sourceType": "external_reference"
+      }
+    ],
+    "realizationId": "alternating-repetitions",
+    "reviewStatus": "accepted"
+  }
+]

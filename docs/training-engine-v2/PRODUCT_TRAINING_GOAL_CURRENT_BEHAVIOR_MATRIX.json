@@ -1,0 +1,52 @@
+[
+  {
+    "goal": "strength",
+    "canonicalOutcomeGoal": true,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "supported_major_strength_movement_development_S2",
+    "productOption": false
+  },
+  {
+    "goal": "hypertrophy",
+    "canonicalOutcomeGoal": true,
+    "mainRepetitionUseCase": "main_hypertrophy",
+    "weekPolicy": "unsupported_requires_policy",
+    "productOption": false
+  },
+  {
+    "goal": "general_fitness",
+    "canonicalOutcomeGoal": true,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "unsupported_requires_policy",
+    "productOption": true
+  },
+  {
+    "goal": "conditioning",
+    "canonicalOutcomeGoal": true,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "unsupported_requires_policy",
+    "productOption": false
+  },
+  {
+    "goal": "posture_and_movement_quality",
+    "canonicalOutcomeGoal": true,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "unsupported_requires_policy",
+    "productOption": true
+  },
+  {
+    "goal": "pain_aware_return",
+    "canonicalOutcomeGoal": false,
+    "programmingContextOnly": true,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "context_not_week_goal",
+    "productOption": true
+  },
+  {
+    "goal": "unknown_or_legacy",
+    "canonicalOutcomeGoal": false,
+    "mainRepetitionUseCase": "main_strength",
+    "weekPolicy": "mapping_or_policy_required",
+    "productOption": false
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "contractReference": {
+    "contractId": "SESSION_PRACTICE_REQUEST",
+    "contractVersion": "1.0.0"
+  },
+  "requestId": "session-practice-request:454d0a6ef6759bd2",
+  "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+  "athleteId": "athlete-1",
+  "sourceProgramId": "program-1",
+  "sourceProgramRevisionId": "program-rev-1",
+  "sourceWeekPlanId": "week-1",
+  "sourceWeekPlanRevisionId": "week-rev-1",
+  "sourceReservationId": "reservation-1",
+  "sourceReservationRevisionId": "reservation-rev-1",
+  "sourceSessionIntentId": "intent-1",
+  "sourceSessionSkeletonId": "intent-1",
+  "sourceSessionSkeletonFingerprint": "source-fingerprint-1",
+  "sourceFinalPrescribedSessionId": "prescribed-session-1",
+  "sourceFinalPrescribedSessionRevisionId": "prescribed-session-rev-1",
+  "requestedMode": "lighter",
+  "source": "athlete_explicit",
+  "recommendationReference": null,
+  "selectedAt": "2026-08-16T12:00:00.000Z",
+  "evaluationTime": "2026-08-16T12:00:00.000Z",
+  "currentEquipmentReference": "equipment-1",
+  "trainingSafetyReference": "safety-evaluation-1",
+  "actualAvailableMinutes": 45,
+  "provenance": [
+    "test"
+  ],
+  "state": "counterfactual"
+}

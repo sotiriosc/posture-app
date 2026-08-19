@@ -1,0 +1,202 @@
+{
+  "mutationCount": 39,
+  "rejectedCount": 39,
+  "cases": [
+    {
+      "mutation": "missing_policy",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "unknown_policy_version",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "equal_rule_conflict",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "lower_specificity_rule_erasing_higher_rule",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "test_helper_import",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "parsed_fixture_tag",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "parsed_candidate_label",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "parsed_reason_prose",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "hidden_current_time",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "random_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "dose_derived_source_event_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "duplicate_source_event",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "duplicate_prescription_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "duplicate_revision_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "two_final_revisions",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "broken_revision_ancestry",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "completed_history_rewrite",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "duplicate_block_id",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "cyclic_block_dependency",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "mixed_illegal_modes",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "unsupported_dose_mode",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "preparatory_miscredit",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "developmental_block_omitted",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "policy_created_exercise",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "policy_removed_exercise",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "silent_substitution",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "exact_load_without_evidence",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "automatic_load_increase",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "side_evidence_applied_contralaterally",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "support_dependence_inferred_permanently",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "fake_duration",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "distance_converted_without_pace",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "steps_converted_without_cadence",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "breaths_converted_without_cadence",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "rest_duplicated",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "rest_after_final_block",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "inter_exercise_transition_invented",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "multi_block_plan_flattened",
+      "semanticStructureChanged": true,
+      "rejected": true
+    },
+    {
+      "mutation": "planned_performance_assumed_actual",
+      "semanticStructureChanged": true,
+      "rejected": true
+    }
+  ],
+  "fingerprint": "fffdf8c3caa112c33d78eac2bcdb20044886a1f5fc8a0546d344967fa8b22219"
+}

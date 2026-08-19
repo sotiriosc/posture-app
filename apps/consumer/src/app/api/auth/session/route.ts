@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildUserToken, isAuthConfigured, readServerSession, serializeSessionCookie } from "@/lib/serverAuth";
+import { isAuthConfigured, readServerSession } from "@/lib/serverAuth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,13 +19,5 @@ export async function GET() {
       Expires: "0",
     },
   });
-  if (session) {
-    const refreshed = await buildUserToken({
-      id: session.id,
-      email: session.email,
-      plan: session.plan,
-    });
-    response.cookies.set(serializeSessionCookie(refreshed));
-  }
   return response;
 }

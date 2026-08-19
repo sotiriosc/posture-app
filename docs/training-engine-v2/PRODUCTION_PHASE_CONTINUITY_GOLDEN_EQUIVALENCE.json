@@ -1,0 +1,22 @@
+{
+  "controlledCaseCount": 85,
+  "fixedShellCaseCount": 30,
+  "admittedHoldoutCount": 295,
+  "genuineProgramPairCount": 210,
+  "comparisonCount": 410,
+  "exactSemanticMatchCount": 409,
+  "expectedRepresentationCorrectionCount": 1,
+  "unexplainedDifferenceCount": 0,
+  "productionValidationFailureCount": 0,
+  "stateMutationAppliedCount": 0,
+  "applicationOwnerMissingCount": 0,
+  "result": "PRODUCTION_PHASE_CONTINUITY_GOLDEN_EQUIVALENCE_PASS",
+  "fingerprint": "b0e6f7bd1605c7de9d85a16f0bb5c65cd2784d23d4f64d9d5d894bda4b92a635",
+  "expectedRepresentationCorrections": [
+    {
+      "caseId": "controlled:automatic_phase_4_mutation",
+      "designFingerprint": "b1b80d155f7f322dc86ec86f3dae729d070efd0f5cc1e6c2b4d748e2f96881ca",
+      "productionFingerprint": "7905eca72044747a3a65dd00a0c75473f80f38ba1af9d888a8b38f65d6e56d83"
+    }
+  ]
+}

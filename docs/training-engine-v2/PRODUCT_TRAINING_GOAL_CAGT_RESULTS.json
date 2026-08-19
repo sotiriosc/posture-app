@@ -1,0 +1,83 @@
+{
+  "result": {
+    "result": "PASS_ALL_EXPECTED_MATERIAL_RESPONSES_AND_HARD_FAILURES_RECORDED",
+    "scenarioCount": 180,
+    "mutationCount": 11,
+    "rejectedMutationCount": 11,
+    "artificialUniquenessCount": 0,
+    "diversityQuotaCount": 0,
+    "genericStrengthWarmupCount": 0,
+    "genericHypertrophyActivationCount": 0,
+    "acceptedDownstreamRescueCount": 0,
+    "productionBehaviorChangeCount": 0,
+    "selectedPolicy": false
+  },
+  "mutations": [
+    {
+      "id": "M01",
+      "mutation": "strength_changes_label_only",
+      "result": "REJECTED",
+      "failure": "strength requires truthful upstream purpose and a goal-specific Prescription response"
+    },
+    {
+      "id": "M02",
+      "mutation": "strength_changes_only_reps",
+      "result": "REJECTED",
+      "failure": "downstream reps cannot rescue an incorrect Week or Session purpose"
+    },
+    {
+      "id": "M03",
+      "mutation": "hypertrophy_short_rest_only",
+      "result": "REJECTED",
+      "failure": "short rest is neither required nor a sufficient hypertrophy policy"
+    },
+    {
+      "id": "M04",
+      "mutation": "tone_high_reps_only",
+      "result": "REJECTED",
+      "failure": "tone is not a distinct high-repetition physiological adaptation"
+    },
+    {
+      "id": "M05",
+      "mutation": "every_non_hypertrophy_goal_becomes_strength",
+      "result": "REJECTED",
+      "failure": "observed compiler fallthrough is overbroad and requires owner policy"
+    },
+    {
+      "id": "M06",
+      "mutation": "strength_forces_low_reps_on_all_sections",
+      "result": "REJECTED",
+      "failure": "preparation, activation, accessories, dose modes, and recovery retain local ownership"
+    },
+    {
+      "id": "M07",
+      "mutation": "equipment_limits_ignored",
+      "result": "REJECTED",
+      "failure": "load and increment realization require explicit equipment capabilities"
+    },
+    {
+      "id": "M08",
+      "mutation": "beginner_or_pain_context_ignored",
+      "result": "REJECTED",
+      "failure": "experience, safety, and pain-aware regression remain material"
+    },
+    {
+      "id": "M09",
+      "mutation": "generic_goal_warmup_or_activation",
+      "result": "REJECTED",
+      "failure": "preparation and activation remain dependency-owned"
+    },
+    {
+      "id": "M10",
+      "mutation": "product_engine_semantic_disagreement",
+      "result": "REJECTED",
+      "failure": "Product labels must map truthfully before a policy is applied"
+    },
+    {
+      "id": "M11",
+      "mutation": "downstream_prescription_rescues_bad_mapping",
+      "result": "REJECTED",
+      "failure": "CAGT stops at the earliest incorrect owner"
+    }
+  ]
+}

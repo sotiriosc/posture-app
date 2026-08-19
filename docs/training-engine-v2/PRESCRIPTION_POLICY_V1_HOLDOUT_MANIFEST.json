@@ -1,0 +1,5843 @@
+{
+  "holdoutId": "PRESCRIPTION_POLICY_V1_OWNER_ADMISSION_HOLDOUT",
+  "version": "1.0.0",
+  "seed": 8414995,
+  "lockedBeforeExecution": true,
+  "independentlyLockedAfterV2Disclosure": true,
+  "tuningAfterInspectionPermitted": false,
+  "scenarios": [
+    {
+      "scenarioId": "owner-v1-holdout-001-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "return_after_absence",
+        "pain_aware_unresolved_load_tolerance",
+        "adverse_response",
+        "unfamiliar_selected_task",
+        "shared_preparation_dependency",
+        "same_reps",
+        "structured_range_requirement",
+        "structured_support_requirement",
+        "exact_prior_load_retention",
+        "structured_side_requirement",
+        "ramp_up_2",
+        "same_complete_prescription",
+        "genuine_owner_required_difference",
+        "duration_unknown_repetition_tempo"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-002-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-003-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-004-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-005-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-006-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-007-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "condensed",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-008-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-009-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-010-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-011-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-012-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-013-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-014-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-015-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-016-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-017-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-018-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-019-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "standard",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-020-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-021-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-022-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-023-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-bench-press",
+        "dumbbell-curl"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "hypertrophy_accessory"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-024-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_2",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-025-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-026-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-027-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-028-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-029-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-030-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "same_complete_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-031-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "expanded",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "return_after_absence",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-032-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "genuine_owner_required_difference",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-033-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-034-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-035-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-036-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-037-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-038-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_unknown_repetition_tempo"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-039-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-040-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-041-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-042-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-043-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "condensed",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-044-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-045-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-046-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-047-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_2",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-048-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-049-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-050-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-051-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-052-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-053-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-054-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-055-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "standard",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-056-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-057-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-058-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-059-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-bench-press",
+        "dumbbell-curl"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "hypertrophy_accessory"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "same_complete_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-060-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-061-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "return_after_absence",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-062-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-063-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "genuine_owner_required_difference",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-064-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-065-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-066-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-067-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "expanded",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-068-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-069-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-070-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_2",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-071-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-072-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-073-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-074-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-075-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_unknown_repetition_tempo"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-076-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-077-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-078-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-079-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "condensed",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-080-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-081-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-082-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-083-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-084-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-085-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-086-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-087-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-088-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "same_complete_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-089-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-090-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-091-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "standard",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "return_after_absence",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-092-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-093-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_2",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-094-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "genuine_owner_required_difference",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-095-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-bench-press",
+        "dumbbell-curl"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "hypertrophy_accessory"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-096-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-097-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-098-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-099-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-100-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-101-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-102-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-103-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "expanded",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-104-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-105-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-106-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-107-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "condensed",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-108-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-109-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-110-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-111-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "cable-triceps-pressdown",
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-112-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_unknown_repetition_tempo"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-113-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-114-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-115-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "condensed",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "structured_side_requirement",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-116-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_2",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-117-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "expanded",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "same_complete_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-118-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "general_fitness",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-119-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "conditioning",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "standard",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-120-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "adverse_response",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_retention",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-121-upper_strength",
+      "archetype": "upper_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "strength",
+      "phaseId": "phase_1",
+      "equipmentContext": "full_gym",
+      "capacity": "standard",
+      "contextTags": [
+        "standard_intermediate",
+        "ramp_up_0",
+        "novice",
+        "condensed",
+        "return_after_absence",
+        "pain_aware_unresolved_load_tolerance",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "no_support_requirement",
+        "exact_prior_load_rejection",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-122-lower_strength",
+      "archetype": "lower_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-romanian-deadlift",
+        "goblet-squat"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "primary_strength"
+      ],
+      "experience": "intermediate",
+      "goal": "hypertrophy",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "new_equipment_realization",
+        "ramp_up_1",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "structured_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-123-hypertrophy",
+      "archetype": "hypertrophy",
+      "assignmentCount": 1,
+      "exerciseIds": [
+        "dumbbell-bench-press"
+      ],
+      "sections": [
+        "main"
+      ],
+      "roles": [
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "general_fitness",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "hypertrophy",
+        "required_accessory_objective",
+        "advanced",
+        "expanded",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-124-preparation_activation",
+      "archetype": "preparation_activation",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "bodyweight-hip-hinge-rehearsal",
+        "machine-chest-press",
+        "serratus-wall-slide"
+      ],
+      "sections": [
+        "warmup",
+        "main",
+        "activation"
+      ],
+      "roles": [
+        "preparation",
+        "primary_strength",
+        "activation"
+      ],
+      "experience": "novice",
+      "goal": "conditioning",
+      "phaseId": "phase_1",
+      "equipmentContext": "mixed",
+      "capacity": "standard",
+      "contextTags": [
+        "required_preparation_dependency",
+        "required_activation_dependency",
+        "explicit_control_requirement",
+        "low_fatigue_activation",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-125-distance_carry",
+      "archetype": "distance_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "push-up",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "intermediate",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "distance_carry",
+        "capacity_main",
+        "intermediate",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "genuine_owner_required_difference",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-126-timed_carry",
+      "archetype": "timed_carry",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "suitcase-carry"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "advanced",
+      "goal": "strength",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "timed_carry",
+        "accessory_carry",
+        "advanced",
+        "standard",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-127-step_march",
+      "archetype": "step_march",
+      "assignmentCount": 3,
+      "exerciseIds": [
+        "loop-band-lateral-walk",
+        "push-up",
+        "wall-supported-suitcase-march"
+      ],
+      "sections": [
+        "activation",
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "activation",
+        "primary_strength",
+        "capacity"
+      ],
+      "experience": "novice",
+      "goal": "hypertrophy",
+      "phaseId": "phase_1",
+      "equipmentContext": "bands",
+      "capacity": "standard",
+      "contextTags": [
+        "step_sets",
+        "stationary_march_duration",
+        "novice",
+        "expanded",
+        "productive_continuity",
+        "pain_aware_unresolved_load_tolerance",
+        "adverse_response",
+        "known_productive_task",
+        "shared_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-128-cooldown",
+      "archetype": "cooldown",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-row",
+        "ninety-ninety-breathing"
+      ],
+      "sections": [
+        "main",
+        "cooldown"
+      ],
+      "roles": [
+        "primary_strength",
+        "recovery"
+      ],
+      "experience": "intermediate",
+      "goal": "general_fitness",
+      "phaseId": "phase_2",
+      "equipmentContext": "mixed",
+      "capacity": "expanded",
+      "contextTags": [
+        "explicit_cooldown",
+        "breath_cycles",
+        "allocated_recovery_responsibility",
+        "intermediate",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-129-secondary_strength",
+      "archetype": "secondary_strength",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "machine-chest-press",
+        "machine-row"
+      ],
+      "sections": [
+        "main",
+        "main"
+      ],
+      "roles": [
+        "primary_strength",
+        "secondary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "conditioning",
+      "phaseId": "phase_3",
+      "equipmentContext": "full_gym",
+      "capacity": "condensed",
+      "contextTags": [
+        "secondary_required_priority",
+        "advanced",
+        "condensed",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "unfamiliar_selected_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_1",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved"
+      ],
+      "expectedResolution": "compile",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-130-timed_hold",
+      "archetype": "timed_hold",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "forearm-plank",
+        "push-up"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "novice",
+      "goal": "posture_and_movement_quality",
+      "phaseId": "phase_1",
+      "equipmentContext": "bodyweight",
+      "capacity": "standard",
+      "contextTags": [
+        "timed_hold",
+        "novice",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved",
+        "missing_policy"
+      ],
+      "expectedResolution": "missing_policy",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-131-optional_direct",
+      "archetype": "optional_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-bench-press",
+        "dumbbell-curl"
+      ],
+      "sections": [
+        "main",
+        "accessory"
+      ],
+      "roles": [
+        "primary_strength",
+        "hypertrophy_accessory"
+      ],
+      "experience": "intermediate",
+      "goal": "strength",
+      "phaseId": "phase_2",
+      "equipmentContext": "dumbbells",
+      "capacity": "expanded",
+      "contextTags": [
+        "optional_direct_objective",
+        "intermediate",
+        "expanded",
+        "return_after_absence",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_reps",
+        "no_range_requirement",
+        "structured_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved",
+        "policy_conflict"
+      ],
+      "expectedResolution": "conflict",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-132-required_direct",
+      "archetype": "required_direct",
+      "assignmentCount": 2,
+      "exerciseIds": [
+        "dumbbell-curl",
+        "machine-chest-press"
+      ],
+      "sections": [
+        "accessory",
+        "main"
+      ],
+      "roles": [
+        "hypertrophy_accessory",
+        "primary_strength"
+      ],
+      "experience": "advanced",
+      "goal": "hypertrophy",
+      "phaseId": "phase_3",
+      "equipmentContext": "mixed",
+      "capacity": "condensed",
+      "contextTags": [
+        "required_direct_objective",
+        "advanced",
+        "standard",
+        "productive_continuity",
+        "explicit_safe_outcome",
+        "successful_reexposure",
+        "known_productive_task",
+        "single_preparation_dependency",
+        "same_tempo",
+        "no_range_requirement",
+        "no_support_requirement",
+        "user_selected_by_effort_fallback",
+        "side_unresolved",
+        "ramp_up_0",
+        "context_scoped_prescription",
+        "legal_convergence",
+        "duration_truth_preserved",
+        "unsupported_context"
+      ],
+      "expectedResolution": "unsupported_context",
+      "candidateSource": "production_session_intent_planner_candidate_intelligence_composer"
+    }
+  ]
+}

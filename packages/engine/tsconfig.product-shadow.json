@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  },
+  "include": [
+    "src/controlledProductShadow/**/*.ts",
+    "src/controlledProductShadowGoalRealization/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

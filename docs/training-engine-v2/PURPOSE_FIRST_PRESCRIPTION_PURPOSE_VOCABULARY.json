@@ -1,0 +1,38 @@
+{
+  "authorities": [
+    "primary_local_purpose",
+    "secondary_local_purpose",
+    "cross_goal_support",
+    "dependency_support",
+    "context_only",
+    "unknown"
+  ],
+  "localPurposes": [
+    "strength_development",
+    "hypertrophy_development",
+    "direct_development",
+    "capacity_development",
+    "movement_quality_development",
+    "muscular_endurance_development",
+    "systemic_conditioning_development",
+    "power_development",
+    "technique_or_control",
+    "preparation",
+    "activation",
+    "recovery",
+    "unknown"
+  ],
+  "statuses": [
+    "purpose_resolved",
+    "prescription_purpose_required",
+    "prescription_purpose_lineage_invalid",
+    "prescription_purpose_conflict",
+    "prescription_purpose_policy_required",
+    "prescription_purpose_policy_unavailable",
+    "prescription_purpose_policy_conflict",
+    "prescription_purpose_role_section_conflict",
+    "prescription_purpose_dose_mode_unsupported",
+    "prescription_purpose_goal_relationship_conflict",
+    "prescription_policy_rule_unavailable"
+  ]
+}

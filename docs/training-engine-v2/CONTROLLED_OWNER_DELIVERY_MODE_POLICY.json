@@ -1,0 +1,34 @@
+{
+  "variable": "PRAXIS_V2_OWNER_DELIVERY_MODE",
+  "values": [
+    "off",
+    "preview",
+    "apply"
+  ],
+  "default": "off",
+  "unknown": "off",
+  "publicVariableCount": 0,
+  "semantics": {
+    "off": {
+      "discoverable": false,
+      "generate": false,
+      "preview": false,
+      "apply": false,
+      "writes": false
+    },
+    "preview": {
+      "discoverable": true,
+      "generate": true,
+      "preview": true,
+      "apply": false,
+      "pointerChange": false
+    },
+    "apply": {
+      "discoverable": true,
+      "generate": true,
+      "preview": true,
+      "apply": true,
+      "ownerOnly": true
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "relationCount": 28,
+  "passedCount": 28,
+  "failedCount": 0,
+  "results": [
+    {
+      "relation": "fixture_object_key_order",
+      "passed": true
+    },
+    {
+      "relation": "scenario_manifest_order",
+      "passed": true
+    },
+    {
+      "relation": "pair_manifest_order",
+      "passed": true
+    },
+    {
+      "relation": "source_reference_order",
+      "passed": true
+    },
+    {
+      "relation": "product_equipment_selection_order",
+      "passed": true
+    },
+    {
+      "relation": "explicit_purpose_bundle_order",
+      "passed": true
+    },
+    {
+      "relation": "stable_assessment_order",
+      "passed": true
+    },
+    {
+      "relation": "history_order",
+      "passed": true
+    },
+    {
+      "relation": "artifact_retrieval_order",
+      "passed": true
+    },
+    {
+      "relation": "policy_rule_order",
+      "passed": true
+    },
+    {
+      "relation": "catalog_order",
+      "passed": true
+    },
+    {
+      "relation": "prose_outside_closed_mappings",
+      "passed": true
+    },
+    {
+      "relation": "irrelevant_pain",
+      "passed": true
+    },
+    {
+      "relation": "irrelevant_assessment",
+      "passed": true
+    },
+    {
+      "relation": "semantic_future_current_label",
+      "passed": true
+    },
+    {
+      "relation": "account_shell_identity",
+      "passed": true
+    },
+    {
+      "relation": "repeated_deterministic_execution",
+      "passed": true
+    },
+    {
+      "relation": "primary_goal_response",
+      "passed": true
+    },
+    {
+      "relation": "secondary_goal_response",
+      "passed": true
+    },
+    {
+      "relation": "relevant_pain_response",
+      "passed": true
+    },
+    {
+      "relation": "purpose_bundle_response",
+      "passed": true
+    },
+    {
+      "relation": "equipment_capability_response",
+      "passed": true
+    },
+    {
+      "relation": "load_ceiling_response",
+      "passed": true
+    },
+    {
+      "relation": "exact_minutes_response",
+      "passed": true
+    },
+    {
+      "relation": "realization_familiarity_response",
+      "passed": true
+    },
+    {
+      "relation": "relevant_assessment_response",
+      "passed": true
+    },
+    {
+      "relation": "mapping_availability_response",
+      "passed": true
+    },
+    {
+      "relation": "policy_availability_response",
+      "passed": true
+    }
+  ],
+  "fingerprint": "28dfd6f5ebc1f505e8a9794ddc3f55a927fee5abf11ac69fef1c13e578b99376"
+}

@@ -1,0 +1,2729 @@
+{
+  "manifestId": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_LOCKED_HOLDOUT",
+  "version": "1.0.0",
+  "lockedBeforeExecution": true,
+  "tuningAfterInspectionPermitted": false,
+  "scenarioCount": 160,
+  "scenarios": [
+    {
+      "scenarioId": "post-prescription-week-holdout-001",
+      "opportunityCount": 1,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "assessment",
+        "capacity",
+        "unknown_duration",
+        "mixed_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-002",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-003",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-004",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-005",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-006",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-007",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-008",
+      "opportunityCount": 2,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-009",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-010",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-011",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-012",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-013",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-014",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-015",
+      "opportunityCount": 3,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-016",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-017",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-018",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-019",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-020",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-021",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-022",
+      "opportunityCount": 4,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-023",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-024",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-025",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-026",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-027",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-028",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-029",
+      "opportunityCount": 5,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-030",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-031",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-032",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-033",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-034",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-035",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-036",
+      "opportunityCount": 6,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-037",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-038",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-039",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-040",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-041",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-042",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-043",
+      "opportunityCount": 1,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-044",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-045",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-046",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-047",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-048",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-049",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-050",
+      "opportunityCount": 2,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-051",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-052",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-053",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-054",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-055",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-056",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-057",
+      "opportunityCount": 3,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-058",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-059",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-060",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-061",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-062",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-063",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-064",
+      "opportunityCount": 4,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-065",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-066",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-067",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-068",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-069",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-070",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-071",
+      "opportunityCount": 5,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-072",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-073",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-074",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-075",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-076",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-077",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-078",
+      "opportunityCount": 6,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-079",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-080",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-081",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-082",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-083",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-084",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-085",
+      "opportunityCount": 1,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-086",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-087",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-088",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-089",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-090",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-091",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-092",
+      "opportunityCount": 2,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-093",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-094",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-095",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-096",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-097",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-098",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-099",
+      "opportunityCount": 3,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-100",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-101",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-102",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-103",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-104",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-105",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-106",
+      "opportunityCount": 4,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-107",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-108",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-109",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-110",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-111",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-112",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-113",
+      "opportunityCount": 5,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-114",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-115",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-116",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-117",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-118",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-119",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-120",
+      "opportunityCount": 6,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-121",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-122",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-123",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-124",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-125",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-126",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-127",
+      "opportunityCount": 1,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-128",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "none",
+      "expectedCompleteArtifacts": true,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-129",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "missing_session_artifact",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-130",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "objective_source_trace_removed",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-131",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_prescription_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-132",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_sequence_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-133",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "definitely_over_budget",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-134",
+      "opportunityCount": 2,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "missing_policy",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-135",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "unsupported_scope",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-136",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "missing_session_artifact",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-137",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "objective_source_trace_removed",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-138",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_prescription_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-139",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "stale_sequence_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-140",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "definitely_over_budget",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-141",
+      "opportunityCount": 3,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "missing_policy",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-142",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "unsupported_scope",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-143",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "missing_session_artifact",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-144",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "objective_source_trace_removed",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "capacity",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-145",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "stale_prescription_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-146",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_sequence_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-147",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "definitely_over_budget",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-148",
+      "opportunityCount": 4,
+      "irregularCycle": true,
+      "explicitTimestamps": true,
+      "mutation": "missing_policy",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "assessment",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-149",
+      "opportunityCount": 5,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "unsupported_scope",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-150",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "missing_session_artifact",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-151",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "objective_source_trace_removed",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-152",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_prescription_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-153",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_sequence_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "stress_concentration"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-154",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "definitely_over_budget",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "mixed_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-155",
+      "opportunityCount": 5,
+      "irregularCycle": true,
+      "explicitTimestamps": false,
+      "mutation": "missing_policy",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "assessment",
+        "capacity",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-156",
+      "opportunityCount": 6,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "unsupported_scope",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "direct",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-157",
+      "opportunityCount": 1,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "missing_session_artifact",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "unknown_duration",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-158",
+      "opportunityCount": 2,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "objective_source_trace_removed",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-159",
+      "opportunityCount": 3,
+      "irregularCycle": false,
+      "explicitTimestamps": false,
+      "mutation": "stale_prescription_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "strength",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    },
+    {
+      "scenarioId": "post-prescription-week-holdout-160",
+      "opportunityCount": 4,
+      "irregularCycle": false,
+      "explicitTimestamps": true,
+      "mutation": "stale_sequence_revision",
+      "expectedCompleteArtifacts": false,
+      "cohortTags": [
+        "hypertrophy",
+        "shared_objective",
+        "preparation",
+        "ordinary_training",
+        "duration_preserved",
+        "normal_equipment",
+        "distributed_stress"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,514 @@
+{
+  "contract": {
+    "contractId": "ADVANCED_BODYBUILDER_20_PLUS_YEARS_REALIZATION_CHALLENGE",
+    "contractVersion": "1.0.0"
+  },
+  "challenge": {
+    "contractReference": {
+      "contractId": "ADVANCED_BODYBUILDER_20_PLUS_YEARS_REALIZATION_CHALLENGE",
+      "contractVersion": "1.0.0"
+    },
+    "authority": {
+      "athleteAuthoredPreferenceEvidence": true,
+      "testFixtureOnly": true,
+      "completedPerformance": false,
+      "clinicalDiagnosis": false,
+      "productRuntimeInput": false,
+      "prescriptionPolicy": false
+    },
+    "athleteContext": {
+      "resistanceTrainingYears": {
+        "min": 20,
+        "max": null
+      },
+      "coarseExperience": "advanced",
+      "orientation": "bodybuilding_classic_physique",
+      "primaryOutcome": "hypertrophy",
+      "secondaryInterests": [
+        "strength",
+        "posture_and_movement_quality"
+      ],
+      "resistanceTrainingOpportunities": 6,
+      "externalRecoveryMobilityPosingOpportunities": 1,
+      "environmentLabel": "commercial_gym",
+      "exactMachineInventoryConfirmed": false,
+      "exactWorkingLoadsSupplied": false,
+      "exactLoadIncrementsSupplied": false,
+      "sessionMinutesSupplied": false,
+      "completedHabitualExposureInV2Lineage": false,
+      "stableAnchorsAreStrongPreferenceEvidence": true
+    },
+    "physiquePriorities": [
+      "upper_chest",
+      "side_delts",
+      "lower_lat_sweep",
+      "back_thickness",
+      "hamstrings_glute_ham_tie_in",
+      "glutes",
+      "adductors",
+      "quad_sweep",
+      "calves",
+      "serratus_waist_control",
+      "posing_skill"
+    ],
+    "nonDiagnosticMovementHypotheses": [
+      "pelvis_rib_shoulder_organization",
+      "one_sided_hip_pelvis_asymmetry",
+      "rib_cage_rotation_or_flare",
+      "serratus_leverage",
+      "front_shoulder_internal_rotation_or_anterior_glide_bias"
+    ],
+    "exercises": [
+      {
+        "day": 1,
+        "externalPlanName": "low-incline dumbbell press",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "dumbbell-bench-press",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "exact dumbbell range, increments, and adjustable bench setting unknown"
+      },
+      {
+        "day": 1,
+        "externalPlanName": "incline machine press",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "exact machine unknown"
+      },
+      {
+        "day": 1,
+        "externalPlanName": "cable chest fly",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": "cable-chest-fly",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact cable stack, ratio, and increment unknown"
+      },
+      {
+        "day": 1,
+        "externalPlanName": "dumbbell lateral raise",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "dumbbell-lateral-raise",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact dumbbell increment unknown"
+      },
+      {
+        "day": 1,
+        "externalPlanName": "cable lateral raise",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": null,
+        "mappingStatus": "reviewed_alias_candidate",
+        "equipmentGap": "attachment and cable stack unknown"
+      },
+      {
+        "day": 1,
+        "externalPlanName": "reverse pec deck",
+        "listedWorkSets": 2,
+        "canonicalExerciseId": "reverse-pec-deck",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact machine ID and setting system unknown"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "Romanian deadlift",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "dumbbell-romanian-deadlift",
+        "mappingStatus": "reviewed_alias_candidate",
+        "equipmentGap": "external plan implement is ambiguous"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "lying leg curl",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "lying-leg-curl",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact machine ID and increment unknown"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "glute bridge",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "glute-bridge",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "external loading and support realization unknown"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "split squat",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": "split-squat",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "implement, side load, and support unknown"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "hip adduction machine",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "machine not in catalog"
+      },
+      {
+        "day": 2,
+        "externalPlanName": "hip abduction machine",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "machine not in catalog"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "pull-up or assisted pull-up",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "pull-up identity and assistance realization unavailable"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "lat pulldown",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "lat-pulldown",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "machine and stack realization unknown"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "one-arm dumbbell row",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "one-arm-dumbbell-row",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "side-specific load and support unknown"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "seated cable row",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "seated-cable-row",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "stack, ratio, and attachment unknown"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "machine row",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "machine-row",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact machine identity unknown"
+      },
+      {
+        "day": 3,
+        "externalPlanName": "reverse pec deck rear delt",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": "reverse-pec-deck",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "machine setting unknown"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "hack squat",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "machine not in catalog"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "leg press",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "leg-press",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact machine ID, load, support, and range unknown"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "goblet squat",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "goblet-squat",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "dumbbell ceiling and increment unknown"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "split squat quad bias",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "split-squat",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "support and range realization unknown"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "leg extension",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "identity not in catalog"
+      },
+      {
+        "day": 4,
+        "externalPlanName": "optional walking lunge",
+        "listedWorkSets": 3,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "identity not in catalog"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "dumbbell curl",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "dumbbell-curl",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "load and increment unknown"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "cable curl",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "identity not in catalog"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "cable triceps pressdown",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "cable-triceps-pressdown",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "stack, ratio, and attachment unknown"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "overhead cable triceps extension",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "identity not in catalog"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "serratus cable press",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "ambiguous",
+        "equipmentGap": "identity and anchor unknown"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "machine abdominal crunch",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "machine-abdominal-crunch",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "exact machine and setting unknown"
+      },
+      {
+        "day": 5,
+        "externalPlanName": "Pallof press",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "pallof-press",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "anchor, stack, and side load unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "chest-supported dumbbell row",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "chest-supported-dumbbell-row",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "bench and dumbbell realization unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "machine row back thickness",
+        "listedWorkSets": 5,
+        "canonicalExerciseId": "machine-row",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "exact machine identity unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "seated cable row back thickness",
+        "listedWorkSets": 5,
+        "canonicalExerciseId": "seated-cable-row",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "stack, ratio, and attachment unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "band row finish",
+        "listedWorkSets": 5,
+        "canonicalExerciseId": "band-row",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "band and anchor realization unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "standing calf raise",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "standing-calf-raise",
+        "mappingStatus": "exact_canonical_identity",
+        "equipmentGap": "loading realization unknown"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "seated calf raise",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": null,
+        "mappingStatus": "catalog_identity_gap",
+        "equipmentGap": "identity not in catalog"
+      },
+      {
+        "day": 6,
+        "externalPlanName": "lat pulldown finish",
+        "listedWorkSets": 4,
+        "canonicalExerciseId": "lat-pulldown",
+        "mappingStatus": "approved_same_identity_realization",
+        "equipmentGap": "machine and stack realization unknown"
+      }
+    ],
+    "recurringRituals": [
+      "90/90 hip lift with ball squeeze",
+      "wall serratus reach",
+      "half-kneeling hip-flexor reset"
+    ],
+    "representativeRamp": {
+      "exercise": "low-incline dumbbell press",
+      "requestedRepetitions": [
+        15,
+        10,
+        6
+      ],
+      "developmentalCredit": false,
+      "universalThreeRampRule": false
+    },
+    "intensityTechniqueRequests": [
+      {
+        "contractReference": {
+          "contractId": "ADVANCED_INTENSITY_TECHNIQUE_REQUEST",
+          "contractVersion": "1.0.0"
+        },
+        "requestId": "challenge-technique-post-failure",
+        "exerciseId": "dumbbell-lateral-raise",
+        "targetBlockId": "challenge-technique-post-failure:target-block",
+        "technique": "post_failure_partials",
+        "intendedPurpose": "hypertrophy_development",
+        "exactTrigger": null,
+        "loadRepetitionTransition": null,
+        "failureRelationship": "external plan request; exact trigger unresolved",
+        "volumeRelationship": "not flattened into ordinary sets",
+        "source": "coach",
+        "reviewStatus": "athlete_authored_unreviewed",
+        "provenance": [
+          {
+            "source": "athlete_report",
+            "sourceRef": "sanitized-owner-plan"
+          }
+        ]
+      },
+      {
+        "contractReference": {
+          "contractId": "ADVANCED_INTENSITY_TECHNIQUE_REQUEST",
+          "contractVersion": "1.0.0"
+        },
+        "requestId": "challenge-technique-lengthened",
+        "exerciseId": "lying-leg-curl",
+        "targetBlockId": "challenge-technique-lengthened:target-block",
+        "technique": "lengthened_partials",
+        "intendedPurpose": "hypertrophy_development",
+        "exactTrigger": null,
+        "loadRepetitionTransition": null,
+        "failureRelationship": "external plan request; exact trigger unresolved",
+        "volumeRelationship": "not flattened into ordinary sets",
+        "source": "coach",
+        "reviewStatus": "athlete_authored_unreviewed",
+        "provenance": [
+          {
+            "source": "athlete_report",
+            "sourceRef": "sanitized-owner-plan"
+          }
+        ]
+      },
+      {
+        "contractReference": {
+          "contractId": "ADVANCED_INTENSITY_TECHNIQUE_REQUEST",
+          "contractVersion": "1.0.0"
+        },
+        "requestId": "challenge-technique-drop",
+        "exerciseId": "cable-triceps-pressdown",
+        "targetBlockId": "challenge-technique-drop:target-block",
+        "technique": "drop_set",
+        "intendedPurpose": "hypertrophy_development",
+        "exactTrigger": null,
+        "loadRepetitionTransition": null,
+        "failureRelationship": "external plan request; exact trigger unresolved",
+        "volumeRelationship": "not flattened into ordinary sets",
+        "source": "coach",
+        "reviewStatus": "athlete_authored_unreviewed",
+        "provenance": [
+          {
+            "source": "athlete_report",
+            "sourceRef": "sanitized-owner-plan"
+          }
+        ]
+      },
+      {
+        "contractReference": {
+          "contractId": "ADVANCED_INTENSITY_TECHNIQUE_REQUEST",
+          "contractVersion": "1.0.0"
+        },
+        "requestId": "challenge-technique-isometric",
+        "exerciseId": "standing-calf-raise",
+        "targetBlockId": "challenge-technique-isometric:target-block",
+        "technique": "isometric_finish",
+        "intendedPurpose": "hypertrophy_development",
+        "exactTrigger": null,
+        "loadRepetitionTransition": null,
+        "failureRelationship": "external plan request; exact trigger unresolved",
+        "volumeRelationship": "not flattened into ordinary sets",
+        "source": "coach",
+        "reviewStatus": "athlete_authored_unreviewed",
+        "provenance": [
+          {
+            "source": "athlete_report",
+            "sourceRef": "sanitized-owner-plan"
+          }
+        ]
+      }
+    ],
+    "calendarProgressionDraft": [
+      "week_1_positions_2_rir",
+      "week_2_add_repetitions",
+      "week_3_add_load_main",
+      "week_4_push_isolations",
+      "automatic_4_to_5_day_deload_or_40_percent_volume_reduction"
+    ],
+    "externalActivities": [
+      {
+        "activity": "posing",
+        "minutes": "20-30",
+        "recoveryClaimed": false
+      },
+      {
+        "activity": "easy_walking",
+        "minutes": "30-45",
+        "recoveryClaimed": false
+      },
+      {
+        "activity": "mobility",
+        "minutes": "unknown",
+        "recoveryClaimed": false
+      }
+    ],
+    "productOutputCount": 0,
+    "diagnosisCount": 0,
+    "fuzzyMatchCount": 0
+  },
+  "approximateWorkSetCount": 146,
+  "catalogMappingCounts": {
+    "exact_canonical_identity": 18,
+    "approved_same_identity_realization": 7,
+    "reviewed_alias_candidate": 2,
+    "catalog_identity_gap": 10,
+    "equipment_only_gap": 0,
+    "unsupported_intensity_technique_gap": 0,
+    "ambiguous": 1
+  }
+}

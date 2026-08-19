@@ -6,6 +6,7 @@ import type {
   PriorityLevel,
   Side,
 } from "./primitives";
+import type { ExerciseActionFunction } from "./exercise";
 
 export const ASSESSMENT_SIGNAL_TYPES = [
   "movement_limitation",
@@ -30,6 +31,21 @@ export const ASSESSMENT_SOURCES = [
 export type AssessmentSource = (typeof ASSESSMENT_SOURCES)[number];
 export type AssessmentConfidence = ConfidenceLevel;
 export type AssessmentPriority = PriorityLevel;
+export type AssessmentSeverity = "unknown" | "mild" | "moderate" | "substantial";
+
+export const ASSESSMENT_FEATURES = [
+  "serratus_or_protraction_control",
+  "upward_rotation_control",
+  "retraction_control",
+  "external_rotation_or_cuff_control",
+  "loaded_scapular_stability",
+] as const;
+
+export type AssessmentFeature = (typeof ASSESSMENT_FEATURES)[number];
+export type AssessmentFeatureSource =
+  | "explicit"
+  | "normalized_from_signal"
+  | "unknown";
 
 export interface AssessmentSignal {
   readonly id: string;
@@ -41,7 +57,20 @@ export interface AssessmentSignal {
   readonly movementRole?: MovementRole;
   readonly muscleGroup?: MuscleGroup;
   readonly side?: Side;
+  readonly severity?: AssessmentSeverity;
+  readonly assessmentFeatures?: readonly AssessmentFeature[];
+  readonly actionFunctions?: readonly ExerciseActionFunction[];
   readonly description: string;
+  readonly provenance?: AssessmentSignalProvenance;
+}
+
+export interface AssessmentSignalProvenance {
+  readonly sourceSystem: "product_assessment_report" | "training_engine_v2";
+  readonly sourceObservationId: string;
+  readonly sourceRevision: string;
+  readonly mappingRuleId: string;
+  readonly evidenceRefs: readonly string[];
+  readonly opaqueTextConsumed: false;
 }
 
 export interface HistoricalWeakness {

@@ -1,0 +1,1895 @@
+{
+  "count": 315,
+  "scenarios": [
+    {
+      "scenarioId": "b3-controlled-001",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-002",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-003",
+      "exerciseId": "dead-bug",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-004",
+      "exerciseId": "push-up",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-005",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-006",
+      "exerciseId": "machine-chest-press",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-007",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-008",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-009",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-010",
+      "exerciseId": "machine-row",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-011",
+      "exerciseId": "seated-cable-row",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-012",
+      "exerciseId": "band-row",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-013",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-014",
+      "exerciseId": "lat-pulldown",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-015",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-016",
+      "exerciseId": "goblet-squat",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-017",
+      "exerciseId": "leg-press",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-018",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-019",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-020",
+      "exerciseId": "cable-pull-through",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-021",
+      "exerciseId": "split-squat",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-022",
+      "exerciseId": "step-up",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-023",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-024",
+      "exerciseId": "glute-bridge",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-025",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-026",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-027",
+      "exerciseId": "band-face-pull",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-028",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-029",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-030",
+      "exerciseId": "pallof-press",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-031",
+      "exerciseId": "forearm-plank",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-032",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-033",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-034",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-035",
+      "exerciseId": "farmer-carry",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-036",
+      "exerciseId": "suitcase-carry",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-037",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-038",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-039",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-040",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-041",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-042",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-043",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-044",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-045",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-046",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-047",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-048",
+      "exerciseId": "dead-bug",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-049",
+      "exerciseId": "push-up",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-050",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-051",
+      "exerciseId": "machine-chest-press",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-052",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-053",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-054",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-055",
+      "exerciseId": "machine-row",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-056",
+      "exerciseId": "seated-cable-row",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-057",
+      "exerciseId": "band-row",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-058",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-059",
+      "exerciseId": "lat-pulldown",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-060",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-061",
+      "exerciseId": "goblet-squat",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-062",
+      "exerciseId": "leg-press",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-063",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-064",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-065",
+      "exerciseId": "cable-pull-through",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-066",
+      "exerciseId": "split-squat",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-067",
+      "exerciseId": "step-up",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-068",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-069",
+      "exerciseId": "glute-bridge",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-070",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-071",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-072",
+      "exerciseId": "band-face-pull",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-073",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-074",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-075",
+      "exerciseId": "pallof-press",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-076",
+      "exerciseId": "forearm-plank",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-077",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-078",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-079",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-080",
+      "exerciseId": "farmer-carry",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-081",
+      "exerciseId": "suitcase-carry",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-082",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-083",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-084",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-085",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-086",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-087",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-088",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-089",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-090",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-091",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-092",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-093",
+      "exerciseId": "dead-bug",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-094",
+      "exerciseId": "push-up",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-095",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-096",
+      "exerciseId": "machine-chest-press",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-097",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-098",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-099",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-100",
+      "exerciseId": "machine-row",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-101",
+      "exerciseId": "seated-cable-row",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-102",
+      "exerciseId": "band-row",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-103",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-104",
+      "exerciseId": "lat-pulldown",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-105",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-106",
+      "exerciseId": "goblet-squat",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-107",
+      "exerciseId": "leg-press",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-108",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-109",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-110",
+      "exerciseId": "cable-pull-through",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-111",
+      "exerciseId": "split-squat",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-112",
+      "exerciseId": "step-up",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-113",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "strength_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-114",
+      "exerciseId": "glute-bridge",
+      "purpose": "hypertrophy_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-115",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "movement_quality_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-116",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "muscular_endurance_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-117",
+      "exerciseId": "band-face-pull",
+      "purpose": "capacity_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-118",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "direct_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-119",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "systemic_conditioning_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-120",
+      "exerciseId": "pallof-press",
+      "purpose": "power_development",
+      "expected": "historical"
+    },
+    {
+      "scenarioId": "b3-controlled-121",
+      "exerciseId": "forearm-plank",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-122",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-123",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-124",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-125",
+      "exerciseId": "farmer-carry",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-126",
+      "exerciseId": "suitcase-carry",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-127",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-128",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-129",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-130",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-131",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-132",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-133",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-134",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-135",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-136",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-137",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-138",
+      "exerciseId": "dead-bug",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-139",
+      "exerciseId": "push-up",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-140",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-141",
+      "exerciseId": "machine-chest-press",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-142",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-143",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-144",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-145",
+      "exerciseId": "machine-row",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-146",
+      "exerciseId": "seated-cable-row",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-147",
+      "exerciseId": "band-row",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-148",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-149",
+      "exerciseId": "lat-pulldown",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-150",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-151",
+      "exerciseId": "goblet-squat",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-152",
+      "exerciseId": "leg-press",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-153",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-154",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-155",
+      "exerciseId": "cable-pull-through",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-156",
+      "exerciseId": "split-squat",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-157",
+      "exerciseId": "step-up",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-158",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-159",
+      "exerciseId": "glute-bridge",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-160",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-161",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-162",
+      "exerciseId": "band-face-pull",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-163",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-164",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-165",
+      "exerciseId": "pallof-press",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-166",
+      "exerciseId": "forearm-plank",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-167",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-168",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-169",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-170",
+      "exerciseId": "farmer-carry",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-171",
+      "exerciseId": "suitcase-carry",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-172",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-173",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-174",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-175",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-176",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-177",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-178",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-179",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-180",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-181",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-182",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-183",
+      "exerciseId": "dead-bug",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-184",
+      "exerciseId": "push-up",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-185",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-186",
+      "exerciseId": "machine-chest-press",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-187",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-188",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-189",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-190",
+      "exerciseId": "machine-row",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-191",
+      "exerciseId": "seated-cable-row",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-192",
+      "exerciseId": "band-row",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-193",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-194",
+      "exerciseId": "lat-pulldown",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-195",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-196",
+      "exerciseId": "goblet-squat",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-197",
+      "exerciseId": "leg-press",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-198",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-199",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-200",
+      "exerciseId": "cable-pull-through",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-201",
+      "exerciseId": "split-squat",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-202",
+      "exerciseId": "step-up",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-203",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-204",
+      "exerciseId": "glute-bridge",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-205",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-206",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-207",
+      "exerciseId": "band-face-pull",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-208",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-209",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-210",
+      "exerciseId": "pallof-press",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-211",
+      "exerciseId": "forearm-plank",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-212",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-213",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-214",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-215",
+      "exerciseId": "farmer-carry",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-216",
+      "exerciseId": "suitcase-carry",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-217",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-218",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-219",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-220",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-221",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-222",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-223",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-224",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-225",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-226",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-227",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-228",
+      "exerciseId": "dead-bug",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-229",
+      "exerciseId": "push-up",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-230",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-231",
+      "exerciseId": "machine-chest-press",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-232",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-233",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-234",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-235",
+      "exerciseId": "machine-row",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-236",
+      "exerciseId": "seated-cable-row",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-237",
+      "exerciseId": "band-row",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-238",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-239",
+      "exerciseId": "lat-pulldown",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-240",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-241",
+      "exerciseId": "goblet-squat",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-242",
+      "exerciseId": "leg-press",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-243",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-244",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-245",
+      "exerciseId": "cable-pull-through",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-246",
+      "exerciseId": "split-squat",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-247",
+      "exerciseId": "step-up",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-248",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-249",
+      "exerciseId": "glute-bridge",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-250",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-251",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-252",
+      "exerciseId": "band-face-pull",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-253",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-254",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-255",
+      "exerciseId": "pallof-press",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-256",
+      "exerciseId": "forearm-plank",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-257",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-258",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-259",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-260",
+      "exerciseId": "farmer-carry",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-261",
+      "exerciseId": "suitcase-carry",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-262",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-263",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-264",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-265",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-266",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-267",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-268",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-269",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-270",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-271",
+      "exerciseId": "ninety-ninety-breathing",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-272",
+      "exerciseId": "serratus-wall-slide",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-273",
+      "exerciseId": "dead-bug",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-274",
+      "exerciseId": "push-up",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-275",
+      "exerciseId": "dumbbell-bench-press",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-276",
+      "exerciseId": "machine-chest-press",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-277",
+      "exerciseId": "cable-chest-fly",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-278",
+      "exerciseId": "chest-supported-dumbbell-row",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-279",
+      "exerciseId": "one-arm-dumbbell-row",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-280",
+      "exerciseId": "machine-row",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-281",
+      "exerciseId": "seated-cable-row",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-282",
+      "exerciseId": "band-row",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-283",
+      "exerciseId": "dumbbell-shoulder-press",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-284",
+      "exerciseId": "lat-pulldown",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-285",
+      "exerciseId": "band-lat-pulldown",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-286",
+      "exerciseId": "goblet-squat",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-287",
+      "exerciseId": "leg-press",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-288",
+      "exerciseId": "bodyweight-box-squat",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-289",
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-290",
+      "exerciseId": "cable-pull-through",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-291",
+      "exerciseId": "split-squat",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-292",
+      "exerciseId": "step-up",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-293",
+      "exerciseId": "lying-leg-curl",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-294",
+      "exerciseId": "glute-bridge",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-295",
+      "exerciseId": "dumbbell-lateral-raise",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-296",
+      "exerciseId": "reverse-pec-deck",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-297",
+      "exerciseId": "band-face-pull",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-298",
+      "exerciseId": "dumbbell-curl",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-299",
+      "exerciseId": "cable-triceps-pressdown",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-300",
+      "exerciseId": "pallof-press",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-301",
+      "exerciseId": "forearm-plank",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-302",
+      "exerciseId": "forearm-side-plank",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-303",
+      "exerciseId": "machine-abdominal-crunch",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-304",
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-305",
+      "exerciseId": "farmer-carry",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-306",
+      "exerciseId": "suitcase-carry",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-307",
+      "exerciseId": "wall-supported-suitcase-march",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-308",
+      "exerciseId": "standing-calf-raise",
+      "purpose": "muscular_endurance_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-309",
+      "exerciseId": "side-lying-hip-adduction",
+      "purpose": "capacity_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-310",
+      "exerciseId": "loop-band-lateral-walk",
+      "purpose": "direct_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-311",
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "purpose": "systemic_conditioning_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-312",
+      "exerciseId": "supine-hamstring-walkout",
+      "purpose": "power_development",
+      "expected": "deferred"
+    },
+    {
+      "scenarioId": "b3-controlled-313",
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "purpose": "strength_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-314",
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "purpose": "hypertrophy_development",
+      "expected": "supported"
+    },
+    {
+      "scenarioId": "b3-controlled-315",
+      "exerciseId": "single-leg-balance-rehearsal",
+      "purpose": "movement_quality_development",
+      "expected": "supported"
+    }
+  ]
+}

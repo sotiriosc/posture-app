@@ -1,0 +1,790 @@
+{
+  "reference": {
+    "contractId": "PRODUCT_GOAL_CONTEXT_CURRENT_RENDER_BASELINE",
+    "contractVersion": "1.0.0"
+  },
+  "branch": "engine-v2/candidate-intelligence",
+  "commit": "3f46f40da6405725b7694252ac7e127c0cd1df09",
+  "syntheticDataOnly": true,
+  "binaryDisposition": "ignored Playwright artifacts under each app test-results directory",
+  "semanticVerdictDoesNotDependOnPixelEquality": true,
+  "backgroundCropExcludedFromSemanticFailure": true,
+  "entries": [
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "questionnaire_default",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/questionnaire-default-1440x900.png",
+      "artifactSha256": "0cb4bebe95ffb6d09d38df6bb6f7b0fefc33228215719a15464d76b63890ba72",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "none",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "goal_improve_posture",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/goal-improve-posture-1440x900.png",
+      "artifactSha256": "0cb4bebe95ffb6d09d38df6bb6f7b0fefc33228215719a15464d76b63890ba72",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_goal",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "goal_reduce_pain",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/goal-reduce-pain-1440x900.png",
+      "artifactSha256": "4caa44893895c6ad00994c7a08330af5f875a49028b342032efc96976c45e82b",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_goal",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "goal_athletic_performance",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/goal-athletic-performance-1440x900.png",
+      "artifactSha256": "86294e6d62fd64c8e18bd15c26cf1e894097fd8ebc55bda5fee6b9e82ab6186a",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_goal",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "goal_general_fitness",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/goal-general-fitness-1440x900.png",
+      "artifactSha256": "10d61ff4a9a8efea67f3f0ec1fcfa132cb8d43318ca5fdcb9c23109a43bd3927",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_goal",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "training_mode_build",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/training-mode-build-1440x900.png",
+      "artifactSha256": "10d61ff4a9a8efea67f3f0ec1fcfa132cb8d43318ca5fdcb9c23109a43bd3927",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_mode",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "training_mode_maintain",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/training-mode-maintain-1440x900.png",
+      "artifactSha256": "d0b4af9c77fb73a915238fb0b1d93e7aad1d05af257a4bf7a2c7dcf683d9d247",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_mode",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "training_mode_recover",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/training-mode-recover-1440x900.png",
+      "artifactSha256": "4dbe3f9cc4abf9f9bda8641762754d21f2db8e1232cb11c92d5f4df43fba9950",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "selected_mode",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "equipment_none",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/equipment-none-1440x900.png",
+      "artifactSha256": "8102e97fa2d796a94f5b299317be03f895bbbe334c62d09487e3611967a9aad6",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "equipment_selected_no_detail",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "equipment_bands",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/equipment-bands-1440x900.png",
+      "artifactSha256": "bed926ee17f78a91c2f281bf413f2155cf77011ea6824bc4d277708cde6a5419",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "bands_selected_no_detail_present",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "equipment_dumbbells",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/equipment-dumbbells-1440x900.png",
+      "artifactSha256": "489bb8704c3a45feb8aa130fc905f48685fa762d3c37342b0a9d08e84e4f9a8f",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "equipment_selected_no_detail",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "equipment_gym",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/equipment-gym-1440x900.png",
+      "artifactSha256": "505da7063b4e56ff4f69eb5fe0e895e812dcb785fb61a87f8610b332c2a30858",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "equipment_selected_no_detail",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "syntheticState": "questionnaire_responsive",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/questionnaire-responsive-1024x768.png",
+      "artifactSha256": "fe719e37b37d9968444749815dc429de52d3f7796a7702bc93a6fb2a0c726ae5",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "none",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "syntheticState": "questionnaire_responsive",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/questionnaire-responsive-390x844.png",
+      "artifactSha256": "cb639faf40810fd1946a420878eace05c220d1a636b6e010a66ed6e416fd734e",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "one_column",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "syntheticState": "questionnaire_responsive",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/questionnaire-responsive-360x800.png",
+      "artifactSha256": "de180bff2a3b764908be5bcf8e264a9451fec6d4c5164c7f9fb22ad08d18a9b3",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "one_column",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 320,
+        "height": 800
+      },
+      "syntheticState": "questionnaire_responsive",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/questionnaire-responsive-320x800.png",
+      "artifactSha256": "c230ea4ac1916af8c8052ea3ff7d3001e43d0743efdcd167e21056cf80606a87",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "one_column",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "syntheticState": "dirty_state_confirmation",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/dirty-state-confirmation-390x844.png",
+      "artifactSha256": "65cf39838d7e9cf612c724b0b689fd8b7cf51d62cafc9003807c839d9debf9dc",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "confirmation_dialog",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "consumer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "syntheticState": "active_session_warning",
+      "artifactReference": "consumer/test-results/product-goal-context-design/consumer/active-session-warning-390x844.png",
+      "artifactSha256": "8f2f420b271473e069d456148b7d250294c37754feee2cb5c6736bd058eceea5",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "training_mode",
+        "pain_areas",
+        "training_experience",
+        "equipment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "confirmation_dialog_with_active_session_warning",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "gyms",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "questionnaire_default",
+      "artifactReference": "gyms/test-results/product-goal-context-design/gyms/questionnaire-default-1440x900.png",
+      "artifactSha256": "d4831cacd8d9f44734992c0278e7e70a380339c81d47a1ef2495c18000f1b6b6",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "pain_areas",
+        "training_experience",
+        "equipment_or_locked_environment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "training_mode_absent",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire",
+      "appSurface": "gyms",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "syntheticState": "questionnaire_default",
+      "artifactReference": "gyms/test-results/product-goal-context-design/gyms/questionnaire-default-390x844.png",
+      "artifactSha256": "2f7e39aa9ccc6c5c9d1545a1b26da1617826019d05c710a3a3729dab36fb6e85",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "pain_areas",
+        "training_experience",
+        "equipment_or_locked_environment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "training_mode_absent_one_column",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire?demo=buyer",
+      "appSurface": "gyms",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "syntheticState": "buyer_demo_locked_equipment",
+      "artifactReference": "gyms/test-results/product-goal-context-design/gyms/buyer-demo-locked-equipment-1440x900.png",
+      "artifactSha256": "8c4bee623669204abed9daca4f3c3046b18845dee8fc54708812c4a60a1d6045",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "pain_areas",
+        "training_experience",
+        "equipment_or_locked_environment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "equipment_locked_by_gym_owner",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    },
+    {
+      "route": "/questionnaire?demo=buyer",
+      "appSurface": "gyms",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "syntheticState": "buyer_demo_locked_equipment",
+      "artifactReference": "gyms/test-results/product-goal-context-design/gyms/buyer-demo-locked-equipment-390x844.png",
+      "artifactSha256": "abeb5e428a1cecaf5aa7749718658e10b87f7269a4bc07de7a58b7736728c817",
+      "renderedFieldOrder": [
+        "days_per_week",
+        "primary_goal",
+        "pain_areas",
+        "training_experience",
+        "equipment_or_locked_environment"
+      ],
+      "visibleGoalOptions": [
+        "Improve posture",
+        "Reduce pain",
+        "Athletic performance",
+        "General fitness"
+      ],
+      "conditionalState": "equipment_locked_by_gym_owner_one_column",
+      "horizontalOverflow": false,
+      "fixedControlOverlap": false,
+      "accessibilityObservations": [
+        "interactive_surfaces_render_at_or_above_44px",
+        "native_select_present",
+        "current_group_controls_lack_fieldset_legend",
+        "current_primary_goal_select_lacks_programmatic_label_association"
+      ],
+      "sourceProvenance": "current_branch_playwright_synthetic_local_state"
+    }
+  ],
+  "consumerResult": "18_CURRENT_HEAD_STATES_RENDERED",
+  "gymsResult": "4_CURRENT_HEAD_STATES_RENDERED",
+  "desktopResult": "NO_HORIZONTAL_OVERFLOW_OR_FIXED_CONTROL_COLLISION",
+  "mobileResult": "NO_HORIZONTAL_OVERFLOW_OR_FIXED_CONTROL_COLLISION_AT_320_360_390",
+  "currentAccessibilityLimitations": [
+    "grouped_choices_are_not_fieldsets_with_legends",
+    "primary_goal_select_has_no_associated_label",
+    "selection_state_is_not_explicitly_exposed_with_aria_pressed",
+    "gyms_buyer_demo_unselected_experience_labels_have_low_visible_contrast_in_capture"
+  ]
+}

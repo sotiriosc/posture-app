@@ -1,0 +1,362 @@
+[
+  {
+    "mutationId": "historical_v1_behavior_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "legacy_alias_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "current_copy_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "current_dom_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "current_completion_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "full_assignment_omitted",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "full_dose_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "full_order_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "full_duration_fabricated",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_blanket_set_subtraction",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_all_accessories_removed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_required_main_removed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_anchor_replaced",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_identity_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_exercise_added",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_rest_shortened",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_load_guessed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_reps_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_tempo_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_required_dependency_removed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_orphan_retained",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "unchanged_full_labeled_lighter",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "optional_beats_required",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "strength_circuit_created",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_keyword_regex",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_notes_parsed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_rationale_parsed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_exercise_name_parsed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_all_warmups_kept",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_generic_corrective_circuit",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_main_strength",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_hypertrophy",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_developmental_credit",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_original_day_completed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "pain_creates_recovery",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_safety_bypass",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_deload_created",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "post_start_mode_change",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "progress_silently_cleared",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "draft_mode_omitted",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "resume_recomputed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "stale_source_accepted",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "two_final_revisions",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "omitted_work_credited",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "duplicate_source_event",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "planned_counted_performed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_satisfies_strength",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "automatic_reallocation",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "automatic_doubling",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "lighter_regression",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "recovery_deload",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "full_progression",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "current_route_imports_v2",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "current_ui_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "product_shadow_changed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "owner_delivery_started",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "product_activated",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "pre_g3_closed_early",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "g_marked_complete",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  },
+  {
+    "mutationId": "final_ledger_completed",
+    "semanticChange": true,
+    "rejected": true,
+    "downstreamRescueAccepted": false
+  }
+]

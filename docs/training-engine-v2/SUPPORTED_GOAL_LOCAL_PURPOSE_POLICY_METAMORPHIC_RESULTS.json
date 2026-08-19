@@ -1,0 +1,89 @@
+{
+  "count": 21,
+  "results": [
+    {
+      "id": "policy_rule_order",
+      "passed": true
+    },
+    {
+      "id": "purpose_requirement_order",
+      "passed": true
+    },
+    {
+      "id": "goal_relationship_order",
+      "passed": true
+    },
+    {
+      "id": "weekly_objective_order",
+      "passed": true
+    },
+    {
+      "id": "source_evidence_order",
+      "passed": true
+    },
+    {
+      "id": "provenance_order",
+      "passed": true
+    },
+    {
+      "id": "candidate_lattice_order",
+      "passed": true
+    },
+    {
+      "id": "exercise_registry_order",
+      "passed": true
+    },
+    {
+      "id": "labels",
+      "passed": true
+    },
+    {
+      "id": "display_names",
+      "passed": true
+    },
+    {
+      "id": "prose",
+      "passed": true
+    },
+    {
+      "id": "product_labels",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_pain",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_assessment",
+      "passed": true
+    },
+    {
+      "id": "same_framework",
+      "passed": true
+    },
+    {
+      "id": "same_exercise",
+      "passed": true
+    },
+    {
+      "id": "same_reps_when_justified",
+      "passed": true
+    },
+    {
+      "id": "v1_replay_order",
+      "passed": true
+    },
+    {
+      "id": "local_purpose_response",
+      "passed": true
+    },
+    {
+      "id": "contribution_lane_response",
+      "passed": true
+    },
+    {
+      "id": "supported_policy_availability_response",
+      "passed": true
+    }
+  ]
+}

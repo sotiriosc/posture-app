@@ -1,0 +1,35 @@
+{
+  "policyReference": {
+    "contractId": "PRODUCT_GOAL_TO_PLANNING_BRIEF_SHADOW_POLICY_V1",
+    "contractVersion": "1.0.0"
+  },
+  "sourceProductLabel": "Get stronger",
+  "primaryOutcome": "strength",
+  "secondaryOutcome": null,
+  "goalRelationships": [
+    {
+      "outcome": "strength",
+      "relationship": "primary"
+    }
+  ],
+  "programmingContexts": [],
+  "trainingMode": "develop",
+  "requiredPurposeFamilies": [
+    "strength_development"
+  ],
+  "preferredPurposeFamilies": [],
+  "optionalPurposeFamilies": [],
+  "followUpRequirements": [],
+  "unsupportedScope": [],
+  "sourceFacts": [
+    "product-goal:Get stronger",
+    "product-training-intent:build"
+  ],
+  "provenance": [
+    "product-goal-mapping-policy:owner-authored-planning-brief",
+    "week-planner:exact-objective-owner"
+  ],
+  "exerciseCreationCount": 0,
+  "numericDoseCreationCount": 0,
+  "applied": false
+}

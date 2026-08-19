@@ -1,0 +1,2670 @@
+{
+  "contractReference": "PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_HOLDOUT@1.0.0",
+  "fingerprint": "10b9b1eb8b13e228f07e053f3d768aeae77810ef953736f1d05c04e626eb04d0",
+  "frozenAt": "2026-08-15T12:00:00-04:00",
+  "genuineV1_1CompilerScenarioCount": 370,
+  "goldenPairCount": 100,
+  "scenarioCount": 380,
+  "scenarios": [
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:ninety-ninety-breathing:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:serratus-wall-slide:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dead-bug:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:push-up:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-bench-press:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-chest-press:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-chest-fly:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:chest-supported-dumbbell-row:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:one-arm-dumbbell-row:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-row:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:seated-cable-row:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-row:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-shoulder-press:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lat-pulldown:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-lat-pulldown:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:goblet-squat:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:leg-press:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-box-squat:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-romanian-deadlift:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-pull-through:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:split-squat:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:step-up:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:lying-leg-curl:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:glute-bridge:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-lateral-raise:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:reverse-pec-deck:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:band-face-pull:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:dumbbell-curl:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:cable-triceps-pressdown:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:pallof-press:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-plank:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:forearm-side-plank:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:machine-abdominal-crunch:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:half-kneeling-high-to-low-cable-chop:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:farmer-carry:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:suitcase-carry:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-supported-suitcase-march:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:standing-calf-raise:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-hip-adduction:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:loop-band-lateral-walk:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:side-lying-dumbbell-external-rotation:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:supine-hamstring-walkout:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:wall-ankle-dorsiflexion-rock:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:bodyweight-hip-hinge-rehearsal:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:supported",
+      "variant": "supported"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:missing",
+      "variant": "missing"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "prescription_purpose_policy_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:unsupported_future",
+      "variant": "unsupported_future"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "prescription_purpose_conflict",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:equal_primary_conflict",
+      "variant": "equal_primary_conflict"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "compiled",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:primary_with_cross_goal_support",
+      "variant": "primary_with_cross_goal_support"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "prescription_purpose_required",
+      "kind": "genuine_v1_1",
+      "scenarioId": "holdout:v1_1:single-leg-balance-rehearsal:global_goal_only",
+      "variant": "global_goal_only"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:0",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:1",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:2",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:3",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:4",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:5",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:6",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:7",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:8",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:9",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:10",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:11",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:12",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:13",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:14",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:15",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:16",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:17",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:18",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:19",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:20",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:21",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:22",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:23",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:24",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:25",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:26",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:27",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:28",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:29",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:30",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:31",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:32",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:33",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:34",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:35",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:36",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:37",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:38",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:39",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:40",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:41",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:42",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:43",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:44",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:45",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:46",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:47",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:48",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:49",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:50",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:51",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:52",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:53",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:54",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "seated-cable-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:55",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:56",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-shoulder-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:57",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "lat-pulldown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:58",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-lat-pulldown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:59",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "goblet-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:60",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "leg-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:61",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "bodyweight-box-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:62",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:63",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-pull-through",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:64",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "split-squat",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:65",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "step-up",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:66",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "lying-leg-curl",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:67",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:68",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-lateral-raise",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:69",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "reverse-pec-deck",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:70",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "band-face-pull",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:71",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-curl",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:72",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-triceps-pressdown",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:73",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "pallof-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:74",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "forearm-plank",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:75",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "forearm-side-plank",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:76",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-abdominal-crunch",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:77",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:78",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "farmer-carry",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:79",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "suitcase-carry",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:80",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "wall-supported-suitcase-march",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:81",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "standing-calf-raise",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:82",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "side-lying-hip-adduction",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:83",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "loop-band-lateral-walk",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:84",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:85",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "supine-hamstring-walkout",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:86",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:87",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:88",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "single-leg-balance-rehearsal",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:89",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "ninety-ninety-breathing",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:90",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "serratus-wall-slide",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:91",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dead-bug",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:92",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "push-up",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:93",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "dumbbell-bench-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:94",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-chest-press",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:95",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "cable-chest-fly",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:96",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "chest-supported-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:97",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "one-arm-dumbbell-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:98",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": "machine-row",
+      "expected": "semantic_equivalence",
+      "kind": "v1_0_v1_1_golden_pair",
+      "scenarioId": "holdout:golden-pair:99",
+      "variant": "supported_equivalence"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:0",
+      "variant": "product_shadow_v1_0"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:1",
+      "variant": "product_mapping"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:2",
+      "variant": "product_ui"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:3",
+      "variant": "product_options"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:4",
+      "variant": "generate_program"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:5",
+      "variant": "orchestration"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:6",
+      "variant": "consumer"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:7",
+      "variant": "gyms"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:8",
+      "variant": "database"
+    },
+    {
+      "exerciseId": null,
+      "expected": "unchanged",
+      "kind": "product_freeze",
+      "scenarioId": "holdout:product-freeze:9",
+      "variant": "activation"
+    }
+  ]
+}

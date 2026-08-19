@@ -1,0 +1,258 @@
+[
+  {
+    "id": "home_equipment_sets_beginner",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "HOME_EQUIPMENT_SET_BEGINNER"
+    ]
+  },
+  {
+    "id": "home_equipment_blocks_advanced",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "HOME_EQUIPMENT_BLOCKED_ADVANCED"
+    ]
+  },
+  {
+    "id": "comfortable_means_low_stimulus",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "COMFORT_EQUATED_WITH_LOW_STIMULUS"
+    ]
+  },
+  {
+    "id": "comfort_overrides_safety",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRECEDENCE_CHANGED"
+    ]
+  },
+  {
+    "id": "comfort_overrides_purpose",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRECEDENCE_CHANGED"
+    ]
+  },
+  {
+    "id": "novelty_beats_anchor",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRECEDENCE_CHANGED"
+    ]
+  },
+  {
+    "id": "variety_quota",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "VARIETY_QUOTA_CREATED"
+    ]
+  },
+  {
+    "id": "catalog_size_target",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "CATALOG_SIZE_TARGET_CREATED"
+    ]
+  },
+  {
+    "id": "unsupported_anchor_inferred",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "EQUIPMENT_INFERRED"
+    ]
+  },
+  {
+    "id": "bench_inferred_from_dumbbells",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "EQUIPMENT_INFERRED"
+    ]
+  },
+  {
+    "id": "wall_floor_chair_inferred",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "EQUIPMENT_INFERRED"
+    ]
+  },
+  {
+    "id": "band_kilograms_invented",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "EQUIPMENT_INFERRED"
+    ]
+  },
+  {
+    "id": "pullover_as_vertical_pull",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "FAKE_SUBSTITUTION_CREATED"
+    ]
+  },
+  {
+    "id": "pull_apart_as_horizontal_pull",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "FAKE_SUBSTITUTION_CREATED"
+    ]
+  },
+  {
+    "id": "duplicate_for_grip",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "DUPLICATE_IDENTITY_CREATED"
+    ]
+  },
+  {
+    "id": "duplicate_for_support",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "DUPLICATE_IDENTITY_CREATED"
+    ]
+  },
+  {
+    "id": "duplicate_for_range",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "DUPLICATE_IDENTITY_CREATED"
+    ]
+  },
+  {
+    "id": "duplicate_for_load",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "DUPLICATE_IDENTITY_CREATED"
+    ]
+  },
+  {
+    "id": "candidate_without_receiver",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "CANDIDATE_WITHOUT_RECEIVER"
+    ]
+  },
+  {
+    "id": "new_warmup_from_breadth",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "GENERIC_WARMUP_CREATED"
+    ]
+  },
+  {
+    "id": "home_program_grows",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "HOME_PROGRAM_GREW_FROM_CATALOG"
+    ]
+  },
+  {
+    "id": "production_row_added",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRODUCTION_ROW_ADDED"
+    ]
+  },
+  {
+    "id": "existing_row_changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRODUCTION_ROW_MODIFIED"
+    ]
+  },
+  {
+    "id": "ranking_changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "RANKING_CHANGED"
+    ]
+  },
+  {
+    "id": "product_changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRODUCT_UI_CHANGED"
+    ]
+  },
+  {
+    "id": "product_shadow_changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRODUCT_SHADOW_CHANGED"
+    ]
+  },
+  {
+    "id": "get_stronger_exposed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "GET_STRONGER_EXPOSED"
+    ]
+  },
+  {
+    "id": "owner_delivery_started",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "OWNER_DELIVERY_STARTED"
+    ]
+  },
+  {
+    "id": "practice_options_implemented",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRACTICE_OPTIONS_IMPLEMENTED"
+    ]
+  },
+  {
+    "id": "g_marked_complete",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "G_MARKED_COMPLETED"
+    ]
+  },
+  {
+    "id": "ledger_marked_complete",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "LEDGER_MARKED_COMPLETED"
+    ]
+  },
+  {
+    "id": "product_activated",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "errors": [
+      "PRODUCT_ACTIVATED"
+    ]
+  }
+]

@@ -1,0 +1,235 @@
+[
+  {
+    "capability": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "selectedLabels": [
+        "none"
+      ],
+      "knownPresence": [
+        "bodyweight_context_no_external_equipment_selected"
+      ],
+      "knownCapabilities": [],
+      "explicitUnknowns": [
+        "external_loading",
+        "floor_space",
+        "pull_up_bar",
+        "support_surface",
+        "wall"
+      ],
+      "exactCapabilitySource": "current_product",
+      "status": "presence_only",
+      "universalGymCapabilityInferenceCount": 0,
+      "legacyProgramEquipmentInferenceCount": 0
+    },
+    "load": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "exactRealizationAvailable": false,
+      "selfSelectedCalibrationAvailable": false,
+      "implementReferences": [],
+      "loadMinimum": null,
+      "loadMaximum": null,
+      "loadIncrement": null,
+      "unit": null,
+      "exactUnknowns": [
+        "minimum_load",
+        "maximum_load",
+        "load_increment",
+        "mechanism_or_resistance_realization"
+      ],
+      "guessedLoadCount": 0,
+      "progressionAuthorityCount": 0
+    }
+  },
+  {
+    "capability": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "selectedLabels": [
+        "dumbbells"
+      ],
+      "knownPresence": [
+        "dumbbell_presence"
+      ],
+      "knownCapabilities": [],
+      "explicitUnknowns": [
+        "bench",
+        "fixed_or_adjustable",
+        "load_increment",
+        "maximum_load",
+        "pair_availability"
+      ],
+      "exactCapabilitySource": "current_product",
+      "status": "presence_only",
+      "universalGymCapabilityInferenceCount": 0,
+      "legacyProgramEquipmentInferenceCount": 0
+    },
+    "load": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "exactRealizationAvailable": false,
+      "selfSelectedCalibrationAvailable": false,
+      "implementReferences": [],
+      "loadMinimum": null,
+      "loadMaximum": null,
+      "loadIncrement": null,
+      "unit": null,
+      "exactUnknowns": [
+        "minimum_load",
+        "maximum_load",
+        "load_increment",
+        "mechanism_or_resistance_realization"
+      ],
+      "guessedLoadCount": 0,
+      "progressionAuthorityCount": 0
+    }
+  },
+  {
+    "capability": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "selectedLabels": [
+        "bands"
+      ],
+      "knownPresence": [
+        "band_presence"
+      ],
+      "knownCapabilities": [],
+      "explicitUnknowns": [
+        "anchor_stability",
+        "band_anchor",
+        "band_type",
+        "resistance",
+        "stretch_context"
+      ],
+      "exactCapabilitySource": "current_product",
+      "status": "presence_only",
+      "universalGymCapabilityInferenceCount": 0,
+      "legacyProgramEquipmentInferenceCount": 0
+    },
+    "load": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "exactRealizationAvailable": false,
+      "selfSelectedCalibrationAvailable": false,
+      "implementReferences": [],
+      "loadMinimum": null,
+      "loadMaximum": null,
+      "loadIncrement": null,
+      "unit": null,
+      "exactUnknowns": [
+        "minimum_load",
+        "maximum_load",
+        "load_increment",
+        "mechanism_or_resistance_realization"
+      ],
+      "guessedLoadCount": 0,
+      "progressionAuthorityCount": 0
+    }
+  },
+  {
+    "capability": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "selectedLabels": [
+        "gym"
+      ],
+      "knownPresence": [
+        "commercial_gym_environment_label"
+      ],
+      "knownCapabilities": [],
+      "explicitUnknowns": [
+        "barbells",
+        "benches",
+        "cables",
+        "load_increments",
+        "loaded_gait",
+        "machine_inventory",
+        "racks",
+        "smith_machine",
+        "support_surfaces"
+      ],
+      "exactCapabilitySource": "current_product",
+      "status": "presence_only",
+      "universalGymCapabilityInferenceCount": 0,
+      "legacyProgramEquipmentInferenceCount": 0
+    },
+    "load": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "exactRealizationAvailable": false,
+      "selfSelectedCalibrationAvailable": false,
+      "implementReferences": [],
+      "loadMinimum": null,
+      "loadMaximum": null,
+      "loadIncrement": null,
+      "unit": null,
+      "exactUnknowns": [
+        "minimum_load",
+        "maximum_load",
+        "load_increment",
+        "mechanism_or_resistance_realization"
+      ],
+      "guessedLoadCount": 0,
+      "progressionAuthorityCount": 0
+    }
+  },
+  {
+    "capability": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "selectedLabels": [
+        "unknown"
+      ],
+      "knownPresence": [],
+      "knownCapabilities": [],
+      "explicitUnknowns": [
+        "unknown_product_equipment:unknown"
+      ],
+      "exactCapabilitySource": "current_product",
+      "status": "mapping_required",
+      "universalGymCapabilityInferenceCount": 0,
+      "legacyProgramEquipmentInferenceCount": 0
+    },
+    "load": {
+      "reference": {
+        "contractId": "PRODUCT_EQUIPMENT_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "exactRealizationAvailable": false,
+      "selfSelectedCalibrationAvailable": false,
+      "implementReferences": [],
+      "loadMinimum": null,
+      "loadMaximum": null,
+      "loadIncrement": null,
+      "unit": null,
+      "exactUnknowns": [
+        "minimum_load",
+        "maximum_load",
+        "load_increment",
+        "mechanism_or_resistance_realization"
+      ],
+      "guessedLoadCount": 0,
+      "progressionAuthorityCount": 0
+    }
+  }
+]

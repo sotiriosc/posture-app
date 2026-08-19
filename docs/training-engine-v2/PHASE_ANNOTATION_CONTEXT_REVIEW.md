@@ -1,0 +1,900 @@
+# Phase Annotation Context And Uncertainty Review
+
+`ENGINE_V2_BLUEPRINT.md` remains authoritative. The accepted Phase Suitability Calibration Laboratory established bounded phase preference and exposed duplicated mechanical bonuses. This second deterministic laboratory examines whether phase evidence applies to the candidate's actual role and section and whether missing evidence remains distinct from reviewed poor fit.
+
+The contextual annotation schema, deterministic resolver, provenance validation, conflict semantics, DecisionTrace support, and selected annotation-only non-default scorer are implemented. Legacy production phase scoring, rankings, eligibility, pain, assessment, continuity, prescription, Session Composer, and Weekly Composer remain unchanged while accepted annotation curation awaits owner approval.
+
+Fixed evaluation time: `2026-08-10T00:00:00.000Z`.
+
+Accepted production ranking fingerprint: `b17b55690f2d222f14975547f9663368c63b399f9052f8924d76583a8edf6e15` (matches captured HEAD dc9336e baseline).
+
+Context laboratory fingerprint: `8a1b0bdd4caf699d8b61ffb790388a518cda10699da9eec3481f50afaa1f7ef8`.
+
+Classification: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**.
+
+The owner selected CONTEXTUAL_ANNOTATION_ONLY_LOW_CHURN with excellent 8.8, good 7.8, possible 6.2, poor 5.5 and phase-family weight 1.0. The current catalog is not being declared accepted contextual evidence and production activation remains deferred.
+
+## Accepted Owner Direction
+
+- Phase is one bounded candidate preference downstream of hard eligibility.
+- `CandidateRequest.goal` is authoritative and is never replaced by phase intent.
+- Phase evidence is scoped by the actual requested `trainingRole` and/or `sessionSection`.
+- General annotations are legal only when evidence covers every legal use.
+- `UNKNOWN_NO_MATCH` is not poor and omits the contextual component and denominator weight.
+- `CONFLICTING_ANNOTATIONS` is not poor and must not choose the favorable annotation.
+- Reviewed `poor` remains a bounded contextual phase judgment.
+- Reason prose is non-executable.
+- The selected contextual scorer contains no Phase 1 low-skill/stability bonus; legacy production keeps it only until explicit activation.
+- The selected contextual scorer contains no Phase 3 high-loadability bonus; legacy production keeps it only until explicit activation.
+- Progression-axis matching remains same-exercise progression evidence, not `phase_fit`.
+- Phase changes never create automatic replacement pressure; KEEP -> PROGRESS -> REPLACE WHEN JUSTIFIED remains authoritative.
+
+Category values and phase-family weight are owner-approved as the starting policy only after accepted contextual annotation coverage is ready.
+
+## Implemented Contextual Annotation Contract
+
+```ts
+interface ExercisePhaseSuitabilityAnnotation {
+  annotationId: string;
+  exerciseId: string;
+  phaseId: PhaseId;
+  suitability: 'poor' | 'possible' | 'good' | 'excellent';
+  scope: { trainingRoles?: TrainingRole[]; sessionSections?: SessionSection[] };
+  reason: string;
+  reviewStatus: 'accepted' | 'needs_review' | 'unknown';
+  provenance: {
+    sourceType: 'owner_decision' | 'human_exercise_science_review' | 'external_reference' | 'legacy_reference_catalog_migration' | 'unknown';
+    sourceRef: string;
+    evidenceBasis: string[];
+    reviewerId?: string;
+    reviewedAt?: string;
+    legalUseCoverage?: { trainingRoles: TrainingRole[]; sessionSections: SessionSection[] };
+  };
+}
+```
+
+More than one annotation may exist for an exercise/phase when different legal uses require different judgments. A general annotation is valid only when its evidence covers every legal training role and section. Reason prose explains selected structured evidence but is never parsed for scoring. Goal-specific annotations are excluded because they would duplicate `goal_fit`.
+
+## Implemented Deterministic Context Resolver
+
+| Specificity | Required Match | Rank |
+| --- | --- | --- |
+| role_and_section | requested training role and requested section both match | 4 |
+| section | requested section matches a section-only scope | 3 |
+| training_role | requested role matches a role-only scope | 2 |
+| general | annotation has no role or section restriction | 1 |
+| none | no annotation matches | 0 |
+
+The resolver filters by exercise and active phase, evaluates structured scope, selects only the highest specificity, and sorts annotation IDs for deterministic trace order. Equally specific annotations with different suitability or review meaning produce `CONFLICTING_ANNOTATIONS`; the resolver never chooses the favorable value. Equivalent duplicates resolve deterministically to the lowest annotation ID but remain visible in `consideredAnnotationIds`.
+
+Every trace exposes active phase, requested role/section, candidate exercise, all considered and matching annotations, selected annotation, specificity, review status, provenance, conflicts and evidence status.
+
+## Review Status Production Behavior
+
+| Review status / state | Production scoring | Trace behavior |
+| --- | --- | --- |
+| accepted | eligible_only_with_complete_contextual_provenance | May affect production candidate ranking only when role/section scope matches and provenance is complete. |
+| needs_review | omit_component_and_weight | Visible in DecisionTrace and curation tooling; eligible only for non-production sensitivity labs. |
+| unknown | omit_component_and_weight | No production scoring influence. |
+| no_contextual_match | omit_effective_evidence_no_fallback | Do not emit a fallback score or poor category. |
+| conflict | omit_effective_evidence_require_review | Expose conflict and never choose the favorable annotation. |
+
+Only accepted contextual phase annotations with complete provenance may emit the non-default phase component. `needs_review`, `unknown`, no match and conflict omit the component and its denominator weight. Accepted poor remains a real bounded category. Conflict remains visible and requires review.
+
+## Accepted Evidence Provenance Contract
+
+| Requirement | Value |
+| --- | --- |
+| Required fields | sourceType, sourceRef, evidenceBasis, reviewerId, reviewedAt |
+| Allowed source types | owner_decision, human_exercise_science_review, external_reference |
+| External evidence policy | External references may supplement owner/human exercise-science review, but this contract does not fabricate literature. |
+
+Owner decision and human exercise-science review are valid provenance sources. External literature can supplement that evidence, but this report does not fabricate citations.
+
+## Unknown Is Not Poor
+
+| Evidence State | Meaning | Laboratory Influence |
+| --- | --- | --- |
+| ACCEPTED_ANNOTATION | reviewed contextual phase judgment | full policy weight |
+| REVIEW_QUALIFIED_ANNOTATION | context match exists but evidence remains qualified | full, half, or observability-only sensitivity |
+| UNKNOWN_NO_MATCH | no contextual phase evidence applies | phase term and phase denominator weight omitted |
+| CONFLICTING_ANNOTATIONS | equally specific structured evidence conflicts | phase term omitted; human review required |
+
+Explicit reviewed `poor` remains a selected annotation with category meaning. `UNKNOWN_NO_MATCH` has no selected category and receives no numeric placeholder. The copied laboratory therefore does not choose a production unknown score and cannot collapse missing evidence into poor evidence.
+
+## All 90 Current Annotation Ownership Decisions
+
+Ownership classifications: AMBIGUOUS=3; ARBITRARY_OR_UNDERSPECIFIED=3; GENERAL_PHASE_JUDGMENT=6; GOAL_SPECIFIC_WRONG_OWNER=16; MECHANICAL_FACT_ALREADY_SCORED=47; ROLE_SPECIFIC=7; SECTION_SPECIFIC=8.
+
+Recommended review states: accepted=0; needs_review=16; unknown=74. All 90 current annotations have **MISSING_STRUCTURED_PROVENANCE**. Internal plausibility from the first laboratory is not retroactively presented as accepted evidence.
+
+| Exercise | Phase | Current | Current Reason | Training Roles | Sections | Proposed Scope | Evidence Owner | Review | Provenance | Recommended Treatment | Audit Finding |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ninety-ninety-breathing / 90/90 Breathing | phase_1 | excellent | Directly supports control and position. | preparation, recovery | cooldown, warmup | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Control and position are plausible Phase 1 developmental evidence across both legal uses. |
+| ninety-ninety-breathing / 90/90 Breathing | phase_2 | good | Useful when assessment priorities remain relevant. | preparation, recovery | cooldown, warmup | all_roles / all_sections | AMBIGUOUS | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | Assessment-priority relevance belongs to assessment context and does not establish a general Phase 2 judgment. |
+| ninety-ninety-breathing / 90/90 Breathing | phase_3 | possible | Useful as targeted preparation, not a main stimulus. | preparation, recovery | cooldown, warmup | preparation / warmup | SECTION_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | The reason explicitly describes targeted preparation and does not establish recovery/cooldown phase fit. |
+| serratus-wall-slide / Serratus Wall Slide | phase_1 | excellent | Useful for control development. | activation, preparation | activation, warmup | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Control development plausibly applies across the exercise's activation and preparation uses. |
+| serratus-wall-slide / Serratus Wall Slide | phase_2 | good | Useful as preparation before higher loading. | activation, preparation | activation, warmup | preparation / warmup | SECTION_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | The reason is specifically preparation before loading, not a universal activation judgment. |
+| serratus-wall-slide / Serratus Wall Slide | phase_3 | possible | Useful when shoulder control remains a priority. | activation, preparation | activation, warmup | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Ongoing shoulder-control priority can plausibly apply to either legal use, but remains unproven. |
+| dead-bug / Dead Bug | phase_1 | excellent | Direct control exercise. | activation, hypertrophy_accessory | accessory, activation | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Direct control work is plausible early-phase evidence for both legal uses. |
+| dead-bug / Dead Bug | phase_2 | good | Can progress with tempo or range. | activation, hypertrophy_accessory | accessory, activation | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Tempo and range are progression axes already owned by progression_value. |
+| dead-bug / Dead Bug | phase_3 | possible | Useful for targeted trunk control. | activation, hypertrophy_accessory | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Targeted trunk control supports activation use but does not establish hypertrophy-accessory value. |
+| push-up / Push-Up | phase_1 | possible | Appropriate if supported or regressed. | primary_strength, secondary_strength, hypertrophy_accessory | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Support, regression, skill and stability already have dedicated owners. |
+| push-up / Push-Up | phase_2 | good | Good continuity exercise when progression remains available. | primary_strength, secondary_strength, hypertrophy_accessory | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Continuity and progression runway are already scored explicitly. |
+| push-up / Push-Up | phase_3 | possible | May need loading or variation for sufficient stimulus. | primary_strength, secondary_strength, hypertrophy_accessory | accessory, main | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Loading and stimulus sufficiency belong to loadability, stimulus, prescription and weekly volume. |
+| dumbbell-bench-press / Dumbbell Bench Press | phase_1 | possible | Can be used with light loading and support. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Light loading and support are dedicated loading and stability facts. |
+| dumbbell-bench-press / Dumbbell Bench Press | phase_2 | excellent | Strong progression path. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression path is already owned by progression_value. |
+| dumbbell-bench-press / Dumbbell Bench Press | phase_3 | excellent | Excellent continuity candidate with load or volume progression. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Continuity, load and volume are separate candidate, prescription and weekly facts. |
+| machine-chest-press / Machine Chest Press | phase_1 | good | Support can reduce coordination demand. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Support and coordination demand are already structured and scored. |
+| machine-chest-press / Machine Chest Press | phase_2 | good | Load progression is clear. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Load progression is already owned by progression and loadability. |
+| machine-chest-press / Machine Chest Press | phase_3 | good | Useful when machine path fits the athlete. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Machine path fit is setup and candidate-fit evidence, not established Phase 3 evidence. |
+| cable-chest-fly / Cable Chest Fly | phase_1 | possible | Use cautiously if shoulder control is limited. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Shoulder control and caution already belong to assessment, pain, skill and stability. |
+| cable-chest-fly / Cable Chest Fly | phase_2 | good | Useful accessory volume. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Accessory volume is session/weekly allocation evidence rather than independent phase evidence. |
+| cable-chest-fly / Cable Chest Fly | phase_3 | excellent | High-value hypertrophy accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Hypertrophy value belongs to CandidateRequest.goal and the Weekly Development Ledger. |
+| chest-supported-dumbbell-row / Chest-Supported Dumbbell Row | phase_1 | good | Support reduces setup and trunk demand. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Support, setup and trunk demand already have explicit mechanics owners. |
+| chest-supported-dumbbell-row / Chest-Supported Dumbbell Row | phase_2 | excellent | Clear load progression. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Load progression is already owned by progression_value. |
+| chest-supported-dumbbell-row / Chest-Supported Dumbbell Row | phase_3 | excellent | Strong continuity candidate. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Continuity is independently modeled and cannot become a second phase vote. |
+| one-arm-dumbbell-row / One-Arm Dumbbell Row | phase_1 | possible | May need support and conservative loading. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Support and conservative loading are dedicated mechanics/prescription facts. |
+| one-arm-dumbbell-row / One-Arm Dumbbell Row | phase_2 | good | Progression-friendly home or gym row. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression and equipment setting are already modeled elsewhere. |
+| one-arm-dumbbell-row / One-Arm Dumbbell Row | phase_3 | excellent | Useful loadable pull when setup fits. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Loadability and setup fit are not independent Phase 3 evidence. |
+| machine-row / Machine Row | phase_1 | good | Guided setup can reduce coordination demand. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Guidance and coordination demand already affect dedicated components. |
+| machine-row / Machine Row | phase_2 | excellent | Clear load progression. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Clear load progression is already scored. |
+| machine-row / Machine Row | phase_3 | good | Strong stimulus if the machine path fits the athlete. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | Machine-path fit does not explain why Phase 3 should be lower than Phase 2. |
+| seated-cable-row / Seated Cable Row | phase_1 | good | Predictable path and setup. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Path and setup are mechanics/equipment facts. |
+| seated-cable-row / Seated Cable Row | phase_2 | excellent | Progression-friendly. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression friendliness is already scored. |
+| seated-cable-row / Seated Cable Row | phase_3 | good | Useful when cable station is practical. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | Cable practicality does not establish a Phase 2-versus-Phase 3 distinction. |
+| band-row / Band Row | phase_1 | excellent | Accessible row pattern when anchor is available. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Anchor availability and accessibility belong to equipment/setup truth. |
+| band-row / Band Row | phase_2 | good | Useful when load needs are modest. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Modest load need belongs to loadability, prescription and weekly allocation. |
+| band-row / Band Row | phase_3 | possible | May be limited by loading potential. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Limited loading potential must not reduce an activation use through global phase evidence. |
+| dumbbell-shoulder-press / Dumbbell Shoulder Press | phase_1 | possible | Usually requires review of range and support. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Range and support are already candidate mechanics and prerequisites. |
+| dumbbell-shoulder-press / Dumbbell Shoulder Press | phase_2 | good | Useful if overhead control is established. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Overhead control is a prerequisite/assessment fact. |
+| dumbbell-shoulder-press / Dumbbell Shoulder Press | phase_3 | excellent | Strong loadability for vertical push stimulus. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Loadability and stimulus are dedicated score components. |
+| lat-pulldown / Lat Pulldown | phase_1 | good | Stable path can support skill acquisition. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Stable path and skill acquisition repeat mechanics and experience fit. |
+| lat-pulldown / Lat Pulldown | phase_2 | excellent | Clear progression route. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression route already has a receiver. |
+| lat-pulldown / Lat Pulldown | phase_3 | excellent | High-value back stimulus. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Back stimulus depends on the enduring goal and requested use, not Phase 3 alone. |
+| band-lat-pulldown / Band Lat Pulldown | phase_1 | good | Accessible vertical pull pattern if anchor exists. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Anchor access is equipment/setup truth. |
+| band-lat-pulldown / Band Lat Pulldown | phase_2 | possible | Loadability may limit stimulus. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Loadability already has a dedicated component. |
+| band-lat-pulldown / Band Lat Pulldown | phase_3 | possible | Usually accessory or travel option. | activation, hypertrophy_accessory, secondary_strength | accessory, activation | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Accessory/travel use is section and equipment context, not general phase evidence. |
+| goblet-squat / Goblet Squat | phase_1 | good | Teaches squat with manageable load. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Teaching value and manageable load repeat skill and loadability facts. |
+| goblet-squat / Goblet Squat | phase_2 | excellent | Progression-friendly until load ceiling. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression and load ceiling already have dedicated owners. |
+| goblet-squat / Goblet Squat | phase_3 | possible | May be load-limited for advanced users. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Load limitation and experience are independently modeled. |
+| leg-press / Leg Press | phase_1 | possible | Use range and load conservatively. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Range/load conservatism belongs to prescription and pain context. |
+| leg-press / Leg Press | phase_2 | excellent | Useful capacity builder. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | AMBIGUOUS | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | Capacity-builder language does not identify independent candidate-level phase evidence. |
+| leg-press / Leg Press | phase_3 | excellent | High-stimulus lower-body option. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | High stimulus is goal/stimulus/weekly evidence, not Phase 3 by itself. |
+| bodyweight-box-squat / Bodyweight Box Squat | phase_1 | excellent | Range and support are easy to control. | preparation, activation, secondary_strength | accessory, activation, warmup | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Range and support are dedicated mechanics. |
+| bodyweight-box-squat / Bodyweight Box Squat | phase_2 | possible | Often becomes too low stimulus. | preparation, activation, secondary_strength | accessory, activation, warmup | secondary_strength / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Low stimulus belongs to stimulus and requested-role context. |
+| bodyweight-box-squat / Bodyweight Box Squat | phase_3 | possible | Mostly preparation or deload context. | preparation, activation, secondary_strength | accessory, activation, warmup | activation+preparation / activation+warmup | SECTION_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Preparation/deload language applies only to warm-up or activation use, not secondary-strength accessory use. |
+| dumbbell-romanian-deadlift / Dumbbell Romanian Deadlift | phase_1 | possible | Appropriate only if hinge control is present. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Hinge control is already a hard prerequisite and skill fact. |
+| dumbbell-romanian-deadlift / Dumbbell Romanian Deadlift | phase_2 | excellent | Strong progression path. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Progression path is already scored. |
+| dumbbell-romanian-deadlift / Dumbbell Romanian Deadlift | phase_3 | excellent | Productive posterior-chain stimulus. | primary_strength, secondary_strength | accessory, main | all_roles / all_sections | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Posterior-chain stimulus belongs to goal, target and stimulus components. |
+| cable-pull-through / Cable Pull-Through | phase_1 | good | Good hinge teaching tool. | activation, secondary_strength, hypertrophy_accessory | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Hinge teaching is plausible activation-specific Phase 1 evidence. |
+| cable-pull-through / Cable Pull-Through | phase_2 | good | Useful accessory or hinge regression. | activation, secondary_strength, hypertrophy_accessory | accessory, activation | secondary_strength / accessory | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Accessory/regression use is contextual and must not be treated as a general exercise judgment. |
+| cable-pull-through / Cable Pull-Through | phase_3 | possible | May be too setup-limited for primary work. | activation, secondary_strength, hypertrophy_accessory | accessory, activation | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | The reason discusses primary work although primary_strength is not a legal role for this exercise. |
+| split-squat / Split Squat | phase_1 | possible | Support may be needed. | secondary_strength, hypertrophy_accessory | accessory, main | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Support need is a stability/setup fact. |
+| split-squat / Split Squat | phase_2 | good | Progresses single-leg strength. | secondary_strength, hypertrophy_accessory | accessory, main | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Developing single-leg strength is a plausible Phase 2 judgment across both legal uses. |
+| split-squat / Split Squat | phase_3 | excellent | Strong accessory stimulus. | secondary_strength, hypertrophy_accessory | accessory, main | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Accessory stimulus belongs to goal, section, stimulus and weekly allocation. |
+| step-up / Step-Up | phase_1 | good | Height and support can be scaled. | secondary_strength, hypertrophy_accessory | accessory, activation | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Height and support scaling are mechanics/prescription facts. |
+| step-up / Step-Up | phase_2 | good | Useful unilateral volume. | secondary_strength, hypertrophy_accessory | accessory, activation | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Unilateral volume is a weekly allocation fact. |
+| step-up / Step-Up | phase_3 | good | Useful accessory when loadability is enough. | secondary_strength, hypertrophy_accessory | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Accessory loadability repeats role, section and loadability evidence. |
+| lying-leg-curl / Lying Leg Curl | phase_1 | possible | Useful if simple machine setup fits. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Machine setup fit belongs to equipment/setup context. |
+| lying-leg-curl / Lying Leg Curl | phase_2 | good | Supports posterior-chain volume. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Posterior-chain volume belongs to target and weekly allocation. |
+| lying-leg-curl / Lying Leg Curl | phase_3 | excellent | High-value hypertrophy accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Hypertrophy value belongs to the enduring goal and Weekly Development Ledger. |
+| glute-bridge / Glute Bridge | phase_1 | excellent | Accessible glute and pelvic-control option. | activation, hypertrophy_accessory | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Glute/pelvic control is plausible Phase 1 activation evidence, not a universal accessory judgment. |
+| glute-bridge / Glute Bridge | phase_2 | good | Can progress with load or band. | activation, hypertrophy_accessory | accessory, activation | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Load/band progression is already owned by progression and loadability. |
+| glute-bridge / Glute Bridge | phase_3 | possible | May need stronger loading path. | activation, hypertrophy_accessory | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Loading path belongs to loadability and prescription, not activation phase fit. |
+| dumbbell-lateral-raise / Dumbbell Lateral Raise | phase_1 | possible | Use light load and owned range. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Load and owned range belong to prescription and candidate mechanics. |
+| dumbbell-lateral-raise / Dumbbell Lateral Raise | phase_2 | good | Useful delt volume. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Delt volume belongs to the enduring goal and weekly allocation. |
+| dumbbell-lateral-raise / Dumbbell Lateral Raise | phase_3 | excellent | High-value hypertrophy accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Hypertrophy value is not independent Phase 3 evidence. |
+| reverse-pec-deck / Reverse Pec Deck | phase_1 | good | Stable setup for scapular work. | hypertrophy_accessory, activation | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Stable scapular work is plausibly activation-specific, while setup stability itself remains separately scored. |
+| reverse-pec-deck / Reverse Pec Deck | phase_2 | good | Useful upper-back accessory. | hypertrophy_accessory, activation | accessory, activation | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Upper-back accessory value belongs to requested section and weekly allocation. |
+| reverse-pec-deck / Reverse Pec Deck | phase_3 | excellent | High-value rear-delt accessory. | hypertrophy_accessory, activation | accessory, activation | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Rear-delt accessory value must not influence an activation request through a global annotation. |
+| band-face-pull / Band Face Pull | phase_1 | excellent | Strong control and preparation fit. | activation, hypertrophy_accessory | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Control and preparation are plausible activation-specific Phase 1 evidence. |
+| band-face-pull / Band Face Pull | phase_2 | good | Useful between pressing volume. | activation, hypertrophy_accessory | accessory, activation | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Placement between pressing volume belongs to session/weekly composition. |
+| band-face-pull / Band Face Pull | phase_3 | possible | Accessory if loadability is enough. | activation, hypertrophy_accessory | accessory, activation | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Accessory loadability must not lower activation suitability. |
+| dumbbell-curl / Dumbbell Curl | phase_1 | possible | Optional accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Optional accessory status belongs to session and weekly allocation. |
+| dumbbell-curl / Dumbbell Curl | phase_2 | good | Adds arm volume. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Arm volume belongs to the enduring goal and Weekly Development Ledger. |
+| dumbbell-curl / Dumbbell Curl | phase_3 | excellent | Useful hypertrophy accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Hypertrophy accessory value is not independent Phase 3 evidence. |
+| cable-triceps-pressdown / Cable Triceps Pressdown | phase_1 | possible | Optional accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Optional accessory status belongs to session and weekly allocation. |
+| cable-triceps-pressdown / Cable Triceps Pressdown | phase_2 | good | Useful pressing support volume. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Pressing-support volume belongs to target and weekly allocation. |
+| cable-triceps-pressdown / Cable Triceps Pressdown | phase_3 | excellent | High-value arm accessory. | hypertrophy_accessory | accessory | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. | Arm accessory value is not independent Phase 3 evidence. |
+| pallof-press / Pallof Press | phase_1 | excellent | Strong control exercise. | activation, hypertrophy_accessory | accessory, activation | activation / activation | ROLE_SPECIFIC | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Control work is plausible Phase 1 activation evidence. |
+| pallof-press / Pallof Press | phase_2 | good | Useful accessory and preparation. | activation, hypertrophy_accessory | accessory, activation | activation+hypertrophy_accessory / activation+accessory | AMBIGUOUS | unknown | MISSING_STRUCTURED_PROVENANCE | Do not migrate as executable phase evidence; require a contextual exercise-science review and structured provenance. | Accessory and preparation are different uses and the current reason does not establish either phase judgment. |
+| pallof-press / Pallof Press | phase_3 | good | Can remain as targeted trunk work. | activation, hypertrophy_accessory | accessory, activation | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | MISSING_STRUCTURED_PROVENANCE | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. | Continued targeted trunk work can plausibly apply across both legal uses, but requires review. |
+
+## Required Multi-Role Review
+
+| Exercise | Phase | Current Reason | Proposed Scope | Owner | Review | Finding |
+| --- | --- | --- | --- | --- | --- | --- |
+| serratus-wall-slide | phase_1 | Useful for control development. | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | Control development plausibly applies across the exercise's activation and preparation uses. |
+| serratus-wall-slide | phase_2 | Useful as preparation before higher loading. | preparation / warmup | SECTION_SPECIFIC | needs_review | The reason is specifically preparation before loading, not a universal activation judgment. |
+| serratus-wall-slide | phase_3 | Useful when shoulder control remains a priority. | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | Ongoing shoulder-control priority can plausibly apply to either legal use, but remains unproven. |
+| dead-bug | phase_1 | Direct control exercise. | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | Direct control work is plausible early-phase evidence for both legal uses. |
+| dead-bug | phase_2 | Can progress with tempo or range. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Tempo and range are progression axes already owned by progression_value. |
+| dead-bug | phase_3 | Useful for targeted trunk control. | activation / activation | ROLE_SPECIFIC | needs_review | Targeted trunk control supports activation use but does not establish hypertrophy-accessory value. |
+| machine-chest-press | phase_1 | Support can reduce coordination demand. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Support and coordination demand are already structured and scored. |
+| machine-chest-press | phase_2 | Load progression is clear. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Load progression is already owned by progression and loadability. |
+| machine-chest-press | phase_3 | Useful when machine path fits the athlete. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Machine path fit is setup and candidate-fit evidence, not established Phase 3 evidence. |
+| chest-supported-dumbbell-row | phase_1 | Support reduces setup and trunk demand. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Support, setup and trunk demand already have explicit mechanics owners. |
+| chest-supported-dumbbell-row | phase_2 | Clear load progression. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Load progression is already owned by progression_value. |
+| chest-supported-dumbbell-row | phase_3 | Strong continuity candidate. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Continuity is independently modeled and cannot become a second phase vote. |
+| one-arm-dumbbell-row | phase_1 | May need support and conservative loading. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Support and conservative loading are dedicated mechanics/prescription facts. |
+| one-arm-dumbbell-row | phase_2 | Progression-friendly home or gym row. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Progression and equipment setting are already modeled elsewhere. |
+| one-arm-dumbbell-row | phase_3 | Useful loadable pull when setup fits. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Loadability and setup fit are not independent Phase 3 evidence. |
+| machine-row | phase_1 | Guided setup can reduce coordination demand. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Guidance and coordination demand already affect dedicated components. |
+| machine-row | phase_2 | Clear load progression. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Clear load progression is already scored. |
+| machine-row | phase_3 | Strong stimulus if the machine path fits the athlete. | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | Machine-path fit does not explain why Phase 3 should be lower than Phase 2. |
+| seated-cable-row | phase_1 | Predictable path and setup. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Path and setup are mechanics/equipment facts. |
+| seated-cable-row | phase_2 | Progression-friendly. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Progression friendliness is already scored. |
+| seated-cable-row | phase_3 | Useful when cable station is practical. | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | Cable practicality does not establish a Phase 2-versus-Phase 3 distinction. |
+| band-row | phase_1 | Accessible row pattern when anchor is available. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Anchor availability and accessibility belong to equipment/setup truth. |
+| band-row | phase_2 | Useful when load needs are modest. | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | Modest load need belongs to loadability, prescription and weekly allocation. |
+| band-row | phase_3 | May be limited by loading potential. | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | Limited loading potential must not reduce an activation use through global phase evidence. |
+| bodyweight-box-squat | phase_1 | Range and support are easy to control. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Range and support are dedicated mechanics. |
+| bodyweight-box-squat | phase_2 | Often becomes too low stimulus. | secondary_strength / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | Low stimulus belongs to stimulus and requested-role context. |
+| bodyweight-box-squat | phase_3 | Mostly preparation or deload context. | activation+preparation / activation+warmup | SECTION_SPECIFIC | needs_review | Preparation/deload language applies only to warm-up or activation use, not secondary-strength accessory use. |
+| cable-pull-through | phase_1 | Good hinge teaching tool. | activation / activation | ROLE_SPECIFIC | needs_review | Hinge teaching is plausible activation-specific Phase 1 evidence. |
+| cable-pull-through | phase_2 | Useful accessory or hinge regression. | secondary_strength / accessory | ROLE_SPECIFIC | needs_review | Accessory/regression use is contextual and must not be treated as a general exercise judgment. |
+| cable-pull-through | phase_3 | May be too setup-limited for primary work. | all_roles / all_sections | ARBITRARY_OR_UNDERSPECIFIED | unknown | The reason discusses primary work although primary_strength is not a legal role for this exercise. |
+| glute-bridge | phase_1 | Accessible glute and pelvic-control option. | activation / activation | ROLE_SPECIFIC | needs_review | Glute/pelvic control is plausible Phase 1 activation evidence, not a universal accessory judgment. |
+| glute-bridge | phase_2 | Can progress with load or band. | all_roles / all_sections | MECHANICAL_FACT_ALREADY_SCORED | unknown | Load/band progression is already owned by progression and loadability. |
+| glute-bridge | phase_3 | May need stronger loading path. | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | Loading path belongs to loadability and prescription, not activation phase fit. |
+| reverse-pec-deck | phase_1 | Stable setup for scapular work. | activation / activation | ROLE_SPECIFIC | needs_review | Stable scapular work is plausibly activation-specific, while setup stability itself remains separately scored. |
+| reverse-pec-deck | phase_2 | Useful upper-back accessory. | hypertrophy_accessory / accessory | SECTION_SPECIFIC | unknown | Upper-back accessory value belongs to requested section and weekly allocation. |
+| reverse-pec-deck | phase_3 | High-value rear-delt accessory. | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | Rear-delt accessory value must not influence an activation request through a global annotation. |
+| band-face-pull | phase_1 | Strong control and preparation fit. | activation / activation | ROLE_SPECIFIC | needs_review | Control and preparation are plausible activation-specific Phase 1 evidence. |
+| band-face-pull | phase_2 | Useful between pressing volume. | hypertrophy_accessory / accessory | GOAL_SPECIFIC_WRONG_OWNER | unknown | Placement between pressing volume belongs to session/weekly composition. |
+| band-face-pull | phase_3 | Accessory if loadability is enough. | hypertrophy_accessory / accessory | MECHANICAL_FACT_ALREADY_SCORED | unknown | Accessory loadability must not lower activation suitability. |
+| pallof-press | phase_1 | Strong control exercise. | activation / activation | ROLE_SPECIFIC | needs_review | Control work is plausible Phase 1 activation evidence. |
+| pallof-press | phase_2 | Useful accessory and preparation. | activation+hypertrophy_accessory / activation+accessory | AMBIGUOUS | unknown | Accessory and preparation are different uses and the current reason does not establish either phase judgment. |
+| pallof-press | phase_3 | Can remain as targeted trunk work. | all_roles / all_sections | GENERAL_PHASE_JUDGMENT | needs_review | Continued targeted trunk work can plausibly apply across both legal uses, but requires review. |
+
+Multi-role exercises cannot inherit one use's phase rationale globally. Activation/preparation judgments are scoped away from hypertrophy accessories; accessory/loadability judgments are scoped away from activation. Mechanical or wrong-owner reasons remain unknown until independent phase evidence is reviewed.
+
+## Focus Contrast: Phase 3 Scapular Activation
+
+The request is exactly `requestedRole=activation`, `requestedSection=activation`, and scapular-control/horizontal-pull need. No goal, assessment, pain, continuity, equipment or athlete field changes.
+
+| Exercise | Current Global Evidence | Current Rank / Phase | Proposed Scope | Context Evidence | Context Rank | Owner | Finding |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| band-face-pull | possible: Accessory if loadability is enough. | 2 / 6.200 | hypertrophy_accessory / accessory | UNKNOWN_NO_MATCH; no selected annotation | 1 | MECHANICAL_FACT_ALREADY_SCORED | Accessory loadability must not lower activation suitability. |
+| reverse-pec-deck | excellent: High-value rear-delt accessory. | 1 / 8.800 | hypertrophy_accessory / accessory | UNKNOWN_NO_MATCH; no selected annotation | 2 | GOAL_SPECIFIC_WRONG_OWNER | Rear-delt accessory value must not influence an activation request through a global annotation. |
+| serratus-wall-slide | possible: Useful when shoulder control remains a priority. | 3 / 6.200 | all_roles / all_sections | REVIEW_QUALIFIED_ANNOTATION; phase-context:serratus-wall-slide:phase_3:general | 3 | GENERAL_PHASE_JUDGMENT | Ongoing shoulder-control priority can plausibly apply to either legal use, but remains unproven. |
+
+**Should `High-value rear-delt accessory` apply to an activation request? No.** It is accessory/goal/weekly-volume evidence and cannot become activation phase evidence.
+
+**Should limited accessory loadability reduce activation suitability? No.** Loadability and accessory stimulus belong to dedicated candidate and future weekly/prescription owners; they do not establish activation phase fit.
+
+| Question | Owner |
+| --- | --- |
+| Does the exercise truthfully fit activation? | hard role/section eligibility plus session_intent_fit |
+| Does it train the requested muscle? | hard target truth plus muscle_target_fit |
+| Does it express a relevant assessed feature? | assessment feature target fit |
+| Is this legal activation use developmentally appropriate for the phase? | contextual phase annotation |
+| How much accessory volume/loadability is useful this week? | future Weekly Development Ledger and prescription |
+
+The laboratory reports current and contextual order but does not force a winner. Context correction identifies evidence ownership; it is not a claim that one candidate is physiologically superior.
+
+## Focus Contrast: Arm And Hypertrophy Accessories
+
+| Exercise | Phase | Current | Reason | Owner | Review | Treatment |
+| --- | --- | --- | --- | --- | --- | --- |
+| cable-chest-fly | phase_1 | possible | Use cautiously if shoulder control is limited. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| cable-chest-fly | phase_2 | good | Useful accessory volume. | SECTION_SPECIFIC | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| cable-chest-fly | phase_3 | excellent | High-value hypertrophy accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| lying-leg-curl | phase_1 | possible | Useful if simple machine setup fits. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| lying-leg-curl | phase_2 | good | Supports posterior-chain volume. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| lying-leg-curl | phase_3 | excellent | High-value hypertrophy accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-lateral-raise | phase_1 | possible | Use light load and owned range. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-lateral-raise | phase_2 | good | Useful delt volume. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-lateral-raise | phase_3 | excellent | High-value hypertrophy accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| reverse-pec-deck | phase_1 | good | Stable setup for scapular work. | ROLE_SPECIFIC | needs_review | Retain only at the proposed scope as review-qualified phase evidence; structured provenance is required before acceptance. |
+| reverse-pec-deck | phase_2 | good | Useful upper-back accessory. | SECTION_SPECIFIC | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| reverse-pec-deck | phase_3 | excellent | High-value rear-delt accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-curl | phase_1 | possible | Optional accessory. | SECTION_SPECIFIC | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-curl | phase_2 | good | Adds arm volume. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| dumbbell-curl | phase_3 | excellent | Useful hypertrophy accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| cable-triceps-pressdown | phase_1 | possible | Optional accessory. | SECTION_SPECIFIC | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| cable-triceps-pressdown | phase_2 | good | Useful pressing support volume. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+| cable-triceps-pressdown | phase_3 | excellent | High-value arm accessory. | GOAL_SPECIFIC_WRONG_OWNER | unknown | Do not migrate as phase evidence; route the fact to its existing goal, section, mechanics, progression, continuity, assessment, or weekly owner and emit unknown until independent phase evidence is reviewed. |
+
+Later-phase `hypertrophy accessory`, arm/delt/hamstring volume and accessory-value language primarily belongs to `CandidateRequest.goal`, legal accessory role/section, muscle target, stimulus and the future Weekly Development Ledger. Phase 3 alone must not overwrite strength, general-fitness, pain-aware-return or movement-quality goals. These reasons remain unknown phase evidence unless a reviewer supplies a distinct developmental phase rationale.
+
+## Focus Contrast: Horizontal Rows
+
+| Exercise | Phase | Current | Reason | Owner | Review | Finding |
+| --- | --- | --- | --- | --- | --- | --- |
+| chest-supported-dumbbell-row | phase_1 | good | Support reduces setup and trunk demand. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Support, setup and trunk demand already have explicit mechanics owners. |
+| chest-supported-dumbbell-row | phase_2 | excellent | Clear load progression. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Load progression is already owned by progression_value. |
+| chest-supported-dumbbell-row | phase_3 | excellent | Strong continuity candidate. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Continuity is independently modeled and cannot become a second phase vote. |
+| one-arm-dumbbell-row | phase_1 | possible | May need support and conservative loading. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Support and conservative loading are dedicated mechanics/prescription facts. |
+| one-arm-dumbbell-row | phase_2 | good | Progression-friendly home or gym row. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Progression and equipment setting are already modeled elsewhere. |
+| one-arm-dumbbell-row | phase_3 | excellent | Useful loadable pull when setup fits. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Loadability and setup fit are not independent Phase 3 evidence. |
+| machine-row | phase_1 | good | Guided setup can reduce coordination demand. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Guidance and coordination demand already affect dedicated components. |
+| machine-row | phase_2 | excellent | Clear load progression. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Clear load progression is already scored. |
+| machine-row | phase_3 | good | Strong stimulus if the machine path fits the athlete. | ARBITRARY_OR_UNDERSPECIFIED | unknown | Machine-path fit does not explain why Phase 3 should be lower than Phase 2. |
+| seated-cable-row | phase_1 | good | Predictable path and setup. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Path and setup are mechanics/equipment facts. |
+| seated-cable-row | phase_2 | excellent | Progression-friendly. | MECHANICAL_FACT_ALREADY_SCORED | unknown | Progression friendliness is already scored. |
+| seated-cable-row | phase_3 | good | Useful when cable station is practical. | ARBITRARY_OR_UNDERSPECIFIED | unknown | Cable practicality does not establish a Phase 2-versus-Phase 3 distinction. |
+
+Machine and cable rows are Phase 2 excellent but Phase 3 good only because current prose shifts from progression to path/practicality; that does not establish a developmental phase distinction. Chest-supported and one-arm Phase 3 excellent ratings cite continuity, loadability and setup, all of which already have dedicated owners. The four row profiles therefore remain unknown contextual phase evidence pending review, and this report does not impose a universal row ordering.
+
+## Mechanical Bonus Decision
+
+Every proposed owner-policy variant is `ANNOTATION_ONLY_NO_MECHANICAL_BONUSES`. The production Phase 1 low-skill/non-high-stability and Phase 3 high-loadability bonuses remain untouched in this task, but the owner-approved future semantic shape removes them because they reread skill, stability, experience, loadability and potentially stimulus facts.
+
+## Contextual Policy Laboratory
+
+The deterministic laboratory remains non-production consequence evidence. The owner selected its low-churn annotation-only shape; it does not activate the incompletely curated catalog.
+
+| Field | Status |
+| --- | --- |
+| Lab status | OWNER_POLICY_SELECTED_NON_DEFAULT_SCORER_IMPLEMENTED |
+| Coefficient status | EXCELLENT_8_8_GOOD_7_8_POSSIBLE_6_2_POOR_5_5_WEIGHT_1_0 |
+| Production behavior | UNCHANGED |
+| Comparison axes | current controlled scenarios, golden personas, role/section changes, phase 1/2/3 continuity, cases where the best candidate remains best across phases, close legal reorders, unknown not disadvantaged, accepted poor versus unknown, conflict cases, excellent/good/possible/poor spacing, bounded phase-family weight |
+
+| Policy | Family | Phase Weight | Mechanical Bonuses | Resolver | Review Treatment | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| A_CURRENT_GLOBAL | CURRENT_GLOBAL | 1 | yes | legacy global | full | Current global annotation, current Phase 1/3 mechanical bonuses, current gaps and weight 1.0. |
+| B_GLOBAL_ANNOTATION_ONLY | GLOBAL_ANNOTATION_ONLY | 1 | no | legacy global | full | Current global annotation only, no mechanical bonuses, current gaps and weight 1.0. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | CONTEXT_SCOPED | 1 | no | contextual | full | Proposed role/section resolver, no mechanical bonuses, current gaps and weight 1.0; review-qualified evidence receives full laboratory influence. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | CONTEXT_SCOPED_MODERATE_GAP | 1 | no | contextual | full | Proposed resolver, no mechanical bonuses, prior laboratory moderate gap and weight 1.0. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | CONTEXT_SCOPED_WEIGHT | 0.75 | no | contextual | full | Proposed resolver, no mechanical bonuses, current gaps and phase weight 0.75. |
+| F_REVIEW_QUALIFIED_FULL | CONTEXT_REVIEW_SENSITIVITY | 1 | no | contextual | full | Accepted and needs-review annotations receive full laboratory influence; unknown/conflict receive no phase evidence. |
+| F_REVIEW_QUALIFIED_ATTENUATED | CONTEXT_REVIEW_SENSITIVITY | 1 | no | contextual | attenuated | Accepted annotations receive full influence; needs-review effective weight is halved; unknown/conflict receive no phase evidence. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | CONTEXT_REVIEW_SENSITIVITY | 1 | no | contextual | observability_only | Accepted annotations receive full influence; needs-review and unknown/conflict are observability-only with no phase evidence. |
+
+Unknown/conflicting rows omit the phase term and its denominator weight. This is evidence absence, not a chosen unknown coefficient. The moderate map and 0.75 weight are copied sensitivity probes only.
+
+| Policy | Scenarios | Rank Changes | Winner Changes | Ties Created | Ties Broken | Unknown Rows | Review Rows | Conflict Rows |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A_CURRENT_GLOBAL | 35 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| B_GLOBAL_ANNOTATION_ONLY | 35 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | 35 | 15 | 6 | 0 | 0 | 85 | 10 | 0 |
+| D_CONTEXT_SCOPED_MODERATE_GAP | 35 | 15 | 6 | 0 | 0 | 85 | 10 | 0 |
+| E_CONTEXT_SCOPED_WEIGHT_075 | 35 | 15 | 6 | 0 | 0 | 85 | 10 | 0 |
+| F_REVIEW_QUALIFIED_FULL | 35 | 15 | 6 | 0 | 0 | 85 | 10 | 0 |
+| F_REVIEW_QUALIFIED_ATTENUATED | 35 | 15 | 6 | 0 | 0 | 85 | 10 | 0 |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | 35 | 16 | 6 | 0 | 0 | 85 | 10 | 0 |
+
+Rank movement measures sensitivity to evidence scope and uncertainty handling. It is not evidence that an experimental policy is better.
+
+### Winner Changes
+
+| Policy | Scenario | Phase | Current Winner | Experimental Winner | Current-Winner Evidence | Experimental-Winner Evidence | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck, serratus-wall-slide moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | relevant assessment / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | UNKNOWN_NO_MATCH; annotation=none; effectiveWeight=0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+
+## Controlled Phase Matrix: Winners And Order Effects
+
+| Policy | Scenario | Phase | Winner | Runner-Up | Current Winner | Rank Changes | Ties +/- | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A_CURRENT_GLOBAL | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | machine-chest-press | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | cable-pull-through | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | split-squat | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| A_CURRENT_GLOBAL | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal push main / phase_1 | phase_1 | machine-chest-press | push-up | machine-chest-press | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | horizontal pull main / phase_3 | phase_3 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | hinge secondary / phase_1 | phase_1 | cable-pull-through | dumbbell-romanian-deadlift | cable-pull-through | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | single-leg accessory / phase_3 | phase_3 | split-squat | step-up | split-squat | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | scapular activation / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | scapular activation / phase_3 | phase_3 | band-face-pull | reverse-pec-deck | reverse-pec-deck | 2 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | scapular activation / phase_3 | phase_3 | band-face-pull | reverse-pec-deck | reverse-pec-deck | 2 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | scapular activation / phase_3 | phase_3 | band-face-pull | reverse-pec-deck | reverse-pec-deck | 2 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | scapular activation / phase_3 | phase_3 | band-face-pull | reverse-pec-deck | reverse-pec-deck | 2 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | scapular activation / phase_3 | phase_3 | band-face-pull | reverse-pec-deck | reverse-pec-deck | 2 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal push main / phase_1 | phase_1 | push-up | dumbbell-bench-press | machine-chest-press | 3 | 0/0 | Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal push main / phase_2 | phase_2 | dumbbell-bench-press | push-up | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal push main / phase_3 | phase_3 | dumbbell-bench-press | machine-chest-press | dumbbell-bench-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal pull main / phase_1 | phase_1 | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal pull main / phase_2 | phase_2 | machine-row | seated-cable-row | machine-row | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | horizontal pull main / phase_3 | phase_3 | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | 0/0 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | squat main / phase_1 | phase_1 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | squat main / phase_2 | phase_2 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | squat main / phase_3 | phase_3 | goblet-squat | - | goblet-squat | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | hinge secondary / phase_1 | phase_1 | dumbbell-romanian-deadlift | cable-pull-through | cable-pull-through | 2 | 0/0 | Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | hinge secondary / phase_2 | phase_2 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | hinge secondary / phase_3 | phase_3 | dumbbell-romanian-deadlift | cable-pull-through | dumbbell-romanian-deadlift | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | single-leg accessory / phase_1 | phase_1 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | single-leg accessory / phase_2 | phase_2 | step-up | split-squat | step-up | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | single-leg accessory / phase_3 | phase_3 | step-up | split-squat | split-squat | 2 | 0/0 | Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | trunk activation / phase_1 | phase_1 | dead-bug | pallof-press | dead-bug | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | trunk activation / phase_2 | phase_2 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | trunk activation / phase_3 | phase_3 | pallof-press | dead-bug | pallof-press | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | scapular activation / phase_1 | phase_1 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | scapular activation / phase_2 | phase_2 | band-face-pull | serratus-wall-slide | band-face-pull | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | scapular activation / phase_3 | phase_3 | band-face-pull | serratus-wall-slide | reverse-pec-deck | 3 | 0/0 | Only copied phase policy changed: band-face-pull, reverse-pec-deck, serratus-wall-slide moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | rear-delt accessory / phase_1 | phase_1 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | rear-delt accessory / phase_2 | phase_2 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | rear-delt accessory / phase_3 | phase_3 | reverse-pec-deck | band-face-pull | reverse-pec-deck | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | representative arm accessory / phase_1 | phase_1 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | representative arm accessory / phase_2 | phase_2 | - | - | - | 0 | 0/0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | representative arm accessory / phase_3 | phase_3 | - | - | - | 0 | 0/0 | No rank order changed. |
+
+## Continuity, Assessment And Pain Controls
+
+| Policy | Scenario | Kind | Winner | Runner-Up | Current Winner | Rank Changes | Why |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A_CURRENT_GLOBAL | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | relevant assessment / phase_3 | assessment | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| A_CURRENT_GLOBAL | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | relevant assessment / phase_3 | assessment | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| B_GLOBAL_ANNOTATION_ONLY | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| C_CONTEXT_SCOPED_ANNOTATION_ONLY | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| D_CONTEXT_SCOPED_MODERATE_GAP | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| E_CONTEXT_SCOPED_WEIGHT_075 | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_FULL | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_FULL | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_ATTENUATED | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | productive continuity / phase_1 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | productive continuity / phase_2 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | productive continuity / phase_3 | productive_continuity | chest-supported-dumbbell-row | machine-row | chest-supported-dumbbell-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | relevant assessment / phase_3 | assessment | machine-row | seated-cable-row | chest-supported-dumbbell-row | 3 | Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | current discomfort / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | candidate review / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | prescription required / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+| F_REVIEW_QUALIFIED_OBSERVABILITY_ONLY | role substitution / phase_2 | pain | machine-row | seated-cable-row | machine-row | 0 | No rank order changed. |
+
+Productive continuity remains independently scored across all phases. Relevant assessment traces and candidate pain readiness are copied unchanged. Contextual phase evidence cannot make an unresolved pain response executable, legalize a candidate, or activate transition knowledge.
+
+## Context-Scoped Candidate Detail
+
+The following rows use Policy C only. They expose every legal candidate's rank, total, selected annotation, scope, review/evidence status, effective phase weight and phase contribution. Current rank/total provide the production comparison.
+
+| Scenario | Exercise | Rank | Total | Current Rank/Total | Annotation | Scope | Specificity | Review | Evidence | Raw | Eff Weight | Contribution | Pain Readiness |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| horizontal push main / phase_1 | push-up | 1 | 7.781 | 2/7.683 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_1 | dumbbell-bench-press | 2 | 7.769 | 3/7.672 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_1 | machine-chest-press | 3 | 7.740 | 1/7.774 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_2 | dumbbell-bench-press | 1 | 7.906 | 1/7.961 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_2 | push-up | 2 | 7.853 | 2/7.850 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_2 | machine-chest-press | 3 | 7.849 | 3/7.846 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_3 | dumbbell-bench-press | 1 | 7.951 | 1/8.053 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_3 | machine-chest-press | 2 | 7.894 | 2/7.938 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal push main / phase_3 | push-up | 3 | 7.808 | 3/7.709 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_1 | chest-supported-dumbbell-row | 1 | 7.854 | 1/7.882 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_1 | machine-row | 2 | 7.826 | 2/7.855 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_1 | seated-cable-row | 3 | 7.826 | 3/7.855 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_1 | one-arm-dumbbell-row | 4 | 7.696 | 4/7.604 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_2 | machine-row | 1 | 7.936 | 1/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_2 | seated-cable-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_2 | chest-supported-dumbbell-row | 3 | 7.932 | 3/7.985 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_3 | machine-row | 1 | 7.980 | 2/8.019 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_3 | seated-cable-row | 2 | 7.980 | 3/8.019 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_3 | chest-supported-dumbbell-row | 3 | 7.976 | 1/8.077 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| horizontal pull main / phase_3 | one-arm-dumbbell-row | 4 | 7.878 | 4/7.984 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| squat main / phase_1 | goblet-squat | 1 | 7.755 | 1/7.789 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| squat main / phase_2 | goblet-squat | 1 | 7.925 | 1/7.979 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| squat main / phase_3 | goblet-squat | 1 | 7.847 | 1/7.746 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_1 | dumbbell-romanian-deadlift | 1 | 7.694 | 2/7.602 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_1 | cable-pull-through | 2 | 7.620 | 1/7.662 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_2 | dumbbell-romanian-deadlift | 1 | 7.864 | 1/7.921 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_2 | cable-pull-through | 2 | 7.760 | 2/7.760 | phase-context:cable-pull-through:phase_2:secondary_accessory | secondary_strength / accessory | role_and_section | needs_review | REVIEW_QUALIFIED_ANNOTATION | 7.800 | 1.000 | 0.481481 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_3 | dumbbell-romanian-deadlift | 1 | 7.876 | 1/7.982 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| hinge secondary / phase_3 | cable-pull-through | 2 | 7.680 | 2/7.589 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_1 | step-up | 1 | 7.749 | 1/7.752 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_1 | split-squat | 2 | 7.738 | 2/7.643 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_2 | step-up | 1 | 7.887 | 1/7.881 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_2 | split-squat | 2 | 7.840 | 2/7.840 | phase-context:split-squat:phase_2:general | all_roles / all_sections | general | needs_review | REVIEW_QUALIFIED_ANNOTATION | 7.800 | 1.000 | 0.481481 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_3 | step-up | 1 | 7.809 | 2/7.809 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| single-leg accessory / phase_3 | split-squat | 2 | 7.765 | 1/7.829 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_1 | dead-bug | 1 | 7.708 | 1/7.739 | phase-context:dead-bug:phase_1:general | all_roles / all_sections | general | needs_review | REVIEW_QUALIFIED_ANNOTATION | 8.800 | 1.000 | 0.543210 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_1 | pallof-press | 2 | 7.673 | 2/7.704 | phase-context:pallof-press:phase_1:activation | activation / activation | role_and_section | needs_review | REVIEW_QUALIFIED_ANNOTATION | 8.800 | 1.000 | 0.543210 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_2 | pallof-press | 1 | 7.703 | 1/7.709 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_2 | dead-bug | 2 | 7.619 | 2/7.630 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_3 | pallof-press | 1 | 7.698 | 1/7.698 | phase-context:pallof-press:phase_3:general | all_roles / all_sections | general | needs_review | REVIEW_QUALIFIED_ANNOTATION | 7.800 | 1.000 | 0.481481 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| trunk activation / phase_3 | dead-bug | 2 | 7.459 | 2/7.459 | phase-context:dead-bug:phase_3:activation | activation / activation | role_and_section | needs_review | REVIEW_QUALIFIED_ANNOTATION | 6.200 | 1.000 | 0.382716 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_1 | band-face-pull | 1 | 7.971 | 1/8.002 | phase-context:band-face-pull:phase_1:activation | activation / activation | role_and_section | needs_review | REVIEW_QUALIFIED_ANNOTATION | 8.800 | 1.000 | 0.543210 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_1 | serratus-wall-slide | 2 | 7.971 | 2/8.002 | phase-context:serratus-wall-slide:phase_1:general | all_roles / all_sections | general | needs_review | REVIEW_QUALIFIED_ANNOTATION | 8.800 | 1.000 | 0.543210 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_1 | reverse-pec-deck | 3 | 7.711 | 3/7.742 | phase-context:reverse-pec-deck:phase_1:activation | activation / activation | role_and_section | needs_review | REVIEW_QUALIFIED_ANNOTATION | 7.800 | 1.000 | 0.481481 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_1 | band-row | 4 | 7.541 | 4/7.649 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_2 | band-face-pull | 1 | 7.872 | 1/7.867 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_2 | serratus-wall-slide | 2 | 7.839 | 2/7.837 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_2 | reverse-pec-deck | 3 | 7.782 | 3/7.783 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_2 | band-row | 4 | 7.496 | 4/7.515 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_3 | band-face-pull | 1 | 7.827 | 2/7.727 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_3 | reverse-pec-deck | 2 | 7.738 | 1/7.803 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_3 | serratus-wall-slide | 3 | 7.666 | 3/7.666 | phase-context:serratus-wall-slide:phase_3:general | all_roles / all_sections | general | needs_review | REVIEW_QUALIFIED_ANNOTATION | 6.200 | 1.000 | 0.382716 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| scapular activation / phase_3 | band-row | 4 | 7.451 | 4/7.374 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_1 | reverse-pec-deck | 1 | 7.802 | 1/7.832 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_1 | band-face-pull | 2 | 7.735 | 2/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_1 | band-row | 3 | 7.659 | 3/7.761 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_2 | reverse-pec-deck | 1 | 7.879 | 1/7.874 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_2 | band-face-pull | 2 | 7.690 | 2/7.697 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_2 | band-row | 3 | 7.615 | 3/7.626 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_3 | reverse-pec-deck | 1 | 7.834 | 1/7.894 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_3 | band-face-pull | 2 | 7.645 | 2/7.556 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| rear-delt accessory / phase_3 | band-row | 3 | 7.570 | 3/7.485 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_1 | chest-supported-dumbbell-row | 1 | 8.097 | 1/8.110 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_1 | machine-row | 2 | 7.826 | 2/7.855 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_1 | seated-cable-row | 3 | 7.826 | 3/7.855 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_1 | one-arm-dumbbell-row | 4 | 7.696 | 4/7.604 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_2 | chest-supported-dumbbell-row | 1 | 8.174 | 1/8.213 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_2 | machine-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_2 | seated-cable-row | 3 | 7.936 | 3/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_3 | chest-supported-dumbbell-row | 1 | 8.219 | 1/8.304 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_3 | machine-row | 2 | 7.980 | 2/8.019 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_3 | seated-cable-row | 3 | 7.980 | 3/8.019 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| productive continuity / phase_3 | one-arm-dumbbell-row | 4 | 7.878 | 4/7.984 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| relevant assessment / phase_3 | machine-row | 1 | 7.993 | 2/8.030 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| relevant assessment / phase_3 | seated-cable-row | 2 | 7.993 | 3/8.030 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| relevant assessment / phase_3 | chest-supported-dumbbell-row | 3 | 7.989 | 1/8.088 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| relevant assessment / phase_3 | one-arm-dumbbell-row | 4 | 7.901 | 4/8.006 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| current discomfort / phase_2 | machine-row | 1 | 7.936 | 1/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| current discomfort / phase_2 | seated-cable-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| current discomfort / phase_2 | chest-supported-dumbbell-row | 3 | 7.932 | 3/7.985 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| current discomfort / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| candidate review / phase_2 | machine-row | 1 | 7.936 | 1/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| candidate review / phase_2 | seated-cable-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| candidate review / phase_2 | chest-supported-dumbbell-row | 3 | 7.932 | 3/7.985 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| candidate review / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| prescription required / phase_2 | machine-row | 1 | 7.936 | 1/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| prescription required / phase_2 | seated-cable-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| prescription required / phase_2 | chest-supported-dumbbell-row | 3 | 7.932 | 3/7.985 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| prescription required / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| role substitution / phase_2 | machine-row | 1 | 7.936 | 1/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| role substitution / phase_2 | seated-cable-row | 2 | 7.936 | 2/7.989 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| role substitution / phase_2 | chest-supported-dumbbell-row | 3 | 7.932 | 3/7.985 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+| role substitution / phase_2 | one-arm-dumbbell-row | 4 | 7.833 | 4/7.831 | none | no matching phase evidence | none | - | UNKNOWN_NO_MATCH | - | 0.000 | 0.000000 | EXECUTABLE_AT_CANDIDATE_SCOPE |
+
+Context Policy C order explanations:
+
+- horizontal push main / phase_1: Only copied phase policy changed: dumbbell-bench-press, machine-chest-press, push-up moved; contextual evidence rows were review=0, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- horizontal push main / phase_2: No rank order changed.
+- horizontal push main / phase_3: No rank order changed.
+- horizontal pull main / phase_1: No rank order changed.
+- horizontal pull main / phase_2: No rank order changed.
+- horizontal pull main / phase_3: Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- squat main / phase_1: No rank order changed.
+- squat main / phase_2: No rank order changed.
+- squat main / phase_3: No rank order changed.
+- hinge secondary / phase_1: Only copied phase policy changed: cable-pull-through, dumbbell-romanian-deadlift moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- hinge secondary / phase_2: No rank order changed.
+- hinge secondary / phase_3: No rank order changed.
+- single-leg accessory / phase_1: No rank order changed.
+- single-leg accessory / phase_2: No rank order changed.
+- single-leg accessory / phase_3: Only copied phase policy changed: split-squat, step-up moved; contextual evidence rows were review=0, unknown=2, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- trunk activation / phase_1: No rank order changed.
+- trunk activation / phase_2: No rank order changed.
+- trunk activation / phase_3: No rank order changed.
+- scapular activation / phase_1: No rank order changed.
+- scapular activation / phase_2: No rank order changed.
+- scapular activation / phase_3: Only copied phase policy changed: band-face-pull, reverse-pec-deck moved; contextual evidence rows were review=1, unknown=3, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- rear-delt accessory / phase_1: No rank order changed.
+- rear-delt accessory / phase_2: No rank order changed.
+- rear-delt accessory / phase_3: No rank order changed.
+- representative arm accessory / phase_1: No rank order changed.
+- representative arm accessory / phase_2: No rank order changed.
+- representative arm accessory / phase_3: No rank order changed.
+- productive continuity / phase_1: No rank order changed.
+- productive continuity / phase_2: No rank order changed.
+- productive continuity / phase_3: No rank order changed.
+- relevant assessment / phase_3: Only copied phase policy changed: chest-supported-dumbbell-row, machine-row, seated-cable-row moved; contextual evidence rows were review=0, unknown=4, conflict=0. Non-phase components, eligibility and pain readiness were held fixed.
+- current discomfort / phase_2: No rank order changed.
+- candidate review / phase_2: No rank order changed.
+- prescription required / phase_2: No rank order changed.
+- role substitution / phase_2: No rank order changed.
+
+## Counterfactual Contract Tests
+
+| Invariant | Result |
+| --- | --- |
+| accessoryScopeDoesNotAffectActivation | PASS |
+| activationScopeDoesNotAffectAccessory | PASS |
+| roleAndSectionOutranksGeneral | PASS |
+| noMatchIsUnknown | PASS |
+| reviewedPoorDistinctFromUnknown | PASS |
+| reasonProseDoesNotChangeScoring | PASS |
+| provenanceDoesNotChangeScoringOrLegality | PASS |
+| equalSpecificityConflictIsExplicitAndDeterministic | PASS |
+| scopeCannotLegalizeWrongRoleOrSection | PASS |
+| scopeCannotAlterPainReadiness | PASS |
+| scopeCannotActivateTransition | PASS |
+
+These tests use structured annotation fields only. Reason prose and provenance remain visible but do not change category, scope, legality, mechanics, pain readiness or transition behavior.
+
+## PhaseIntent.primaryGoal Recommendation
+
+Rename PhaseIntent.primaryGoal in a future approved domain migration to a typed developmentalEmphasis concept. Until then it remains non-behavioral metadata and must never overwrite CandidateRequest.goal.
+
+The recommended future treatment is **rename to developmental emphasis**, not removal and not behavioral goal authority. A later domain migration should use a dedicated developmental-emphasis type rather than `TrainingGoal`; `CandidateRequest.goal` remains authoritative throughout.
+
+## Candidate / Composer Boundary
+
+Candidate Intelligence may resolve and score contextual phase appropriateness for one already-legal exercise. Session Composer will own section cooperation, combinations, sequence and unresolved response execution. Weekly Composer will own volume, frequency, target bands, recovery spacing and capacity allocation. Contextual phase annotations must not absorb those future responsibilities.
+
+## Human Review Questions
+
+- Which of the review-qualified contextual judgments has enough exercise-science evidence to become accepted?
+- Should any current global annotation survive as genuinely general across every legal role and section?
+- What structured source, reviewer identity and review date are required for accepted phase evidence?
+- Which contextual annotations need separate role+section variants rather than one broad scope?
+- Which proposed contextual annotations should receive final owner approval and accepted provenance?
+- How should explicit poor evidence be calibrated without turning missing evidence into a penalty?
+- When approved annotation coverage is sufficient, which explicit release should activate the selected non-default policy?
+
+## Recommended Implementation Boundary
+
+- Keep contextual phase resolution strictly downstream of hard eligibility.
+- Represent one or more structured role/section annotations per exercise and phase; general annotations require evidence that covers every legal use.
+- Only accepted contextual phase annotations with complete provenance may affect the non-default contextual scorer; needs_review and unknown omit the component and denominator weight.
+- Remove the explicit Phase 1 skill/stability and Phase 3 loadability bonuses when the owner-approved production policy is implemented.
+- Treat no match and conflict as omitted effective evidence, not as a numeric poor category; preserve explicit reviewed poor as a separate bounded category.
+- Keep reason prose explanatory only and expose annotation, specificity, review status, provenance, conflicts and evidence status in the trace.
+- Leave enduring goal, section intent, mechanics, progression, continuity, assessment, pain and weekly allocation with their existing owners.
+- Use the owner-selected 8.8/7.8/6.2/5.5 categories and phase-family weight 1.0 only after accepted contextual curation is approved and explicitly activated.
+
+## Blueprint Maintenance
+
+A minimal enduring-principle amendment is appropriate: candidate phase evidence must match the exercise's actual requested role/section context, and missing contextual phase evidence is not reviewed poor evidence. Temporary audit decisions, policy matrices, score values, fingerprints and test counts remain in this report only.
+
+## Final Classification And Remaining P1
+
+Phase context review: **PHASE_CONTEXT_OWNER_POLICY_SELECTED_CURATION_PENDING**.
+
+The schema, resolver and selected non-default scorer are implemented. Final annotation approval and explicit activation remain deferred until the catalog has truthful accepted coverage.
+
+Remaining Candidate Intelligence P1:
+
+- Final owner decisions for the proposed contextual annotations and accepted provenance.
+- Explicit production activation only after truthful accepted annotation coverage is sufficient.
+- Full ranking revalidation at activation, including removal of the duplicate legacy mechanical bonuses.
+
+Overall Candidate Intelligence remains **TARGETED_FIXES_REQUIRED_BEFORE_SESSION_COMPOSITION**. Do not start Session Composer or activate contextual production phase scoring from this laboratory.

@@ -1,0 +1,10 @@
+{
+  "stableCycleIdentity": true,
+  "stableStateIdentity": true,
+  "stableDecisionIdentity": true,
+  "immutableStateRevisions": true,
+  "immutableDecisionRevisions": true,
+  "oneFinalStateRevision": true,
+  "oneFinalDecisionRevision": true,
+  "stateMutationAppliedCount": 0
+}

@@ -1,0 +1,14 @@
+{
+  "registryReference": {
+    "contractId": "PRODUCT_TO_V2_EXERCISE_IDENTITY_MAP",
+    "contractVersion": "2.0.0"
+  },
+  "entries": [
+    {
+      "productExerciseId": "dead-bug",
+      "v2ExerciseId": "dead-bug",
+      "classification": "exact_same_canonical_id"
+    }
+  ],
+  "fuzzyMatchCount": 0
+}

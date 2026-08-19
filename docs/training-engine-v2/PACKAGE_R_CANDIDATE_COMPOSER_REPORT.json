@@ -1,0 +1,11 @@
+{
+  "selectedRowsEnterTruthfulPools": 8,
+  "wrongMacroPoolCount": 0,
+  "fakeSubstitutionCount": 0,
+  "duplicateSessionIdentityCount": 0,
+  "optionalBloatCount": 0,
+  "stableAnchorDisplacementCount": 0,
+  "timeConstrainedRedundancyRemoval": "preserved",
+  "knowledgeRankingEffectCount": 0,
+  "result": "pass"
+}

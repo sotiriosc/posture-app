@@ -1,0 +1,32 @@
+[
+  {
+    "productValue": "Improve posture",
+    "currentOutcomeGoal": "posture_and_movement_quality",
+    "contextMode": null,
+    "sufficiency": "sufficient_for_shadow"
+  },
+  {
+    "productValue": "Reduce pain",
+    "currentOutcomeGoal": "posture_and_movement_quality",
+    "contextMode": "pain_aware_return",
+    "sufficiency": "non_diagnostic_context_mapping"
+  },
+  {
+    "productValue": "General fitness",
+    "currentOutcomeGoal": "general_fitness",
+    "contextMode": null,
+    "sufficiency": "engine_prescription_policy_missing"
+  },
+  {
+    "productValue": "Athletic performance",
+    "currentOutcomeGoal": null,
+    "contextMode": null,
+    "sufficiency": "under_specified"
+  },
+  {
+    "productValue": "trainingIntent=build",
+    "currentOutcomeGoal": null,
+    "contextMode": null,
+    "sufficiency": "developmental_progression_not_strength_or_hypertrophy"
+  }
+]

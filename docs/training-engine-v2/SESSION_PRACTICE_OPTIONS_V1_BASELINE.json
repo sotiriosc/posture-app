@@ -1,0 +1,70 @@
+{
+  "contractReference": {
+    "contractId": "HISTORICAL_SESSION_PRACTICE_OPTIONS_V1",
+    "contractVersion": "1.0.0"
+  },
+  "sourcePath": "packages/engine/src/sessionPracticeOptions.ts",
+  "sourceFingerprint": "988c8e62bc0975662d6b505d2080d00bacc16494f3f87fe4ebf7f14b05f23e6c",
+  "currentSessionClientPath": "apps/consumer/src/app/session/SessionClient.tsx",
+  "currentSessionClientFingerprint": "35107e225e8e2b5f572677d55dbaa4c00957d317990d6cf4b96467c0cb7d41fa",
+  "modes": [
+    "full",
+    "lighter",
+    "recovery"
+  ],
+  "copy": {
+    "full": {
+      "label": "Full",
+      "description": "The whole session as planned."
+    },
+    "lighter": {
+      "label": "Lighter",
+      "description": "Same movements, less work."
+    },
+    "recovery": {
+      "label": "Recovery",
+      "description": "Mobility and easy movement only."
+    }
+  },
+  "aliases": {
+    "steady": "full",
+    "reduced": "lighter",
+    "simplified": "lighter"
+  },
+  "recommendationMapping": {
+    "normal": "full",
+    "repeat": "full",
+    "reduce": "lighter",
+    "simplify": "lighter",
+    "recover": "recovery"
+  },
+  "full": "SHALLOW_ROUTINE_ARRAY_COPY",
+  "lighter": "WARMUP_ACTIVATION_PLUS_MAIN_MINUS_ONE_SET_NOT_BELOW_ONE_PLUS_COOLDOWN",
+  "recovery": "WARMUP_ACTIVATION_PLUS_KEYWORD_FILTERED_NON_MAIN_SUPPORT_PLUS_COOLDOWN",
+  "recoveryKeywordSurface": [
+    "item.notes",
+    "item.rationale.whyThisExercise",
+    "exercise.movementIntensity",
+    "exercise.movementPattern",
+    "exercise.muscleGroups",
+    "exercise.tags",
+    "exercise.focusTags",
+    "exercise.carryType"
+  ],
+  "recoveryKeywords": [
+    "core",
+    "mobility",
+    "breath",
+    "spine",
+    "t-spine",
+    "hip",
+    "hips",
+    "scap",
+    "posture"
+  ],
+  "selectedModePersistence": "SessionRecord.selectedPracticeMode",
+  "draftModePersistence": "ABSENT_FROM_HISTORICAL_SESSION_DRAFT",
+  "resumeModeRestoration": "NOT_RESTORED",
+  "completionCredit": "ANY_SELECTED_MODE_ADVANCES_CURRENT_PROGRAM_PROGRESS",
+  "limitationsFrozenNotCorrectedInPlace": true
+}

@@ -1,0 +1,60 @@
+{
+  "firstSurface": [
+    "primary_goal_or_follow_up",
+    "goal_specific_purpose_or_focus",
+    "pain_context_separation",
+    "exact_equipment_capabilities_when_legality_requires_them"
+  ],
+  "rows": [
+    {
+      "fact": "primary_goal",
+      "initialSurface": "required",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "general_fitness_purpose_bundle",
+      "initialSurface": "conditional_required",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "athletic_performance_follow_up",
+      "initialSurface": "conditional_policy_required",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "pain_context",
+      "initialSurface": "required_separate_ownership",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "secondary_goal",
+      "initialSurface": "optional_later",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "session_minutes",
+      "initialSurface": "conditional_exact_feasibility",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "exact_equipment_capabilities",
+      "initialSurface": "conditional_legality_required",
+      "calibrationCanSubstitute": false
+    },
+    {
+      "fact": "coarse_experience",
+      "initialSurface": "preserve_current",
+      "calibrationCanSubstitute": true
+    },
+    {
+      "fact": "exact_load_history",
+      "initialSurface": "not_required_initially",
+      "calibrationCanSubstitute": true
+    },
+    {
+      "fact": "completed_performance_response",
+      "initialSurface": "Longitudinal_only",
+      "calibrationCanSubstitute": false
+    }
+  ]
+}

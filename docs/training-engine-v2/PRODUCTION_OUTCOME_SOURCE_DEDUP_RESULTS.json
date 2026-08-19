@@ -1,0 +1,7 @@
+{
+  "comparisons": 10000,
+  "failures": 0,
+  "distinctIdenticalEventsPreserved": true,
+  "crossSideMergeCount": 0,
+  "crossSupportMergeCount": 0
+}

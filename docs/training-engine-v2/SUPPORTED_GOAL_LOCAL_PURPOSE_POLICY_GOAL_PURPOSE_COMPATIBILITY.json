@@ -1,0 +1,38 @@
+{
+  "strength": [
+    "strength_development",
+    "hypertrophy_development",
+    "direct_development",
+    "movement_quality_development",
+    "muscular_endurance_development",
+    "capacity_development"
+  ],
+  "hypertrophy": [
+    "hypertrophy_development",
+    "strength_development",
+    "direct_development",
+    "movement_quality_development",
+    "muscular_endurance_development",
+    "capacity_development"
+  ],
+  "general_fitness": [
+    "strength_development",
+    "hypertrophy_development",
+    "direct_development",
+    "movement_quality_development",
+    "muscular_endurance_development",
+    "capacity_development"
+  ],
+  "posture_and_movement_quality": [
+    "movement_quality_development",
+    "strength_development",
+    "hypertrophy_development",
+    "direct_development",
+    "capacity_development",
+    "muscular_endurance_development"
+  ],
+  "conditioning": [
+    "muscular_endurance_development",
+    "capacity_development"
+  ]
+}

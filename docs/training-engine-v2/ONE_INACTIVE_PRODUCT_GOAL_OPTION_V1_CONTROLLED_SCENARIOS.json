@@ -1,0 +1,1134 @@
+{
+  "contract": "ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_CONTROLLED_SCENARIOS@1.0.0",
+  "count": 141,
+  "scenarios": [
+    {
+      "id": "F-CONTROLLED-001",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "valid get_stronger",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-002",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "duplicate ID",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-003",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "duplicate label",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-004",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "wrong outcome",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-005",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "wrong availability",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-006",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "current consumer visible",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-007",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "gyms visible",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-008",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "buyer demo visible",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-009",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "persistence allowed",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-010",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "generation allowed",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-011",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "shadow allowed",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-012",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "unsupported contract",
+      "expected": "reject_or_remain_inactive",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-013",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "absent input",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-014",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "valid input",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-015",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "disabled input",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-016",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "wrong option ID",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-017",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "wrong contract",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-018",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "extra future option",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-019",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "environment-only mutation",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-020",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "query-string mutation",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-021",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "select Get stronger",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-022",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "select legacy after Get stronger",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-023",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "select Get stronger after legacy edit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-024",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "remove preview input",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-025",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "hydrate saved profile",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-026",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "hydrate server profile",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-027",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "existing Program",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-028",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "active session",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-029",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "current dirty profile",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-030",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "cancel legacy confirmation",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-031",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "preview submit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-032",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "repeated preview submit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-033",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "preview submit with active session",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-034",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "preview submit after remote hydration",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-035",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "preview submit after legacy dirty edit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-036",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "switch legacy then submit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-037",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "invalid preview input submit",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-038",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "localStorage",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-039",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "training sync",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-040",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "clearDraft",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-041",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "signals",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-042",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "generateProgram",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-043",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "saveProgram",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-044",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "saveProgress",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-045",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "saveAppState",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-046",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "router",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-047",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "Product Shadow",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-048",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "V2 pipeline",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-049",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "four options",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-050",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "default goal",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-051",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "Improve posture",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-052",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "Reduce pain",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-053",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "Athletic performance",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-054",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "General fitness",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-055",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "current CTA",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-056",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "confirmation modal",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-057",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "active-session warning",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-058",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "responsive desktop",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-059",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "responsive mobile",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-060",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "ordinary gyms",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-061",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "gym mode lock",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-062",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "buyer demo",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-063",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "all current goal values",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-064",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "no preview",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-065",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "label",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-066",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "keyboard selection",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-067",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "keyboard return to legacy",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-068",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "helper description",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-069",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "alert announcement",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-070",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "visible focus",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-071",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "no color-only state",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-072",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "mobile touch target",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-073",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "320x800",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-074",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "360x800",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-075",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "390x844",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-076",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "768x1024",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-077",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "1024x768",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-078",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "1440x900",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-079",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "long translated-label simulation",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-080",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "200% zoom semantic review",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-081",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "fixed controls",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-082",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 01",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-083",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 02",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-084",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 03",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-085",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 04",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-086",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 05",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-087",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 06",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-088",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 07",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-089",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 08",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-090",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 09",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-091",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 10",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-092",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 11",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-093",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 12",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-094",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 13",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-095",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 14",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-096",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 15",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-097",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 16",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-098",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 17",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-099",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 18",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-100",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 19",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-101",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 20",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-102",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 21",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-103",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 22",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-104",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 23",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-105",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 24",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-106",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 25",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-107",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 26",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-108",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 27",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-109",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 28",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-110",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 29",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-111",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 30",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-112",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 31",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-113",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 32",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-114",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 33",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-115",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 34",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-116",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 35",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-117",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 36",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-118",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 37",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-119",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 38",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-120",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 39",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-121",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 40",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-122",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 41",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-123",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 42",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-124",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 43",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-125",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 44",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-126",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 45",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-127",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 46",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-128",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 47",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-129",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 48",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-130",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 49",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-131",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 50",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-132",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 51",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-133",
+      "gate": "F8",
+      "category": "gyms_buyer_demo",
+      "stimulus": "deterministic boundary permutation 52",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-134",
+      "gate": "F6",
+      "category": "accessibility",
+      "stimulus": "deterministic boundary permutation 53",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-135",
+      "gate": "F6",
+      "category": "layout",
+      "stimulus": "deterministic boundary permutation 54",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-136",
+      "gate": "F1",
+      "category": "registry",
+      "stimulus": "deterministic boundary permutation 55",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-137",
+      "gate": "F2",
+      "category": "preview_injection",
+      "stimulus": "deterministic boundary permutation 56",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-138",
+      "gate": "F3",
+      "category": "selection",
+      "stimulus": "deterministic boundary permutation 57",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-139",
+      "gate": "F4",
+      "category": "submission",
+      "stimulus": "deterministic boundary permutation 58",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-140",
+      "gate": "F5",
+      "category": "side_effect_guards",
+      "stimulus": "deterministic boundary permutation 59",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    },
+    {
+      "id": "F-CONTROLLED-141",
+      "gate": "F7",
+      "category": "ordinary_route",
+      "stimulus": "deterministic boundary permutation 60",
+      "expected": "preserve_authorized_boundary",
+      "observed": "pass"
+    }
+  ]
+}

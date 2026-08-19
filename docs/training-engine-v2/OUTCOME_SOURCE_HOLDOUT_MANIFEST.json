@@ -1,0 +1,5103 @@
+{
+  "manifestId": "OUTCOME_SOURCE_AND_PERSISTENCE_FOUNDATION_V1_HOLDOUT_MANIFEST",
+  "version": "1.0.0",
+  "frozenBeforeExecution": true,
+  "descriptors": [
+    {
+      "scenarioId": "outcome-source-holdout-001",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-002",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-003",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-004",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-005",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-006",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-007",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-008",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-009",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-010",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-011",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-012",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-013",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-014",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-015",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-016",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-017",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "leg-press",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-018",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-019",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-020",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-021",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "split-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-022",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "step-up",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-023",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-024",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "glute-bridge",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-025",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-026",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-027",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-028",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-029",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-030",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-031",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-plank",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-032",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-033",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-034",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-035",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-036",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-037",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-038",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-039",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-040",
+      "kinds": [
+        "performance"
+      ],
+      "completeReplay": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-041",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-042",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-043",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-044",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-045",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-046",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-047",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-048",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-049",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-050",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-051",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-052",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-053",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-054",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-055",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-056",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-057",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-058",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-059",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-060",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-061",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-062",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "leg-press",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-063",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-064",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-065",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-066",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "split-squat",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-067",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "step-up",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-068",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-069",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "glute-bridge",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-070",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-071",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-072",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-073",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-074",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-075",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-076",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-plank",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-077",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-078",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-079",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-080",
+      "kinds": [
+        "performance",
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "farmer-carry",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-081",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-082",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-083",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-084",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-085",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-086",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-087",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-088",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-089",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-090",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-091",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-092",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-093",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-094",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-095",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-096",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-097",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-098",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-099",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-100",
+      "kinds": [
+        "response"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-101",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-102",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-103",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-104",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-105",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-106",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "goblet-squat",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-107",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "leg-press",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-108",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-109",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-110",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-111",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "split-squat",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-112",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "step-up",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-113",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-114",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "glute-bridge",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-115",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-116",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-117",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-face-pull",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-118",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-119",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-120",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "pallof-press",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-121",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-plank",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-122",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-123",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-124",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-125",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-126",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-127",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-128",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-129",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-130",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-131",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-132",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-133",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-134",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-135",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-136",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-137",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-138",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-139",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-140",
+      "kinds": [
+        "adherence"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-141",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-142",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-143",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-144",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-145",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-146",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-147",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-148",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-149",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-150",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-151",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "goblet-squat",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-152",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "leg-press",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-153",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-154",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-155",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-156",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "split-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-157",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "step-up",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-158",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-159",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "glute-bridge",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-160",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-161",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-162",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-face-pull",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-163",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-164",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-165",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "pallof-press",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-166",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-plank",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-167",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-168",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-169",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-170",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "farmer-carry",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-171",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-172",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-173",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-174",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-175",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-176",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-177",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-178",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-179",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-180",
+      "kinds": [
+        "recovery"
+      ],
+      "completeReplay": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-181",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-182",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-183",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-184",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-185",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-186",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-187",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-188",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-189",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-190",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-191",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-192",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-193",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-194",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-195",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-196",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "goblet-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-197",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "leg-press",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-198",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-199",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-200",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-201",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "split-squat",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-202",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "step-up",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-203",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-204",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "glute-bridge",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-205",
+      "kinds": [
+        "safety_clinician"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-206",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-207",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-face-pull",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-208",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-209",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-210",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "pallof-press",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-211",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-plank",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-212",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-213",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-214",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-215",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "farmer-carry",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-216",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-217",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-218",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-219",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-220",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-221",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-222",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-223",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-224",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-225",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-226",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-227",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-228",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dead-bug",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-229",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "push-up",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-230",
+      "kinds": [
+        "equipment_environment"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-231",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-232",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-233",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-234",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-235",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "machine-row",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-236",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-237",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-row",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-238",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-239",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-240",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": true,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-241",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "goblet-squat",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-242",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "leg-press",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-243",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-244",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-245",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-246",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "split-squat",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-247",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "step-up",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-248",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-249",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "glute-bridge",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-250",
+      "kinds": [
+        "external_load"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "accepted"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-251",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-252",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-253",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-254",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-255",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "pallof-press",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-256",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-plank",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-257",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-258",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-259",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-260",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "farmer-carry",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-261",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-262",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-263",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-264",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-265",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-266",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-267",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-268",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-269",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-270",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-271",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-272",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-273",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dead-bug",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-274",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "push-up",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-275",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-276",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-277",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-278",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-279",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-280",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-row",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-281",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-282",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-row",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-283",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-284",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-285",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-286",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "goblet-squat",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-287",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "leg-press",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-288",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-289",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-290",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-291",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "split-squat",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-292",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "step-up",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-293",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-294",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "glute-bridge",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-295",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-296",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-297",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-face-pull",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-298",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-299",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-300",
+      "kinds": [
+        "correction"
+      ],
+      "completeReplay": false,
+      "exerciseId": "pallof-press",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "review"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-301",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-plank",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-302",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-303",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-304",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-305",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "farmer-carry",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-306",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-307",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-308",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-309",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-310",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-311",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-312",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-313",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-314",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-315",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-316",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "ninety-ninety-breathing",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-317",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "serratus-wall-slide",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-318",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dead-bug",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-319",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "push-up",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "phase_review",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-320",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-bench-press",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "external_safety_review",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-321",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-chest-press",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "owner_review_required",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-322",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-chest-fly",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-323",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "chest-supported-dumbbell-row",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "keep_current",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-324",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "one-arm-dumbbell-row",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "repeat_for_confirmation",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-325",
+      "kinds": [
+        "authorization_privacy"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-row",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "hold_current_prescription",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "excluded"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-326",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "seated-cable-row",
+      "doseMode": "distance_carry",
+      "section": "warmup",
+      "action": "prescription_modification_review",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-327",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-row",
+      "doseMode": "timed_carry",
+      "section": "activation",
+      "action": "progress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-328",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-shoulder-press",
+      "doseMode": "step_march",
+      "section": "main",
+      "action": "regress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-329",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "lat-pulldown",
+      "doseMode": "step_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-330",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-lat-pulldown",
+      "doseMode": "repetition_sets",
+      "section": "cooldown",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-331",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "goblet-squat",
+      "doseMode": "timed_hold",
+      "section": "warmup",
+      "action": "week_reallocation_review",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-332",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "leg-press",
+      "doseMode": "breath_cycles",
+      "section": "activation",
+      "action": "deload_review",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-333",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-box-squat",
+      "doseMode": "distance_carry",
+      "section": "main",
+      "action": "phase_review",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-334",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-romanian-deadlift",
+      "doseMode": "timed_carry",
+      "section": "accessory",
+      "action": "external_safety_review",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-335",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-pull-through",
+      "doseMode": "step_march",
+      "section": "cooldown",
+      "action": "owner_review_required",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-336",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "split-squat",
+      "doseMode": "step_sets",
+      "section": "warmup",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-337",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "step-up",
+      "doseMode": "repetition_sets",
+      "section": "activation",
+      "action": "keep_current",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-338",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "lying-leg-curl",
+      "doseMode": "timed_hold",
+      "section": "main",
+      "action": "repeat_for_confirmation",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-339",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "glute-bridge",
+      "doseMode": "breath_cycles",
+      "section": "accessory",
+      "action": "hold_current_prescription",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-340",
+      "kinds": [
+        "authorization_privacy",
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-lateral-raise",
+      "doseMode": "distance_carry",
+      "section": "cooldown",
+      "action": "prescription_modification_review",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-341",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "reverse-pec-deck",
+      "doseMode": "timed_carry",
+      "section": "warmup",
+      "action": "progress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-342",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "band-face-pull",
+      "doseMode": "step_march",
+      "section": "activation",
+      "action": "regress_prescription_axis",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-343",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "dumbbell-curl",
+      "doseMode": "step_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "exact",
+      "sourceCategory": "exercise_performance",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-344",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "cable-triceps-pressdown",
+      "doseMode": "repetition_sets",
+      "section": "accessory",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "related",
+      "sourceCategory": "block_performance",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-345",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "pallof-press",
+      "doseMode": "timed_hold",
+      "section": "cooldown",
+      "action": "week_reallocation_review",
+      "applicability": "identity",
+      "sourceCategory": "session_completion",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-346",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-plank",
+      "doseMode": "breath_cycles",
+      "section": "warmup",
+      "action": "deload_review",
+      "applicability": "exact",
+      "sourceCategory": "exercise_substitution",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-347",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "forearm-side-plank",
+      "doseMode": "distance_carry",
+      "section": "activation",
+      "action": "phase_review",
+      "applicability": "related",
+      "sourceCategory": "training_response",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-348",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "machine-abdominal-crunch",
+      "doseMode": "timed_carry",
+      "section": "main",
+      "action": "external_safety_review",
+      "applicability": "identity",
+      "sourceCategory": "pain_or_discomfort_report",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-349",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "half-kneeling-high-to-low-cable-chop",
+      "doseMode": "step_march",
+      "section": "accessory",
+      "action": "owner_review_required",
+      "applicability": "exact",
+      "sourceCategory": "recovery_readiness",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-350",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "farmer-carry",
+      "doseMode": "step_sets",
+      "section": "cooldown",
+      "action": "no_action_insufficient_evidence",
+      "applicability": "related",
+      "sourceCategory": "adherence",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-351",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "suitcase-carry",
+      "doseMode": "repetition_sets",
+      "section": "warmup",
+      "action": "keep_current",
+      "applicability": "identity",
+      "sourceCategory": "training_safety",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-352",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-supported-suitcase-march",
+      "doseMode": "timed_hold",
+      "section": "activation",
+      "action": "repeat_for_confirmation",
+      "applicability": "exact",
+      "sourceCategory": "clinician_restriction",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-353",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "standing-calf-raise",
+      "doseMode": "breath_cycles",
+      "section": "main",
+      "action": "hold_current_prescription",
+      "applicability": "related",
+      "sourceCategory": "coach_review",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-354",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-hip-adduction",
+      "doseMode": "distance_carry",
+      "section": "accessory",
+      "action": "prescription_modification_review",
+      "applicability": "identity",
+      "sourceCategory": "equipment_snapshot",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-355",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "loop-band-lateral-walk",
+      "doseMode": "timed_carry",
+      "section": "cooldown",
+      "action": "progress_prescription_axis",
+      "applicability": "exact",
+      "sourceCategory": "environment_constraint",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-356",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "side-lying-dumbbell-external-rotation",
+      "doseMode": "step_march",
+      "section": "warmup",
+      "action": "regress_prescription_axis",
+      "applicability": "related",
+      "sourceCategory": "external_training_load",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-357",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "supine-hamstring-walkout",
+      "doseMode": "step_sets",
+      "section": "activation",
+      "action": "reopen_candidate_selection_for_replacement",
+      "applicability": "identity",
+      "sourceCategory": "athlete_report",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-358",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "wall-ankle-dorsiflexion-rock",
+      "doseMode": "repetition_sets",
+      "section": "main",
+      "action": "reopen_candidate_selection_for_bounded_rotation",
+      "applicability": "exact",
+      "sourceCategory": "source_correction",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-359",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "bodyweight-hip-hinge-rehearsal",
+      "doseMode": "timed_hold",
+      "section": "accessory",
+      "action": "week_reallocation_review",
+      "applicability": "related",
+      "sourceCategory": "source_withdrawal",
+      "frozenExpectedState": "owner_unavailable"
+    },
+    {
+      "scenarioId": "outcome-source-holdout-360",
+      "kinds": [
+        "application"
+      ],
+      "completeReplay": false,
+      "exerciseId": "single-leg-balance-rehearsal",
+      "doseMode": "breath_cycles",
+      "section": "cooldown",
+      "action": "deload_review",
+      "applicability": "identity",
+      "sourceCategory": "unknown",
+      "frozenExpectedState": "owner_unavailable"
+    }
+  ],
+  "fingerprint": "ad1b43a81b19d3e81d0e8d7de2b37777f169511017c81f8bade5c06fa68a8054"
+}

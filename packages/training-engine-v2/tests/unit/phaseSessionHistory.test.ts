@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_TRAINING_HISTORY,
   THREE_PHASE_FOUNDATION,
-  type PreparationDependency,
   type SessionIntent,
   type TrainingHistory,
 } from "../../src";
@@ -27,90 +26,96 @@ describe("phase, session dependency, and history contracts", () => {
     );
   });
 
-  it("can express warmup and activation dependencies on the session purpose", () => {
-    const dependency: PreparationDependency = {
-      id: "wall-slide-prepares-press",
-      fromSection: "activation",
-      preparesForSections: ["main"],
-      preparesForExerciseIds: ["dumbbell-bench-press"],
-      movementRoles: ["scapular_control", "horizontal_push"],
-      bodyRegions: ["shoulder", "thoracic_spine"],
-      assessmentSignalIds: ["right-scapular-control-priority"],
-      jointRangeNeeds: ["shoulder", "thoracic_spine"],
-      sessionIntentId: "upper-push-session",
-      explanation: "Serratus wall slide prepares scapular mechanics before pressing.",
-    };
-
+  it("expresses needs-first preparation dependencies without fixed slots", () => {
     const intent: SessionIntent = {
       id: "upper-push-session",
+      athleteId: "phase-session-athlete",
+      kind: "ordinary_training",
       phaseIntent: THREE_PHASE_FOUNDATION[0],
-      primaryPurpose: "strength",
-      priorityMuscles: ["chest", "triceps"],
-      priorityMovementRoles: ["horizontal_push"],
-      assessmentPriorityIds: ["right-scapular-control-priority"],
-      assessmentPriorityLevel: "primary",
-      relevantPainConstraintIds: [],
-      fatigueConsiderations: ["Avoid exhausting shoulder stabilizers before main press."],
-      preparationDependencies: [dependency],
-      slots: [
+      primaryGoal: "strength",
+      structuralCapacity: "standard",
+      availableMinutes: 45,
+      assessmentContextRefs: ["right-scapular-control-priority"],
+      painResponseContextRefs: [],
+      fatigueContext: [],
+      continuityEvidence: { identities: [] },
+      plannerSourceTrace: { plannerId: "fixture-planner", sourceRefs: ["fixture"] },
+      unresolvedWeeklyContextRefs: ["week-composer-not-implemented"],
+      needs: [
         {
-          id: "warmup-1",
-          section: "warmup",
-          role: "preparation",
-          targetMovementRoles: ["breathing_position"],
-          targetMuscles: ["trunk"],
-          optional: false,
-          preparationDependencyIds: [],
-        },
-        {
-          id: "activation-1",
+          id: "scapular-preparation",
           section: "activation",
-          role: "activation",
-          targetMovementRoles: ["scapular_control"],
-          targetMuscles: ["serratus"],
-          optional: false,
-          preparationDependencyIds: ["wall-slide-prepares-press"],
+          priority: "required",
+          priorityOrder: 0,
+          standaloneAdmission: "admitted",
+          sourceEvidence: [{ sourceKind: "explicit_preparation_dependency", sourceId: "right-scapular-control-priority", evidenceRefs: ["assessment"] }],
+          dependencies: [{
+            dependencyId: "wall-slide-prepares-press",
+            targetNeedIds: ["main-press"],
+            targetExerciseIds: [],
+            movementRoles: ["horizontal_push"],
+            actionFunctions: [],
+            bodyRegions: ["shoulder", "thoracic_spine"],
+            assessmentSignalIds: ["right-scapular-control-priority"],
+            requiredRangeIds: [],
+            painResponseRequirementIds: [],
+            required: true,
+          }],
+          reasonCode: "explicit_press_preparation",
+          explanation: "Trace-only preparation rationale.",
+          selection: {
+            requestedRole: "activation",
+            targetMovementRoles: ["scapular_control"],
+            targetActionFunctions: [],
+            targetMuscles: ["serratus"],
+            muscleRequirement: "primary_required",
+            targetBodyRegions: ["shoulder"],
+          },
         },
         {
-          id: "main-1",
+          id: "main-press",
           section: "main",
-          role: "primary_strength",
-          targetMovementRoles: ["horizontal_push"],
-          targetMuscles: ["chest"],
-          optional: false,
-          preparationDependencyIds: [],
+          priority: "required",
+          priorityOrder: 1,
+          standaloneAdmission: "admitted",
+          sourceEvidence: [{ sourceKind: "session_primary_purpose", sourceId: "strength", evidenceRefs: ["fixture"] }],
+          dependencies: [],
+          reasonCode: "main_horizontal_push",
+          explanation: "Trace-only main rationale.",
+          selection: {
+            requestedRole: "primary_strength",
+            targetMovementRoles: ["horizontal_push"],
+            targetActionFunctions: [],
+            targetMuscles: ["chest"],
+            muscleRequirement: "primary_required",
+            targetBodyRegions: [],
+          },
         },
         {
-          id: "accessory-1",
+          id: "triceps-accessory",
           section: "accessory",
-          role: "hypertrophy_accessory",
-          targetMovementRoles: ["horizontal_push"],
-          targetMuscles: ["triceps"],
-          optional: true,
-          preparationDependencyIds: [],
-        },
-        {
-          id: "cooldown-1",
-          section: "cooldown",
-          role: "recovery",
-          targetMovementRoles: ["mobility"],
-          targetMuscles: ["upper_back"],
-          optional: true,
-          preparationDependencyIds: [],
+          priority: "optional",
+          priorityOrder: 0,
+          standaloneAdmission: "duration_conditional",
+          sourceEvidence: [{ sourceKind: "direct_muscle_priority", sourceId: "triceps", evidenceRefs: ["fixture"] }],
+          dependencies: [],
+          reasonCode: "optional_triceps",
+          explanation: "Trace-only accessory rationale.",
+          selection: {
+            requestedRole: "hypertrophy_accessory",
+            targetMovementRoles: [],
+            targetActionFunctions: ["elbow_extension"],
+            targetMuscles: ["triceps"],
+            muscleRequirement: "primary_required",
+            targetBodyRegions: [],
+          },
         },
       ],
     };
 
-    expect(intent.slots.map((slot) => slot.section)).toEqual([
-      "warmup",
-      "activation",
-      "main",
-      "accessory",
-      "cooldown",
-    ]);
-    expect(intent.preparationDependencies[0].preparesForExerciseIds).toContain(
-      "dumbbell-bench-press",
-    );
+    expect(intent.needs.map((need) => need.section)).toEqual(["activation", "main", "accessory"]);
+    expect(intent.needs[0].dependencies[0].targetNeedIds).toEqual(["main-press"]);
+    expect(intent).not.toHaveProperty("slots");
   });
 
   it("keeps longitudinal exercise, session, and program history distinct", () => {

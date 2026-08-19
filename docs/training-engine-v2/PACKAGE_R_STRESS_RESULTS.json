@@ -1,0 +1,21 @@
+{
+  "catalogValidations": 10000,
+  "knowledgeFactValidations": 10000,
+  "presentationMapValidations": 10000,
+  "realizationOverrideValidations": 10000,
+  "fallbackGenerations": 10000,
+  "homeComfortEvaluations": 10000,
+  "candidateEvaluations": 8000,
+  "composerExecutions": 5000,
+  "prescriptionCompilations": 5000,
+  "weekValidations": 3000,
+  "advancedHomeComparisons": 3000,
+  "unknownHomeComparisons": 3000,
+  "equipmentGapCases": 2000,
+  "stableAnchorCases": 2000,
+  "productShadowInvarianceComparisons": 1000,
+  "staleFallbackAttacks": 1000,
+  "noRescueMutations": 1000,
+  "deterministicRepeatedRuns": 3,
+  "failureCount": 0
+}

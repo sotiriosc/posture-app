@@ -1,0 +1,53 @@
+# Adaptation Application Activation Guards
+
+Status: **ADAPTATION_APPLICATION_ORCHESTRATION_V1_IMPLEMENTED_NOT_ACTIVATED**
+
+Activation: **NOT_ACTIVATED**
+
+## Recursive Guard Counts
+
+```json
+{
+  "consumerAppImportCount": 0,
+  "gymsAppImportCount": 0,
+  "appCallCount": 0,
+  "apiRouteCallCount": 0,
+  "serverActionCallCount": 0,
+  "generateProgramCallCount": 0,
+  "automaticLongitudinalInvocationCount": 0,
+  "automaticOrchestrationInvocationCount": 0,
+  "automaticOwnerPortInvocationCount": 0,
+  "liveProductHorizonCallCount": 0,
+  "liveCalendarCallCount": 0,
+  "liveConfirmationWriteCount": 0,
+  "productProgramMutationCount": 0,
+  "productWeekMutationCount": 0,
+  "productPrescriptionMutationCount": 0,
+  "productPhaseMutationCount": 0,
+  "appliedApplicationStateCount": 0,
+  "eventConsumerCount": 0,
+  "queueCount": 0,
+  "cronCount": 0,
+  "webhookCount": 0,
+  "automaticMigrationCount": 0,
+  "importTimeSideEffectCount": 0,
+  "cagtProductionImportCount": 0,
+  "legacyHeuristicImportCount": 0,
+  "sensitivePayloadLogCount": 0
+}
+```
+
+## Contract Truth
+
+- Contract: `ADAPTATION_APPLICATION_ORCHESTRATION@1.0.0`
+- Orchestration policy: `ADAPTATION_APPLICATION_ORCHESTRATION_POLICY_V1_SHADOW_FIRST@1.0.0`
+- Confirmation policy: `ADAPTATION_APPLICATION_CONFIRMATION_POLICY_V1_EXPLICIT_MATERIAL_CHANGE@1.0.0`
+- Authority registry: `CAGT_EFFECTIVE_AUTHORITY_REGISTRY@10.0.0`
+- Controlled scenarios: 240
+- Holdout failures: 0
+- Stress failures: 0
+- Combined fingerprint: `a88a493e1553badb4f8cada551ee9d8357d21c4e04872c852bc60058769f8aca`
+
+## Binding Boundary
+
+This is an explicit-call, production-source-only shadow kernel. It selects no action, axis, numeric dose, exercise identity, Week objective, opportunity, phase target, or Safety workaround. It applies no directive and mutates no Product state.

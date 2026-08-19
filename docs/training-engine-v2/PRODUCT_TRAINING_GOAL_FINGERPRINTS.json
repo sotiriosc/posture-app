@@ -1,0 +1,39 @@
+{
+  "upstream": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "weekPolicyV1": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db",
+    "prescriptionTiming": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "prescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "prescriptionPolicyV1": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8",
+    "productionPrescriptionCompiler": "91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4",
+    "productionWeek": "4f3fd80ed3fee29cb12c88ef6dea38b6e5f70777ac4718391daa8e7548527387",
+    "productionLongitudinal": "8827a14a2e06dc0c6ddd8902852337946babdca501c81119324b420a69917581",
+    "applicationOrchestration": "a88a493e1553badb4f8cada551ee9d8357d21c4e04872c852bc60058769f8aca",
+    "controlledProductShadow": "fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c"
+  },
+  "audit": {
+    "ontologyAudit": "cc825b0456536d672498e8c835a358e13b2fc1c4752ae2b66d562a3e9abc426c",
+    "currentBehavior": "f64df907fc672cbf45e9a0733a71f7a0ad0d029d02f0e79c9022c722ef2d537c",
+    "evidenceReview": "a3f583fb0bca42905321e2748d63a7e00aa3f9ebd2e785c2fce7451d26c34753",
+    "strengthDoctrine": "1e30a963658b6e98a459054a8e3c2bd386ee2638e99935c814b200abfbaad589",
+    "hypertrophyDoctrine": "0f870db78eed0a4afd3258739a294f8d57b013ec3b86df948cf36914c8211759",
+    "toningOptions": "774a664b33b0625c3edf3d16058a2283974c772d0e072bc9a16029310e8ce8c4",
+    "productVocabularyOptions": "fa0f2ec038c597c40706dd42f54ecc7d6ce6e979c87fa4827f1fc4e39b813361",
+    "compilerFallthrough": "5cd5d6732fa5893e2e3be36c6d0c0a4128bb41bb67941b1a5e1a4b69b6f825ee",
+    "prescriptionFamilyOptions": "ae373a548c3b25bb0c52beff387e6491b8e0bf93b16e8afff0d0debe946bf118",
+    "exerciseSelectionConsequences": "d5fcd9771d4cc77437ec5a73cea2edc3fec64a266f1c4323598c0ab31b6850c8",
+    "equipmentConsequences": "0233d8778ad8bf39237e873ffc9fe267c87137ff38fcaaa3335868c47d3e3971",
+    "experiencePainConsequences": "d5f5375bb4f1c1a504baf6c41f36567913bda254ec76dbc397a38bfdf694d065",
+    "restTempoEffortLoad": "19e2d7c2389e79ef648ec6b1ecd667d05bd5633d742c81e7e5383447637ebb25",
+    "warmupActivation": "2abd0f745649341de00b430141d5910b9487153b2dcb2ae9d08dfd941c20f249",
+    "weekPhaseLongitudinal": "4448d210fa71dcd16073476c356d332bc78d7104e7f631329e3281f6fcfca98d",
+    "controlledScenarios": "d4dd5a5d9e3bb083820bc22c99c20f504e8ef39993f904ab677085fee0e5f44f",
+    "cagtConsequenceLab": "ad8d877c778c2a064182093e28040f44b66bf00491f572d54798d999b66eaf6a",
+    "implementationSequence": "4ea85b3f13bb618805bdfdef37fa7d82d3c2cd2136dd3f4b80f337a0a50a5516",
+    "readiness": "2e1a58bf9053217629c990cfacd155c491d1e0549333773b0407d084b28bb736",
+    "combinedAudit": "0606f9cd19d73e8cf683080c3b71fad1af7eb19d0c873a2361e294cde3be27fb"
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "count": 67,
+  "acceptedDownstreamRescueCount": 0,
+  "cases": [
+    {
+      "mutationId": "eligibility_calls_ensureBootstrapUser",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "eligibility_creates_user",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "email_from_request_body",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "identity_substring_match",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "identity_domain_match",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "identity_case_sensitive_mismatch",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "admin_allowlist_reuse",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "shadow_allowlist_reuse",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "mode_defaults_preview",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "mode_defaults_apply",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "mode_cached_across_requests",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "query_activation",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "localStorage_activation",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "email_persistence",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "email_logging",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "route_visible_while_off",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "client_only_gate",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "get_mutation",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "missing_csrf",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "missing_idempotency",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "open_redirect",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "cached_owner_page",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "body_user_id_authority",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "cross_user_record_read",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "identity_response_header",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "shadow_artifact_delivered",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "legacy_generateProgram_called",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "canned_generation_stage",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "client_engine_artifact",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "raw_product_snapshot_persisted",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "incomplete_profile_ready",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "unknown_minutes_approved",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "exact_equipment_inferred",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "approval_auto_applies",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "preview_mode_applies",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "legacy_program_overwritten",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "legacy_progress_overwritten",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "legacy_draft_cleared",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "stale_preview_applied",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "active_session_terminated",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "browser_only_pointer",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "nontransactional_pointer",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "duplicate_application",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "current_session_client_imports_v2",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "historical_practice_filter",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "omitted_work_credited",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "one_session_auto_progresses",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "recovery_completes_strength_day",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "lighter_triggers_regression",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "automatic_reallocation",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "rollback_deletes_v2",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "off_deletes_data",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "off_discards_draft",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "current_routes_switch_v2",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "ordinary_get_stronger_visible",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "product_shadow_changes",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "gyms_changes",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "live_env_changed",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "live_owner_read",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "product_activated",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "chunk_h_marked_complete",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "get_stronger_reduced_to_horizontal_push",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "availability_filled_as_required_sessions",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "weekly_selection_target_lost_at_session_boundary",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "commercial_gym_infers_unconfirmed_capabilities",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "first_prescription_block_presented_as_complete_dose",
+      "semanticChange": true,
+      "result": "REJECTED"
+    },
+    {
+      "mutationId": "semantic_incomplete_program_ready_for_approval",
+      "semanticChange": true,
+      "result": "REJECTED"
+    }
+  ],
+  "result": "PASS"
+}

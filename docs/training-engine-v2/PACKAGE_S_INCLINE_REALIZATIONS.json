@@ -1,0 +1,192 @@
+[
+  {
+    "contract": {
+      "contractId": "PRESS_SUPPORT_ANGLE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "realizationId": "flat-bench",
+    "angleClass": "flat",
+    "exactDegrees": null,
+    "supportEquipmentId": "stable-flat-bench",
+    "capabilityReference": {
+      "kind": "bench",
+      "benchType": "flat"
+    },
+    "compatibleSections": [
+      "main",
+      "accessory"
+    ],
+    "compatibleRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "compatiblePurposes": [
+      "horizontal_press_strength",
+      "horizontal_press_hypertrophy"
+    ],
+    "source": "owner_decision",
+    "reviewState": "accepted",
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "flat-bench is owner-authorized typed press-support angle truth for dumbbell-bench-press.",
+          "Angle class does not create a second exercise identity, scoring bonus, or automatic rotation axis."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "PRESS_SUPPORT_ANGLE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "realizationId": "adjustable-bench-incline",
+    "angleClass": "incline",
+    "exactDegrees": null,
+    "supportEquipmentId": "stable-adjustable-bench",
+    "capabilityReference": {
+      "kind": "bench",
+      "benchType": "adjustable"
+    },
+    "compatibleSections": [
+      "main",
+      "accessory"
+    ],
+    "compatibleRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "compatiblePurposes": [
+      "horizontal_press_strength",
+      "horizontal_press_hypertrophy"
+    ],
+    "source": "owner_decision",
+    "reviewState": "accepted",
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "adjustable-bench-incline is owner-authorized typed press-support angle truth for dumbbell-bench-press.",
+          "Angle class does not create a second exercise identity, scoring bonus, or automatic rotation axis."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "PRESS_SUPPORT_ANGLE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "dumbbell-bench-press",
+    "realizationId": "fixed-incline-bench",
+    "angleClass": "incline",
+    "exactDegrees": null,
+    "supportEquipmentId": "stable-fixed-incline-bench",
+    "capabilityReference": {
+      "kind": "bench",
+      "benchType": "incline_fixed"
+    },
+    "compatibleSections": [
+      "main",
+      "accessory"
+    ],
+    "compatibleRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "compatiblePurposes": [
+      "horizontal_press_strength",
+      "horizontal_press_hypertrophy"
+    ],
+    "source": "owner_decision",
+    "reviewState": "accepted",
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "fixed-incline-bench is owner-authorized typed press-support angle truth for dumbbell-bench-press.",
+          "Angle class does not create a second exercise identity, scoring bonus, or automatic rotation axis."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "PRESS_SUPPORT_ANGLE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-chest-press",
+    "realizationId": "flat-machine",
+    "angleClass": "flat",
+    "exactDegrees": null,
+    "supportEquipmentId": "machine:chest_press",
+    "capabilityReference": {
+      "kind": "machine",
+      "machineId": "chest_press"
+    },
+    "compatibleSections": [
+      "main",
+      "accessory"
+    ],
+    "compatibleRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "compatiblePurposes": [
+      "horizontal_press_strength",
+      "horizontal_press_hypertrophy"
+    ],
+    "source": "owner_decision",
+    "reviewState": "accepted",
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "flat-machine is owner-authorized typed press-support angle truth for machine-chest-press.",
+          "Angle class does not create a second exercise identity, scoring bonus, or automatic rotation axis."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "PRESS_SUPPORT_ANGLE_REALIZATION",
+      "contractVersion": "1.0.0"
+    },
+    "exerciseId": "machine-chest-press",
+    "realizationId": "fixed-machine-incline",
+    "angleClass": "fixed_machine_incline",
+    "exactDegrees": null,
+    "supportEquipmentId": "machine:incline_chest_press",
+    "capabilityReference": {
+      "kind": "machine",
+      "machineId": "incline_chest_press"
+    },
+    "compatibleSections": [
+      "main",
+      "accessory"
+    ],
+    "compatibleRoles": [
+      "primary_strength",
+      "secondary_strength"
+    ],
+    "compatiblePurposes": [
+      "horizontal_press_strength",
+      "horizontal_press_hypertrophy"
+    ],
+    "source": "owner_decision",
+    "reviewState": "accepted",
+    "provenance": [
+      {
+        "sourceRef": "docs/training-engine-v2/PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md",
+        "evidenceBasis": [
+          "fixed-machine-incline is owner-authorized typed press-support angle truth for machine-chest-press.",
+          "Angle class does not create a second exercise identity, scoring bonus, or automatic rotation axis."
+        ]
+      }
+    ]
+  }
+]

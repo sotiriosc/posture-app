@@ -1,0 +1,583 @@
+{
+  "policy": {
+    "reference": {
+      "policyId": "PRODUCTION_WEEK_POLICY_V2_PURPOSE_SPECIFIC_CORE",
+      "version": "2.0.0"
+    },
+    "inheritedPolicyReference": {
+      "policyId": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE",
+      "version": "1.0.0"
+    },
+    "inheritedFrequencyRules": [
+      {
+        "family": "strength",
+        "priority": "required",
+        "ruleId": "STRENGTH_S2_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_REQUIRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "preferred",
+        "ruleId": "STRENGTH_S2_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_PREFERRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "optional",
+        "ruleId": "STRENGTH_S2_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_OPTIONAL"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "required",
+        "ruleId": "MUSCLE_H1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_REQUIRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "preferred",
+        "ruleId": "MUSCLE_H1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_PREFERRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "optional",
+        "ruleId": "MUSCLE_H1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_OPTIONAL"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "required",
+        "ruleId": "DIRECT_D1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_REQUIRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "preferred",
+        "ruleId": "DIRECT_D1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_PREFERRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "optional",
+        "ruleId": "DIRECT_D1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_OPTIONAL"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "required",
+        "ruleId": "ASSESSMENT_A1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_REQUIRED"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "preferred",
+        "ruleId": "ASSESSMENT_A1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "required",
+        "ruleId": "CAPACITY_C1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_REQUIRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "preferred",
+        "ruleId": "CAPACITY_C1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "optional",
+        "ruleId": "CAPACITY_C1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_OPTIONAL"
+        }
+      }
+    ],
+    "addedFrequencyRules": [
+      {
+        "family": "movement_quality",
+        "priority": "required",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:required"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:required"
+      },
+      {
+        "family": "movement_quality",
+        "priority": "preferred",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:preferred"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:preferred"
+      },
+      {
+        "family": "movement_quality",
+        "priority": "optional",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:optional"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:optional"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "required",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:required"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:required"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "preferred",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:preferred"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:preferred"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "optional",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:optional"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:optional"
+      }
+    ],
+    "frequencyRules": [
+      {
+        "family": "strength",
+        "priority": "required",
+        "ruleId": "STRENGTH_S2_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_REQUIRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "preferred",
+        "ruleId": "STRENGTH_S2_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_PREFERRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "optional",
+        "ruleId": "STRENGTH_S2_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_OPTIONAL"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "required",
+        "ruleId": "MUSCLE_H1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_REQUIRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "preferred",
+        "ruleId": "MUSCLE_H1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_PREFERRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "optional",
+        "ruleId": "MUSCLE_H1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_OPTIONAL"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "required",
+        "ruleId": "DIRECT_D1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_REQUIRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "preferred",
+        "ruleId": "DIRECT_D1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_PREFERRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "optional",
+        "ruleId": "DIRECT_D1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_OPTIONAL"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "required",
+        "ruleId": "ASSESSMENT_A1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_REQUIRED"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "preferred",
+        "ruleId": "ASSESSMENT_A1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "required",
+        "ruleId": "CAPACITY_C1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_REQUIRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "preferred",
+        "ruleId": "CAPACITY_C1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "optional",
+        "ruleId": "CAPACITY_C1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_OPTIONAL"
+        }
+      },
+      {
+        "family": "movement_quality",
+        "priority": "required",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:required"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:required"
+      },
+      {
+        "family": "movement_quality",
+        "priority": "preferred",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:preferred"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:preferred"
+      },
+      {
+        "family": "movement_quality",
+        "priority": "optional",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "WEEK_POLICY_V2:MQF2:optional"
+        },
+        "ruleId": "WEEK_POLICY_V2:MQF2:optional"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "required",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:required"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:required"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "preferred",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:preferred"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:preferred"
+      },
+      {
+        "family": "muscular_endurance",
+        "priority": "optional",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "WEEK_POLICY_V2:MEF2:optional"
+        },
+        "ruleId": "WEEK_POLICY_V2:MEF2:optional"
+      }
+    ],
+    "selectedMovementQualityCandidate": "MQF2",
+    "selectedMuscularEnduranceCandidate": "MEF2",
+    "activationAuthorized": false
+  },
+  "candidates": [
+    {
+      "candidateId": "MQF1",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MQF2",
+      "family": "movement_quality",
+      "ownerPreferred": true,
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MQF3",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "required": [
+        2,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF1",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF2",
+      "family": "muscular_endurance",
+      "ownerPreferred": true,
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF3",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "required": [
+        2,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    }
+  ]
+}

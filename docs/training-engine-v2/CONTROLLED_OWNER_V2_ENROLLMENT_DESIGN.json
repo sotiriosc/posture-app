@@ -1,0 +1,32 @@
+{
+  "contract": {
+    "contractId": "CONTROLLED_OWNER_V2_ENROLLMENT",
+    "contractVersion": "1.0.0"
+  },
+  "states": [
+    "not_eligible",
+    "eligible_not_enrolled",
+    "enrollment_profile_incomplete",
+    "enrolled_preview_only",
+    "enrolled_apply_allowed",
+    "suspended",
+    "revoked",
+    "conflict"
+  ],
+  "fields": [
+    "userId",
+    "contractVersion",
+    "acceptedProductVersion",
+    "acceptedEngineVersion",
+    "fixedGoal",
+    "deliveryModeObserved",
+    "consentState",
+    "createdAt",
+    "updatedAt",
+    "provenance"
+  ],
+  "fixedGoal": "strength",
+  "emailFieldCount": 0,
+  "freeTextFieldCount": 0,
+  "automaticEnrollmentCount": 0
+}

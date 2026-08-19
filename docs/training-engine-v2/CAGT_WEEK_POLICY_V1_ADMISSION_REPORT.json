@@ -1,0 +1,2946 @@
+{
+  "version": "1.0.0",
+  "asOf": "2026-08-12T22:00:00-04:00",
+  "seed": 550675,
+  "authority": "WEEK_POLICY_V1_OWNER_ADMISSION_AND_COHERENT_SESSION_PROGRAM_CAGT",
+  "candidateState": "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION",
+  "selectedRules": {
+    "sourceType": "owner_decision",
+    "reviewerId": "sotiriosc",
+    "reviewedAt": "2026-08-12T22:00:00-04:00",
+    "sourceRef": "docs/training-engine-v2/WEEK_POLICY_V1_OWNER_SELECTION.md#week-policy-v1-causal-core-candidate",
+    "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+    "status": "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION",
+    "strength": {
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ],
+      "candidate": "STRENGTH_S2_BALANCED"
+    },
+    "muscle": {
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ],
+      "candidate": "MUSCLE_H1_SINGLE_FLEXIBLE"
+    },
+    "direct": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ],
+      "candidate": "DIRECT_D1_ONCE"
+    },
+    "assessment": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ],
+      "candidate": "ASSESSMENT_A1_SINGLE_CLUSTER"
+    },
+    "capacity": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ],
+      "candidate": "CAPACITY_C1_ONCE"
+    },
+    "participation": "PARTICIPATION_P0_NONE",
+    "spacing": "SPACING_R0_PRESCRIPTION_PENDING",
+    "deferred": [
+      "H2_DEFERRED_PENDING_PRESCRIPTION_DISTRIBUTION_EVIDENCE",
+      "D2_DEFERRED_NO_UNIQUE_EXECUTABLE_VALUE",
+      "C2_DEFERRED_NO_UNIQUE_REPEAT_VALUE"
+    ],
+    "productionActivation": false
+  },
+  "classification": "WEEK_POLICY_V1_PARTIAL_SCOPE_READY_TARGETED_POLICY_GAPS",
+  "manifestFingerprint": "6edc62f933676e500fdfaac8af5a15e6294df23b587d0edbf1cd0c54c0a07ab3",
+  "manifest": {
+    "manifestId": "CAGT_WEEK_POLICY_V1_HOLDOUT_MANIFEST",
+    "version": "1.0.0",
+    "fixedSeed": 550675,
+    "frozenBeforeExecution": true,
+    "priorHoldoutScenarioIdsExcluded": true,
+    "scenarios": [
+      {
+        "id": "v1-holdout-01-one-opportunity-strength",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 1,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s1",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "one_opportunity_strength"
+      },
+      {
+        "id": "v1-holdout-02-two-opportunity-strength-rehearsal",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s2",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "two_opportunity_strength_rehearsal"
+      },
+      {
+        "id": "v1-holdout-03-three-opportunity-hypertrophy",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s3",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-h3",
+            "family": "muscle",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_hypertrophy",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "three_opportunity_hypertrophy"
+      },
+      {
+        "id": "v1-holdout-04-four-opportunity-direct-support",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s4",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-d4",
+            "family": "direct",
+            "priority": "preferred",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "four_opportunity_direct_support"
+      },
+      {
+        "id": "v1-holdout-05-five-opportunity-smaller-commitment",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 5,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s5",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-h5",
+            "family": "muscle",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_hypertrophy",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "five_opportunity_smaller_commitment"
+      },
+      {
+        "id": "v1-holdout-06-six-opportunity-capacity-once",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 6,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-s6",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-c6",
+            "family": "capacity",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_supported_capacity",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "six_opportunity_capacity_once"
+      },
+      {
+        "id": "v1-holdout-07-irregular-ordered-cycle",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": true,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-irregular",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "irregular_ordered_cycle"
+      },
+      {
+        "id": "v1-holdout-08-mixed-equipment-main-change",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [
+          1
+        ],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-mixed",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "mixed_equipment_main_change"
+      },
+      {
+        "id": "v1-holdout-09-travel-bodyweight",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [
+          0
+        ],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "travel",
+        "objectives": [
+          {
+            "id": "v1-travel",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "travel_bodyweight"
+      },
+      {
+        "id": "v1-holdout-10-condensed-required-main",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [
+          0
+        ],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-condensed",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "condensed_required_main"
+      },
+      {
+        "id": "v1-holdout-11-cancelled-opportunity-truth",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [
+          1
+        ],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-cancel",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "cancelled_opportunity_truth"
+      },
+      {
+        "id": "v1-holdout-12-explicit-direct-once",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-direct-main",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-direct",
+            "family": "direct",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_direct",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "explicit_direct_once"
+      },
+      {
+        "id": "v1-holdout-13-assessment-cluster-once",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-assessment-main",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-assessment",
+            "family": "assessment",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true,
+            "assessmentRepeatAuthorized": false
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_assessment_cluster",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "assessment_cluster_once"
+      },
+      {
+        "id": "v1-holdout-14-capacity-responsibility-once",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-cap-main",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-capacity",
+            "family": "capacity",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_supported_capacity",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "capacity_responsibility_once"
+      },
+      {
+        "id": "v1-holdout-15-productive-preparation-continuity",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "productive_continuity",
+        "objectives": [
+          {
+            "id": "v1-continuity",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "productive_preparation_continuity"
+      },
+      {
+        "id": "v1-holdout-16-adverse-response-reselection",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "adverse_response",
+        "objectives": [
+          {
+            "id": "v1-adverse",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "adverse_response_reselection"
+      },
+      {
+        "id": "v1-holdout-17-relevant-pain-dependency",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "pain_aware",
+        "objectives": [
+          {
+            "id": "v1-pain-relevant",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "relevant_pain_dependency"
+      },
+      {
+        "id": "v1-holdout-18-irrelevant-pain-convergence",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "pain_aware",
+        "objectives": [
+          {
+            "id": "v1-pain-inert",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": true,
+        "materialAdaptiveDifference": false,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "irrelevant_pain_convergence"
+      },
+      {
+        "id": "v1-holdout-19-explicit-warmup-dependency",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-warmup",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "explicit_warmup_dependency"
+      },
+      {
+        "id": "v1-holdout-20-explicit-activation-dependency",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-activation",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "explicit_activation_dependency"
+      },
+      {
+        "id": "v1-holdout-21-empty-preparation-sections",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-empty",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": true,
+        "materialAdaptiveDifference": false,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "empty_preparation_sections"
+      },
+      {
+        "id": "v1-holdout-22-justified-repeated-preparation",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-repeat",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "justified_repeated_preparation"
+      },
+      {
+        "id": "v1-holdout-23-unjustified-repetition-mutation",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-filler",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "unjustified_repetition_mutation"
+      },
+      {
+        "id": "v1-holdout-24-shared-framework-different-chain",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-chain",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-chain-h",
+            "family": "muscle",
+            "priority": "preferred",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "shared_framework_different_chain"
+      },
+      {
+        "id": "v1-holdout-25-exact-fact-convergence",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-converge",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": true,
+        "materialAdaptiveDifference": false,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "exact_fact_convergence"
+      },
+      {
+        "id": "v1-holdout-26-hypertrophy-h1-single",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-h-only",
+            "family": "muscle",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_hypertrophy",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "hypertrophy_h1_single"
+      },
+      {
+        "id": "v1-holdout-27-preferred-strength-zero-minimum",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-pref-s",
+            "family": "strength",
+            "priority": "preferred",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "preferred_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "preferred_strength_zero_minimum"
+      },
+      {
+        "id": "v1-holdout-28-optional-muscle-unique-value",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-opt-h",
+            "family": "muscle",
+            "priority": "optional",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "optional_muscle",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "optional_muscle_unique_value"
+      },
+      {
+        "id": "v1-holdout-29-preferred-assessment-zero-minimum",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-pref-a",
+            "family": "assessment",
+            "priority": "preferred",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "preferred_assessment_cluster",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "preferred_assessment_zero_minimum"
+      },
+      {
+        "id": "v1-holdout-30-optional-capacity-no-mandate",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-opt-c",
+            "family": "capacity",
+            "priority": "optional",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "optional_supported_capacity",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "optional_capacity_no_mandate"
+      },
+      {
+        "id": "v1-holdout-31-unknown-equipment-search",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [
+          1
+        ],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-unknown-equipment",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "unknown_equipment_search"
+      },
+      {
+        "id": "v1-holdout-32-below-target-no-doubling",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 1,
+        "condensedOpportunityOrders": [
+          0
+        ],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [
+          {
+            "id": "v1-below",
+            "family": "strength",
+            "priority": "required",
+            "priorityOrder": 0,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          },
+          {
+            "id": "v1-below-d",
+            "family": "direct",
+            "priority": "required",
+            "priorityOrder": 1,
+            "explicit": true,
+            "uniqueMarginalValue": true
+          }
+        ],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "required_primary_strength",
+        "expectedPolicyStatus": "EXECUTE_V1",
+        "coherenceFocus": "below_target_no_doubling"
+      },
+      {
+        "id": "v1-holdout-33-general-fitness-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "general_fitness_movement",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "general_fitness_scope_gap"
+      },
+      {
+        "id": "v1-holdout-34-posture-quality-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "posture_movement_quality",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "posture_quality_scope_gap"
+      },
+      {
+        "id": "v1-holdout-35-systemic-conditioning-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "systemic_conditioning",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "systemic_conditioning_scope_gap"
+      },
+      {
+        "id": "v1-holdout-36-external-sport-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "external_sport_load",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "external_sport_scope_gap"
+      },
+      {
+        "id": "v1-holdout-37-recovery-session-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 2,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "recovery_session",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "recovery_session_scope_gap"
+      },
+      {
+        "id": "v1-holdout-38-phase-override-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "phase_override",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "phase_override_scope_gap"
+      },
+      {
+        "id": "v1-holdout-39-direct-secondary-dose-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 3,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "direct_secondary_dose",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "direct_secondary_dose_scope_gap"
+      },
+      {
+        "id": "v1-holdout-40-prescription-muscle-distribution-scope-gap",
+        "cohort": "holdout",
+        "locked": true,
+        "opportunityCount": 4,
+        "condensedOpportunityOrders": [],
+        "cancelledOpportunityOrders": [],
+        "bodyweightOpportunityOrders": [],
+        "unknownEquipmentOpportunityOrders": [],
+        "consecutive": false,
+        "context": "ordinary",
+        "objectives": [],
+        "expectedConvergence": false,
+        "materialAdaptiveDifference": true,
+        "policyScope": "prescription_informed_muscle_distribution",
+        "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+        "coherenceFocus": "prescription_muscle_distribution_scope_gap"
+      }
+    ]
+  },
+  "calibrationScenarioCount": 19,
+  "holdoutScenarioCount": 40,
+  "supportedHoldoutScenarioCount": 32,
+  "scopeGapScenarioCount": 8,
+  "completeDownstreamPipelineCount": 95,
+  "hardCagtFailures": 0,
+  "underAdaptation": 0,
+  "overAdaptation": 0,
+  "downstreamRescueAttempts": 0,
+  "requiredCoverageRate": 1,
+  "constrainedWeekOverload": 0,
+  "frameworkCollision": 0.6862745098039216,
+  "adaptiveContentCollision": 0.1568627450980392,
+  "exactReservationRecurrence": 23,
+  "assessmentRecurrence": 0,
+  "optionalBloat": 0,
+  "downstreamValidSkeletonRate": 1,
+  "searchStatesExpanded": 842,
+  "calibrationPassed": true,
+  "holdoutPassed": true,
+  "scopeCoverage": [
+    {
+      "scope": "required_primary_strength",
+      "status": "covered",
+      "rule": "STRENGTH_S2_BALANCED"
+    },
+    {
+      "scope": "preferred_strength",
+      "status": "covered",
+      "rule": "0/1/2"
+    },
+    {
+      "scope": "optional_strength",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "required_primary_hypertrophy",
+      "status": "covered",
+      "rule": "MUSCLE_H1_SINGLE_FLEXIBLE"
+    },
+    {
+      "scope": "preferred_muscle",
+      "status": "covered",
+      "rule": "0/1/2"
+    },
+    {
+      "scope": "optional_muscle",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "required_direct",
+      "status": "covered",
+      "rule": "DIRECT_D1_ONCE"
+    },
+    {
+      "scope": "preferred_direct",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "optional_direct",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "required_assessment_cluster",
+      "status": "covered",
+      "rule": "ASSESSMENT_A1_SINGLE_CLUSTER"
+    },
+    {
+      "scope": "preferred_assessment_cluster",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "required_supported_capacity",
+      "status": "covered",
+      "rule": "CAPACITY_C1_ONCE"
+    },
+    {
+      "scope": "preferred_supported_capacity",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "optional_supported_capacity",
+      "status": "covered",
+      "rule": "0/1/1"
+    },
+    {
+      "scope": "participation_advisory",
+      "status": "covered",
+      "rule": "PARTICIPATION_P0_NONE"
+    },
+    {
+      "scope": "spacing_prescription_pending",
+      "status": "covered",
+      "rule": "SPACING_R0_PRESCRIPTION_PENDING"
+    },
+    {
+      "scope": "general_fitness_movement",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "posture_movement_quality",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "systemic_conditioning",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "external_sport_load",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "recovery_session",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "phase_override",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "direct_secondary_dose",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scope": "prescription_informed_muscle_distribution",
+      "status": "unresolved",
+      "rule": "WEEKLY_POLICY_REQUIRED"
+    }
+  ],
+  "scopeGapResults": [
+    {
+      "scenarioId": "v1-holdout-33-general-fitness-scope-gap",
+      "policyScope": "general_fitness_movement",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-34-posture-quality-scope-gap",
+      "policyScope": "posture_movement_quality",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-35-systemic-conditioning-scope-gap",
+      "policyScope": "systemic_conditioning",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-36-external-sport-scope-gap",
+      "policyScope": "external_sport_load",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-37-recovery-session-scope-gap",
+      "policyScope": "recovery_session",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-38-phase-override-scope-gap",
+      "policyScope": "phase_override",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-39-direct-secondary-dose-scope-gap",
+      "policyScope": "direct_secondary_dose",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    },
+    {
+      "scenarioId": "v1-holdout-40-prescription-muscle-distribution-scope-gap",
+      "policyScope": "prescription_informed_muscle_distribution",
+      "status": "WEEKLY_POLICY_REQUIRED"
+    }
+  ],
+  "coherentSession": {
+    "scenarioCount": 38,
+    "passCount": 38,
+    "hardFailureCount": 0,
+    "warmupOwnershipPassed": true,
+    "activationOwnershipPassed": true,
+    "distinctionPassed": true,
+    "selectedWarmupDependencyCoverage": 1,
+    "selectedActivationDependencyCoverage": 1,
+    "stalePreparationCount": 0,
+    "orphanActivationCount": 0,
+    "requiredDependencyOmissionCount": 0,
+    "genericWarmupCount": 0,
+    "genericActivationCount": 0,
+    "duplicateIdentityAcrossSections": 0,
+    "assessmentClusterMultiplication": 0,
+    "warmupSessionRate": 0.32142857142857145,
+    "activationSessionRate": 0.32142857142857145,
+    "averageWarmupIdentityCount": 0.32142857142857145,
+    "averageActivationIdentityCount": 0.32142857142857145,
+    "emptyWarmupRate": 0.6785714285714286,
+    "emptyActivationRate": 0.6785714285714286,
+    "warmupIdentityCollision": 0.6666666666666667,
+    "activationIdentityCollision": 0.7777777777777778,
+    "recurrenceClassifications": [
+      "ASSESSMENT_OVERREPETITION",
+      "EXPECTED_SHARED_PREPARATION",
+      "GENERIC_FILLER",
+      "JUSTIFIED_MULTI_SESSION_DEPENDENCY",
+      "OPTIONAL_REDUNDANCY",
+      "PRODUCTIVE_PREPARATION_CONTINUITY",
+      "REQUIRED_DEPENDENCY_RECURRENCE",
+      "STALE_RECURRENCE",
+      "UNKNOWN_REQUIRES_REVIEW"
+    ],
+    "results": [
+      {
+        "scenarioId": "coherence-01-ordinary-empty-preparation",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-02-movement-rehearsal-dependency",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-03-control-activation-dependency",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-04-overlapping-assessment-cluster",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-05-relevant-upper-signal-only",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-06-irrelevant-shoulder-lower-inert",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-07-low-confidence-context-only",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-08-ankle-range-truth",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "wall-ankle-dorsiflexion-rock"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "goblet-squat"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "26b47fcf2ec12ecdda9ad8f52b69a6ad86c64f26256705f24eb015fa9c53189d",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "a78a9184c7193a784d20a3bba96bf2258aaae2fef306ad69748e6a3903a42020",
+        "preparationAssignmentSignature": "eae16b17f6c2d57bb75197be7d30ca022a4e7b33794bab8025533e3ec358cb74",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "62e404d3ff48bd1da9528bd326a46fc34facc02dc2cc766647ee38c9456f5a8b",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "d2e77a6bc0c3898d57aa067263ba72c4a7f346352c2e60db7dc91420c4030d51",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-09-hinge-rehearsal-not-main",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-10-single-leg-preparation-truth",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "single-leg-balance-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "split-squat"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "443969c06e1f71975f46e483a20d7ff01b4cbe8613a028ffad00ae5c793735dc",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "f7a3e317fbe17a2731762c4754b8c71687bceaa8046cadde27bb87ddafa53d19",
+        "preparationAssignmentSignature": "b5d1dd270ad8301518a11d10385d49c91fc3ac2a439c483ca6aee5945c053beb",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "5297e0a56f947e34fd0ccb1048f6cd798de85ad249201019426158af2f563aba",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "f37e4fece2b885bf59ff0fc857c50b4f3cea5e8bb3c2b36eea64b37b4ad095cf",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-11-serratus-truth",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-12-cuff-not-universal",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "side-lying-dumbbell-external-rotation"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "81e42d6cd143c0693db474b88cb4f1f7e7cca1640af9ca0f50544c918ac33020",
+        "dependencyGraphSignature": "397ac2efcf0eae31ec1e9b5af68ad43026a1db65041b0de04cccb5b1d5f5b216",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "24bbf13cdb970078c7d7dfdda6c3d02e89fd459b80670a30c8b908d6a286e925",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "16d303ee6aa3b40e4ecc19710d2afb2a355cdace88fab6d098e4857af525b80a",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-13-breathing-not-mandatory",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-14-equipment-main-change-revalidated",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-15-pain-main-change-revalidated",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-16-condensed-required-retained",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "33df1a2d5c42220d0f596d72c56b3b9313a22e2d4b3d0bb592e33a0ea4f0343f",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 4,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-17-required-dependency-unavailable",
+        "expected": "EXPECTED_INFEASIBLE",
+        "result": "EXPECTED_INFEASIBLE",
+        "productionCompositionStatus": "infeasible",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a9e840ec4fda2bf344cd5727c8454aeb0c24abc9bafd021497021bd6b8797be3",
+        "prescriptionHandoffCount": 0,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 0,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-18-same-dependency-recurrence",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": "REQUIRED_DEPENDENCY_RECURRENCE",
+        "recurrenceLane": "warmup"
+      },
+      {
+        "scenarioId": "coherence-19-unrelated-generic-recurrence",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "GENERIC_EVERY_DAY_RECURRENCE"
+        ],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": "GENERIC_FILLER",
+        "recurrenceLane": "warmup"
+      },
+      {
+        "scenarioId": "coherence-20-weekly-a1-session-dependency-separate",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": "JUSTIFIED_MULTI_SESSION_DEPENDENCY",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-21-same-framework-different-assessment",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": "EXPECTED_SHARED_PREPARATION",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-22-same-framework-irrelevant-assessment",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-23-pain-without-dependency-empty",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-24-p0-rows-no-stack",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-25-productive-anchor-continuity",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": "PRODUCTIVE_PREPARATION_CONTINUITY",
+        "recurrenceLane": "warmup"
+      },
+      {
+        "scenarioId": "coherence-26-changed-anchor-stale-removed",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-27-fatigue-burden-observed",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "side-lying-dumbbell-external-rotation"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "81e42d6cd143c0693db474b88cb4f1f7e7cca1640af9ca0f50544c918ac33020",
+        "dependencyGraphSignature": "397ac2efcf0eae31ec1e9b5af68ad43026a1db65041b0de04cccb5b1d5f5b216",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "24bbf13cdb970078c7d7dfdda6c3d02e89fd459b80670a30c8b908d6a286e925",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "16d303ee6aa3b40e4ecc19710d2afb2a355cdace88fab6d098e4857af525b80a",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": "UNKNOWN_REQUIRES_REVIEW",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-28-one-identity-one-section",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-29-direct-accessory-no-activation",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-30-capacity-main-no-generic-warmup",
+        "expected": "PASS",
+        "result": "PASS",
+        "productionCompositionStatus": "valid",
+        "failures": [],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-31-generic-warmup-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "GENERIC_WARMUP_FILLER"
+        ],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-32-generic-activation-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "GENERIC_ACTIVATION_FILLER"
+        ],
+        "warmupIds": [],
+        "activationIds": [],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "324574c0ae689580261455334ee3aea58175619270c57a805de38902f95d5d72",
+        "prescriptionHandoffCount": 1,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 1,
+        "recurrence": "GENERIC_FILLER",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-33-stale-preparation-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "STALE_PREPARATION_AFTER_SELECTION"
+        ],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": "STALE_RECURRENCE",
+        "recurrenceLane": "warmup"
+      },
+      {
+        "scenarioId": "coherence-34-orphan-activation-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "ORPHAN_ACTIVATION"
+        ],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": "OPTIONAL_REDUNDANCY",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-35-duplicate-identity-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "DUPLICATE_IDENTITY_ACROSS_SECTIONS"
+        ],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-36-assessment-multiplication-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "ASSESSMENT_CLUSTER_MULTIPLICATION"
+        ],
+        "warmupIds": [],
+        "activationIds": [
+          "serratus-wall-slide"
+        ],
+        "mainIds": [
+          "machine-chest-press"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationNeedSignature": "9bfbbb614f96c693e925944c8313b42eb127aff984107680f2eeef1a71e27944",
+        "dependencyGraphSignature": "df211fe080fa65e29743143064b0b8ee4bfae3ec2150e07ed926e204251b3b8a",
+        "preparationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "activationAssignmentSignature": "46e1587c3624cf5bcf936a41ecbdda65ef123a95ed96dad8ba9edab2e5877326",
+        "mainAssignmentSignature": "634e070b14161c89dfc20e28699a07102d11d84a968769113583180b0295055c",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "648e74a50de65ac160bff60af89dfa11dbed177707fb1e7a2cdc3b756861efa4",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 3,
+        "recurrence": "ASSESSMENT_OVERREPETITION",
+        "recurrenceLane": "activation"
+      },
+      {
+        "scenarioId": "coherence-37-dose-credit-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "WARMUP_COUNTED_AS_WEEKLY_DOSE"
+        ],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      },
+      {
+        "scenarioId": "coherence-38-downstream-rescue-mutation",
+        "expected": "EXPECTED_MUTATION_REJECTED",
+        "result": "EXPECTED_MUTATION_REJECTED",
+        "productionCompositionStatus": "valid",
+        "failures": [
+          "DOWNSTREAM_RESCUE_ATTEMPT"
+        ],
+        "warmupIds": [
+          "bodyweight-hip-hinge-rehearsal"
+        ],
+        "activationIds": [],
+        "mainIds": [
+          "dumbbell-romanian-deadlift"
+        ],
+        "accessoryIds": [],
+        "warmupNeedSignature": "b92d9e2d2b0ecb08a47e10484d9bc49915cac29935a34445eafd8d5a83d66fde",
+        "activationNeedSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dependencyGraphSignature": "14e03ee22e1c4ff7b4d062f09f5b0c283378d9fe37766b2ff6c677e171455854",
+        "preparationAssignmentSignature": "a762bb2935f31b05c4683270ea696b189d4b379aa2b991c672197dcab2206425",
+        "activationAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "mainAssignmentSignature": "e5068bb97ee1fb66082f2874c5de42e90355f19f3ad721df64ff133bbaebc842",
+        "accessoryAssignmentSignature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "sessionProgramArgumentSignature": "a85002e2afa350f60aa77fc80ed6fc84230d253cdbafa69ffab3d4ccde81b0a9",
+        "prescriptionHandoffCount": 2,
+        "sequencingGraphAcyclic": true,
+        "searchStatesExpanded": 2,
+        "recurrence": null,
+        "recurrenceLane": null
+      }
+    ]
+  },
+  "firstSessionCanaries": [
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-two-day-strength",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-three-day-general",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-three-day-hypertrophy",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-four-day-hypertrophy",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-four-day-strength",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-mixed-equipment",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-travel",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-consecutive",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-low-back-sensitive",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-shoulder-sensitive",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-knee-sensitive",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-grip-sensitive",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-assessment-priority",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-direct-priority",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-productive-stable",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-missed-reallocation",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-two-opportunity-constrained",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-adverse-response",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "cal-one-opportunity",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-01-one-opportunity-strength",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-02-two-opportunity-strength-rehearsal",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-03-three-opportunity-hypertrophy",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-04-four-opportunity-direct-support",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-05-five-opportunity-smaller-commitment",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-06-six-opportunity-capacity-once",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-07-irregular-ordered-cycle",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-08-mixed-equipment-main-change",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-09-travel-bodyweight",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-10-condensed-required-main",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-11-cancelled-opportunity-truth",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-12-explicit-direct-once",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-13-assessment-cluster-once",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-14-capacity-responsibility-once",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-15-productive-preparation-continuity",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-16-adverse-response-reselection",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-17-relevant-pain-dependency",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-18-irrelevant-pain-convergence",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-19-explicit-warmup-dependency",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-20-explicit-activation-dependency",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-21-empty-preparation-sections",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-22-justified-repeated-preparation",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-23-unjustified-repetition-mutation",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-24-shared-framework-different-chain",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-25-exact-fact-convergence",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-26-hypertrophy-h1-single",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-27-preferred-strength-zero-minimum",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-28-optional-muscle-unique-value",
+      "state": "NOT_APPLICABLE_EMPTY_PLAN",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-29-preferred-assessment-zero-minimum",
+      "state": "NOT_APPLICABLE_EMPTY_PLAN",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-30-optional-capacity-no-mandate",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-31-unknown-equipment-search",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    },
+    {
+      "candidateId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "scenarioId": "v1-holdout-32-below-target-no-doubling",
+      "state": "PASS",
+      "firstFailingGate": null,
+      "laterSessionsScored": true
+    }
+  ],
+  "firstSessionCanaryPassed": true,
+  "allSessionHorizonPassed": true,
+  "productionActivation": false,
+  "productionBehaviorChanged": false,
+  "unresolvedPrescriptionClaims": true,
+  "stress": {
+    "seed": 550675,
+    "cases": 10000,
+    "requestedCompletePipelines": 1000,
+    "completePipelines": 1000,
+    "pipelineExecutions": 568,
+    "failures": [],
+    "digest": "44aea737490c1c4e9fe9fa96c655f5c9040181858770731db518827307cab5a1",
+    "repeatedRunDigest": "44aea737490c1c4e9fe9fa96c655f5c9040181858770731db518827307cab5a1",
+    "objectiveOrderPermutationStable": true,
+    "opportunityOrderPermutationStable": true,
+    "assessmentSignalPermutationStable": true,
+    "candidateOrderPermutationStable": true,
+    "catalogOrderPermutationStable": true,
+    "evidenceOrderPermutationStable": true,
+    "proseMutationInert": true,
+    "labelMutationInert": true,
+    "equivalentSignalDeduplicationStable": true,
+    "stalePreparationMutationRejected": true,
+    "orphanActivationMutationRejected": true,
+    "condensedRequiredPreparationPreserved": true,
+    "mainCandidateReplacementRevalidated": true,
+    "repeatedRunDeterministic": true,
+    "shadowDiagnosticsUnscored": true,
+    "productionActivation": false
+  },
+  "immutableGateOrder": [
+    "gate_0_scenario_truth",
+    "gate_1_weekly_responsibility_truth",
+    "gate_2_whole_week_allocation_coverage",
+    "gate_3_weekly_causal_adaptation",
+    "gate_4_weekly_duplication_distribution",
+    "gate_5_reservation_day_materialization",
+    "gate_6_session_intent_truth",
+    "gate_7_candidate_intelligence_truth",
+    "gate_8_session_composition_truth",
+    "gate_9_prescription_handoff_truth",
+    "gate_10_sequencing_duration_handoff_truth",
+    "gate_11_execution_response_foundation",
+    "gate_12_all_horizon_sessions",
+    "gate_13_post_prescription_weekly_validation",
+    "gate_14_full_prescribed_program_comparison",
+    "gate_15_phase_continuity",
+    "gate_16_longitudinal_adaptation"
+  ],
+  "manifestFingerprintExpected": "6edc62f933676e500fdfaac8af5a15e6294df23b587d0edbf1cd0c54c0a07ab3",
+  "manifestFingerprintMatched": true,
+  "warmupRecurrenceClassifications": [
+    "GENERIC_FILLER",
+    "PRODUCTIVE_PREPARATION_CONTINUITY",
+    "REQUIRED_DEPENDENCY_RECURRENCE",
+    "STALE_RECURRENCE"
+  ],
+  "activationRecurrenceClassifications": [
+    "ASSESSMENT_OVERREPETITION",
+    "EXPECTED_SHARED_PREPARATION",
+    "GENERIC_FILLER",
+    "JUSTIFIED_MULTI_SESSION_DEPENDENCY",
+    "OPTIONAL_REDUNDANCY",
+    "UNKNOWN_REQUIRES_REVIEW"
+  ],
+  "productionFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "catalog": "bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91",
+    "knowledge": "e31f864adaa0707a22bfb92d172fc596476acc923fe023cedf3abfd3ece8ac73",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "weekDesign": "903d034e50b2c210ad7ffee011e267e4f4d7ff9b396d9735a49f276909137047",
+    "policyHorizon": "ac7949f93f1ee3688f6c87ed316d89c886081853fa6cb7fab5746815187563cc",
+    "cagtCore": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+    "numericPolicyTournament": "d16dc08712211864cc0d2dfc2762e4c20c85f6dba053c64e6599f3b08a76d905"
+  },
+  "cagtCoreFingerprint": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+  "fingerprints": {
+    "ownerV1Selection": "819f7bc12040c210a2e60e5b7f9cce6242c341189615f83e3b6b20f63505baaa",
+    "v1ScopedRuleSet": "7d786d74c32431873a400936ffef538062fde12825c9cfae6095c8da531f3786",
+    "v1Composite": "8f88010ccaa618c07a4233596ef47b8c641b19d171cef8e6a3da32eb71c31cea",
+    "newHoldoutManifest": "6edc62f933676e500fdfaac8af5a15e6294df23b587d0edbf1cd0c54c0a07ab3",
+    "calibrationResult": "0c0fea599b9776d588989a722973709b2310f02635748543ad0f6696a89d09f7",
+    "holdoutResult": "416ee1262459066f065d4b9c2f023315045d4137395953a7352b1f9900d4f5af",
+    "policyScopeCoverage": "7d786d74c32431873a400936ffef538062fde12825c9cfae6095c8da531f3786",
+    "coherentSessionInvariant": "cdeedd41854495ce331220ca5ee1d89079a0c77b28bbc962fc486a4f24621a0d",
+    "warmupOwnership": "b5ac326d0191b54cf9a66baf4237b235b74051603a6adc8f9805d85206eea0a2",
+    "activationOwnership": "fc4e508ea80dc573890b6ee986e22e461e4aa5d82a823bec921ce9d2fefa4b93",
+    "dependencyToFinalSelection": "9736403a29f1a5416cc99a223fe55e137ca76edbe15274ce11b9f445a9d87522",
+    "firstSessionCanary": "8e1e428c4be7ab0786eb01dd5b22da817f20160a1817008d108370737613f6d6",
+    "allSessionHorizon": "80c16e03fd4dbbb12b065022cba28e08555254409098ba8427b21d1ad13a0e6a",
+    "warmupRecurrence": "6dd1cd538f3ce2481d1cd1c9ed156f3eee0f4c109a72cf9b20280f71ae0b597a",
+    "activationRecurrence": "c6c5aaeb9e02c9172ece149c601126c710e10c454627b993345d054fb2956123",
+    "assessmentVersusPreparationLanes": "e0f136d172bde4b7ee2a909e27da08b1e2c930da55075fe9c260e657acaef3c1",
+    "sectionAntiBloat": "95127e32e8c4f87929e8e97f8f33974f1e536b70d454f306dcda6cfa111f0673",
+    "sessionProgramArgument": "f83e6724f917dcd970ed90385800fc4a57d0a74973077581d6d63f38725ffaf0",
+    "v1AdmissionResult": "b2ce4acce41de733ce71a7d1aac9bc35f961a946bee25e7f9f050fbccbbf49bb",
+    "combinedWeekPolicyV1Admission": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db"
+  }
+}

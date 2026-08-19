@@ -1,0 +1,8 @@
+{
+  "package": "packages/engine",
+  "entrypoint": "@praxis/engine/outcome-source-persistence",
+  "serverOnly": true,
+  "poolInjection": true,
+  "automaticMigrationCount": 0,
+  "directiveApplicationCount": 0
+}

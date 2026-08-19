@@ -1,0 +1,19 @@
+{
+  "structuralMutationCount": 50,
+  "rejectedOrRightfullyAttributedCount": 50,
+  "failureCount": 0,
+  "repeatedOneSourceRejected": true,
+  "duplicatedSourceRejected": true,
+  "plannedAsCompletedRejected": true,
+  "calendarAndWeekAuthorityRejected": true,
+  "automaticActionCount": 0,
+  "upstreamRescueAcceptedCount": 0,
+  "provenance": [
+    "productionPhaseContinuityContracts.test.ts",
+    "productionPhaseContinuityPolicyEvidence.test.ts",
+    "productionPhaseContinuityKernel.test.ts",
+    "productionPhaseContinuityAlignment.test.ts",
+    "productionPhaseContinuityRevisions.test.ts",
+    "admitted Gate 15 controlled mutation matrix"
+  ]
+}

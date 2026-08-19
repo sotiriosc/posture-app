@@ -1,0 +1,16 @@
+# Purpose-First Holdout Manifest
+
+Status: `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_IMPLEMENTED_NOT_ACTIVATED`
+
+Classification: `PURPOSE_FIRST_GOAL_SPECIFIC_PRESCRIPTION_RESOLVER_V1_READY_FOR_SUPPORTED_PURPOSE_POLICY_ADMISSION_AUTHORIZATION`
+
+Canonical authority: [Praxis Product Goal Architecture Ledger](./PRAXIS_PRODUCT_GOAL_ARCHITECTURE_LEDGER.md)
+
+Product/Product Shadow/activation changed: `NO/NO/NO`
+
+## Proven Result
+
+- Frozen scenarios: 380; genuine V1.1 calls: 370; golden pairs: 100.
+- Manifest fingerprint: `10b9b1eb8b13e228f07e053f3d768aeae77810ef953736f1d05c04e626eb04d0`.
+
+Next dependency: `SUPPORTED_GOAL_AND_LOCAL_PURPOSE_PRESCRIPTION_POLICY_V1_ADMISSION_AUTHORIZATION`.

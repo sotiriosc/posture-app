@@ -1,0 +1,19 @@
+{
+  "selectedOption": "A",
+  "root": "/account/praxis-v2",
+  "routes": [
+    "/account/praxis-v2",
+    "/account/praxis-v2/preview/[previewId]",
+    "/account/praxis-v2/week/[applicationId]",
+    "/account/praxis-v2/session/[attemptId]",
+    "/account/praxis-v2/history"
+  ],
+  "ineligibleResponse": "404_NOT_FOUND",
+  "entryCopy": "Praxis V2 owner preview",
+  "ineligibleHiddenHtmlCount": 0,
+  "ordinaryDiscoverabilityCount": 0,
+  "implementedRouteCount": 0,
+  "queryActivationCount": 0,
+  "localStorageActivationCount": 0,
+  "currentRoutesChanged": 0
+}

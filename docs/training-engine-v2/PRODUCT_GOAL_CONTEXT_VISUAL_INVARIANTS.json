@@ -1,0 +1,51 @@
+{
+  "preserve": [
+    {
+      "invariant": "photographic_background",
+      "source": "BackgroundShell app-bg and --hero-image"
+    },
+    {
+      "invariant": "dark_glass_panel",
+      "source": "ui-card / praxis-panel-strong"
+    },
+    {
+      "invariant": "constrained_page_rhythm",
+      "source": "ui-shell max-width and responsive padding"
+    },
+    {
+      "invariant": "header_relationship",
+      "source": "ui-page-heading plus OnImage"
+    },
+    {
+      "invariant": "selected_surface",
+      "source": "sky border/ring or praxis-selected-surface"
+    },
+    {
+      "invariant": "primary_action",
+      "source": "linear-gradient #38BDF8 to #2563EB"
+    },
+    {
+      "invariant": "typography",
+      "source": "Space Grotesk headings and Manrope body"
+    },
+    {
+      "invariant": "compact_cards",
+      "source": "0.5rem shared card radius"
+    },
+    {
+      "invariant": "responsive_grids",
+      "source": "single column base with sm grid expansion"
+    },
+    {
+      "invariant": "back_to_photos",
+      "source": "questionnaire page header action"
+    },
+    {
+      "invariant": "guide_and_menu",
+      "source": "fixed onboarding guide and AppMenu controls"
+    }
+  ],
+  "hardCodedNewColorsRequired": false,
+  "newDesignSystemRequired": false,
+  "screenshotMatch": "MATERIAL_VISUAL_LANGUAGE_MATCH"
+}

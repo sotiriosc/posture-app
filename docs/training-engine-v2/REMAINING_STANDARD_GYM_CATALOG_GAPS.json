@@ -1,0 +1,86 @@
+[
+  {
+    "id": "barbell-bench-press",
+    "classification": "useful_after_owner_delivery",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "barbell-back-squat",
+    "classification": "useful_after_owner_delivery",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "conventional-deadlift",
+    "classification": "identity_review_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "trap-bar-deadlift",
+    "classification": "identity_review_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "smith-machine-pressing-squatting",
+    "classification": "equipment_contract_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "machine-lateral-raise",
+    "classification": "useful_before_public_activation",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "machine-biceps-curl",
+    "classification": "redundant_with_current_identity",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "machine-triceps-extension",
+    "classification": "redundant_with_current_identity",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "preacher-curl",
+    "classification": "identity_review_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "assisted-dip",
+    "classification": "identity_review_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "cable-hip-adduction-abduction",
+    "classification": "redundant_with_current_identity",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "back-extension",
+    "classification": "purpose_policy_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "suspension-row",
+    "classification": "equipment_contract_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  },
+  {
+    "id": "power-ballistic-equipment",
+    "classification": "purpose_policy_required",
+    "requiredBeforeOwnerDelivery": false,
+    "admitted": false
+  }
+]

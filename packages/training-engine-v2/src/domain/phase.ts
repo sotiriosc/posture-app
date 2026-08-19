@@ -5,6 +5,7 @@ import type {
   MuscleGroup,
   TrainingGoal,
 } from "./primitives";
+import type { ProgressionAxis } from "./progression";
 
 export type PhaseId = "phase_1" | "phase_2" | "phase_3";
 
@@ -19,17 +20,7 @@ export interface PhaseCapabilityExpectation {
 export interface PhaseProgressionIntent {
   readonly loading: DemandLevel;
   readonly effort: IntensityBand;
-  readonly preferredProgressionAxes: readonly (
-    | "load"
-    | "reps"
-    | "sets"
-    | "range"
-    | "tempo"
-    | "support_reduction"
-    | "stability"
-    | "coordination"
-    | "complexity"
-  )[];
+  readonly preferredProgressionAxes: readonly ProgressionAxis[];
   readonly exerciseContinuityDefault: "prefer_continue_when_productive" | "review_for_phase_fit";
 }
 

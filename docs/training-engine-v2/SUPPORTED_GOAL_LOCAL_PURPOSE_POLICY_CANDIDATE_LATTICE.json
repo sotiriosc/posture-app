@@ -1,0 +1,262 @@
+{
+  "prescription": [
+    {
+      "candidateId": "SH1",
+      "family": "secondary_hypertrophy",
+      "ownerPreferred": true,
+      "evidenceEnvelope": [
+        "broad_load_hypertrophy",
+        "non_failure_supported"
+      ],
+      "consequenceBounds": [
+        "two_sets",
+        "six_to_fifteen_repetitions",
+        "ninety_to_one_hundred_eighty_seconds"
+      ]
+    },
+    {
+      "candidateId": "SH2",
+      "family": "secondary_hypertrophy",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "broad_load_hypertrophy"
+      ],
+      "consequenceBounds": [
+        "shorter_rest_tradeoff",
+        "closer_to_failure_tradeoff"
+      ]
+    },
+    {
+      "candidateId": "SH3",
+      "family": "secondary_hypertrophy",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "broad_load_hypertrophy"
+      ],
+      "consequenceBounds": [
+        "wider_range",
+        "lower_minimum_volume"
+      ]
+    },
+    {
+      "candidateId": "MQ1",
+      "family": "movement_quality",
+      "ownerPreferred": true,
+      "evidenceEnvelope": [
+        "quality_skill_practice",
+        "non_clinical_scope"
+      ],
+      "consequenceBounds": [
+        "quality_limited",
+        "no_adaptation_credit"
+      ]
+    },
+    {
+      "candidateId": "MQ2",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "quality_skill_practice"
+      ],
+      "consequenceBounds": [
+        "shorter_rest",
+        "single_accessory_set"
+      ]
+    },
+    {
+      "candidateId": "MQ3",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "quality_skill_practice"
+      ],
+      "consequenceBounds": [
+        "higher_volume",
+        "longer_rest"
+      ]
+    },
+    {
+      "candidateId": "ME1",
+      "family": "muscular_endurance",
+      "ownerPreferred": true,
+      "evidenceEnvelope": [
+        "local_endurance_specificity",
+        "older_candidate_bounds_qualified"
+      ],
+      "consequenceBounds": [
+        "local_only",
+        "no_systemic_claim",
+        "no_failure_requirement"
+      ]
+    },
+    {
+      "candidateId": "ME2",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "local_endurance_specificity"
+      ],
+      "consequenceBounds": [
+        "lower_repetition_band"
+      ]
+    },
+    {
+      "candidateId": "ME3",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "evidenceEnvelope": [
+        "local_endurance_specificity"
+      ],
+      "consequenceBounds": [
+        "higher_repetition_band",
+        "shorter_rest"
+      ]
+    }
+  ],
+  "week": [
+    {
+      "candidateId": "MQF1",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MQF2",
+      "family": "movement_quality",
+      "ownerPreferred": true,
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MQF3",
+      "family": "movement_quality",
+      "ownerPreferred": false,
+      "required": [
+        2,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF1",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF2",
+      "family": "muscular_endurance",
+      "ownerPreferred": true,
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "candidateId": "MEF3",
+      "family": "muscular_endurance",
+      "ownerPreferred": false,
+      "required": [
+        2,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    }
+  ],
+  "selected": [
+    "SH1",
+    "MQ1",
+    "ME1",
+    "MQF2",
+    "MEF2"
+  ],
+  "weightedScoreUsed": false,
+  "hardGateOrder": [
+    "owner_ontology",
+    "evidence_envelope",
+    "purpose_specificity",
+    "placement_legality",
+    "safety_context",
+    "credit_truth",
+    "no_overclaim",
+    "primary_preservation",
+    "duration_feasibility",
+    "anti_bloat",
+    "continuity",
+    "preferred_coverage",
+    "optional_value",
+    "deterministic_tie"
+  ]
+}

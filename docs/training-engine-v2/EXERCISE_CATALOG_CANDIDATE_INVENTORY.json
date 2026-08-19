@@ -1,0 +1,967 @@
+[
+  {
+    "id": "dumbbell-floor-press",
+    "group": "home",
+    "identityBoundary": "Floor-supported dumbbell horizontal press with bounded floor range; not a bench-angle variant.",
+    "equipmentTruth": "dumbbells + floor_space; no bench",
+    "support": "supine floor support",
+    "risk": "dumbbell handling and floor entry/exit require review",
+    "familiarity": "high recognizability",
+    "setupComplexity": "low",
+    "homeComfort": "excellent",
+    "movementRole": "horizontal_push",
+    "actionFunctions": [
+      "shoulder_horizontal_adduction",
+      "elbow_extension"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "tempo",
+      "range"
+    ],
+    "loadCeiling": "bounded by available dumbbells and floor range",
+    "receiver": "no-bench horizontal-push main/accessory pool",
+    "redundancy": "unique no-bench external-load path",
+    "coachingBurden": "low",
+    "evidence": "mechanics, stress, and handling metadata require owner review",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "dumbbell-triceps-extension",
+    "group": "home",
+    "identityBoundary": "Direct dumbbell elbow extension; overhead and lying setup belong to reviewed realizations.",
+    "equipmentTruth": "one or two dumbbells; support/floor depends on realization",
+    "support": "standing, seated, or supine must be explicit",
+    "risk": "overhead range and load handling are realization-sensitive",
+    "familiarity": "recognizable direct arm work",
+    "setupComplexity": "low",
+    "homeComfort": "good",
+    "movementRole": "direct_elbow_extension",
+    "actionFunctions": [
+      "elbow_extension"
+    ],
+    "purpose": [
+      "direct_development",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "dumbbell ceiling",
+    "receiver": "home direct-triceps accessory pool",
+    "redundancy": "current direct triceps row requires cable",
+    "coachingBurden": "moderate",
+    "evidence": "realization and shoulder/elbow stress curation required",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "bent-over-dumbbell-reverse-fly",
+    "group": "home",
+    "identityBoundary": "Free-implement shoulder horizontal-abduction identity; not a row or machine reverse fly realization.",
+    "equipmentTruth": "dumbbells + stable standing space; optional explicit support",
+    "support": "unsupported hinge or explicit support",
+    "risk": "hinge/support tolerance and load control require review",
+    "familiarity": "recognizable rear-delt exercise",
+    "setupComplexity": "low",
+    "homeComfort": "good",
+    "movementRole": "direct_rear_delt",
+    "actionFunctions": [
+      "shoulder_horizontal_abduction"
+    ],
+    "purpose": [
+      "direct_development",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "support"
+    ],
+    "loadCeiling": "light-dumbbell and position constrained",
+    "receiver": "home rear-delt accessory pool",
+    "redundancy": "adds anchorless path absent from reverse pec deck and face pull",
+    "coachingBurden": "moderate",
+    "evidence": "support and scapular mechanics curation required",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "side-lying-hip-abduction",
+    "group": "home",
+    "identityBoundary": "Floor-supported direct hip abduction; distinct from standing lateral stepping.",
+    "equipmentTruth": "bodyweight + floor_space; optional reviewed loop band",
+    "support": "substantial side-lying floor support",
+    "risk": "floor tolerance and exact side setup",
+    "familiarity": "recognizable simple floor movement",
+    "setupComplexity": "low",
+    "homeComfort": "excellent",
+    "movementRole": "direct_hip_abduction",
+    "actionFunctions": [
+      "hip_abduction"
+    ],
+    "purpose": [
+      "direct_development",
+      "activation"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "range",
+      "tempo",
+      "load"
+    ],
+    "loadCeiling": "limited without reviewed external load",
+    "receiver": "home direct-abductor accessory/activation pool",
+    "redundancy": "distinct task and support from loop-band lateral walk",
+    "coachingBurden": "low",
+    "evidence": "identity is supported by current P0 side-lying adduction boundary",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "bird-dog",
+    "group": "home",
+    "identityBoundary": "Quadruped contralateral trunk-control task; not a plank lever or generic corrective drill.",
+    "equipmentTruth": "bodyweight + floor_space",
+    "support": "four-point floor support changing by prescription",
+    "risk": "wrist/knee/floor tolerance and quality stop",
+    "familiarity": "widely recognizable",
+    "setupComplexity": "low",
+    "homeComfort": "excellent",
+    "movementRole": "anti_extension_core",
+    "actionFunctions": [],
+    "purpose": [
+      "movement_quality",
+      "local_capacity",
+      "preparation"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "range",
+      "tempo",
+      "lever"
+    ],
+    "loadCeiling": "not a heavy strength identity",
+    "receiver": "familiar quadruped trunk-control pool",
+    "redundancy": "different support/coordination task from dead bug and plank",
+    "coachingBurden": "low",
+    "evidence": "trunk mechanics and non-corrective receiver review required",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "reverse-lunge",
+    "group": "home",
+    "identityBoundary": "Dynamic backward step-and-return single-leg pattern; boundary from split squat unresolved.",
+    "equipmentTruth": "stable standing space; optional legal load/support",
+    "support": "unsupported or explicit stable support",
+    "risk": "dynamic balance and step space",
+    "familiarity": "recognizable but more coordinated than split squat",
+    "setupComplexity": "low",
+    "homeComfort": "possible",
+    "movementRole": "single_leg",
+    "actionFunctions": [
+      "hip_extension"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy",
+      "movement_quality"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "range",
+      "support"
+    ],
+    "loadCeiling": "environment dependent",
+    "receiver": "single-leg strength pool only if identity is distinct",
+    "redundancy": "may duplicate split-squat realization",
+    "coachingBurden": "moderate",
+    "evidence": "owner identity decision required",
+    "disposition": "catalog_identity_gap_confirmed",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "bodyweight-squat",
+    "group": "home",
+    "identityBoundary": "Free bodyweight squat without mandatory box contact; boundary from bodyweight box squat unresolved.",
+    "equipmentTruth": "bodyweight + stable standing space",
+    "support": "free or explicit support",
+    "risk": "range and balance response",
+    "familiarity": "very high",
+    "setupComplexity": "low",
+    "homeComfort": "excellent",
+    "movementRole": "squat",
+    "actionFunctions": [
+      "hip_extension"
+    ],
+    "purpose": [
+      "movement_quality",
+      "local_endurance",
+      "preparation"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "range",
+      "tempo",
+      "support"
+    ],
+    "loadCeiling": "bodyweight-limited",
+    "receiver": "squat rehearsal/development only if distinct",
+    "redundancy": "may be a no-box realization of current box squat or rehearsal of goblet squat",
+    "coachingBurden": "low",
+    "evidence": "owner identity boundary required",
+    "disposition": "catalog_identity_gap_confirmed",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-biceps-curl",
+    "group": "home",
+    "identityBoundary": "Foot-anchored or self-anchored elastic elbow flexion with no environmental anchor.",
+    "equipmentTruth": "tube or flat band with explicit under-foot path",
+    "support": "standing or seated feet-supported",
+    "risk": "band condition, foot retention, and face path require setup review",
+    "familiarity": "high",
+    "setupComplexity": "low",
+    "homeComfort": "good",
+    "movementRole": "direct_elbow_flexion",
+    "actionFunctions": [
+      "elbow_flexion"
+    ],
+    "purpose": [
+      "direct_development",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range"
+    ],
+    "loadCeiling": "band force is not kilograms and remains bounded/unknown",
+    "receiver": "anchorless home biceps pool",
+    "redundancy": "current direct biceps row requires dumbbells",
+    "coachingBurden": "low",
+    "evidence": "band path and inspection coaching required",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "band-pull-apart",
+    "group": "home",
+    "identityBoundary": "Anchorless shoulder horizontal-abduction/scapular task; not a full horizontal pull.",
+    "equipmentTruth": "tube or flat band held in both hands; no anchor",
+    "support": "standing or seated",
+    "risk": "band condition and face path",
+    "familiarity": "moderate",
+    "setupComplexity": "low",
+    "homeComfort": "good",
+    "movementRole": "direct_rear_delt_or_preparation",
+    "actionFunctions": [
+      "shoulder_horizontal_abduction",
+      "scapular_retraction"
+    ],
+    "purpose": [
+      "direct_development",
+      "preparation"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range"
+    ],
+    "loadCeiling": "limited and not equivalent to row loading",
+    "receiver": "rear-delt/preparation only",
+    "redundancy": "must not rescue horizontal-pull coverage",
+    "coachingBurden": "low",
+    "evidence": "receiver and shoulder/scapular boundary review required",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-squat",
+    "group": "home",
+    "identityBoundary": "Band-loaded squat realization unless reviewed resistance path creates unique receiver value.",
+    "equipmentTruth": "self-anchored band path must be explicit",
+    "support": "standing",
+    "risk": "band routing and release",
+    "familiarity": "moderate",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "squat",
+    "actionFunctions": [
+      "hip_extension"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range"
+    ],
+    "loadCeiling": "limited/unknown band force",
+    "receiver": "already served by squat identities",
+    "redundancy": "resistance implement alone does not justify identity",
+    "coachingBurden": "moderate",
+    "evidence": "no unique receiver established",
+    "disposition": "duplicate_low_value",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "band-romanian-deadlift",
+    "group": "home",
+    "identityBoundary": "Band-resisted hinge may be realization or distinct resistance-path identity; unresolved.",
+    "equipmentTruth": "band under feet with explicit hand path",
+    "support": "standing",
+    "risk": "foot retention, band condition, release path",
+    "familiarity": "moderate",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "hinge",
+    "actionFunctions": [
+      "hip_extension"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "band force unknown",
+    "receiver": "home loaded hinge when dumbbells absent",
+    "redundancy": "identity boundary from dumbbell RDL/bodyweight hinge unresolved",
+    "coachingBurden": "moderate",
+    "evidence": "identity and band safety review required",
+    "disposition": "support_or_safety_review_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "foot-anchored-seated-band-row",
+    "group": "home",
+    "identityBoundary": "Seated self-anchored band row, distinct setup from environmental-anchor band row.",
+    "equipmentTruth": "tube or flat band around feet; no environmental anchor",
+    "support": "seated floor or chair must be explicit",
+    "risk": "foot slip, band snapback toward face, and floor/chair assumptions",
+    "familiarity": "moderate",
+    "setupComplexity": "moderate",
+    "homeComfort": "poor",
+    "movementRole": "horizontal_pull",
+    "actionFunctions": [
+      "scapular_retraction",
+      "elbow_flexion"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range"
+    ],
+    "loadCeiling": "limited/unknown",
+    "receiver": "anchorless horizontal-pull gap",
+    "redundancy": "unique capability but adverse setup boundary",
+    "coachingBurden": "high",
+    "evidence": "support/safety review required before owner selection",
+    "disposition": "home_comfort_rejected",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "body-wrapped-band-chest-press",
+    "group": "home",
+    "identityBoundary": "Body-wrapped elastic horizontal press with no fixed anchor.",
+    "equipmentTruth": "band routed around torso; exact band type and condition required",
+    "support": "standing or seated must be explicit",
+    "risk": "body contact, skin/clothing pinch, routing, and release",
+    "familiarity": "low",
+    "setupComplexity": "high",
+    "homeComfort": "poor",
+    "movementRole": "horizontal_push",
+    "actionFunctions": [
+      "shoulder_horizontal_adduction",
+      "elbow_extension"
+    ],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "reps",
+      "sets",
+      "band_resistance",
+      "range"
+    ],
+    "loadCeiling": "limited/unknown",
+    "receiver": "anchorless external-resistance horizontal push",
+    "redundancy": "push-up already offers anchorless horizontal push",
+    "coachingBurden": "high",
+    "evidence": "body-contact and release review required",
+    "disposition": "home_comfort_rejected",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "machine-shoulder-press",
+    "group": "historical_p1",
+    "identityBoundary": "Selectorized guided vertical press; geometry remains setup-specific.",
+    "equipmentTruth": "existing shoulder_press machine capability",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "supported vertical-push path diversity",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "ready_for_owner_selection",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "assisted-pull-up",
+    "group": "historical_p1",
+    "identityBoundary": "Vertical body pull with explicit assistance, distinct from pulldown and unassisted pull-up.",
+    "equipmentTruth": "pull_up_bar plus explicit assistance capability",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "vertical-pull progression/path diversity",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "machine-leg-extension",
+    "group": "historical_p1",
+    "identityBoundary": "Selectorized open-chain knee extension, not squat exposure.",
+    "equipmentTruth": "new generic knee_extension machine capability",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "direct quad accessory",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "incline-dumbbell-bench-press",
+    "group": "historical_p1",
+    "identityBoundary": "Bench angle is a bounded dumbbell-bench-press realization until a unique receiver is approved.",
+    "equipmentTruth": "dumbbells plus adjustable_bench",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "no current unique receiver",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "same_identity_realization",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "suspension-row",
+    "group": "historical_p1",
+    "identityBoundary": "Body-angle horizontal pull using a rated suspension system.",
+    "equipmentTruth": "new suspension_trainer plus rated_anchor capabilities",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "home horizontal pull with explicit rated equipment",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "half-kneeling-hip-flexor-mobility",
+    "group": "historical_p1",
+    "identityBoundary": "Half-kneeling hip-range preparation, not direct strengthening.",
+    "equipmentTruth": "floor_space plus kneeling tolerance",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "dependency-owned hip preparation only",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "side-lying-thoracic-rotation",
+    "group": "historical_p1",
+    "identityBoundary": "Supported thoracic rotation mobility, not loaded trunk rotation.",
+    "equipmentTruth": "floor_space",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "dependency-owned thoracic preparation only",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "receiver_policy_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "cable-hip-adduction",
+    "group": "historical_p1",
+    "identityBoundary": "Standing cable hip adduction distinct from floor-supported side-lying adduction.",
+    "equipmentTruth": "low cable, ankle cuff, standing space",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "loadable direct adductor path",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "cable-hip-abduction",
+    "group": "historical_p1",
+    "identityBoundary": "Standing cable hip abduction distinct from lateral stepping.",
+    "equipmentTruth": "low cable, ankle cuff, standing space",
+    "support": "candidate-specific support must remain explicit",
+    "risk": "historical proposal is not owner approval; mechanics/stress review remains",
+    "familiarity": "common concept, exact realization familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "candidate_specific",
+    "actionFunctions": [],
+    "purpose": [
+      "candidate_specific_review"
+    ],
+    "doseMode": "repetition_sets_or_review_required",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range"
+    ],
+    "loadCeiling": "equipment-specific",
+    "receiver": "loadable direct abductor path",
+    "redundancy": "reviewed against current 45 rows",
+    "coachingBurden": "moderate",
+    "evidence": "historical P1 proposal re-audited against current catalog",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "barbell-bench-press",
+    "group": "common_strength",
+    "identityBoundary": "Barbell horizontal press with rack/bench/unrack path, distinct from dumbbell press.",
+    "equipmentTruth": "barbell + flat_bench + rack safety capability not fully modeled",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "specific barbell-strength path; not required for initial delivery",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "barbell-back-squat",
+    "group": "common_strength",
+    "identityBoundary": "Rack-unracked axial barbell squat identity.",
+    "equipmentTruth": "barbell + squat_rack + safeties/clearance review",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "specific barbell squat strength; current squat alternatives sufficient initially",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "conventional-or-trap-bar-deadlift",
+    "group": "common_strength",
+    "identityBoundary": "Floor-start loaded pull; conventional and trap-bar boundary itself requires review.",
+    "equipmentTruth": "barbell/plates or trap_bar capability absent",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "specific heavy pull; hinge alternatives sufficient initially",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "unassisted-pull-up",
+    "group": "common_strength",
+    "identityBoundary": "Unassisted suspended vertical body pull, distinct from assisted and pulldown paths.",
+    "equipmentTruth": "pull_up_bar + hanging/grip truth",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "advanced vertical-pull specificity",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "seated-calf-raise",
+    "group": "common_strength",
+    "identityBoundary": "Knee-flexed loaded plantar flexion, distinct path from standing calf raise.",
+    "equipmentTruth": "machine or stable seated external-load setup",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "direct calf path diversity",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "ready_after_targeted_metadata_curation",
+    "firstTrancheEligible": true
+  },
+  {
+    "id": "slider-leg-curl",
+    "group": "common_strength",
+    "identityBoundary": "Supine sliding knee-flexion curl, distinct from walkout and machine curl.",
+    "equipmentTruth": "slider plus compatible floor capability absent",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "home knee-flexion path diversity",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "landmine-press",
+    "group": "common_strength",
+    "identityBoundary": "Angled barbell press with secured landmine pivot.",
+    "equipmentTruth": "landmine attachment/corner safety capability absent",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "angled press path",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "equipment_contract_required",
+    "firstTrancheEligible": false
+  },
+  {
+    "id": "hanging-knee-raise",
+    "group": "common_strength",
+    "identityBoundary": "Suspended trunk/hip-flexion task, not machine abdominal crunch.",
+    "equipmentTruth": "pull_up_bar + hanging/grip truth",
+    "support": "exact setup/support required",
+    "risk": "familiarity does not remove technical, stress, or setup review",
+    "familiarity": "widely recognized but exact familiarity unknown",
+    "setupComplexity": "moderate",
+    "homeComfort": "possible",
+    "movementRole": "strength_or_accessory_review",
+    "actionFunctions": [],
+    "purpose": [
+      "strength",
+      "hypertrophy"
+    ],
+    "doseMode": "repetition_sets",
+    "progressionAxes": [
+      "load",
+      "reps",
+      "sets",
+      "range",
+      "tempo"
+    ],
+    "loadCeiling": "equipment and skill dependent",
+    "receiver": "advanced trunk accessory",
+    "redundancy": "current alternatives assessed before admission",
+    "coachingBurden": "moderate",
+    "evidence": "common status is not production readiness",
+    "disposition": "exercise_science_review_required",
+    "firstTrancheEligible": false
+  }
+]

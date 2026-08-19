@@ -1,0 +1,206 @@
+{
+  "rows": [
+    {
+      "field": "goals",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_UI_only",
+        "current_engine_input",
+        "current_signature_input",
+        "current_shadow_mapping_input",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "select label persists, regenerates legacy Program, signs change identity, and enters shadow mapping",
+      "futureDisposition": "migrate explicitly to canonical primaryGoal ID"
+    },
+    {
+      "field": "painAreas",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_engine_input",
+        "current_signature_input",
+        "current_shadow_mapping_input",
+        "context_only",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "checkbox regions persist, influence legacy generation, sign identity, and map as context",
+      "futureDisposition": "retain as optional programmingContexts without outcome ownership"
+    },
+    {
+      "field": "experience",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_engine_input",
+        "current_signature_input",
+        "current_shadow_mapping_input",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "coarse label persists and enters legacy generation/signature/shadow",
+      "futureDisposition": "retain as coarseExperience; calibration owns exact realization"
+    },
+    {
+      "field": "equipment",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_engine_input",
+        "current_signature_input",
+        "current_shadow_mapping_input",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "top-level labels persist; legacy gym expands capability; shadow records presence only",
+      "futureDisposition": "separate environment from exact capabilities"
+    },
+    {
+      "field": "daysPerWeek",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_engine_input",
+        "current_signature_input",
+        "current_shadow_mapping_input",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "3/4/5 persists, shapes generation/signature, and maps opportunity count",
+      "futureDisposition": "retain as opportunity count without weekday or duration inference"
+    },
+    {
+      "field": "trainingIntent",
+      "classifications": [
+        "legacy_Product_authority",
+        "current_UI_only",
+        "current_engine_input",
+        "current_shadow_mapping_input",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "consumer renders it; gyms schema accepts it but does not render it; engine defaults absent to build; signature omits it",
+      "futureDisposition": "versioned trainingMode semantic input before activation"
+    },
+    {
+      "field": "questionnaire_storage",
+      "classifications": [
+        "legacy_Product_authority"
+      ],
+      "currentBehavior": "localStorage plus server training snapshot patch",
+      "futureDisposition": "old profiles remain readable; no migration on read"
+    },
+    {
+      "field": "questionnaire_signature_v1",
+      "classifications": [
+        "legacy_Product_authority",
+        "migration_required"
+      ],
+      "currentBehavior": "JSON identity over goals, painAreas, experience, equipment, daysPerWeek",
+      "futureDisposition": "freeze V1 and add explicit V2"
+    },
+    {
+      "field": "gym_equipment_lock",
+      "classifications": [
+        "current_UI_only",
+        "locked_by_gym_owner"
+      ],
+      "currentBehavior": "buyer-demo presentation normalizes and overwrites equipment with configured gym profile",
+      "futureDisposition": "surface-specific presentation over a future shared schema"
+    },
+    {
+      "field": "band_subtype",
+      "classifications": [
+        "unresolved",
+        "future_structured_input"
+      ],
+      "currentBehavior": "owner-reported but absent from branch",
+      "futureDisposition": "conditional capability only when legality requires"
+    },
+    {
+      "field": "goalFocus",
+      "classifications": [
+        "future_structured_input"
+      ],
+      "currentBehavior": "not captured",
+      "futureDisposition": "required for broad goals"
+    },
+    {
+      "field": "secondaryGoal",
+      "classifications": [
+        "future_structured_input"
+      ],
+      "currentBehavior": "not captured",
+      "futureDisposition": "optional, collapsed, at most one"
+    },
+    {
+      "field": "sessionMinutes",
+      "classifications": [
+        "future_structured_input"
+      ],
+      "currentBehavior": "not captured",
+      "futureDisposition": "required for exact fit claims"
+    },
+    {
+      "field": "equipmentCapabilities",
+      "classifications": [
+        "future_structured_input"
+      ],
+      "currentBehavior": "not captured",
+      "futureDisposition": "minimal conditional legality facts"
+    },
+    {
+      "field": "page_title_and_helper",
+      "classifications": [
+        "display_only",
+        "duplicated_consumer_gyms"
+      ],
+      "currentBehavior": "consumer and ordinary gyms share current copy; buyer demo diverges",
+      "futureDisposition": "future consumer training-profile copy"
+    },
+    {
+      "field": "assessment_photos",
+      "classifications": [
+        "context_only"
+      ],
+      "currentBehavior": "separate Step 1 local assessment input",
+      "futureDisposition": "no upload requirement for pain/context migration"
+    }
+  ],
+  "auditAnswers": {
+    "legacyProgramRegenerationFields": [
+      "goals",
+      "painAreas",
+      "experience",
+      "equipment",
+      "daysPerWeek",
+      "trainingIntent"
+    ],
+    "currentSignatureFields": [
+      "goals",
+      "painAreas",
+      "experience",
+      "equipment",
+      "daysPerWeek"
+    ],
+    "currentShadowMappingFields": [
+      "goals",
+      "painAreas",
+      "experience",
+      "equipment",
+      "daysPerWeek",
+      "trainingIntent"
+    ],
+    "trainingIntentParticipatesInChangeIdentity": false,
+    "consumerAndGymsSchemasIdentical": true,
+    "schemaParityQualification": "duplicated structural types are currently equivalent, but presentation and option ownership differ",
+    "gymModeLockLayer": "presentation_and_normalization_layer_not_schema",
+    "futureCanonicalContractLocation": "a new inert Product-owned contract module, separate from QuestionnaireForm and engine generation, before activation",
+    "fCanAddInactiveOptionWithoutRouteChange": true,
+    "fCanAvoidLegacyGenerateProgram": true,
+    "existingConfirmationCanRemainExact": true,
+    "currentStoredValuesRemainReadable": true,
+    "newSchemaVersionRequiredBeforeActivation": true,
+    "legacyGymOverstatesCapability": true,
+    "reportedBandSubtypePresentInBranch": false,
+    "kneesPresentInBranchQuestionnaire": false,
+    "deploymentDrift": [
+      "knees_pain_choice",
+      "resistance_band_detail",
+      "owner_declared_mobile_crop_inventory"
+    ],
+    "eTopClassificationCanBeEarnedWithRecordedDrift": true
+  }
+}

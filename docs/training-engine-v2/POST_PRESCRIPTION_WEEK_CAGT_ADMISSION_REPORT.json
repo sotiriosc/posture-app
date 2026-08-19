@@ -1,0 +1,1397 @@
+{
+  "classification": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_READY_FOR_PRODUCTION_KERNEL_IMPLEMENTATION_AUTHORIZATION",
+  "ontologyClassification": "POST_PRESCRIPTION_WEEK_VALIDATION_ONTOLOGY_READY",
+  "authority": "POST_PRESCRIPTION_WEEK_VALIDATION_DESIGN_EVIDENCE",
+  "productionActivationStatus": "NOT_ACTIVATED",
+  "productionValidatorImplemented": false,
+  "productionBehaviorChanged": false,
+  "policy": {
+    "policyId": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_CAUSAL_LEDGER_POLICY",
+    "version": "1.0.0",
+    "authority": "OWNER_SELECTED_DESIGN_EVIDENCE",
+    "weekPolicyRef": {
+      "policyId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+      "version": "1.0.0"
+    },
+    "frequencyRules": [
+      {
+        "purpose": "movement_development",
+        "required": [
+          1,
+          2,
+          3
+        ],
+        "preferred": [
+          0,
+          1,
+          2
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "STRENGTH_S2_BALANCED"
+      },
+      {
+        "purpose": "muscle_development",
+        "required": [
+          1,
+          1,
+          2
+        ],
+        "preferred": [
+          0,
+          1,
+          2
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "MUSCLE_H1_SINGLE_FLEXIBLE"
+      },
+      {
+        "purpose": "direct_action_development",
+        "required": [
+          1,
+          1,
+          1
+        ],
+        "preferred": [
+          0,
+          1,
+          1
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "DIRECT_D1_ONCE"
+      },
+      {
+        "purpose": "assessment_priority_development",
+        "required": [
+          1,
+          1,
+          1
+        ],
+        "preferred": [
+          0,
+          1,
+          1
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "ASSESSMENT_A1_SINGLE_CLUSTER"
+      },
+      {
+        "purpose": "capacity_development",
+        "required": [
+          1,
+          1,
+          1
+        ],
+        "preferred": [
+          0,
+          1,
+          1
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "CAPACITY_C1_ONCE"
+      },
+      {
+        "purpose": "recovery_support",
+        "required": [
+          1,
+          1,
+          1
+        ],
+        "preferred": [
+          0,
+          1,
+          1
+        ],
+        "optional": [
+          0,
+          1,
+          1
+        ],
+        "sourceRuleId": "RECOVERY_EXPLICIT_ONLY"
+      }
+    ],
+    "supportedPurposes": [
+      "movement_development",
+      "muscle_development",
+      "direct_action_development",
+      "assessment_priority_development",
+      "capacity_development",
+      "recovery_support"
+    ],
+    "unsupportedScopes": [
+      "general_fitness_movement",
+      "posture_movement_quality_frequency",
+      "systemic_conditioning",
+      "external_sport_load",
+      "standalone_recovery_session_semantics",
+      "phase_specific_weekly_overrides",
+      "direct_secondary_numeric_dose_equivalence",
+      "response_led_h2_distribution",
+      "universal_recovery_spacing",
+      "deload",
+      "completed_exposure",
+      "adaptation"
+    ],
+    "spacingPolicy": "SPACING_R0_PRESCRIPTION_PENDING",
+    "h1Policy": "MUSCLE_H1_SINGLE_FLEXIBLE",
+    "h2Disposition": "DEFERRED_PENDING_PRESCRIPTION_AND_COMPLETED_RESPONSE_EVIDENCE",
+    "automaticSelection": false,
+    "productionActivation": false,
+    "provenance": {
+      "source": "policy",
+      "sourceRef": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_CAUSAL_LEDGER_POLICY@1.0.0"
+    }
+  },
+  "contract": {
+    "contractId": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_DESIGN_CONTRACT",
+    "contractVersion": "1.0.0"
+  },
+  "threeLedgerContract": {
+    "allocation": {
+      "owner": "Allocation Ledger",
+      "doseCredit": 0
+    },
+    "plannedPrescription": {
+      "owner": "Planned Prescription Ledger",
+      "establishesCompletion": false
+    },
+    "completedResponse": {
+      "owner": "Performance",
+      "consumed": false
+    }
+  },
+  "ontologyRows": [
+    [
+      "WeekPlanningHorizon",
+      "DESIGN_COMPATIBILITY_ONLY",
+      "Product Horizon adapter remains future production work"
+    ],
+    [
+      "WeeklyIntent",
+      "ALLOCATION_OWNER",
+      "Weekly Intent Planner owns weekly responsibility"
+    ],
+    [
+      "WeeklyDevelopmentObjective",
+      "ALLOCATION_OWNER",
+      "Objective identity and priority precede Prescription"
+    ],
+    [
+      "WeeklyFrequencyIntent",
+      "ALLOCATION_OWNER",
+      "Allocation frequency remains distinct from prescribed realization"
+    ],
+    [
+      "WeekAllocationPlan",
+      "ALLOCATION_OWNER",
+      "Allocates responsibility without dose credit"
+    ],
+    [
+      "SessionAllocationReservation",
+      "ALLOCATION_OWNER",
+      "Owns one planned opportunity"
+    ],
+    [
+      "SessionAllocationDirective",
+      "DESIGN_COMPATIBILITY_ONLY",
+      "Explicit bridge into production Session Intent Planner"
+    ],
+    [
+      "AllocationLedgerEntry",
+      "ALLOCATION_OWNER",
+      "Binding doseCredit=0"
+    ],
+    [
+      "PlannedPrescriptionLedgerEntry",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Superseded by the richer source-event ledger design"
+    ],
+    [
+      "CompletedResponseLedgerEntry",
+      "COMPLETED_PERFORMANCE_OWNER",
+      "Explicitly outside this validator"
+    ],
+    [
+      "Production Prescription compilation",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Production upstream authority"
+    ],
+    [
+      "Production Exercise Prescription Plan",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Owns final dose blocks and Prescription revision"
+    ],
+    [
+      "SourceExposureEventIdentity",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Canonical one-event ownership key"
+    ],
+    [
+      "Prescription revision ledger",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Exactly one final revision is required"
+    ],
+    [
+      "Prescription dose blocks",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Atomic ordered block truth"
+    ],
+    [
+      "Block purposes",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Preparation, development, technique, recovery, unknown remain separate"
+    ],
+    [
+      "Contribution classifications",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Controls admissible planned-credit lanes"
+    ],
+    [
+      "ExecutionStandard",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Prescribed execution truth, not completion"
+    ],
+    [
+      "Final Sequence plan",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Owns final assignment order and session duration interval"
+    ],
+    [
+      "Sequence plan/revision identity",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Final immutable sequence truth"
+    ],
+    [
+      "Transition facts",
+      "PLANNED_PRESCRIPTION_OWNER",
+      "Consecutive transition truth only"
+    ],
+    [
+      "Exercise movement roles",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Validates explicit objective mapping"
+    ],
+    [
+      "Exercise action functions",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Validates direct action ownership"
+    ],
+    [
+      "Muscle contributions",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Relationship-preserving views without coefficients"
+    ],
+    [
+      "Stress annotations",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Planned potential only"
+    ],
+    [
+      "Loading profiles",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Categorical burden evidence, not one score"
+    ],
+    [
+      "SessionNeed Planner provenance",
+      "MISSING_OBJECTIVE_TO_EVENT_LINK",
+      "Design fixtures require an explicit production Week adapter"
+    ],
+    [
+      "Composer need satisfaction",
+      "CORRECT_SINGLE_PURPOSE_CONCEPT",
+      "Assignment-to-need bridge is production authority"
+    ],
+    [
+      "Performance contracts",
+      "COMPLETED_PERFORMANCE_OWNER",
+      "Not consumed"
+    ],
+    [
+      "CAGT Gate 13",
+      "DESIGN_COMPATIBILITY_ONLY",
+      "New design evidence authority; not production"
+    ],
+    [
+      "CAGT Gate 14",
+      "OUT_OF_SCOPE",
+      "Complete prescribed-program comparison remains unimplemented"
+    ],
+    [
+      "CAGT Gates 15-16",
+      "LONGITUDINAL_OWNER",
+      "Phase continuity and adaptation remain later owners"
+    ]
+  ],
+  "ontologyAnswers": [
+    [
+      1,
+      "YES_WITH_DESIGN_ADAPTER",
+      "Objective IDs enter SessionNeed planner provenance explicitly"
+    ],
+    [
+      2,
+      "YES",
+      "Composer satisfiedNeedIds bind needs to assignments"
+    ],
+    [
+      3,
+      "YES",
+      "Every selected assignment owns exactly one source event"
+    ],
+    [
+      4,
+      "YES",
+      "Every event binds one final Prescription revision"
+    ],
+    [
+      5,
+      "YES",
+      "Every event binds one final Sequence revision and reservation opportunity"
+    ],
+    [
+      6,
+      "YES",
+      "One event may appear in several objective traces without duplication"
+    ],
+    [
+      7,
+      "YES",
+      "Frequency counts unique qualifying reservations, not events"
+    ],
+    [
+      8,
+      "YES",
+      "Canonical contribution classifications separate preparatory and developmental blocks"
+    ],
+    [
+      9,
+      "YES",
+      "Technique and assessment lanes remain non-developmental"
+    ],
+    [
+      10,
+      "YES",
+      "Recovery observation remains planned support, not adaptation"
+    ],
+    [
+      11,
+      "YES",
+      "Primary, key-secondary, incidental, contextual, and unknown remain distinct"
+    ],
+    [
+      12,
+      "YES",
+      "Seven noncommensurable dose lanes remain separate"
+    ],
+    [
+      13,
+      "YES",
+      "Structured stress traces avoid burden scores"
+    ],
+    [
+      14,
+      "YES",
+      "Elapsed time is known only from explicit timestamps"
+    ],
+    [
+      15,
+      "YES",
+      "Unknown duration remains representable"
+    ],
+    [
+      16,
+      "YES",
+      "Definitely-over-budget and duration-unknown are distinct states"
+    ],
+    [
+      17,
+      "YES",
+      "Final Sequence revisions remain immutable references"
+    ],
+    [
+      18,
+      "YES",
+      "Completed performance is absent from input and output"
+    ],
+    [
+      19,
+      "NO",
+      "No Longitudinal decision enters the validator"
+    ],
+    [
+      20,
+      "YES_WITH_FUTURE_ADAPTER",
+      "Production kernel must consume production Week contracts or a validated adapter"
+    ]
+  ],
+  "inputAuthority": [
+    {
+      "field": "validationContract",
+      "authority": "COMPATIBILITY_INPUT",
+      "owner": "Post-Prescription Week Validation",
+      "reasonCode": "DESIGN_CONTRACT_ONLY"
+    },
+    {
+      "field": "weeklyIntent",
+      "authority": "DESIGN_UPSTREAM_AUTHORITY",
+      "owner": "Weekly Intent Planner",
+      "reasonCode": "PRODUCTION_WEEK_ADAPTER_REQUIRED"
+    },
+    {
+      "field": "weekAllocationPlan",
+      "authority": "DESIGN_UPSTREAM_AUTHORITY",
+      "owner": "Week Allocation Composer",
+      "reasonCode": "PRODUCTION_WEEK_ADAPTER_REQUIRED"
+    },
+    {
+      "field": "orderedReservations",
+      "authority": "DESIGN_UPSTREAM_AUTHORITY",
+      "owner": "Week Allocation Composer",
+      "reasonCode": "EXPLICIT_RESERVATION_ORDER"
+    },
+    {
+      "field": "planningHorizon",
+      "authority": "DESIGN_UPSTREAM_AUTHORITY",
+      "owner": "Product Horizon Adapter design",
+      "reasonCode": "PRODUCT_ADAPTER_NOT_WIRED"
+    },
+    {
+      "field": "sessionIntent",
+      "authority": "PRODUCTION_UPSTREAM_AUTHORITY",
+      "owner": "Session Intent Planner",
+      "reasonCode": "PRODUCTION_CONTRACT"
+    },
+    {
+      "field": "sessionSkeleton",
+      "authority": "PRODUCTION_UPSTREAM_AUTHORITY",
+      "owner": "Session Composer",
+      "reasonCode": "PRODUCTION_CONTRACT"
+    },
+    {
+      "field": "prescriptionCompilation",
+      "authority": "PRODUCTION_UPSTREAM_AUTHORITY",
+      "owner": "Prescription Compiler",
+      "reasonCode": "PRODUCTION_KERNEL_AUTHORITY"
+    },
+    {
+      "field": "sequencingResult",
+      "authority": "PRODUCTION_UPSTREAM_AUTHORITY",
+      "owner": "Final Session Sequencing",
+      "reasonCode": "PRODUCTION_KERNEL_AUTHORITY"
+    },
+    {
+      "field": "exerciseRegistry",
+      "authority": "PRODUCTION_UPSTREAM_AUTHORITY",
+      "owner": "Exercise domain",
+      "reasonCode": "CANONICAL_REGISTRY"
+    },
+    {
+      "field": "completedPerformance",
+      "authority": "FUTURE_PRODUCTION_ADAPTER_REQUIRED",
+      "owner": "Performance",
+      "reasonCode": "OUTSIDE_VALIDATION_INPUT"
+    }
+  ],
+  "controlledScenarioCount": 60,
+  "controlledScenarios": [
+    "strength_minimum_met",
+    "strength_target_met",
+    "strength_target_missed_minimum_met",
+    "strength_minimum_missing",
+    "strength_above_soft_maximum",
+    "h1_met_once",
+    "h1_absent",
+    "h1_primary",
+    "h1_key_secondary_permitted",
+    "key_secondary_direct_rejected",
+    "direct_d1_met",
+    "direct_d1_duplicated",
+    "assessment_a1_technique",
+    "assessment_duplicated",
+    "recurring_preparation_without_a1_duplication",
+    "capacity_c1_carry",
+    "capacity_c1_stationary_march",
+    "carry_not_conditioning",
+    "recovery_support_explicit",
+    "no_recovery_objective",
+    "preparatory_plus_developmental",
+    "backoff_developmental",
+    "technique_quality",
+    "recovery_block",
+    "unknown_block",
+    "shared_event_two_objectives",
+    "several_events_one_objective_one_session",
+    "one_objective_two_sessions",
+    "duplicate_source_event",
+    "event_per_muscle",
+    "event_per_block",
+    "repeated_block_credit",
+    "missing_sequence_revision",
+    "stale_prescription_revision",
+    "definitely_over_budget",
+    "possibly_over_budget",
+    "duration_unknown",
+    "explicit_timestamps",
+    "no_timestamps",
+    "consecutive_sessions",
+    "separated_sessions",
+    "stress_concentration",
+    "grip_concentration",
+    "axial_concentration",
+    "no_concentration",
+    "same_framework_different_realization",
+    "same_objective_different_prescription_convergence",
+    "irrelevant_pain",
+    "blocked_safety",
+    "missing_session",
+    "incomplete_prescription",
+    "search_inconclusive",
+    "unsupported_systemic_conditioning",
+    "unsupported_external_load",
+    "unsupported_phase_override",
+    "h1_h2_equal_total",
+    "h2_additive_duplication",
+    "mixed_dose_modes_not_summed",
+    "planned_not_completed",
+    "equivalent_users_same_week"
+  ],
+  "fixedShellCohort": [
+    {
+      "userId": "post-prescription-fixed-shell-user-01",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "strength"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-02",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "hypertrophy"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-03",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "direct_priority"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-04",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "assessment_priority"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-05",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "capacity"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-06",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "shoulder_requirement"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-07",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "low_back_requirement"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-08",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "knee_requirement"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-09",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "irrelevant_pain"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-10",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "productive_continuity"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-11",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "adverse_response"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-12",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "prior_load_retained"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-13",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "condensed_session"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-14",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "definitely_over_budget"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-15",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "mixed_equipment"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-16",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "blocked_session"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-17",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "missing_prescription"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-18",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "duplicate_source_event"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-19",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "direct_secondary_miscredit"
+    },
+    {
+      "userId": "post-prescription-fixed-shell-user-20",
+      "experience": "intermediate",
+      "confirmedOpportunityCount": 4,
+      "phaseId": "phase_2",
+      "policyRef": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE@1.0.0",
+      "evaluationTime": "2026-08-14T01:00:00-04:00",
+      "changedFact": "identical_meaningful_facts"
+    }
+  ],
+  "holdout": {
+    "manifestId": "POST_PRESCRIPTION_WEEK_VALIDATION_V1_LOCKED_HOLDOUT",
+    "manifestFingerprint": "f2116ec34146fa25f1c3fa23906becc5b3d35cac8160f38124273d79ccbdf402",
+    "expectedManifestFingerprint": "f2116ec34146fa25f1c3fa23906becc5b3d35cac8160f38124273d79ccbdf402",
+    "scenarioCount": 160,
+    "genuineCompletePrescribedWeekCount": 128,
+    "failStopCount": 25,
+    "hardZeroFailureCount": 0
+  },
+  "aggregateIntegrity": {
+    "expectedEventCount": 860,
+    "uniqueEventCount": 860,
+    "duplicateEventCount": 0,
+    "missingEventCount": 0,
+    "orphanEventCount": 0,
+    "stalePrescriptionRevisionCount": 0,
+    "staleSequenceRevisionCount": 0
+  },
+  "warmupActivation": {
+    "weeklyPreparationEventCount": 15,
+    "weeklyActivationEventCount": 15,
+    "dependencyDrivenRecurrenceCount": 28,
+    "assessmentObjectiveRecurrenceCount": 2,
+    "genericWarmupRecurrenceCount": 0,
+    "genericActivationRecurrenceCount": 0,
+    "developmentalMiscreditCount": 0,
+    "sourceEventDuplicationCount": 0
+  },
+  "h1h2": {
+    "sourcePlanId": "prescription:1e2ba521cfa6175d",
+    "sourceBlockId": "prescription-block:a53ec64f20b3a223",
+    "h1TotalDevelopmentalSetRange": [
+      2,
+      2
+    ],
+    "h2DistributedSessionRanges": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "h2DistributedTotalDevelopmentalSetRange": [
+      2,
+      2
+    ],
+    "h2AdditiveMutationTotalDevelopmentalSetRange": [
+      4,
+      4
+    ],
+    "equalTotalDistribution": true,
+    "additiveMutationRejected": true,
+    "disposition": "DISTRIBUTION_FEASIBILITY_EVIDENCE_ONLY_RESPONSE_DEPENDENT",
+    "completedResponseClaimed": false,
+    "hypertrophySuperiorityClaimed": false
+  },
+  "mutation": {
+    "mutationCount": 39,
+    "semanticStructureChangeCount": 39,
+    "rejectedCount": 39,
+    "acceptedDownstreamRescueCount": 0,
+    "results": [
+      {
+        "mutation": "allocation_count_used_as_dose",
+        "changedSemanticField": "allocationDoseCredit",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:allocationDoseCredit"
+        ]
+      },
+      {
+        "mutation": "prescribed_dose_called_completed",
+        "changedSemanticField": "completedClaimCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:completedClaimCount"
+        ]
+      },
+      {
+        "mutation": "event_per_objective",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "event_per_muscle",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "event_per_action",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "event_per_block",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "event_per_set",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "duplicate_event_across_sessions",
+        "changedSemanticField": "duplicateCanonicalEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:duplicateCanonicalEventCount"
+        ]
+      },
+      {
+        "mutation": "missing_event",
+        "changedSemanticField": "missingEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:missingEventCount"
+        ]
+      },
+      {
+        "mutation": "orphan_event",
+        "changedSemanticField": "orphanEventCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:orphanEventCount"
+        ]
+      },
+      {
+        "mutation": "stale_prescription_revision",
+        "changedSemanticField": "stalePrescriptionRevisionCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:stalePrescriptionRevisionCount"
+        ]
+      },
+      {
+        "mutation": "stale_sequence_revision",
+        "changedSemanticField": "staleSequenceRevisionCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:staleSequenceRevisionCount"
+        ]
+      },
+      {
+        "mutation": "wrong_reservation_mapping",
+        "changedSemanticField": "wrongReservationMappingCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:wrongReservationMappingCount"
+        ]
+      },
+      {
+        "mutation": "wrong_objective_mapping",
+        "changedSemanticField": "wrongObjectiveMappingCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:wrongObjectiveMappingCount"
+        ]
+      },
+      {
+        "mutation": "exercise_identity_inferred_objective",
+        "changedSemanticField": "inferredObjectiveCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:inferredObjectiveCount"
+        ]
+      },
+      {
+        "mutation": "preparatory_developmental_credit",
+        "changedSemanticField": "preparatoryDevelopmentalCreditCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:preparatoryDevelopmentalCreditCount"
+        ]
+      },
+      {
+        "mutation": "technique_hypertrophy_credit",
+        "changedSemanticField": "techniqueDevelopmentalCreditCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:techniqueDevelopmentalCreditCount"
+        ]
+      },
+      {
+        "mutation": "recovery_strength_credit",
+        "changedSemanticField": "recoveryDevelopmentalCreditCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:recoveryDevelopmentalCreditCount"
+        ]
+      },
+      {
+        "mutation": "key_secondary_direct_credit",
+        "changedSemanticField": "keySecondaryDirectCreditCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:keySecondaryDirectCreditCount"
+        ]
+      },
+      {
+        "mutation": "incidental_meaningful_credit",
+        "changedSemanticField": "incidentalMeaningfulCreditCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:incidentalMeaningfulCreditCount"
+        ]
+      },
+      {
+        "mutation": "mixed_dose_unit_sum",
+        "changedSemanticField": "mixedUnitAggregateCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:mixedUnitAggregateCount"
+        ]
+      },
+      {
+        "mutation": "distance_to_time_without_pace",
+        "changedSemanticField": "inventedConversionCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:inventedConversionCount"
+        ]
+      },
+      {
+        "mutation": "steps_to_time_without_cadence",
+        "changedSemanticField": "inventedConversionCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:inventedConversionCount"
+        ]
+      },
+      {
+        "mutation": "breaths_to_time_without_cadence",
+        "changedSemanticField": "inventedConversionCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:inventedConversionCount"
+        ]
+      },
+      {
+        "mutation": "unknown_duration_called_fit",
+        "changedSemanticField": "unknownDurationFitCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:unknownDurationFitCount"
+        ]
+      },
+      {
+        "mutation": "over_budget_counted_executable",
+        "changedSemanticField": "overBudgetExecutableCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:overBudgetExecutableCount"
+        ]
+      },
+      {
+        "mutation": "opportunity_order_as_elapsed_time",
+        "changedSemanticField": "opportunityOrderElapsedTimeCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:opportunityOrderElapsedTimeCount"
+        ]
+      },
+      {
+        "mutation": "h1_duplicated_across_h2",
+        "changedSemanticField": "h1AdditiveDuplicationCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:h1AdditiveDuplicationCount"
+        ]
+      },
+      {
+        "mutation": "assessment_cluster_multiplied",
+        "changedSemanticField": "assessmentMultiplicationCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:assessmentMultiplicationCount"
+        ]
+      },
+      {
+        "mutation": "preparation_called_assessment",
+        "changedSemanticField": "preparationAssessmentConflationCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:preparationAssessmentConflationCount"
+        ]
+      },
+      {
+        "mutation": "stress_potential_called_injury",
+        "changedSemanticField": "stressPotentialActualInjuryClaimCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:stressPotentialActualInjuryClaimCount"
+        ]
+      },
+      {
+        "mutation": "planned_burden_called_recovery",
+        "changedSemanticField": "plannedBurdenObservedRecoveryCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:plannedBurdenObservedRecoveryCount"
+        ]
+      },
+      {
+        "mutation": "unsupported_scope_defaulted",
+        "changedSemanticField": "unsupportedScopeDefaultCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:unsupportedScopeDefaultCount"
+        ]
+      },
+      {
+        "mutation": "validation_created_exercise",
+        "changedSemanticField": "validationCreatedExerciseCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:validationCreatedExerciseCount"
+        ]
+      },
+      {
+        "mutation": "validation_removed_exercise",
+        "changedSemanticField": "validationRemovedExerciseCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:validationRemovedExerciseCount"
+        ]
+      },
+      {
+        "mutation": "validation_reallocated_week",
+        "changedSemanticField": "validationReallocationCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:validationReallocationCount"
+        ]
+      },
+      {
+        "mutation": "completed_response_inference",
+        "changedSemanticField": "completedResponseInferenceCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:completedResponseInferenceCount"
+        ]
+      },
+      {
+        "mutation": "adaptation_inference",
+        "changedSemanticField": "adaptationInferenceCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:adaptationInferenceCount"
+        ]
+      },
+      {
+        "mutation": "downstream_rescue",
+        "changedSemanticField": "downstreamRescueAcceptedCount",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "violations": [
+          "POST_PRESCRIPTION_WEEK_SEMANTIC_VIOLATION:downstreamRescueAcceptedCount"
+        ]
+      }
+    ]
+  },
+  "metamorphic": {
+    "invariantCount": 16,
+    "materialResponseCount": 12,
+    "invariantFailures": 0,
+    "materialResponseFailures": 0
+  },
+  "stress": {
+    "weekEventObjectiveComparisonCount": 10000,
+    "completePrescribedWeekValidationCount": 1000,
+    "sourceEventLedgerIntegrityRunCount": 1000,
+    "objectiveRealizationComparisonCount": 1000,
+    "h1H2DistributionComparisonCount": 1000,
+    "spacingValidationCount": 1000,
+    "deterministicRepeatCount": 1000,
+    "validationFailures": 0,
+    "ledgerFailures": 0,
+    "objectiveFailures": 0,
+    "spacingFailures": 0,
+    "deterministicMismatches": 0,
+    "h1H2AdditiveMutationRejected": true,
+    "productionRandomnessUsed": false,
+    "hiddenClockUsed": false,
+    "result": "DETERMINISTIC_POST_PRESCRIPTION_WEEK_STRESS_PASSED"
+  },
+  "causalOutcomes": {
+    "underAdaptationCount": 0,
+    "overAdaptationCount": 0,
+    "wrongLayerAcceptedEffectCount": 0,
+    "downstreamRescueAttemptCount": 1,
+    "acceptedDownstreamRescueCount": 0,
+    "sameFrameworkConvergence": "PASSED_WITH_RIGHTFUL_RECEIVER_ONLY"
+  },
+  "gate13": {
+    "authority": "POST_PRESCRIPTION_WEEK_VALIDATION_DESIGN_EVIDENCE",
+    "subgateOrder": [
+      "13.0_week_input_truth",
+      "13.1_session_completeness",
+      "13.2_source_event_integrity",
+      "13.3_block_contribution_truth",
+      "13.4_weekly_objective_mapping",
+      "13.5_prescribed_frequency_distribution",
+      "13.6_dose_lane_truth",
+      "13.7_stress_concentration_duration",
+      "13.8_spacing_truth",
+      "13.9_complete_prescribed_week_argument"
+    ],
+    "hardZeroFailureCount": 0
+  },
+  "downstreamGates": {
+    "gate14": "NOT_IMPLEMENTED",
+    "gate15": "NOT_IMPLEMENTED",
+    "gate16": "FOUNDATION_ONLY"
+  },
+  "realUserVariableOwners": [
+    [
+      "partial Week",
+      "Post-Prescription Week Validation"
+    ],
+    [
+      "cancelled future session",
+      "Week Allocation Composer"
+    ],
+    [
+      "completed earlier session",
+      "Performance"
+    ],
+    [
+      "revised Prescription",
+      "Prescription"
+    ],
+    [
+      "revised Sequence",
+      "Final Sequencing"
+    ],
+    [
+      "current equipment change",
+      "Product Adapter"
+    ],
+    [
+      "over-budget session",
+      "Post-Prescription Week Validation"
+    ],
+    [
+      "unknown session duration",
+      "Final Sequencing"
+    ],
+    [
+      "travel",
+      "Product Adapter"
+    ],
+    [
+      "unilateral Prescription",
+      "Prescription"
+    ],
+    [
+      "direct priority",
+      "Weekly Intent Planner"
+    ],
+    [
+      "several goals",
+      "Weekly Intent Planner"
+    ],
+    [
+      "assessment objective",
+      "Weekly Intent Planner"
+    ],
+    [
+      "session-specific preparation",
+      "Session Composer"
+    ],
+    [
+      "external sport",
+      "Future Typed Contract"
+    ],
+    [
+      "manual work",
+      "Future Typed Contract"
+    ],
+    [
+      "cardio",
+      "Future Typed Contract"
+    ],
+    [
+      "sleep/readiness",
+      "TrainingSafety"
+    ],
+    [
+      "illness",
+      "TrainingSafety"
+    ],
+    [
+      "accessibility",
+      "Product Adapter"
+    ],
+    [
+      "missed session",
+      "Week Allocation Composer"
+    ],
+    [
+      "substitution",
+      "Performance"
+    ],
+    [
+      "actual performance",
+      "Performance"
+    ],
+    [
+      "adherence",
+      "Performance"
+    ],
+    [
+      "symptom response",
+      "Performance"
+    ],
+    [
+      "recovery response",
+      "Performance"
+    ],
+    [
+      "phase change",
+      "Longitudinal Adaptation"
+    ],
+    [
+      "deload",
+      "Longitudinal Adaptation"
+    ],
+    [
+      "progression",
+      "Longitudinal Adaptation"
+    ],
+    [
+      "return after absence",
+      "Longitudinal Adaptation"
+    ]
+  ],
+  "frozenFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "weekPolicyV1": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db",
+    "prescriptionTiming": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "fullPrescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "prescriptionPolicyV1": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8",
+    "productionPrescriptionCompiler": "91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4",
+    "cagtCore": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+    "finalSequencingV1Design": "71fcb88e231e2953d508e0a1d6389fed98ca0f6af5a67592cdb56bb3ce563f42",
+    "productionFinalSequencing": "30a483fe5ef80c27da776ea71f7912a412420ff00d86e2e9525f97a4473c0686",
+    "productionFinalSequencingGolden": "3b2266ffa62f7ce9908d79a29e36f01e77ab03e592d0b3b31247653f98fea9e1"
+  },
+  "fingerprints": {
+    "ontologyAudit": "fe6514bd42b0bfe678fec180b7005a5808428b799d9b6786d079ec8e02e6a18c",
+    "ownerBoundaries": "156b28199822929c621e404209854169523a2d3fd5782eee3e68cdf9370347fd",
+    "validationContract": "c957757323eee6ad372d9d1a82fb11bf9a76212d97815e05701500db63d9ea29",
+    "inputContract": "6ec0281df7fe069619dec917ca848cf5097dda210584dde13bd50e796de629c7",
+    "sourceExposureLedger": "ec9ff3bb3d8abb22bc928d943e1aabd951194a9a5b0233c62ed25f022a66af29",
+    "objectiveToEventTrace": "44aea648c2e1d429515fee55885221214a2f2b908deaca8c5bc5a7408ada91c3",
+    "sessionAdmissibility": "fdf1e02c00eeae68c2e5e2dc070f6a37d9e011b22e758d4094ad878a38395a16",
+    "blockContributionModel": "87fa7083b3e5ec7214d62ffe03897904f2f545ee35dec78fd91a3868c5fe107e",
+    "doseLaneModel": "ca4e7d3a4eeea9845defb81fa619f0146bd9180542639363a7241b6acd55b508",
+    "muscleRelationshipViews": "61f904454426fe2761b1a658164b9be7c210dfdd2403741222cb5ab235c4e21f",
+    "movementActionCapacityViews": "f663804ebfeab7bceabb63179605964bc2aa9925f55b41e7c893bae4195b8be1",
+    "assessmentPreparationLanes": "72a36e4beb39376ea98445f152b3a081a1fd5bf9f98eb698c8bf214f3a44e495",
+    "stressExposure": "dd4ea7e3f55bf4f5ef057006a1438b6340b2e5ce586a9cac609fde81d2d98172",
+    "burdenConcentration": "a3ed1b489a7755555d5bf019ad57f64f9ddb538de7fc7352a5a41c1dbdb0c9df",
+    "durationView": "7bd0174a29fa06c283510fbd2bc286c1ed9aac12ebd4965f33d3f351f6a3cab6",
+    "spacingModel": "98fdd3c85d2d588b3f8aa716e4eb8f496bb8341138e5fbf63c40e336ef4f10fe",
+    "h1H2Sublab": "06404c9dd2b43894f4feef11b080932d1049693dabe0462a1e67b839f7f33aea",
+    "completeWeekArgument": "9a6de43615fe823ea011ccc92ce175a2bfdcf35950834b77e08bffa51ea275dd",
+    "gate13Order": "777d9b952a5347e5ca2fbd8e3c2af22d7d551c9fc4e7d27f5f1305e5ec337397",
+    "cagtCausalOutcomes": "2a8639f3066042468630dfb2e313b5e26cfa915024372e1d803dd7f101a78dba",
+    "holdoutManifest": "f2116ec34146fa25f1c3fa23906becc5b3d35cac8160f38124273d79ccbdf402",
+    "holdoutResults": "d871f3098315a5dc919c3f4c40ccdf05cb68079c6be327181b5f49a0d89e855e",
+    "mutationResults": "fbf1db690eab8fe16a623ebf7f1c478f035cdd69d3f10aeb03b3162e8579c514",
+    "metamorphicResults": "3e7ae2975dceb524155dea6b8f0fa98d80e6d43bbb6ce64aaf7b9c3aafeeae93",
+    "stressResults": "3ce7a73213d28ad9cb6e65c9e687d6aa56c1f9d553a15a4d02d764aad9bffe0e",
+    "activationGuards": "0c7c500742237da2cb927b1105fc8ccf9ae3b47cccdece6e51f7a38d588f07cc",
+    "implementationReadiness": "d8170dd03f7c877a7165acf7352fe2600274bc9f8ebc7e8c81862df2b6eef418",
+    "combinedPostPrescriptionWeekValidationDesign": "6beea85cca5cfb73343c1ae7b6705ba6a9be4a6b82c737d09945357f6563fb82"
+  }
+}

@@ -1,0 +1,556 @@
+{
+  "scenarioCount": 132,
+  "completePrescribedScenarioCount": 107,
+  "exactOptimalCount": 107,
+  "incompleteCount": 25,
+  "invalidCount": 0,
+  "frozenDesignHoldoutFingerprint": "40279657726f521d9d2789747109aac04a23727eaea22b6fa50ff4dee83b26ab",
+  "statusCounts": {
+    "sequenced_exact_optimal": 107,
+    "blocked_by_training_readiness": 0,
+    "incomplete_due_to_unresolved_prescription": 25,
+    "sequencing_policy_required": 0,
+    "sequencing_policy_unavailable": 0,
+    "sequencing_policy_conflict": 0,
+    "sequencing_search_policy_required": 0,
+    "sequencing_search_policy_unavailable": 0,
+    "search_inconclusive": 0,
+    "ordering_infeasible": 0,
+    "invalid_session_input": 0,
+    "invalid_session_handoff": 0,
+    "unsupported_sequencing_contract_version": 0,
+    "unsupported_prescription_compiler_contract_version": 0,
+    "transition_fact_conflict": 0,
+    "invalid_sequence_revision_context": 0
+  },
+  "results": [
+    {
+      "scenarioId": "owner-v1-holdout-001-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-002-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-003-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-004-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-005-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-006-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-007-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-008-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-009-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-010-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-011-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-012-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-013-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-014-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-015-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-016-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-017-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-018-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-019-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-020-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-021-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-022-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-023-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-024-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-025-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-026-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-027-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-028-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-029-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-030-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-031-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-032-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-033-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-034-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-035-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-036-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-037-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-038-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-039-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-040-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-041-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-042-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-043-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-044-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-045-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-046-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-047-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-048-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-049-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-050-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-051-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-052-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-053-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-054-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-055-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-056-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-057-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-058-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-059-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-060-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-061-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-062-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-063-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-064-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-065-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-066-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-067-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-068-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-069-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-070-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-071-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-072-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-073-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-074-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-075-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-076-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-077-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-078-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-079-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-080-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-081-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-082-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-083-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-084-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-085-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-086-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-087-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-088-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-089-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-090-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-091-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-092-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-093-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-094-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-095-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-096-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-097-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-098-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-099-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-100-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-101-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-102-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-103-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-104-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-105-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-106-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-107-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-108-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-109-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-110-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-111-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-112-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-113-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-114-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-115-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-116-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-117-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-118-timed_hold",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-119-optional_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-120-required_direct",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-121-upper_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-122-lower_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-123-hypertrophy",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-124-preparation_activation",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-125-distance_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-126-timed_carry",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-127-step_march",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-128-cooldown",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-129-secondary_strength",
+      "status": "sequenced_exact_optimal"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-130-timed_hold",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-131-optional_direct",
+      "status": "incomplete_due_to_unresolved_prescription"
+    },
+    {
+      "scenarioId": "owner-v1-holdout-132-required_direct",
+      "status": "incomplete_due_to_unresolved_prescription"
+    }
+  ]
+}

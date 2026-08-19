@@ -1,0 +1,20 @@
+{
+  "contract": {
+    "contractId": "EQUIPMENT_LOAD_REALIZATION_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "implementKinds": [
+    "dumbbell",
+    "barbell",
+    "smith_machine",
+    "selectorized_machine",
+    "plate_loaded_machine",
+    "cable",
+    "band",
+    "bodyweight",
+    "loaded_gait",
+    "other"
+  ],
+  "guessedLoads": 0,
+  "bandKilogramInferences": 0
+}

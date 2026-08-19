@@ -1,0 +1,5474 @@
+[
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:registry"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:focus"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:cues"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:setup"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:during"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:pattern"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:watchFor"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:provenance"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:fallback"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:realization"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-01-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:engine-conflict"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-01-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "ninety-ninety-breathing:runtime-boundary"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:registry"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:focus"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:cues"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:setup"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:during"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:pattern"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:watchFor"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:provenance"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:fallback"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:realization"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-02-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:engine-conflict"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-02-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "serratus-wall-slide:runtime-boundary"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dead-bug:registry"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dead-bug:focus"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dead-bug:cues"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dead-bug:setup"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dead-bug:during"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dead-bug:pattern"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dead-bug:watchFor"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dead-bug:provenance"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dead-bug:fallback"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dead-bug:realization"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-03-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dead-bug:engine-conflict"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-03-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dead-bug:runtime-boundary"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "push-up:registry"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "push-up:focus"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "push-up:cues"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "push-up:setup"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "push-up:during"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "push-up:pattern"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "push-up:watchFor"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "push-up:provenance"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "push-up:fallback"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "push-up:realization"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-04-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "push-up:engine-conflict"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-04-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "push-up:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:registry"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:focus"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:cues"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:setup"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:during"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:realization"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-05-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-05-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-bench-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:registry"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:focus"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:cues"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:setup"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:during"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:pattern"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:watchFor"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:provenance"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:fallback"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:realization"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-06-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:engine-conflict"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-06-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "machine-chest-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:registry"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:focus"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:cues"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:setup"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:during"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:pattern"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:watchFor"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:provenance"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:fallback"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:realization"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-07-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:engine-conflict"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-07-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "cable-chest-fly:runtime-boundary"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:registry"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:focus"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:cues"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:setup"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:during"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:pattern"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:watchFor"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:provenance"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:fallback"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:realization"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-08-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:engine-conflict"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-08-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "chest-supported-dumbbell-row:runtime-boundary"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:registry"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:focus"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:cues"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:setup"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:during"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:pattern"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:watchFor"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:provenance"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:fallback"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:realization"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-09-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:engine-conflict"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-09-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "one-arm-dumbbell-row:runtime-boundary"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "machine-row:registry"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "machine-row:focus"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "machine-row:cues"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "machine-row:setup"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "machine-row:during"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "machine-row:pattern"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "machine-row:watchFor"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "machine-row:provenance"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "machine-row:fallback"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "machine-row:realization"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-10-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "machine-row:engine-conflict"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-10-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "machine-row:runtime-boundary"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:registry"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:focus"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:cues"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:setup"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:during"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:pattern"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:watchFor"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:provenance"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:fallback"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:realization"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-11-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:engine-conflict"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-11-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "seated-cable-row:runtime-boundary"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "band-row:registry"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "band-row:focus"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "band-row:cues"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "band-row:setup"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "band-row:during"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "band-row:pattern"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "band-row:watchFor"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "band-row:provenance"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "band-row:fallback"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "band-row:realization"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-12-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "band-row:engine-conflict"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-12-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "band-row:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:registry"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:focus"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:cues"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:setup"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:during"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:realization"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-13-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-13-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-shoulder-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:registry"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:focus"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:cues"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:setup"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:during"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:pattern"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:watchFor"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:provenance"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:fallback"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:realization"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-14-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:engine-conflict"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-14-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "lat-pulldown:runtime-boundary"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:registry"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:focus"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:cues"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:setup"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:during"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:pattern"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:watchFor"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:provenance"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:fallback"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:realization"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-15-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:engine-conflict"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-15-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "band-lat-pulldown:runtime-boundary"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "goblet-squat:registry"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "goblet-squat:focus"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "goblet-squat:cues"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "goblet-squat:setup"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "goblet-squat:during"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "goblet-squat:pattern"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "goblet-squat:watchFor"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "goblet-squat:provenance"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "goblet-squat:fallback"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "goblet-squat:realization"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-16-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "goblet-squat:engine-conflict"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-16-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "goblet-squat:runtime-boundary"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "leg-press:registry"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "leg-press:focus"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "leg-press:cues"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "leg-press:setup"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "leg-press:during"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "leg-press:pattern"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "leg-press:watchFor"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "leg-press:provenance"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "leg-press:fallback"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "leg-press:realization"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-17-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "leg-press:engine-conflict"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-17-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "leg-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:registry"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:focus"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:cues"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:setup"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:during"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:pattern"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:watchFor"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:provenance"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:fallback"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:realization"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-18-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:engine-conflict"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-18-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "bodyweight-box-squat:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:registry"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:focus"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:cues"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:setup"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:during"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:realization"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-19-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-19-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-romanian-deadlift:runtime-boundary"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:registry"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:focus"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:cues"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:setup"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:during"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:pattern"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:watchFor"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:provenance"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:fallback"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:realization"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-20-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:engine-conflict"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-20-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "cable-pull-through:runtime-boundary"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "split-squat:registry"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "split-squat:focus"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "split-squat:cues"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "split-squat:setup"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "split-squat:during"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "split-squat:pattern"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "split-squat:watchFor"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "split-squat:provenance"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "split-squat:fallback"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "split-squat:realization"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-21-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "split-squat:engine-conflict"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-21-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "split-squat:runtime-boundary"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "step-up:registry"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "step-up:focus"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "step-up:cues"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "step-up:setup"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "step-up:during"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "step-up:pattern"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "step-up:watchFor"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "step-up:provenance"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "step-up:fallback"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "step-up:realization"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-22-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "step-up:engine-conflict"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-22-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "step-up:runtime-boundary"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:registry"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:focus"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:cues"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:setup"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:during"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:pattern"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:watchFor"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:provenance"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:fallback"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:realization"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-23-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:engine-conflict"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-23-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "lying-leg-curl:runtime-boundary"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "glute-bridge:registry"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "glute-bridge:focus"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "glute-bridge:cues"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "glute-bridge:setup"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "glute-bridge:during"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "glute-bridge:pattern"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "glute-bridge:watchFor"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "glute-bridge:provenance"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "glute-bridge:fallback"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "glute-bridge:realization"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-24-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "glute-bridge:engine-conflict"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-24-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "glute-bridge:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:registry"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:focus"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:cues"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:setup"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:during"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:realization"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-25-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-25-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-lateral-raise:runtime-boundary"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:registry"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:focus"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:cues"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:setup"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:during"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:pattern"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:watchFor"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:provenance"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:fallback"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:realization"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-26-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:engine-conflict"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-26-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "reverse-pec-deck:runtime-boundary"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "band-face-pull:registry"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "band-face-pull:focus"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "band-face-pull:cues"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "band-face-pull:setup"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "band-face-pull:during"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "band-face-pull:pattern"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "band-face-pull:watchFor"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "band-face-pull:provenance"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "band-face-pull:fallback"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "band-face-pull:realization"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-27-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "band-face-pull:engine-conflict"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-27-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "band-face-pull:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:registry"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:focus"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:cues"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:setup"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:during"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:realization"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-28-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-28-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-curl:runtime-boundary"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:registry"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:focus"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:cues"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:setup"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:during"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:pattern"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:watchFor"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:provenance"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:fallback"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:realization"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-29-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:engine-conflict"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-29-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "cable-triceps-pressdown:runtime-boundary"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:registry"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:focus"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:cues"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:setup"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:during"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:pattern"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:watchFor"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:provenance"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:fallback"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:realization"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-30-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:engine-conflict"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-30-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "standing-calf-raise:runtime-boundary"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "pallof-press:registry"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "pallof-press:focus"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "pallof-press:cues"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "pallof-press:setup"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "pallof-press:during"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "pallof-press:pattern"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "pallof-press:watchFor"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "pallof-press:provenance"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "pallof-press:fallback"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "pallof-press:realization"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-31-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "pallof-press:engine-conflict"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-31-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "pallof-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "forearm-plank:registry"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "forearm-plank:focus"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "forearm-plank:cues"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "forearm-plank:setup"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "forearm-plank:during"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "forearm-plank:pattern"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "forearm-plank:watchFor"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "forearm-plank:provenance"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "forearm-plank:fallback"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "forearm-plank:realization"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-32-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "forearm-plank:engine-conflict"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-32-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "forearm-plank:runtime-boundary"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:registry"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:focus"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:cues"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:setup"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:during"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:pattern"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:watchFor"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:provenance"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:fallback"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:realization"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-33-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:engine-conflict"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-33-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "forearm-side-plank:runtime-boundary"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:registry"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:focus"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:cues"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:setup"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:during"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:pattern"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:watchFor"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:provenance"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:fallback"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:realization"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-34-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:engine-conflict"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-34-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "machine-abdominal-crunch:runtime-boundary"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:registry"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:focus"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:cues"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:setup"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:during"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:pattern"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:watchFor"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:provenance"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:fallback"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:realization"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-35-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:engine-conflict"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-35-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "half-kneeling-high-to-low-cable-chop:runtime-boundary"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "farmer-carry:registry"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "farmer-carry:focus"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "farmer-carry:cues"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "farmer-carry:setup"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "farmer-carry:during"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "farmer-carry:pattern"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "farmer-carry:watchFor"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "farmer-carry:provenance"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "farmer-carry:fallback"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "farmer-carry:realization"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-36-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "farmer-carry:engine-conflict"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-36-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "farmer-carry:runtime-boundary"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:registry"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:focus"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:cues"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:setup"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:during"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:pattern"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:watchFor"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:provenance"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:fallback"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:realization"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-37-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:engine-conflict"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-37-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "suitcase-carry:runtime-boundary"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:registry"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:focus"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:cues"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:setup"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:during"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:pattern"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:watchFor"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:provenance"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:fallback"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:realization"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-38-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:engine-conflict"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-38-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "wall-supported-suitcase-march:runtime-boundary"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:registry"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:focus"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:cues"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:setup"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:during"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:pattern"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:watchFor"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:provenance"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:fallback"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:realization"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-39-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:engine-conflict"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-39-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-adduction:runtime-boundary"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:registry"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:focus"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:cues"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:setup"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:during"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:pattern"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:watchFor"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:provenance"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:fallback"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:realization"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-40-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:engine-conflict"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-40-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "loop-band-lateral-walk:runtime-boundary"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:registry"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:focus"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:cues"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:setup"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:during"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:pattern"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:watchFor"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:provenance"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:fallback"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:realization"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-41-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:engine-conflict"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-41-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "side-lying-dumbbell-external-rotation:runtime-boundary"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:registry"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:focus"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:cues"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:setup"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:during"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:pattern"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:watchFor"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:provenance"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:fallback"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:realization"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-42-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:engine-conflict"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-42-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "supine-hamstring-walkout:runtime-boundary"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:registry"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:focus"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:cues"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:setup"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:during"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:pattern"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:watchFor"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:provenance"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:fallback"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:realization"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-43-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:engine-conflict"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-43-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "wall-ankle-dorsiflexion-rock:runtime-boundary"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:registry"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:focus"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:cues"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:setup"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:during"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:pattern"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:watchFor"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:provenance"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:fallback"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:realization"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-44-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:engine-conflict"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-44-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "bodyweight-hip-hinge-rehearsal:runtime-boundary"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:registry"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:focus"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:cues"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:setup"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:during"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:pattern"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:watchFor"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:provenance"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:fallback"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:realization"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-45-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:engine-conflict"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-45-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "single-leg-balance-rehearsal:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:registry"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:focus"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:cues"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:setup"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:during"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:realization"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-46-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-floor-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-46-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-floor-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:registry"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:focus"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:cues"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:setup"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:during"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:pattern"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:watchFor"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:provenance"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:fallback"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:realization"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-47-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:engine-conflict"
+  },
+  {
+    "exerciseId": "dumbbell-triceps-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-47-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "dumbbell-triceps-extension:runtime-boundary"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:registry"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:focus"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:cues"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:setup"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:during"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:pattern"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:watchFor"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:provenance"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:fallback"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:realization"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-48-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:engine-conflict"
+  },
+  {
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-48-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "bent-over-dumbbell-reverse-fly:runtime-boundary"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:registry"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:focus"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:cues"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:setup"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:during"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:pattern"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:watchFor"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:provenance"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:fallback"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:realization"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-49-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:engine-conflict"
+  },
+  {
+    "exerciseId": "side-lying-hip-abduction",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-49-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "side-lying-hip-abduction:runtime-boundary"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "bird-dog:registry"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "bird-dog:focus"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "bird-dog:cues"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "bird-dog:setup"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "bird-dog:during"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "bird-dog:pattern"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "bird-dog:watchFor"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "bird-dog:provenance"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "bird-dog:fallback"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "bird-dog:realization"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-50-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "bird-dog:engine-conflict"
+  },
+  {
+    "exerciseId": "bird-dog",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-50-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "bird-dog:runtime-boundary"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:registry"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:focus"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:cues"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:setup"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:during"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:pattern"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:watchFor"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:provenance"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:fallback"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:realization"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-51-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:engine-conflict"
+  },
+  {
+    "exerciseId": "band-biceps-curl",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-51-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "band-biceps-curl:runtime-boundary"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:registry"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:focus"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:cues"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:setup"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:during"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:pattern"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:watchFor"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:provenance"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:fallback"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:realization"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-52-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:engine-conflict"
+  },
+  {
+    "exerciseId": "machine-shoulder-press",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-52-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "machine-shoulder-press:runtime-boundary"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-01",
+    "lane": "registry",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:registry"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-02",
+    "lane": "focus",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:focus"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-03",
+    "lane": "cues",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:cues"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-04",
+    "lane": "setup",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:setup"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-05",
+    "lane": "during",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:during"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-06",
+    "lane": "pattern",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:pattern"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-07",
+    "lane": "watchFor",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:watchFor"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-08",
+    "lane": "provenance",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:provenance"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-09",
+    "lane": "fallback",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:fallback"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-10",
+    "lane": "realization",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:realization"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "no_conflict",
+    "id": "pre-g2k-controlled-53-11",
+    "lane": "engine-conflict",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:engine-conflict"
+  },
+  {
+    "exerciseId": "machine-leg-extension",
+    "expected": "accepted_truth_preserved",
+    "id": "pre-g2k-controlled-53-12",
+    "lane": "runtime-boundary",
+    "result": "pass",
+    "semanticInput": "machine-leg-extension:runtime-boundary"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-01",
+    "lane": "missing-entry",
+    "result": "pass",
+    "semanticInput": "attack:missing-entry"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-02",
+    "lane": "duplicate-entry",
+    "result": "pass",
+    "semanticInput": "attack:duplicate-entry"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-03",
+    "lane": "extra-entry",
+    "result": "pass",
+    "semanticInput": "attack:extra-entry"
+  },
+  {
+    "exerciseId": "push-up",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-04",
+    "lane": "id-mismatch",
+    "result": "pass",
+    "semanticInput": "attack:id-mismatch"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-05",
+    "lane": "missing-category",
+    "result": "pass",
+    "semanticInput": "attack:missing-category"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-06",
+    "lane": "missing-provenance",
+    "result": "pass",
+    "semanticInput": "attack:missing-provenance"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-07",
+    "lane": "needs-review-mandatory-fact",
+    "result": "pass",
+    "semanticInput": "attack:needs-review-mandatory-fact"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-08",
+    "lane": "orphan-fact",
+    "result": "pass",
+    "semanticInput": "attack:orphan-fact"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-09",
+    "lane": "missing-reference",
+    "result": "pass",
+    "semanticInput": "attack:missing-reference"
+  },
+  {
+    "exerciseId": "machine-row",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-10",
+    "lane": "duplicate-semantic-fact",
+    "result": "pass",
+    "semanticInput": "attack:duplicate-semantic-fact"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-11",
+    "lane": "whitespace-drift",
+    "result": "pass",
+    "semanticInput": "attack:whitespace-drift"
+  },
+  {
+    "exerciseId": "band-row",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-12",
+    "lane": "punctuation-drift",
+    "result": "pass",
+    "semanticInput": "attack:punctuation-drift"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-13",
+    "lane": "cue-order-drift",
+    "result": "pass",
+    "semanticInput": "attack:cue-order-drift"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-14",
+    "lane": "stale-generated-file",
+    "result": "pass",
+    "semanticInput": "attack:stale-generated-file"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-15",
+    "lane": "hand-edited-fallback",
+    "result": "pass",
+    "semanticInput": "attack:hand-edited-fallback"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-16",
+    "lane": "missing-generation-source",
+    "result": "pass",
+    "semanticInput": "attack:missing-generation-source"
+  },
+  {
+    "exerciseId": "leg-press",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-17",
+    "lane": "accepted-override",
+    "result": "pass",
+    "semanticInput": "attack:accepted-override"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-18",
+    "lane": "not-applicable-realization-review",
+    "result": "pass",
+    "semanticInput": "attack:not-applicable-realization-review"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-19",
+    "lane": "unresolved-identity-boundary",
+    "result": "pass",
+    "semanticInput": "attack:unresolved-identity-boundary"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-20",
+    "lane": "whole-entry-override",
+    "result": "pass",
+    "semanticInput": "attack:whole-entry-override"
+  },
+  {
+    "exerciseId": "split-squat",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-21",
+    "lane": "missing-override-parent",
+    "result": "pass",
+    "semanticInput": "attack:missing-override-parent"
+  },
+  {
+    "exerciseId": "step-up",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-22",
+    "lane": "unsupported-realization",
+    "result": "pass",
+    "semanticInput": "attack:unsupported-realization"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-23",
+    "lane": "setup-in-during-only",
+    "result": "pass",
+    "semanticInput": "attack:setup-in-during-only"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-24",
+    "lane": "during-in-setup-only",
+    "result": "pass",
+    "semanticInput": "attack:during-in-setup-only"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-25",
+    "lane": "pattern-as-cue-only",
+    "result": "pass",
+    "semanticInput": "attack:pattern-as-cue-only"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-26",
+    "lane": "watch-for-pathology",
+    "result": "pass",
+    "semanticInput": "attack:watch-for-pathology"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-27",
+    "lane": "focus-slogan",
+    "result": "pass",
+    "semanticInput": "attack:focus-slogan"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-28",
+    "lane": "cue-paragraph",
+    "result": "pass",
+    "semanticInput": "attack:cue-paragraph"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-29",
+    "lane": "too-many-cues",
+    "result": "pass",
+    "semanticInput": "attack:too-many-cues"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-30",
+    "lane": "hidden-numeric-prescription",
+    "result": "pass",
+    "semanticInput": "attack:hidden-numeric-prescription"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-31",
+    "lane": "posture-correction-claim",
+    "result": "pass",
+    "semanticInput": "attack:posture-correction-claim"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-32",
+    "lane": "pain-treatment-claim",
+    "result": "pass",
+    "semanticInput": "attack:pain-treatment-claim"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-33",
+    "lane": "injury-prevention-claim",
+    "result": "pass",
+    "semanticInput": "attack:injury-prevention-claim"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-34",
+    "lane": "body-region-causation",
+    "result": "pass",
+    "semanticInput": "attack:body-region-causation"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-35",
+    "lane": "fear-language",
+    "result": "pass",
+    "semanticInput": "attack:fear-language"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-36",
+    "lane": "universal-safety-claim",
+    "result": "pass",
+    "semanticInput": "attack:universal-safety-claim"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-37",
+    "lane": "equipment-conflict",
+    "result": "pass",
+    "semanticInput": "attack:equipment-conflict"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-38",
+    "lane": "support-conflict",
+    "result": "pass",
+    "semanticInput": "attack:support-conflict"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-39",
+    "lane": "action-conflict",
+    "result": "pass",
+    "semanticInput": "attack:action-conflict"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-40",
+    "lane": "dose-mode-conflict",
+    "result": "pass",
+    "semanticInput": "attack:dose-mode-conflict"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-41",
+    "lane": "range-conflict",
+    "result": "pass",
+    "semanticInput": "attack:range-conflict"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-42",
+    "lane": "side-conflict",
+    "result": "pass",
+    "semanticInput": "attack:side-conflict"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-43",
+    "lane": "candidate-import",
+    "result": "pass",
+    "semanticInput": "attack:candidate-import"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-44",
+    "lane": "engine-prose-parse",
+    "result": "pass",
+    "semanticInput": "attack:engine-prose-parse"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-45",
+    "lane": "app-import",
+    "result": "pass",
+    "semanticInput": "attack:app-import"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-46",
+    "lane": "library-route",
+    "result": "pass",
+    "semanticInput": "attack:library-route"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-47",
+    "lane": "coaching-rail-component",
+    "result": "pass",
+    "semanticInput": "attack:coaching-rail-component"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "expected": "rejected_without_rescue",
+    "id": "pre-g2k-controlled-attack-48",
+    "lane": "product-shadow-change",
+    "result": "pass",
+    "semanticInput": "attack:product-shadow-change"
+  }
+]

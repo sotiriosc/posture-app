@@ -1,0 +1,118 @@
+{
+  "invariants": [
+    {
+      "id": "knowledge-fact-object-order",
+      "passed": true
+    },
+    {
+      "id": "presentation-reference-order-when-nonsemantic",
+      "passed": true
+    },
+    {
+      "id": "provenance-order",
+      "passed": true
+    },
+    {
+      "id": "catalog-registry-order",
+      "passed": true
+    },
+    {
+      "id": "selected-package-row-order",
+      "passed": true
+    },
+    {
+      "id": "equipment-requirement-order",
+      "passed": true
+    },
+    {
+      "id": "muscle-contribution-order",
+      "passed": true
+    },
+    {
+      "id": "noncanonical-label-prose",
+      "passed": true
+    },
+    {
+      "id": "documentation-order",
+      "passed": true
+    },
+    {
+      "id": "generated-file-regeneration",
+      "passed": true
+    },
+    {
+      "id": "account-shell",
+      "passed": true
+    },
+    {
+      "id": "irrelevant-pain",
+      "passed": true
+    },
+    {
+      "id": "equivalent-exact-familiarity",
+      "passed": true
+    }
+  ],
+  "materialResponses": [
+    {
+      "id": "selected-vs-unselected",
+      "passed": true,
+      "baseline": "baseline:selected-vs-unselected",
+      "changed": "changed:selected-vs-unselected"
+    },
+    {
+      "id": "equipment-legality",
+      "passed": true,
+      "baseline": "baseline:equipment-legality",
+      "changed": "changed:equipment-legality"
+    },
+    {
+      "id": "home-comfort-applicability",
+      "passed": true,
+      "baseline": "baseline:home-comfort-applicability",
+      "changed": "changed:home-comfort-applicability"
+    },
+    {
+      "id": "exact-familiarity",
+      "passed": true,
+      "baseline": "baseline:exact-familiarity",
+      "changed": "changed:exact-familiarity"
+    },
+    {
+      "id": "local-purpose",
+      "passed": true,
+      "baseline": "baseline:local-purpose",
+      "changed": "changed:local-purpose"
+    },
+    {
+      "id": "support",
+      "passed": true,
+      "baseline": "baseline:support",
+      "changed": "changed:support"
+    },
+    {
+      "id": "laterality",
+      "passed": true,
+      "baseline": "baseline:laterality",
+      "changed": "changed:laterality"
+    },
+    {
+      "id": "realization-override",
+      "passed": true,
+      "baseline": "baseline:realization-override",
+      "changed": "changed:realization-override"
+    },
+    {
+      "id": "accepted-knowledge-fact",
+      "passed": true,
+      "baseline": "baseline:accepted-knowledge-fact",
+      "changed": "changed:accepted-knowledge-fact"
+    },
+    {
+      "id": "compact-fallback-projection",
+      "passed": true,
+      "baseline": "baseline:compact-fallback-projection",
+      "changed": "changed:compact-fallback-projection"
+    }
+  ]
+}

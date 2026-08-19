@@ -1,0 +1,18 @@
+{
+  "reference": "CONTROLLED_PRODUCT_SHADOW_ROLLOUT_POLICY_V1_INTERNAL_ALLOWLIST@1.0.0",
+  "modes": [
+    "off",
+    "capture_only_internal_allowlist",
+    "evaluate_internal_allowlist",
+    "replay_only"
+  ],
+  "defaultMode": "off",
+  "dedicatedAllowlist": "PRAXIS_V2_SHADOW_USER_IDS",
+  "allUserModeCount": 0,
+  "defaultOffClientTransport": "NEXT_PUBLIC_PRAXIS_V2_SHADOW_TRIGGER_ENABLED=false_or_absent",
+  "percentageOrRandomRolloutCount": 0,
+  "anonymousEligibilityCount": 0,
+  "adminAllowlistReuseCount": 0,
+  "legacyAdaptiveFlagReuseCount": 0,
+  "serverAuthoritative": true
+}

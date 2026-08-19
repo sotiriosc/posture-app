@@ -1,0 +1,107 @@
+[
+  {
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "id": "dumbbell-floor-press.realization.one-dumbbell",
+    "exerciseId": "dumbbell-floor-press",
+    "realizationId": "one-dumbbell-unilateral",
+    "addSetupRefs": [
+      "dumbbell-floor-press.realization.single.setup"
+    ],
+    "addDuringRefs": [
+      "dumbbell-floor-press.realization.single.during"
+    ],
+    "addWatchForRefs": [
+      "dumbbell-floor-press.realization.single.watch"
+    ],
+    "reviewStatus": "accepted",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "owner_decision",
+        "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+        "evidenceBasis": [
+          "Owner selected and bounded the dumbbell-floor-press production identity."
+        ]
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "human_exercise_science_review",
+        "sourceRef": "human-review:package-r:2026-08-16",
+        "evidenceBasis": [
+          "Setup, execution, pattern, and observation language for dumbbell-floor-press was independently reviewed as non-diagnostic coaching content."
+        ]
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "external_reference",
+        "sourceRef": "https://pubmed.ncbi.nlm.nih.gov/11828249/",
+        "evidenceBasis": [
+          "Resistance exercise selection and progression remain specific to goals, capacity, and training status; this source does not prescribe row-specific technique."
+        ]
+      }
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_REALIZATION_KNOWLEDGE_OVERRIDE",
+      "contractVersion": "1.0.0"
+    },
+    "id": "bird-dog.realization.alternating",
+    "exerciseId": "bird-dog",
+    "realizationId": "alternating-repetitions",
+    "addDuringRefs": [
+      "bird-dog.realization.alternating.during"
+    ],
+    "addWatchForRefs": [
+      "bird-dog.realization.alternating.watch"
+    ],
+    "reviewStatus": "accepted",
+    "provenance": [
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "owner_decision",
+        "sourceRef": "docs/training-engine-v2/PACKAGE_R_HOME_FIRST_MIXED_RELEASE_OWNER_DECISION.md",
+        "evidenceBasis": [
+          "Owner selected and bounded the bird-dog production identity."
+        ]
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "human_exercise_science_review",
+        "sourceRef": "human-review:package-r:2026-08-16",
+        "evidenceBasis": [
+          "Setup, execution, pattern, and observation language for bird-dog was independently reviewed as non-diagnostic coaching content."
+        ]
+      },
+      {
+        "contract": {
+          "contractId": "EXERCISE_KNOWLEDGE_PROVENANCE",
+          "contractVersion": "1.0.0"
+        },
+        "sourceType": "external_reference",
+        "sourceRef": "https://pubmed.ncbi.nlm.nih.gov/29290418/",
+        "evidenceBasis": [
+          "Bird-dog is a trunk-demanding sensorimotor task; the study does not establish treatment effects."
+        ]
+      }
+    ]
+  }
+]

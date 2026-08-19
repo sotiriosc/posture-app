@@ -1,0 +1,21 @@
+{
+  "expectedPlannedEventCount": 1,
+  "observedOutcomeEventCount": 1,
+  "completedEventCount": 1,
+  "partialEventCount": 0,
+  "notPerformedEventCount": 0,
+  "substitutedEventCount": 0,
+  "unknownOutcomeCount": 0,
+  "duplicateOutcomeEntryCount": 0,
+  "missingOutcomeLinkCount": 0,
+  "orphanPerformanceRecordCount": 0,
+  "orphanResponseRecordCount": 0,
+  "orphanBlockResultCount": 0,
+  "wrongPrescriptionRevisionCount": 0,
+  "wrongSequenceRevisionCount": 0,
+  "crossSessionCollisionCount": 0,
+  "plannedAsActualCount": 0,
+  "prescribedTimingAsActualCount": 0,
+  "multiBlockFlatteningCount": 0,
+  "reasonCodes": []
+}

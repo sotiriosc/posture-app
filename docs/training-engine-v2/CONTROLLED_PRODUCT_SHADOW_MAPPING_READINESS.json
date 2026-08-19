@@ -1,0 +1,26 @@
+{
+  "primaryState": "complete_for_shadow_planning",
+  "trace": [
+    {
+      "order": 9,
+      "boundary": "legacy_history_authority",
+      "state": "legacy_history_restricted",
+      "material": false,
+      "reasonCodes": [
+        "final_v2_prescription_revision",
+        "final_v2_sequence_revision",
+        "v2_source_exposure_event",
+        "v2_completed_performance"
+      ]
+    },
+    {
+      "order": 15,
+      "boundary": "final_readiness",
+      "state": "complete_for_shadow_planning",
+      "material": false,
+      "reasonCodes": []
+    }
+  ],
+  "unresolvedRequirements": [],
+  "downstreamRescueAcceptedCount": 0
+}

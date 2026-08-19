@@ -1,0 +1,132 @@
+{
+  "invariance": [
+    {
+      "id": "screenshot_observation_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "viewport_record_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "copy_matrix_row_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "json_property_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "nonsemantic_provenance_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "display_screenshot_filenames",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "browser_chrome",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "background_image_crop",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "current_account_label",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "synthetic_user_id",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "desktop_composition_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    },
+    {
+      "id": "mobile_crop_order",
+      "passed": true,
+      "original": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938",
+      "transformed": "66f799b28908d410d0ecf63bbc81722cebb99e279c94618ba000073b6d1e9938"
+    }
+  ],
+  "materialResponse": [
+    {
+      "id": "goal_ownership",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "b78c0d6fc6d1455d9c0822f1ea070e83148214a874855584b9f10ddeebfdddd7"
+    },
+    {
+      "id": "pain_context_ownership",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "204346593e856800cb682c52df72b72c6ee6abea6aee03c02d84c6f897330f24"
+    },
+    {
+      "id": "mode_ownership",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "92971237eb32fe7709cf22da1c6fb75699f081c510eac538a20f02ca8480336c"
+    },
+    {
+      "id": "option_availability",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "8c7e1c1c53f4c7f69371c7b46c25a47dd8a7b547df8da0477a18f3fdda9f96b7"
+    },
+    {
+      "id": "follow_up_requirement",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "46293710b6a7d608cae528521b07e50445c4a458509a1cc006220e6b8f211820"
+    },
+    {
+      "id": "equipment_capability_requirement",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "486ad16b8c34857aea842876d26e4b3e55ff616d5bb8b545d6d3116fee33b35d"
+    },
+    {
+      "id": "legacy_migration_behavior",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "603d81496985608f42ecf60100ee8e9dd778ac7cfd55a9897d92b016fc29a010"
+    },
+    {
+      "id": "f_current_route_visibility",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "eaec820b19eb27b206e3ad1b3074d0b3d4c77b2fbf016ab07dc39632aa24bc0b"
+    },
+    {
+      "id": "f_submission_behavior",
+      "passed": true,
+      "original": "243136f0e81aae280266d115d3beeaa52f2fb68fa892d02eb2be4ecccbbb37d9",
+      "transformed": "fa460f876e7d8405818c4655a9d85c2089f4a1e143e305615a9dbfdd0c03ce7e"
+    }
+  ]
+}

@@ -1,0 +1,349 @@
+{
+  "reference": {
+    "contractId": "POST_CHUNK_D_PURE_SERVER_EVIDENCE_BOUNDARY_REPAIR",
+    "contractVersion": "1.0.0"
+  },
+  "classification": "POST_CHUNK_D_PURE_SERVER_EVIDENCE_BOUNDARY_AND_POSTGRES_CI_REPAIR_READY_FOR_SCREENSHOT_GUIDED_PRODUCT_DESIGN",
+  "rootCauseClassification": "PURE_TO_SERVER_TEST_DEPENDENCY_DIRECTION_VIOLATION",
+  "importGraphBefore": [
+    {
+      "source": "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/contracts.ts",
+      "target": "packages/engine/src/controlledProductShadowGoalRealization/contracts.ts",
+      "syntax": "import_type"
+    },
+    {
+      "source": "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports.ts",
+      "target": "packages/engine/tests/controlledProductShadowGoalEvidence/artifactStore.ts",
+      "syntax": "import"
+    },
+    {
+      "source": "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports.ts",
+      "target": "packages/engine/tests/controlledProductShadowGoalEvidence/futureGoalFixtures.ts",
+      "syntax": "import"
+    },
+    {
+      "source": "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports.ts",
+      "target": "packages/engine/tests/controlledProductShadowGoalEvidence/evidenceSuite.ts",
+      "syntax": "import"
+    },
+    {
+      "source": "packages/training-engine-v2/tests/cagt/goalSpecificProductShadowEvidence/reports.ts",
+      "target": "packages/engine/tests/controlledProductShadowGoalEvidence/genuineStagePorts.ts",
+      "syntax": "import"
+    }
+  ],
+  "importGraphAfter": [],
+  "boundary": {
+    "classification": "PURE_SERVER_DEPENDENCY_DIRECTION_VALID",
+    "executableImportEdges": [],
+    "packageAliasViolations": [],
+    "typeCoverageFailures": [],
+    "fingerprint": "4b4a2177f053d3bd9204432f162cd162ee854339cbec6073dee9852f173dffb7"
+  },
+  "typecheckMatrix": {
+    "pureProduction": "tsc -p packages/training-engine-v2/tsconfig.production.json --noEmit --incremental false",
+    "pureTestDev": "tsc -p packages/training-engine-v2/tsconfig.test-dev.json --noEmit --incremental false",
+    "engineBase": "aggregate of scoped server contracts; app-coupled engine production is checked by consumer build",
+    "outcomeSources": "tsc -p packages/engine/tsconfig.outcome-sources.json --noEmit",
+    "orchestration": "tsc -p packages/engine/tsconfig.application-orchestration.json --noEmit",
+    "productShadowAndGoalRealization": "tsc -p packages/engine/tsconfig.product-shadow.json --noEmit",
+    "goalSpecificEvidence": "tsc -p packages/engine/tsconfig.goal-specific-evidence.json --noEmit"
+  },
+  "reportFileCount": 63,
+  "reportCorpusBefore": "af2000368ec953df338294a8220fecebfc33a97360ba9a64449c847357627fca",
+  "reportCorpusAfter": "af2000368ec953df338294a8220fecebfc33a97360ba9a64449c847357627fca",
+  "reportEquivalence": "REPORT_CORPUS_BYTE_EQUIVALENT",
+  "chunkDCombinedFingerprint": "dcedd35ec88a929420036dee8f34f909af2a043f3e5133edca40fe76efa89464",
+  "historicalProductShadowFingerprint": "fee0ffe0d586123cfd903f01a347f59aa92a8825342d0ec62b86a2235d376e2c",
+  "postgresqlExecutionManifest": {
+    "service": "postgres:16",
+    "buildCommands": [
+      "npm run build --workspace=@praxis/training-engine-v2",
+      "npm run build:outcome-sources --workspace=@praxis/engine",
+      "npm run build:application-orchestration --workspace=@praxis/engine",
+      "npm run build:product-shadow --workspace=@praxis/engine",
+      "npm run build:goal-specific-evidence --workspace=@praxis/engine"
+    ],
+    "integrationCommands": [
+      {
+        "command": "npm run test:outcome-sources:postgres",
+        "expectedTestCount": 1
+      },
+      {
+        "command": "npm run test:application-orchestration:postgres",
+        "expectedTestCount": 2
+      },
+      {
+        "command": "npm run test:product-shadow:postgres",
+        "expectedTestCount": 6
+      }
+    ],
+    "optional": false,
+    "continueOnError": false
+  },
+  "mutations": {
+    "mutationCount": 18,
+    "rejectedCount": 18,
+    "acceptedCount": 0,
+    "results": [
+      {
+        "mutation": "pure package imports engine source",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TO_SERVER_IMPORT_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "pure package imports engine tests",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TO_SERVER_IMPORT_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "pure package imports engine dev files",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TO_SERVER_IMPORT_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "pure package re-exports engine internals",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TO_SERVER_IMPORT_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "dynamic pure-to-engine import",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TO_SERVER_IMPORT_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "hidden alias added to pure tsconfig",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_PACKAGE_SERVER_ALIAS_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "tests excluded without replacement type-check",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TEST_DEV_TYPECHECK_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "build skips tests/dev type-check entirely",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_TEST_DEV_TYPECHECK_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "PostgreSQL job marked allow-failure",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "POSTGRESQL_JOB_MUST_REMAIN_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "build step removed",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PURE_SERVER_BUILD_STEP_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "integration steps skipped",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "POSTGRESQL_INTEGRATION_STEPS_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "report corpus regenerated with changed semantics",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "REPORT_CORPUS_BYTE_EQUIVALENCE_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "expected fingerprints rewritten without explanation",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "FINGERPRINT_REWRITE_EXPLANATION_REQUIRED"
+        ]
+      },
+      {
+        "mutation": "historical Product Shadow changed",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "HISTORICAL_PRODUCT_SHADOW_FINGERPRINT_FROZEN"
+        ]
+      },
+      {
+        "mutation": "Product route changed",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PRODUCT_ROUTE_CHANGE_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "Product UI changed",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "PRODUCT_UI_CHANGE_FORBIDDEN"
+        ]
+      },
+      {
+        "mutation": "Chunk E marked complete",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "CHUNK_E_MUST_REMAIN_OPEN"
+        ]
+      },
+      {
+        "mutation": "ledger final state marked complete",
+        "semanticStructureChanged": true,
+        "rejected": true,
+        "failures": [
+          "LEDGER_FINAL_STATE_MUST_REMAIN_INCOMPLETE"
+        ]
+      }
+    ],
+    "fingerprint": "18bcf258d32727c4454727bf8ae6be702bccfe267dbefdfd81bc88a4e48f418e"
+  },
+  "metamorphic": {
+    "relationCount": 13,
+    "passedCount": 13,
+    "failedCount": 0,
+    "results": [
+      {
+        "relation": "pure-file order",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "engine-test file order",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "report generation order",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "deterministic artifact retrieval order",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "import declaration formatting",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "equivalent type-only import formatting",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "nonsemantic provenance order",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "clean versus incremental TypeScript execution",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "Node 20 versus repository-supported CI Node",
+        "expected": "invariant",
+        "passed": true
+      },
+      {
+        "relation": "pure-to-server import introduced",
+        "expected": "material_failure",
+        "passed": true
+      },
+      {
+        "relation": "package-local alias leaks across boundary",
+        "expected": "material_failure",
+        "passed": true
+      },
+      {
+        "relation": "report loses a genuine artifact",
+        "expected": "material_failure",
+        "passed": true
+      },
+      {
+        "relation": "PostgreSQL integration commands do not execute",
+        "expected": "material_failure",
+        "passed": true
+      }
+    ],
+    "fingerprint": "88c5b1bec6e0f00cfccb26d42fa67e1994b5cc18ad22b6ee061a8e2bb5b58e96"
+  },
+  "activationGuards": {
+    "productUiChangeCount": 0,
+    "productOptionChangeCount": 0,
+    "questionnaireChangeCount": 0,
+    "generateProgramChangeCount": 0,
+    "currentRouteChangeCount": 0,
+    "currentTriggerChangeCount": 0,
+    "rolloutChangeCount": 0,
+    "deploymentEnvironmentChangeCount": 0,
+    "productPersistenceChangeCount": 0,
+    "productionDatabaseChangeCount": 0,
+    "productShadowSemanticChangeCount": 0,
+    "productShadowFingerprintChangeCount": 0,
+    "v2OutputReturnedCount": 0,
+    "productMutationCount": 0,
+    "applicationCount": 0,
+    "productActivationCount": 0,
+    "chunkEImplementationCount": 0
+  },
+  "fingerprints": {
+    "boundaryAudit": "d50f8c19d7131b9f5aa45f2238ef2f4bb57b978d73aba8bb27098f357e83c6d3",
+    "importGraphBefore": "52bbc259c06aad33603b9d6eba2c5271198a2931bf31321bff3a31d24d87b879",
+    "importGraphAfter": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "boundaryValidator": "1f09e759336c71e59de3855d7c42cdd91b0e4bed4060a29bf79e230ae0e305f3",
+    "pureProductionTypecheckMatrix": "88933ca427bd3312915f34d185de7189b0dac3a897565d94ed99b1d392e1c59f",
+    "pureTestDevTypecheckMatrix": "6556567bb884bff9bea488cdd323d8898e6f0f17b639916167a3a12faffe58b7",
+    "engineBuildMatrix": "e1b7ae5a13e8bdd91c8c8504749d4882a57bb63b0229d226472cccd3013f57d0",
+    "reportCorpusBefore": "05cf8da8db687cc12243ce335411742faca7ff55b5e6ce17382247a631ecaaad",
+    "reportCorpusAfter": "05cf8da8db687cc12243ce335411742faca7ff55b5e6ce17382247a631ecaaad",
+    "reportEquivalence": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "chunkDEvidenceEquivalence": "c7be75ee7a8c6286e5f541e2e82d3b07220cc1801e3d8246d99b62c1ca2a18a4",
+    "postgresqlExecutionManifest": "87b5e5376382c6015a4f44ccdbc6286c7c34f43f060ea198d42e0a6660bdf550",
+    "mutationResults": "ab9f4074d5bceb9515eb19eb4a33687ba85e77687977483e57402888bce246ae",
+    "metamorphicResults": "2c8b9ded01733b7c25d4312c57550d956b8ed077e4358fce4055f628100308b5",
+    "activationGuards": "3b2982b2da04aa6e576bf5e1f4a67d187e0566ceae406fb534c2396a85e6621d",
+    "ledgerBeforeMaintenance": "09eee84e1741a78f81875d1ce8f8d7efa0d359fac05071e8e42cf38cab33706d",
+    "ledgerAfterMaintenance": "b75ded605be7a022425cba42cb7d7093b4e0c2c9fbeac69854e9033ff5713762",
+    "combinedMaintenanceTranche": "39f761ac75423c549a889c4559b50e2bbf6e608c709ddb8616b5347c32c211bb"
+  },
+  "nextDependency": "SCREENSHOT_GUIDED_PRODUCT_GOAL_AND_CONTEXT_INPUT_DESIGN_V1_AUTHORIZATION"
+}

@@ -1,0 +1,1111 @@
+{
+  "full": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_REALIZATION_PLAN",
+      "contractVersion": "1.0.0"
+    },
+    "bridgeContractReference": {
+      "contractId": "SESSION_PRACTICE_OPTIONS_V2_BRIDGE",
+      "contractVersion": "1.0.0"
+    },
+    "realizerContractReference": {
+      "contractId": "PRODUCTION_SESSION_PRACTICE_REALIZER_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    "policyReference": "SESSION_PRACTICE_FULL_POLICY_V1_EXACT_PASS_THROUGH@1.0.0",
+    "mode": "full",
+    "status": "realized",
+    "sourceSessionId": "session-1",
+    "sourceSessionRevisionId": "session-rev-1",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "requestId": "session-practice-request:57a9328eb28390da",
+    "realizationRevisionId": "session-practice-realization-revision:cabb8344eaa90f10",
+    "finalForExecution": true,
+    "assignments": [
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "prep",
+        "exerciseId": "cat-cow",
+        "sourceExposureEventId": "event-prep",
+        "state": "retained",
+        "priority": "required",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [
+          "block-prep"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "FULL_EXACT_PASS_THROUGH"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "main",
+        "exerciseId": "goblet-squat",
+        "sourceExposureEventId": "event-main",
+        "state": "retained",
+        "priority": "required",
+        "productiveRequiredAnchor": true,
+        "retainedBlockIds": [
+          "block-main"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "FULL_EXACT_PASS_THROUGH"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "accessory",
+        "exerciseId": "lateral-raise",
+        "sourceExposureEventId": "event-accessory",
+        "state": "retained",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [
+          "block-accessory"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "FULL_EXACT_PASS_THROUGH"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "cooldown",
+        "exerciseId": "breathing-reset",
+        "sourceExposureEventId": "event-cooldown",
+        "state": "retained",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [
+          "block-cooldown"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "FULL_EXACT_PASS_THROUGH"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      }
+    ],
+    "dependencies": [],
+    "anchors": [
+      {
+        "assignmentId": "main",
+        "preserved": true
+      }
+    ],
+    "needCoverage": [
+      {
+        "needId": "need-prep",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "prep"
+        ],
+        "retainedAssignmentIds": [
+          "prep"
+        ],
+        "state": "preserved"
+      },
+      {
+        "needId": "need-main",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "main"
+        ],
+        "retainedAssignmentIds": [
+          "main"
+        ],
+        "state": "preserved"
+      },
+      {
+        "needId": "need-optional",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "accessory"
+        ],
+        "retainedAssignmentIds": [
+          "accessory"
+        ],
+        "state": "preserved"
+      },
+      {
+        "needId": "need-recovery",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "cooldown"
+        ],
+        "retainedAssignmentIds": [
+          "cooldown"
+        ],
+        "state": "preserved"
+      }
+    ],
+    "purposePreserved": true,
+    "sourceEventsPreserved": true,
+    "prescriptionRevisions": [],
+    "finalSequence": {
+      "sequencePlanId": "sequence-1",
+      "sequenceRevisionId": "sequence-rev-1",
+      "basedOnSourceSequenceRevisionId": "sequence-rev-1",
+      "steps": [
+        {
+          "sequenceIndex": 0,
+          "assignmentId": "prep",
+          "exerciseId": "cat-cow",
+          "section": "warmup",
+          "role": "preparation",
+          "sourceExposureEventId": "event-prep",
+          "prescriptionId": "rx-prep",
+          "finalPrescriptionRevisionId": "rx-rev-prep",
+          "orderedDoseBlockIds": [
+            "block-prep"
+          ],
+          "satisfiedNeedIds": [
+            "need-prep"
+          ],
+          "dependencyAssignmentIds": [],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [],
+          "provenance": []
+        },
+        {
+          "sequenceIndex": 1,
+          "assignmentId": "main",
+          "exerciseId": "goblet-squat",
+          "section": "main",
+          "role": "primary_strength",
+          "sourceExposureEventId": "event-main",
+          "prescriptionId": "rx-main",
+          "finalPrescriptionRevisionId": "rx-rev-main",
+          "orderedDoseBlockIds": [
+            "block-main"
+          ],
+          "satisfiedNeedIds": [
+            "need-main"
+          ],
+          "dependencyAssignmentIds": [
+            "prep"
+          ],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [],
+          "provenance": []
+        },
+        {
+          "sequenceIndex": 2,
+          "assignmentId": "accessory",
+          "exerciseId": "lateral-raise",
+          "section": "accessory",
+          "role": "hypertrophy_accessory",
+          "sourceExposureEventId": "event-accessory",
+          "prescriptionId": "rx-accessory",
+          "finalPrescriptionRevisionId": "rx-rev-accessory",
+          "orderedDoseBlockIds": [
+            "block-accessory"
+          ],
+          "satisfiedNeedIds": [
+            "need-optional"
+          ],
+          "dependencyAssignmentIds": [],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [],
+          "provenance": []
+        },
+        {
+          "sequenceIndex": 3,
+          "assignmentId": "cooldown",
+          "exerciseId": "breathing-reset",
+          "section": "cooldown",
+          "role": "recovery",
+          "sourceExposureEventId": "event-cooldown",
+          "prescriptionId": "rx-cooldown",
+          "finalPrescriptionRevisionId": "rx-rev-cooldown",
+          "orderedDoseBlockIds": [
+            "block-cooldown"
+          ],
+          "satisfiedNeedIds": [
+            "need-recovery"
+          ],
+          "dependencyAssignmentIds": [],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [],
+          "provenance": []
+        }
+      ],
+      "finalPrescriptionRevisionIds": [
+        "rx-rev-prep",
+        "rx-rev-main",
+        "rx-rev-accessory",
+        "rx-rev-cooldown"
+      ],
+      "duration": {
+        "knownLowerBoundSeconds": 240,
+        "knownUpperBoundSeconds": 360,
+        "availableSeconds": 2700,
+        "status": "bounded",
+        "unknownComponents": [],
+        "prescriptionIntervalRefs": [],
+        "transitionInstructionIds": [],
+        "timingFactReuseCount": 0,
+        "noInventedTime": true,
+        "provenance": []
+      },
+      "dependencyOrderPreserved": true,
+      "blockOrderPreserved": true,
+      "noPairing": true,
+      "recomputedFromExplicitFacts": false,
+      "reasonCodes": [
+        "FULL_EXACT_SEQUENCE_PASS_THROUGH"
+      ]
+    },
+    "duration": {
+      "knownLowerBoundSeconds": 240,
+      "knownUpperBoundSeconds": 360,
+      "availableSeconds": 2700,
+      "status": "bounded",
+      "unknownComponents": [],
+      "prescriptionIntervalRefs": [],
+      "transitionInstructionIds": [],
+      "timingFactReuseCount": 0,
+      "noInventedTime": true,
+      "provenance": []
+    },
+    "burdenDifference": {
+      "source": {
+        "assignmentCount": 4,
+        "optionalAssignmentCount": 2,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 2,
+        "developmentalCount": 2,
+        "preparatoryBlockCount": 1,
+        "sourceEventCount": 4,
+        "prescribedWorkIntervalSeconds": [
+          240,
+          360
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          240,
+          360
+        ],
+        "setupTransitionCount": 3,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": false
+      },
+      "realized": {
+        "assignmentCount": 4,
+        "optionalAssignmentCount": 2,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 2,
+        "developmentalCount": 2,
+        "preparatoryBlockCount": 1,
+        "sourceEventCount": 4,
+        "prescribedWorkIntervalSeconds": [
+          240,
+          360
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          240,
+          360
+        ],
+        "setupTransitionCount": 3,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": false
+      },
+      "materiality": {
+        "assignmentOmissionCount": 0,
+        "developmentalCountReduction": 0,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": false,
+        "reasonCodes": [
+          "FULL_REQUIRES_ZERO_SEMANTIC_DIFFERENCE"
+        ]
+      },
+      "universalBurdenScore": null
+    },
+    "availability": {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+        "contractVersion": "1.0.0"
+      },
+      "mode": "full",
+      "state": "available",
+      "reasonCodes": [
+        "FULL_SOURCE_EXECUTABLE"
+      ],
+      "sourceEvidenceRefs": [
+        "session-rev-1",
+        "sequence-rev-1",
+        "gate13-rev-1"
+      ],
+      "materiality": {
+        "assignmentOmissionCount": 0,
+        "developmentalCountReduction": 0,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": false,
+        "reasonCodes": [
+          "FULL_REQUIRES_ZERO_SEMANTIC_DIFFERENCE"
+        ]
+      },
+      "fallbackApplied": false
+    },
+    "unresolvedRequirements": [],
+    "weekResponsibilityConsequences": [
+      "NORMAL_GATE_13_AND_OUTCOME_SOURCE_TRUTH_APPLIES"
+    ],
+    "completionCreditPolicy": "normal_gate13_and_outcome_truth",
+    "noFallbackTrace": [
+      "SESSION_PRACTICE_FULL_POLICY_V1_EXACT_PASS_THROUGH",
+      "NO_FALLBACK"
+    ],
+    "provenance": [
+      "session-rev-1",
+      "sequence-rev-1",
+      "SESSION_PRACTICE_FULL_POLICY_V1_EXACT_PASS_THROUGH@1.0.0"
+    ]
+  },
+  "lighter": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_REALIZATION_PLAN",
+      "contractVersion": "1.0.0"
+    },
+    "bridgeContractReference": {
+      "contractId": "SESSION_PRACTICE_OPTIONS_V2_BRIDGE",
+      "contractVersion": "1.0.0"
+    },
+    "realizerContractReference": {
+      "contractId": "PRODUCTION_SESSION_PRACTICE_REALIZER_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    "policyReference": "SESSION_PRACTICE_LIGHTER_POLICY_V1_STRUCTURAL_FIRST@1.0.0",
+    "mode": "lighter",
+    "status": "realized",
+    "sourceSessionId": "session-1",
+    "sourceSessionRevisionId": "session-rev-1",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "requestId": "session-practice-request:454d0a6ef6759bd2",
+    "realizationRevisionId": "session-practice-realization-revision:4d048aa5996fe211",
+    "finalForExecution": true,
+    "assignments": [
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "prep",
+        "exerciseId": "cat-cow",
+        "sourceExposureEventId": "event-prep",
+        "state": "retained",
+        "priority": "required",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [
+          "block-prep"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "L0_PROTECTED_OR_RETAINED"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "main",
+        "exerciseId": "goblet-squat",
+        "sourceExposureEventId": "event-main",
+        "state": "retained",
+        "priority": "required",
+        "productiveRequiredAnchor": true,
+        "retainedBlockIds": [
+          "block-main"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "L0_PROTECTED_OR_RETAINED"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "accessory",
+        "exerciseId": "lateral-raise",
+        "sourceExposureEventId": "event-accessory",
+        "state": "omitted",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [],
+        "omittedBlockIds": [
+          "block-accessory"
+        ],
+        "reasonCodes": [
+          "L2_OPTIONAL_LOWEST_TRUTHFUL_MARGINAL_VALUE_OMITTED"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "cooldown",
+        "exerciseId": "breathing-reset",
+        "sourceExposureEventId": "event-cooldown",
+        "state": "omitted",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [],
+        "omittedBlockIds": [
+          "block-cooldown"
+        ],
+        "reasonCodes": [
+          "L2_OPTIONAL_LOWEST_TRUTHFUL_MARGINAL_VALUE_OMITTED"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      }
+    ],
+    "dependencies": [
+      {
+        "dependencyAssignmentId": "prep",
+        "dependentAssignmentIds": [
+          "main"
+        ],
+        "state": "retained_required",
+        "reasonCodes": [
+          "DEPENDENCY_REQUIRED_BY_RETAINED_ASSIGNMENT"
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "assignmentId": "main",
+        "preserved": true
+      }
+    ],
+    "needCoverage": [
+      {
+        "needId": "need-prep",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "prep"
+        ],
+        "retainedAssignmentIds": [
+          "prep"
+        ],
+        "state": "preserved"
+      },
+      {
+        "needId": "need-main",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "main"
+        ],
+        "retainedAssignmentIds": [
+          "main"
+        ],
+        "state": "preserved"
+      },
+      {
+        "needId": "need-optional",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "accessory"
+        ],
+        "retainedAssignmentIds": [],
+        "state": "omitted_pending_responsibility"
+      },
+      {
+        "needId": "need-recovery",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "cooldown"
+        ],
+        "retainedAssignmentIds": [],
+        "state": "omitted_pending_responsibility"
+      }
+    ],
+    "purposePreserved": true,
+    "sourceEventsPreserved": true,
+    "prescriptionRevisions": [],
+    "finalSequence": {
+      "sequencePlanId": "session-practice-sequence-plan:b1d8c2861216d442",
+      "sequenceRevisionId": "session-practice-sequence-revision:6e60d15d5bc5be49",
+      "basedOnSourceSequenceRevisionId": "sequence-rev-1",
+      "steps": [
+        {
+          "sequenceIndex": 0,
+          "assignmentId": "prep",
+          "exerciseId": "cat-cow",
+          "section": "warmup",
+          "role": "preparation",
+          "sourceExposureEventId": "event-prep",
+          "prescriptionId": "rx-prep",
+          "finalPrescriptionRevisionId": "rx-rev-prep",
+          "orderedDoseBlockIds": [
+            "block-prep"
+          ],
+          "satisfiedNeedIds": [
+            "need-prep"
+          ],
+          "dependencyAssignmentIds": [],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [
+            "SESSION_PRACTICE_SEQUENCE_REBUILT"
+          ],
+          "provenance": []
+        },
+        {
+          "sequenceIndex": 1,
+          "assignmentId": "main",
+          "exerciseId": "goblet-squat",
+          "section": "main",
+          "role": "primary_strength",
+          "sourceExposureEventId": "event-main",
+          "prescriptionId": "rx-main",
+          "finalPrescriptionRevisionId": "rx-rev-main",
+          "orderedDoseBlockIds": [
+            "block-main"
+          ],
+          "satisfiedNeedIds": [
+            "need-main"
+          ],
+          "dependencyAssignmentIds": [
+            "prep"
+          ],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [
+            "SESSION_PRACTICE_SEQUENCE_REBUILT"
+          ],
+          "provenance": []
+        }
+      ],
+      "finalPrescriptionRevisionIds": [
+        "rx-rev-prep",
+        "rx-rev-main"
+      ],
+      "duration": {
+        "knownLowerBoundSeconds": 120,
+        "knownUpperBoundSeconds": null,
+        "availableSeconds": 2700,
+        "status": "unknown_due_to_setup_transition",
+        "unknownComponents": [
+          "transition:prep:main:explicit-fact-required"
+        ],
+        "prescriptionIntervalRefs": [
+          "rx-rev-main",
+          "rx-rev-prep"
+        ],
+        "transitionInstructionIds": [],
+        "timingFactReuseCount": 0,
+        "noInventedTime": true,
+        "provenance": []
+      },
+      "dependencyOrderPreserved": true,
+      "blockOrderPreserved": true,
+      "noPairing": true,
+      "recomputedFromExplicitFacts": true,
+      "reasonCodes": [
+        "SESSION_PRACTICE_FINAL_SEQUENCE_REBUILT",
+        "UNKNOWN_DURATION_PRESERVED"
+      ]
+    },
+    "duration": {
+      "knownLowerBoundSeconds": 120,
+      "knownUpperBoundSeconds": null,
+      "availableSeconds": 2700,
+      "status": "unknown_due_to_setup_transition",
+      "unknownComponents": [
+        "transition:prep:main:explicit-fact-required"
+      ],
+      "prescriptionIntervalRefs": [
+        "rx-rev-main",
+        "rx-rev-prep"
+      ],
+      "transitionInstructionIds": [],
+      "timingFactReuseCount": 0,
+      "noInventedTime": true,
+      "provenance": []
+    },
+    "burdenDifference": {
+      "source": {
+        "assignmentCount": 4,
+        "optionalAssignmentCount": 2,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 2,
+        "developmentalCount": 2,
+        "preparatoryBlockCount": 1,
+        "sourceEventCount": 4,
+        "prescribedWorkIntervalSeconds": [
+          240,
+          360
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          240,
+          360
+        ],
+        "setupTransitionCount": 3,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": false
+      },
+      "realized": {
+        "assignmentCount": 2,
+        "optionalAssignmentCount": 0,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 1,
+        "developmentalCount": 1,
+        "preparatoryBlockCount": 1,
+        "sourceEventCount": 2,
+        "prescribedWorkIntervalSeconds": [
+          120,
+          180
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          120,
+          null
+        ],
+        "setupTransitionCount": 1,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": true
+      },
+      "materiality": {
+        "assignmentOmissionCount": 2,
+        "developmentalCountReduction": 0,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": true,
+        "reasonCodes": [
+          "STRUCTURAL_OMISSION_MATERIAL"
+        ]
+      },
+      "universalBurdenScore": null
+    },
+    "availability": {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+        "contractVersion": "1.0.0"
+      },
+      "mode": "lighter",
+      "state": "available",
+      "reasonCodes": [
+        "LIGHTER_VALID_PURPOSE_PRESERVING_REALIZATION"
+      ],
+      "sourceEvidenceRefs": [
+        "session-rev-1",
+        "sequence-rev-1"
+      ],
+      "materiality": {
+        "assignmentOmissionCount": 2,
+        "developmentalCountReduction": 0,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": true,
+        "reasonCodes": [
+          "STRUCTURAL_OMISSION_MATERIAL"
+        ]
+      },
+      "fallbackApplied": false
+    },
+    "unresolvedRequirements": [],
+    "weekResponsibilityConsequences": [
+      "REALIZED_REQUIRED_RESPONSIBILITIES_REQUIRE_GATE_13_AND_PERFORMANCE"
+    ],
+    "completionCreditPolicy": "required_realized_evidence_only",
+    "noFallbackTrace": [
+      "SESSION_PRACTICE_LIGHTER_POLICY_V1_STRUCTURAL_FIRST@1.0.0",
+      "STRUCTURAL_POLICY_USED",
+      "NO_FALLBACK"
+    ],
+    "provenance": [
+      "session-rev-1",
+      "sequence-rev-1",
+      "SESSION_PRACTICE_LIGHTER_POLICY_V1_STRUCTURAL_FIRST@1.0.0"
+    ]
+  },
+  "recovery": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_REALIZATION_PLAN",
+      "contractVersion": "1.0.0"
+    },
+    "bridgeContractReference": {
+      "contractId": "SESSION_PRACTICE_OPTIONS_V2_BRIDGE",
+      "contractVersion": "1.0.0"
+    },
+    "realizerContractReference": {
+      "contractId": "PRODUCTION_SESSION_PRACTICE_REALIZER_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    "policyReference": "SESSION_PRACTICE_RECOVERY_POLICY_V1_EXPLICIT_SUPPORT_ONLY@1.0.0",
+    "mode": "recovery",
+    "status": "realized",
+    "sourceSessionId": "session-1",
+    "sourceSessionRevisionId": "session-rev-1",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "requestId": "session-practice-request:01a039549983c420",
+    "realizationRevisionId": "session-practice-realization-revision:5bd9d4b0316092c4",
+    "finalForExecution": true,
+    "assignments": [
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "prep",
+        "exerciseId": "cat-cow",
+        "sourceExposureEventId": "event-prep",
+        "state": "omitted",
+        "priority": "required",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [],
+        "omittedBlockIds": [
+          "block-prep"
+        ],
+        "reasonCodes": [
+          "RECOVERY_EXPLICIT_SUPPORT_OWNERSHIP_ABSENT"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "main",
+        "exerciseId": "goblet-squat",
+        "sourceExposureEventId": "event-main",
+        "state": "omitted",
+        "priority": "required",
+        "productiveRequiredAnchor": true,
+        "retainedBlockIds": [],
+        "omittedBlockIds": [
+          "block-main"
+        ],
+        "reasonCodes": [
+          "RECOVERY_DEVELOPMENTAL_MAIN_EXCLUDED"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "accessory",
+        "exerciseId": "lateral-raise",
+        "sourceExposureEventId": "event-accessory",
+        "state": "omitted",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [],
+        "omittedBlockIds": [
+          "block-accessory"
+        ],
+        "reasonCodes": [
+          "RECOVERY_EXPLICIT_SUPPORT_OWNERSHIP_ABSENT"
+        ],
+        "recoveryContributionLane": null,
+        "performanceCreated": false
+      },
+      {
+        "contractReference": {
+          "contractId": "SESSION_PRACTICE_ASSIGNMENT_DISPOSITION",
+          "contractVersion": "1.0.0"
+        },
+        "assignmentId": "cooldown",
+        "exerciseId": "breathing-reset",
+        "sourceExposureEventId": "event-cooldown",
+        "state": "retained",
+        "priority": "optional",
+        "productiveRequiredAnchor": false,
+        "retainedBlockIds": [
+          "block-cooldown"
+        ],
+        "omittedBlockIds": [],
+        "reasonCodes": [
+          "RECOVERY_EXPLICIT_LANE:recovery_support_only"
+        ],
+        "recoveryContributionLane": "recovery_support_only",
+        "performanceCreated": false
+      }
+    ],
+    "dependencies": [
+      {
+        "dependencyAssignmentId": "prep",
+        "dependentAssignmentIds": [
+          "main"
+        ],
+        "state": "not_applicable",
+        "reasonCodes": [
+          "ASSIGNMENT_NOT_ACTIVE_DEPENDENCY"
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "assignmentId": "main",
+        "preserved": false
+      }
+    ],
+    "needCoverage": [
+      {
+        "needId": "need-prep",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "prep"
+        ],
+        "retainedAssignmentIds": [],
+        "state": "omitted_pending_responsibility"
+      },
+      {
+        "needId": "need-main",
+        "priority": "required",
+        "sourceAssignmentIds": [
+          "main"
+        ],
+        "retainedAssignmentIds": [],
+        "state": "omitted_pending_responsibility"
+      },
+      {
+        "needId": "need-optional",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "accessory"
+        ],
+        "retainedAssignmentIds": [],
+        "state": "omitted_pending_responsibility"
+      },
+      {
+        "needId": "need-recovery",
+        "priority": "optional",
+        "sourceAssignmentIds": [
+          "cooldown"
+        ],
+        "retainedAssignmentIds": [
+          "cooldown"
+        ],
+        "state": "preserved"
+      }
+    ],
+    "purposePreserved": true,
+    "sourceEventsPreserved": true,
+    "prescriptionRevisions": [],
+    "finalSequence": {
+      "sequencePlanId": "session-practice-sequence-plan:eaccceb4a3363e38",
+      "sequenceRevisionId": "session-practice-sequence-revision:6ab49a42382a206e",
+      "basedOnSourceSequenceRevisionId": "sequence-rev-1",
+      "steps": [
+        {
+          "sequenceIndex": 0,
+          "assignmentId": "cooldown",
+          "exerciseId": "breathing-reset",
+          "section": "cooldown",
+          "role": "recovery",
+          "sourceExposureEventId": "event-cooldown",
+          "prescriptionId": "rx-cooldown",
+          "finalPrescriptionRevisionId": "rx-rev-cooldown",
+          "orderedDoseBlockIds": [
+            "block-cooldown"
+          ],
+          "satisfiedNeedIds": [
+            "need-recovery"
+          ],
+          "dependencyAssignmentIds": [],
+          "executionReadiness": "ready",
+          "sideOrder": "SIDE_ORDER_NOT_PRESCRIBED",
+          "reasonCodes": [
+            "SESSION_PRACTICE_SEQUENCE_REBUILT"
+          ],
+          "provenance": []
+        }
+      ],
+      "finalPrescriptionRevisionIds": [
+        "rx-rev-cooldown"
+      ],
+      "duration": {
+        "knownLowerBoundSeconds": 60,
+        "knownUpperBoundSeconds": 90,
+        "availableSeconds": 2700,
+        "status": "bounded",
+        "unknownComponents": [],
+        "prescriptionIntervalRefs": [
+          "rx-rev-cooldown"
+        ],
+        "transitionInstructionIds": [],
+        "timingFactReuseCount": 0,
+        "noInventedTime": true,
+        "provenance": []
+      },
+      "dependencyOrderPreserved": true,
+      "blockOrderPreserved": true,
+      "noPairing": true,
+      "recomputedFromExplicitFacts": true,
+      "reasonCodes": [
+        "SESSION_PRACTICE_FINAL_SEQUENCE_REBUILT",
+        "EXPLICIT_DURATION_RECOMPUTED"
+      ]
+    },
+    "duration": {
+      "knownLowerBoundSeconds": 60,
+      "knownUpperBoundSeconds": 90,
+      "availableSeconds": 2700,
+      "status": "bounded",
+      "unknownComponents": [],
+      "prescriptionIntervalRefs": [
+        "rx-rev-cooldown"
+      ],
+      "transitionInstructionIds": [],
+      "timingFactReuseCount": 0,
+      "noInventedTime": true,
+      "provenance": []
+    },
+    "burdenDifference": {
+      "source": {
+        "assignmentCount": 4,
+        "optionalAssignmentCount": 2,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 2,
+        "developmentalCount": 2,
+        "preparatoryBlockCount": 1,
+        "sourceEventCount": 4,
+        "prescribedWorkIntervalSeconds": [
+          240,
+          360
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          240,
+          360
+        ],
+        "setupTransitionCount": 3,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": false
+      },
+      "realized": {
+        "assignmentCount": 1,
+        "optionalAssignmentCount": 1,
+        "preferredAssignmentCount": 0,
+        "developmentalBlockCount": 0,
+        "developmentalCount": 0,
+        "preparatoryBlockCount": 0,
+        "sourceEventCount": 1,
+        "prescribedWorkIntervalSeconds": [
+          60,
+          90
+        ],
+        "restIntervalSeconds": [
+          0,
+          0
+        ],
+        "durationIntervalSeconds": [
+          60,
+          90
+        ],
+        "setupTransitionCount": 0,
+        "stressConcentrationObservationCount": 0,
+        "unresolvedDuration": false
+      },
+      "materiality": {
+        "assignmentOmissionCount": 3,
+        "developmentalCountReduction": 2,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": true,
+        "reasonCodes": [
+          "ZERO_DEVELOPMENTAL_BLOCK_RECOVERY_REALIZATION"
+        ]
+      },
+      "universalBurdenScore": null
+    },
+    "availability": {
+      "contractReference": {
+        "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+        "contractVersion": "1.0.0"
+      },
+      "mode": "recovery",
+      "state": "available_with_pending_week_responsibility",
+      "reasonCodes": [
+        "RECOVERY_EXPLICIT_SUPPORT_REALIZATION_AVAILABLE"
+      ],
+      "sourceEvidenceRefs": [
+        "session-rev-1",
+        "event-cooldown"
+      ],
+      "materiality": {
+        "assignmentOmissionCount": 3,
+        "developmentalCountReduction": 2,
+        "explicitLowerVariantCount": 0,
+        "materialReduction": true,
+        "reasonCodes": [
+          "ZERO_DEVELOPMENTAL_BLOCK_RECOVERY_REALIZATION"
+        ]
+      },
+      "fallbackApplied": false
+    },
+    "unresolvedRequirements": [],
+    "weekResponsibilityConsequences": [
+      "RECOVERY_SUPPORT_MAY_BE_OBSERVED",
+      "ORIGINAL_DEVELOPMENTAL_RESPONSIBILITY_UNFULFILLED",
+      "REMAINING_WEEK_REVIEW_REQUIRED"
+    ],
+    "completionCreditPolicy": "recovery_support_only_original_responsibility_unfulfilled",
+    "noFallbackTrace": [
+      "SESSION_PRACTICE_RECOVERY_POLICY_V1_EXPLICIT_SUPPORT_ONLY@1.0.0",
+      "NO_KEYWORD_PARSING",
+      "NO_FALLBACK"
+    ],
+    "provenance": [
+      "session-rev-1",
+      "sequence-rev-1",
+      "SESSION_PRACTICE_RECOVERY_POLICY_V1_EXPLICIT_SUPPORT_ONLY@1.0.0"
+    ]
+  }
+}

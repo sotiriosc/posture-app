@@ -1,0 +1,419 @@
+{
+  "version": "2.0.0",
+  "classification": "PRESCRIPTION_TOURNAMENT_CAUSAL_VALIDITY_READY_FOR_OWNER_SELECTION",
+  "currentTournamentDisposition": "SUPERSEDED_FOR_POLICY_SELECTION_BY_EVALUATOR_VALIDITY_REVIEW",
+  "currentTournamentProvisionalClassification": "PROVISIONAL_TOURNAMENT_RESULT_EVALUATOR_VALIDITY_REVIEW_REQUIRED",
+  "candidateValuesUnchanged": true,
+  "retainedCurrentTournamentFingerprint": "9d7366c054dd01d01de132d7c358b18d4cc506aaaea962dd48d869ea68e5ac07",
+  "currentHoldoutDisposition": "PRESCRIPTION_TOURNAMENT_V1_DISCLOSED_REGRESSION_COHORT",
+  "disclosedRegressionFingerprint": "ad86a6167e5811a657918b866ba660172cae1d3cae1157081b47f60a754f2c46",
+  "v2HoldoutCount": 100,
+  "v2HoldoutFingerprint": "9d208d6f97364f1d4586cf1f107c027176448438d4999c9542201b1cd7572cfa",
+  "assignmentPipelineCount": 6972,
+  "fullSessionPipelineCount": 8300,
+  "fullSessionPerformanceLinkagePipelineCount": 8300,
+  "classificationCounts": {
+    "CAGT_DOMINATED": 3,
+    "CAGT_NON_DOMINATED": 64,
+    "CAGT_REJECTED_FOR_BLOAT": 2,
+    "NO_POLICY_CONTROL": 14
+  },
+  "nonDominatedCandidates": [
+    "ACTIVATION_BALANCED",
+    "ACTIVATION_HIGH_COMPLEXITY_STRESS",
+    "ACTIVATION_MINIMAL_TRUTHFUL",
+    "BLOCK_STRUCTURE_BALANCED",
+    "BLOCK_STRUCTURE_MINIMAL_TRUTHFUL",
+    "BREATH_CYCLES_BALANCED",
+    "BREATH_CYCLES_HIGH_DOSE_STRESS",
+    "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+    "BREATH_CYCLES_NO_POLICY",
+    "CARRY_BALANCED",
+    "CARRY_HIGH_DOSE_STRESS",
+    "CARRY_MINIMAL_TRUTHFUL",
+    "CARRY_NO_POLICY",
+    "COUNTED_STEP_BALANCED",
+    "COUNTED_STEP_HIGH_DOSE_STRESS",
+    "COUNTED_STEP_MINIMAL_TRUTHFUL",
+    "COUNTED_STEP_NO_POLICY",
+    "DIRECT_ACCESSORY_BALANCED",
+    "DIRECT_ACCESSORY_HIGH_DOSE_STRESS",
+    "DIRECT_ACCESSORY_MINIMAL_TRUTHFUL",
+    "DURATION_BALANCED",
+    "DURATION_HIGH_STRESS",
+    "DURATION_MINIMAL_TRUTHFUL",
+    "EFFORT_BALANCED",
+    "EFFORT_FAILURE_STRESS",
+    "EFFORT_MINIMAL_TRUTHFUL",
+    "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+    "EXACT_TEMPO_MODERATE_TEST",
+    "EXACT_TEMPO_SLOW_PAUSE_STRESS",
+    "HYPERTROPHY_ACCESSORY_BALANCED",
+    "HYPERTROPHY_ACCESSORY_HIGH_DOSE_STRESS",
+    "HYPERTROPHY_ACCESSORY_MINIMAL_TRUTHFUL",
+    "MAIN_HYPERTROPHY_NO_POLICY",
+    "MAIN_STRENGTH_BALANCED",
+    "MAIN_STRENGTH_HIGH_DOSE_STRESS",
+    "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+    "PREPARATION_BALANCED",
+    "PREPARATION_HIGH_COMPLEXITY_STRESS",
+    "PREPARATION_MINIMAL_TRUTHFUL",
+    "RECOVERY_BALANCED",
+    "RECOVERY_HIGH_DOSE_STRESS",
+    "RECOVERY_MINIMAL_TRUTHFUL",
+    "REST_BALANCED",
+    "REST_HIGH_DURATION_STRESS",
+    "REST_MINIMAL_TRUTHFUL",
+    "RX_COMPOSITE_B1_BALANCED_CAUSAL",
+    "RX_COMPOSITE_H1_HYPERTROPHY",
+    "RX_COMPOSITE_M0_MINIMAL_STABILITY",
+    "RX_COMPOSITE_Q1_QUALITY_FIRST",
+    "RX_COMPOSITE_S1_STRENGTH",
+    "SECONDARY_STRENGTH_BALANCED",
+    "SECONDARY_STRENGTH_HIGH_DOSE_STRESS",
+    "SECONDARY_STRENGTH_MINIMAL_TRUTHFUL",
+    "STATIONARY_MARCH_BALANCED",
+    "STATIONARY_MARCH_HIGH_DOSE_STRESS",
+    "STATIONARY_MARCH_MINIMAL_TRUTHFUL",
+    "STATIONARY_MARCH_NO_POLICY",
+    "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+    "TEMPO_INTENT_MINIMAL_TRUTHFUL",
+    "TEMPO_INTENT_UNIVERSAL_CONTROL_STRESS",
+    "TIMED_HOLD_BALANCED",
+    "TIMED_HOLD_HIGH_DOSE_STRESS",
+    "TIMED_HOLD_MINIMAL_TRUTHFUL",
+    "TIMED_HOLD_NO_POLICY"
+  ],
+  "dominatedCandidates": [
+    "MAIN_HYPERTROPHY_BALANCED",
+    "MAIN_HYPERTROPHY_HIGH_DOSE_STRESS",
+    "MAIN_HYPERTROPHY_MINIMAL_TRUTHFUL"
+  ],
+  "equalSemanticCandidates": [
+    [
+      "ACTIVATION_BALANCED",
+      "BLOCK_STRUCTURE_BALANCED",
+      "BREATH_CYCLES_BALANCED",
+      "BREATH_CYCLES_HIGH_DOSE_STRESS",
+      "BREATH_CYCLES_MINIMAL_TRUTHFUL",
+      "BREATH_CYCLES_NO_POLICY",
+      "CARRY_BALANCED",
+      "COUNTED_STEP_BALANCED",
+      "DIRECT_ACCESSORY_BALANCED",
+      "DURATION_BALANCED",
+      "EFFORT_BALANCED",
+      "EXACT_TEMPO_MINIMAL_TRUTHFUL",
+      "HYPERTROPHY_ACCESSORY_BALANCED",
+      "MAIN_HYPERTROPHY_BALANCED",
+      "MAIN_STRENGTH_BALANCED",
+      "MAIN_STRENGTH_MINIMAL_TRUTHFUL",
+      "PREPARATION_BALANCED",
+      "RECOVERY_MINIMAL_TRUTHFUL",
+      "REST_BALANCED",
+      "RX_COMPOSITE_B1_BALANCED_CAUSAL",
+      "SECONDARY_STRENGTH_BALANCED",
+      "STATIONARY_MARCH_BALANCED",
+      "TEMPO_INTENT_GOAL_SPECIFIC_BALANCED",
+      "TEMPO_INTENT_UNIVERSAL_CONTROL_STRESS",
+      "TIMED_HOLD_BALANCED"
+    ],
+    [
+      "BLOCK_STRUCTURE_NO_POLICY",
+      "DURATION_NO_POLICY",
+      "EFFORT_NO_POLICY",
+      "EXACT_TEMPO_NO_POLICY",
+      "REST_NO_POLICY",
+      "RX_COMPOSITE_X0_NO_POLICY",
+      "TEMPO_INTENT_NO_POLICY"
+    ]
+  ],
+  "aggregateCausalSummary": {
+    "underAdaptationCount": 0,
+    "overAdaptationCount": 0,
+    "wrongLayerCount": 0,
+    "downstreamRescueCount": 0,
+    "sourceEventDuplicationCount": 0,
+    "preparatoryMiscreditCount": 0,
+    "performanceAssumptionCount": 0
+  },
+  "durationSummary": {
+    "fullyKnownDurationCases": 0,
+    "boundedDurationCases": 0,
+    "unknownDurationCases": 37116,
+    "definitelyOverBudgetCases": 2,
+    "possiblyOverBudgetCases": 67
+  },
+  "blindness": {
+    "candidateRenameMutation": "PASS_NO_METRIC_CHANGE",
+    "ownerLeadingMutation": "PASS_NO_METRIC_CHANGE",
+    "shapeLabelMutation": "PASS_NO_METRIC_CHANGE",
+    "expectedRiskProseMutation": "PASS_NO_METRIC_CHANGE",
+    "semanticEquivalence": "PASS_EQUIVALENT_SEMANTICS_EQUIVALENT_RESULTS",
+    "highLabelWithMinimalValues": "EVALUATED_AS_MINIMAL_VALUES",
+    "balancedLabelWithStressValues": "EVALUATED_AS_STRESS_VALUES",
+    "evaluatorOutputIdentityLeak": "NO_IDENTITY_BEFORE_POST_EVALUATION_MAPPING",
+    "fingerprint": "32312697365a952a1c246bb732e854babcd0ba4d74447ab46f6e1b0c092a3583"
+  },
+  "selfTests": {
+    "underAdaptationMutation": "DETECTED_FROM_SEMANTIC_DIFF",
+    "overAdaptationMutation": "DETECTED_FROM_SEMANTIC_DIFF",
+    "wrongLayerMutation": "DETECTED_FROM_OWNER_AWARE_DIFF",
+    "downstreamRescueMutation": "UPSTREAM_FAILURE_NOT_RESCUED",
+    "sourceDuplicationMutation": "DETECTED_FROM_EVENT_GRAPH",
+    "revisionDuplicationMutation": "DETECTED_FROM_REVISION_TRACE",
+    "preparatoryMiscreditMutation": "DETECTED_FROM_BLOCK_CLASSIFICATION",
+    "substitutionDoubleCountMutation": "DETECTED_FROM_SOURCE_AND_PERFORMANCE_RECORDS",
+    "orphanPreparationMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "missingRequiredPreparationMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "mainPurposeLossMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "actualAsPlanAssumptionMutation": "DETECTED_FROM_PERFORMANCE_LINKAGE",
+    "fakeDurationMutation": "REJECTED_NO_INVENTED_DURATION",
+    "policyCreatedAssignmentMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "genericActivationMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "genericCooldownMutation": "DETECTED_FROM_SESSION_ARGUMENT",
+    "fingerprint": "19e1f370dcb243581891de582e0b2129da4bd3036bbcbcb58a192739b24b9b49"
+  },
+  "h1h2": {
+    "result": "PRESCRIPTION_AND_RESPONSE_DEPENDENT",
+    "h1SourceEvents": 2,
+    "h2SourceEvents": 4,
+    "h1DevelopmentalRange": [
+      2,
+      2
+    ],
+    "h2DevelopmentalRange": [
+      3,
+      3
+    ],
+    "preparatoryExcluded": true,
+    "sessionDurationIntervals": [
+      "unknown_due_to_sequencing",
+      "unknown_due_to_sequencing",
+      "unknown_due_to_sequencing"
+    ],
+    "additiveErrorMutation": "FAIL_PREPARATORY_OR_DISTRIBUTED_VOLUME_DOUBLE_COUNT",
+    "fingerprint": "70df9eaa958113df7518dfd6b4f697c7ece90aac638bf264d03c07487368a9b7"
+  },
+  "spacing": {
+    "result": "PRESCRIPTION_AND_RESPONSE_DEPENDENT",
+    "comparedOpportunityCount": 6,
+    "timestampBasis": "ACTUAL_OPPORTUNITY_TIMESTAMPS",
+    "universalRecoverySpacingApproved": false,
+    "findings": [
+      "consecutive opportunities retain higher uncertainty without response evidence",
+      "distributed opportunities are structurally distinguishable but not universally superior",
+      "unknown duration intervals block fixed recovery-hour approval"
+    ],
+    "fingerprint": "a6e789b7fa89d98f4ca9f087df7a8b4675b1ea4b7629be981ee45015fb3d5de5"
+  },
+  "performanceIndependence": {
+    "plannedFingerprint": "0da5749b5ca236f44b4d5ce52011449dbbc3a163dca48e0d1d6b556a07afcb9c",
+    "observedCases": [
+      {
+        "caseId": "completed_exactly_as_planned",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": true
+      },
+      {
+        "caseId": "fewer_reps",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "lower_load",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "shortened_duration",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "altered_tempo",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "partial_block",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "omitted_preparatory_block",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "omitted_developmental_block",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "extra_unplanned_block",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "substitution",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "unknown_actual_timing",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "not_observed",
+        "actualDoseAssumedFromPlan": false,
+        "actualTimingAssumedFromPlan": false,
+        "validationErrors": [],
+        "planEqualsActualWhenExplicitlyObserved": false
+      },
+      {
+        "caseId": "actual_as_plan_assumption_mutation",
+        "actualDoseAssumedFromPlan": true,
+        "actualTimingAssumedFromPlan": true,
+        "validationErrors": [
+          "actual_dose_assumed_from_plan",
+          "actual_timing_assumed_from_plan"
+        ],
+        "planEqualsActualWhenExplicitlyObserved": false
+      }
+    ],
+    "actualAsPlanMutation": "ACTUAL_AS_PLAN_ASSUMPTION_REJECTED",
+    "performanceAssumptionCount": 1,
+    "fingerprint": "ac4bea8d5a2c24e3c4400f3318c39f063fc6904df2257157c52f5bf9510d14df"
+  },
+  "restPlacement": {
+    "currentDoseRestField": "AMBIGUOUS_WITHOUT_PLACEMENT_CONTRACT",
+    "designOnlyContractRequired": true,
+    "placementsByMode": {
+      "repetition_sets": "between_sets",
+      "timed_hold": "between_sets",
+      "breath_cycles": "between_rounds",
+      "distance_carry": "between_trips",
+      "timed_carry": "between_trips",
+      "step_march": "between_sets",
+      "step_sets": "between_sets"
+    },
+    "finding": "REST_PLACEMENT_CONTRACT_CREATED_BEFORE_DURATION_USE",
+    "fingerprint": "d56014ada0102cc38db6e750500450ad9b2c54fb6d6af75b96ebdb8b2d88eed4"
+  },
+  "productionFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateRankingMatches": true,
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "candidateComprehensiveMatches": true,
+    "catalogIdentity": "49b38724c2aa562d6471f09d62cb0d1b09b9900b474139a0279c2adb82919c90",
+    "catalogBehaviorMetadata": "bfb21d7dc91504de5da8f4cd92850c8bb97ca5a0ce5f65624d2db4971d5e1a91",
+    "fullCatalogMetadata": "c79c2360e5a5b39ecebbf91899c248e62a9edd7997ad29e266d4236cf9410a9e",
+    "sessionPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionPlannerMatches": true,
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "sessionComposerMatches": true,
+    "timingFoundation": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "cagtCore": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+    "fullPrescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805"
+  },
+  "fingerprints": {
+    "evaluatorValidityAudit": "fde02e8f73f8372aa05b287846bf5d6ffc13c201f8b457a1cfe53a083465f1de",
+    "blindedSemanticPolicy": "dd54f865b4102b0fc747fd91effa7b583d7d008516dafc6152375cd525e7fa19",
+    "identityLeakMutations": "28373d53114270d2f50916cb6a036683072c5d3018869bbed99d27b29d616813",
+    "counterfactualContract": "a5f3888bf46d37d0b5fed100a117bb67ff1081a81557d667ef3bc9e7de7028ea",
+    "actualSemanticDiffEngine": "f27c020588deac48c995c409252643fc21b5a481ff10cc10061da8f812396373",
+    "underAdaptationDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "overAdaptationDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "wrongLayerDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "noRescueDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "fullSessionPipeline": "54ccd08c0ec7de785994946cd33ca75676a3cadad850d8189df61e969e8c2b03",
+    "completeSessionArgument": "3327332803224aa8b422c82d575e5215b235f6bb64825388c6c24951041d9247",
+    "sourceEventDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "revisionDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "performanceIndependence": "4d0227e84f755f6db6160fce72785dc46fcebaab9b114c42d8732e9f885bac79",
+    "durationInterval": "c69897d4c304c017ea79751c7d7439dac059f89fc2e53b549cd8b48d606ec896",
+    "restPlacement": "c4d5baf973f5c2603242039d4276e22d52f379dfd705b7237e98e6aa9f228b8d",
+    "structuralBurden": "95d54eff7aab0384af1ff046a48ef5607929a8f5792592fcac4f5de94a43995c",
+    "disclosedRegressionCohort": "0f88c3a8b48ee93caca34f51b63af1d75e5de5d75d93c2f5b066a9e48b1bfd14",
+    "v2HoldoutManifest": "9d208d6f97364f1d4586cf1f107c027176448438d4999c9542201b1cd7572cfa",
+    "evaluatorSelfTests": "9f4dd88957d9e6085f0f6f1e52e94a72585bc42e86b34cc4b5c78f41695ebb84",
+    "fullSessionResults": "3327332803224aa8b422c82d575e5215b235f6bb64825388c6c24951041d9247",
+    "causalResults": "d945a75345a954d86905164a0a2e2d666cfe6e09f47a74173c43f6e33025e3c3",
+    "h1h2CompiledSublab": "edc8b8e77b5cc70443470b6f3fa32377dd6aadbdb6a63b3892930d49d33efbf2",
+    "spacingCompiledSublab": "3c84481462afbd1a67d7485e93a8aa84cbe22ff5cb32a87a8c9bfb30e4d265da",
+    "v2ValidityVerdict": "7350c97fb83d235c8afa1f75609bec0edc20f1027f16c33a99e8c4704ee07bed",
+    "combinedEvaluatorHardeningResult": "61a01108e0a5c73b0b1fa1847c5891b43f5e8cb583ee4382fd54736a4b53e740"
+  },
+  "expectedFingerprints": {
+    "evaluatorValidityAudit": "fde02e8f73f8372aa05b287846bf5d6ffc13c201f8b457a1cfe53a083465f1de",
+    "blindedSemanticPolicy": "dd54f865b4102b0fc747fd91effa7b583d7d008516dafc6152375cd525e7fa19",
+    "identityLeakMutations": "28373d53114270d2f50916cb6a036683072c5d3018869bbed99d27b29d616813",
+    "counterfactualContract": "a5f3888bf46d37d0b5fed100a117bb67ff1081a81557d667ef3bc9e7de7028ea",
+    "actualSemanticDiffEngine": "f27c020588deac48c995c409252643fc21b5a481ff10cc10061da8f812396373",
+    "underAdaptationDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "overAdaptationDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "wrongLayerDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "noRescueDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "fullSessionPipeline": "54ccd08c0ec7de785994946cd33ca75676a3cadad850d8189df61e969e8c2b03",
+    "completeSessionArgument": "3327332803224aa8b422c82d575e5215b235f6bb64825388c6c24951041d9247",
+    "sourceEventDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "revisionDerivation": "48bf6deac0143a748ae9c88b52b0c1747da531143278dad7f0dcceb5a64938fb",
+    "performanceIndependence": "4d0227e84f755f6db6160fce72785dc46fcebaab9b114c42d8732e9f885bac79",
+    "durationInterval": "c69897d4c304c017ea79751c7d7439dac059f89fc2e53b549cd8b48d606ec896",
+    "restPlacement": "c4d5baf973f5c2603242039d4276e22d52f379dfd705b7237e98e6aa9f228b8d",
+    "structuralBurden": "95d54eff7aab0384af1ff046a48ef5607929a8f5792592fcac4f5de94a43995c",
+    "disclosedRegressionCohort": "0f88c3a8b48ee93caca34f51b63af1d75e5de5d75d93c2f5b066a9e48b1bfd14",
+    "v2HoldoutManifest": "9d208d6f97364f1d4586cf1f107c027176448438d4999c9542201b1cd7572cfa",
+    "evaluatorSelfTests": "9f4dd88957d9e6085f0f6f1e52e94a72585bc42e86b34cc4b5c78f41695ebb84",
+    "fullSessionResults": "3327332803224aa8b422c82d575e5215b235f6bb64825388c6c24951041d9247",
+    "causalResults": "d945a75345a954d86905164a0a2e2d666cfe6e09f47a74173c43f6e33025e3c3",
+    "h1h2CompiledSublab": "edc8b8e77b5cc70443470b6f3fa32377dd6aadbdb6a63b3892930d49d33efbf2",
+    "spacingCompiledSublab": "3c84481462afbd1a67d7485e93a8aa84cbe22ff5cb32a87a8c9bfb30e4d265da",
+    "v2ValidityVerdict": "7350c97fb83d235c8afa1f75609bec0edc20f1027f16c33a99e8c4704ee07bed",
+    "combinedEvaluatorHardeningResult": "61a01108e0a5c73b0b1fa1847c5891b43f5e8cb583ee4382fd54736a4b53e740"
+  },
+  "remainingEvaluatorLimitations": [
+    "Evaluator remains test/developer-only and does not activate production numeric policy.",
+    "Duration intervals still require final Sequencing for setup and inter-exercise transitions.",
+    "Spacing and H1/H2 distribution remain Prescription-and-response dependent."
+  ],
+  "blockersBeforeOwnerNumericPolicySelection": [
+    "Owner review of CAGT evidence classifications and non-dominated candidate tradeoffs.",
+    "Separate owner decision layer for any selected production policy.",
+    "Load-policy tournament for exact load retention and equipment increments."
+  ],
+  "blockersBeforeProductionPrescriptionCompiler": [
+    "Production policy activation authorization.",
+    "Final Sequencing setup/transition duration integration.",
+    "Production performance block ingestion."
+  ],
+  "blockersBeforePostPrescriptionWeekValidation": [
+    "Production Prescription source-exposure ledger.",
+    "Completed-performance response evidence.",
+    "Longitudinal response and deload authority."
+  ],
+  "exactNextDependency": "Owner review of the blinded evaluator validity report before any separate numeric policy selection authorization."
+}

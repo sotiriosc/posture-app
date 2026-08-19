@@ -1,0 +1,108 @@
+{
+  "invariants": [
+    {
+      "id": "entry-module-order",
+      "passed": true
+    },
+    {
+      "id": "fact-object-order",
+      "passed": true
+    },
+    {
+      "id": "presentation-object-order",
+      "passed": true
+    },
+    {
+      "id": "provenance-order",
+      "passed": true
+    },
+    {
+      "id": "related-reference-order",
+      "passed": true
+    },
+    {
+      "id": "registry-construction-order",
+      "passed": true
+    },
+    {
+      "id": "wave-execution-order",
+      "passed": true
+    },
+    {
+      "id": "documentation-order",
+      "passed": true
+    },
+    {
+      "id": "package-file-location",
+      "passed": true
+    },
+    {
+      "id": "generated-regeneration",
+      "passed": true
+    },
+    {
+      "id": "account-shell",
+      "passed": true
+    },
+    {
+      "id": "irrelevant-product-facts",
+      "passed": true
+    }
+  ],
+  "materialResponses": [
+    {
+      "baseline": "baseline:fact-statement",
+      "changed": "changed:fact-statement",
+      "id": "fact-statement",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:compact-instruction",
+      "changed": "changed:compact-instruction",
+      "id": "compact-instruction",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:fact-applicability",
+      "changed": "changed:fact-applicability",
+      "id": "fact-applicability",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:review-status",
+      "changed": "changed:review-status",
+      "id": "review-status",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:provenance",
+      "changed": "changed:provenance",
+      "id": "provenance",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:presentation-reference",
+      "changed": "changed:presentation-reference",
+      "id": "presentation-reference",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:realization-override",
+      "changed": "changed:realization-override",
+      "id": "realization-override",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:fallback-source-fact",
+      "changed": "changed:fallback-source-fact",
+      "id": "fallback-source-fact",
+      "passed": true
+    },
+    {
+      "baseline": "baseline:engine-metadata-conflict",
+      "changed": "changed:engine-metadata-conflict",
+      "id": "engine-metadata-conflict",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "contract": {
+    "contractId": "ATHLETE_TRAINING_EXPERIENCE_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "authority": [
+    "exact_completed_performance_current_realization",
+    "repeated_completed_performance_related_realizations",
+    "coach_reviewed_current_realization_history",
+    "authenticated_athlete_current_realization_report",
+    "identity_familiarity",
+    "recent_training_consistency",
+    "coarse_experience_level",
+    "lifetime_training_years",
+    "unknown"
+  ]
+}

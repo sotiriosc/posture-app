@@ -1,0 +1,902 @@
+[
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "pairId": "golden-pair:0",
+    "selectedUseCase": "recovery_cooldown",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "pairId": "golden-pair:1",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "pairId": "golden-pair:2",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "push-up",
+    "pairId": "golden-pair:3",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "pairId": "golden-pair:4",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "pairId": "golden-pair:5",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "pairId": "golden-pair:6",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "pairId": "golden-pair:7",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "pairId": "golden-pair:8",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-row",
+    "pairId": "golden-pair:9",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "pairId": "golden-pair:10",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-row",
+    "pairId": "golden-pair:11",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "pairId": "golden-pair:12",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "pairId": "golden-pair:13",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "pairId": "golden-pair:14",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "pairId": "golden-pair:15",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "leg-press",
+    "pairId": "golden-pair:16",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "pairId": "golden-pair:17",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "pairId": "golden-pair:18",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "pairId": "golden-pair:19",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "split-squat",
+    "pairId": "golden-pair:20",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "step-up",
+    "pairId": "golden-pair:21",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "pairId": "golden-pair:22",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "pairId": "golden-pair:23",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "pairId": "golden-pair:24",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "pairId": "golden-pair:25",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "pairId": "golden-pair:26",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "pairId": "golden-pair:27",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "pairId": "golden-pair:28",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "pairId": "golden-pair:29",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "pairId": "golden-pair:30",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "pairId": "golden-pair:31",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "pairId": "golden-pair:32",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "pairId": "golden-pair:33",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "pairId": "golden-pair:34",
+    "selectedUseCase": "accessory_carry",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "pairId": "golden-pair:35",
+    "selectedUseCase": "accessory_carry",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "pairId": "golden-pair:36",
+    "selectedUseCase": "developmental_stationary_march",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "pairId": "golden-pair:37",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "pairId": "golden-pair:38",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "pairId": "golden-pair:39",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "pairId": "golden-pair:40",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "pairId": "golden-pair:41",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "pairId": "golden-pair:42",
+    "selectedUseCase": "preparation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "pairId": "golden-pair:43",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "pairId": "golden-pair:44",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "pairId": "golden-pair:45",
+    "selectedUseCase": "recovery_cooldown",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "pairId": "golden-pair:46",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "pairId": "golden-pair:47",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "push-up",
+    "pairId": "golden-pair:48",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "pairId": "golden-pair:49",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "pairId": "golden-pair:50",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "pairId": "golden-pair:51",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "pairId": "golden-pair:52",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "pairId": "golden-pair:53",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-row",
+    "pairId": "golden-pair:54",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "seated-cable-row",
+    "pairId": "golden-pair:55",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-row",
+    "pairId": "golden-pair:56",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-shoulder-press",
+    "pairId": "golden-pair:57",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "lat-pulldown",
+    "pairId": "golden-pair:58",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-lat-pulldown",
+    "pairId": "golden-pair:59",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "goblet-squat",
+    "pairId": "golden-pair:60",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "leg-press",
+    "pairId": "golden-pair:61",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "bodyweight-box-squat",
+    "pairId": "golden-pair:62",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "pairId": "golden-pair:63",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-pull-through",
+    "pairId": "golden-pair:64",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "split-squat",
+    "pairId": "golden-pair:65",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "step-up",
+    "pairId": "golden-pair:66",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "lying-leg-curl",
+    "pairId": "golden-pair:67",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "glute-bridge",
+    "pairId": "golden-pair:68",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-lateral-raise",
+    "pairId": "golden-pair:69",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "reverse-pec-deck",
+    "pairId": "golden-pair:70",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "band-face-pull",
+    "pairId": "golden-pair:71",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-curl",
+    "pairId": "golden-pair:72",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-triceps-pressdown",
+    "pairId": "golden-pair:73",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "pallof-press",
+    "pairId": "golden-pair:74",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "forearm-plank",
+    "pairId": "golden-pair:75",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "forearm-side-plank",
+    "pairId": "golden-pair:76",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-abdominal-crunch",
+    "pairId": "golden-pair:77",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "pairId": "golden-pair:78",
+    "selectedUseCase": "secondary_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "farmer-carry",
+    "pairId": "golden-pair:79",
+    "selectedUseCase": "accessory_carry",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "suitcase-carry",
+    "pairId": "golden-pair:80",
+    "selectedUseCase": "accessory_carry",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "wall-supported-suitcase-march",
+    "pairId": "golden-pair:81",
+    "selectedUseCase": "developmental_stationary_march",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "standing-calf-raise",
+    "pairId": "golden-pair:82",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "side-lying-hip-adduction",
+    "pairId": "golden-pair:83",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "loop-band-lateral-walk",
+    "pairId": "golden-pair:84",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "pairId": "golden-pair:85",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "supine-hamstring-walkout",
+    "pairId": "golden-pair:86",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "pairId": "golden-pair:87",
+    "selectedUseCase": "preparation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "pairId": "golden-pair:88",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "single-leg-balance-rehearsal",
+    "pairId": "golden-pair:89",
+    "selectedUseCase": "timed_hold",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "ninety-ninety-breathing",
+    "pairId": "golden-pair:90",
+    "selectedUseCase": "recovery_cooldown",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "serratus-wall-slide",
+    "pairId": "golden-pair:91",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dead-bug",
+    "pairId": "golden-pair:92",
+    "selectedUseCase": "activation",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "push-up",
+    "pairId": "golden-pair:93",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "dumbbell-bench-press",
+    "pairId": "golden-pair:94",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-chest-press",
+    "pairId": "golden-pair:95",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "cable-chest-fly",
+    "pairId": "golden-pair:96",
+    "selectedUseCase": "direct_accessory",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "chest-supported-dumbbell-row",
+    "pairId": "golden-pair:97",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "one-arm-dumbbell-row",
+    "pairId": "golden-pair:98",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  },
+  {
+    "exerciseId": "machine-row",
+    "pairId": "golden-pair:99",
+    "selectedUseCase": "main_strength",
+    "semanticsEqual": true,
+    "sourceEventCount": 2,
+    "v1_1Status": "compiled",
+    "v1Status": "compiled"
+  }
+]

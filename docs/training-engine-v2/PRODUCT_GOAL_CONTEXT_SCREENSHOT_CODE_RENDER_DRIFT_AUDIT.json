@@ -1,0 +1,127 @@
+{
+  "rows": [
+    {
+      "id": "global_visual_language",
+      "evidence": "Five Product composites and current renders share photo, dark glass, sky selection, and gradient CTA language",
+      "classifications": [
+        "screenshot_matches_current_branch"
+      ],
+      "disposition": "preserve",
+      "materialToChunkE": true
+    },
+    {
+      "id": "consumer_field_order",
+      "evidence": "Owner screenshot and consumer branch both order days, goal, mode, pain, experience, equipment",
+      "classifications": [
+        "screenshot_matches_current_branch"
+      ],
+      "disposition": "record_current_order_but_design_goal_first_target",
+      "materialToChunkE": true
+    },
+    {
+      "id": "knees_pain_choice",
+      "evidence": "Owner screenshot includes Knees; both current QuestionnaireForm sources stop at Hips",
+      "classifications": [
+        "screenshot_matches_deployed_but_not_branch",
+        "stale_build_possible",
+        "requires_owner_review"
+      ],
+      "disposition": "do_not_add_in_E_or_F_without_separate_decision",
+      "materialToChunkE": false
+    },
+    {
+      "id": "resistance_band_detail",
+      "evidence": "Owner reports a conditional detail state; no subtype, anchor, or band-detail branch code/render exists",
+      "classifications": [
+        "conditional_state_not_captured",
+        "owner_observation_unverified",
+        "stale_build_possible",
+        "requires_owner_review"
+      ],
+      "disposition": "design_progressive_disclosure_without_claiming_current_implementation",
+      "materialToChunkE": true
+    },
+    {
+      "id": "consumer_training_mode",
+      "evidence": "Consumer renders Build, Maintain, Recover cards and matches the screenshot",
+      "classifications": [
+        "screenshot_matches_current_branch"
+      ],
+      "disposition": "preserve_current_runtime_in_E_and_F",
+      "materialToChunkE": true
+    },
+    {
+      "id": "gyms_training_mode",
+      "evidence": "Gyms schema accepts trainingIntent but its QuestionnaireForm renders no mode picker",
+      "classifications": [
+        "consumer_gyms_difference",
+        "current_branch_only"
+      ],
+      "disposition": "record_parity_gap_keep_gyms_runtime_unchanged",
+      "materialToChunkE": true
+    },
+    {
+      "id": "mobile_owner_crops",
+      "evidence": "Owner declares eight mobile crops, but no independently identifiable mobile crop exists in the local eight-binary inventory",
+      "classifications": [
+        "owner_observation_unverified",
+        "not_material_to_Chunk_E"
+      ],
+      "disposition": "use_owner_observation_as_evidence_and_current_head_mobile_renders_for_branch_verification",
+      "materialToChunkE": false
+    },
+    {
+      "id": "binary_inventory",
+      "evidence": "Owner declares 13 logical images while eight 4480x1440 binaries are locally present; three include partial or unrelated desktop context",
+      "classifications": [
+        "requires_owner_review",
+        "not_material_to_Chunk_E"
+      ],
+      "disposition": "record_without_requesting_images_again",
+      "materialToChunkE": false
+    },
+    {
+      "id": "training_intent_signature",
+      "evidence": "trainingIntent is persisted and consumed by engine/shadow mapping but omitted from buildQuestionnaireSignature",
+      "classifications": [
+        "historical_compatibility_behavior",
+        "future_architecture_difference"
+      ],
+      "disposition": "signature_v2_design_required_before_activation",
+      "materialToChunkE": true
+    },
+    {
+      "id": "legacy_gym_expansion",
+      "evidence": "normalizeEquipmentSelection expands gym to dumbbells, barbell, kettlebell, cables, machines, and bench",
+      "classifications": [
+        "historical_compatibility_behavior",
+        "future_architecture_difference"
+      ],
+      "disposition": "preserve_legacy_replay_but_do_not_copy_into_v2_profile",
+      "materialToChunkE": true
+    },
+    {
+      "id": "gyms_buyer_demo_equipment",
+      "evidence": "Buyer demo replaces equipment checkboxes with a gym-owner configured environment panel",
+      "classifications": [
+        "current_branch_only",
+        "consumer_gyms_difference"
+      ],
+      "disposition": "gym_owner_lock_remains_authoritative",
+      "materialToChunkE": true
+    },
+    {
+      "id": "movement_profile_title",
+      "evidence": "Screenshot and branch title both say Build your Praxis movement profile",
+      "classifications": [
+        "screenshot_matches_current_branch",
+        "future_architecture_difference"
+      ],
+      "disposition": "later_copy_target_broadens_to_training_profile_F_may_preserve_current",
+      "materialToChunkE": true
+    }
+  ],
+  "unresolvedCount": 4,
+  "topClassificationStillEarnable": true,
+  "rationale": "The unresolved discrepancies are documented and do not prevent selecting or specifying the one consumer surface."
+}

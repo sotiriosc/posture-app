@@ -1,0 +1,401 @@
+[
+  {
+    "id": "twelfth-unselected-row",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:twelfth-unselected-row"
+  },
+  {
+    "id": "duplicate-incline-dumbbell-row",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:duplicate-incline-dumbbell-row"
+  },
+  {
+    "id": "duplicate-assisted-pull-up-row",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:duplicate-assisted-pull-up-row"
+  },
+  {
+    "id": "machine-brand-exercise-id",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-brand-exercise-id"
+  },
+  {
+    "id": "hack-squat-as-leg-press",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:hack-squat-as-leg-press"
+  },
+  {
+    "id": "seated-leg-curl-as-lying-realization",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:seated-leg-curl-as-lying-realization"
+  },
+  {
+    "id": "seated-calf-as-standing-realization",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:seated-calf-as-standing-realization"
+  },
+  {
+    "id": "machine-hip-thrust-as-glute-bridge",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-hip-thrust-as-glute-bridge"
+  },
+  {
+    "id": "chest-fly-as-press",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:chest-fly-as-press"
+  },
+  {
+    "id": "straight-arm-pulldown-as-vertical-pull",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:straight-arm-pulldown-as-vertical-pull"
+  },
+  {
+    "id": "incline-hidden-in-prose",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:incline-hidden-in-prose"
+  },
+  {
+    "id": "angle-from-goal",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:angle-from-goal"
+  },
+  {
+    "id": "angle-from-upper-chest-prose",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:angle-from-upper-chest-prose"
+  },
+  {
+    "id": "automatic-angle-rotation",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:automatic-angle-rotation"
+  },
+  {
+    "id": "flat-bench-for-incline",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:flat-bench-for-incline"
+  },
+  {
+    "id": "gym-label-for-incline-machine",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:gym-label-for-incline-machine"
+  },
+  {
+    "id": "upper-chest-guarantee",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:upper-chest-guarantee"
+  },
+  {
+    "id": "new-incline-identity",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:new-incline-identity"
+  },
+  {
+    "id": "assistance-as-external-load",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:assistance-as-external-load"
+  },
+  {
+    "id": "invented-assistance-percentage",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:invented-assistance-percentage"
+  },
+  {
+    "id": "pull-up-without-apparatus",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:pull-up-without-apparatus"
+  },
+  {
+    "id": "band-assistance-admitted",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:band-assistance-admitted"
+  },
+  {
+    "id": "chin-up-admitted",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:chin-up-admitted"
+  },
+  {
+    "id": "assistance-double-count",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:assistance-double-count"
+  },
+  {
+    "id": "automatic-pull-up-transition",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:automatic-pull-up-transition"
+  },
+  {
+    "id": "gym-means-all-machines",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:gym-means-all-machines"
+  },
+  {
+    "id": "selectorized-equals-plate-loaded",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:selectorized-equals-plate-loaded"
+  },
+  {
+    "id": "machine-setting-equals-kilograms",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-setting-equals-kilograms"
+  },
+  {
+    "id": "cable-stacks-equivalent",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:cable-stacks-equivalent"
+  },
+  {
+    "id": "machine-safer-claim",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-safer-claim"
+  },
+  {
+    "id": "missing-machine-adjustment",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:missing-machine-adjustment"
+  },
+  {
+    "id": "missing-knowledge-category",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:missing-knowledge-category"
+  },
+  {
+    "id": "duplicate-knowledge-fact",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:duplicate-knowledge-fact"
+  },
+  {
+    "id": "stale-fallback",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:stale-fallback"
+  },
+  {
+    "id": "candidate-parses-knowledge",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:candidate-parses-knowledge"
+  },
+  {
+    "id": "product-imports-knowledge",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:product-imports-knowledge"
+  },
+  {
+    "id": "coaching-rail-ui",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:coaching-rail-ui"
+  },
+  {
+    "id": "library-route",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:library-route"
+  },
+  {
+    "id": "get-stronger-visibility",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:get-stronger-visibility"
+  },
+  {
+    "id": "questionnaire-change",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:questionnaire-change"
+  },
+  {
+    "id": "full-lighter-recovery",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:full-lighter-recovery"
+  },
+  {
+    "id": "owner-delivery",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:owner-delivery"
+  },
+  {
+    "id": "product-activation",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:product-activation"
+  },
+  {
+    "id": "preg3-complete",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:preg3-complete"
+  },
+  {
+    "id": "final-ledger-complete",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:final-ledger-complete"
+  },
+  {
+    "id": "wrong-cable-anchor",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:wrong-cable-anchor"
+  },
+  {
+    "id": "cable-label-equivalence",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:cable-label-equivalence"
+  },
+  {
+    "id": "machine-comfort-score",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-comfort-score"
+  },
+  {
+    "id": "novelty-quota",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:novelty-quota"
+  },
+  {
+    "id": "stable-anchor-displaced",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:stable-anchor-displaced"
+  },
+  {
+    "id": "machine-mandatory",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:machine-mandatory"
+  },
+  {
+    "id": "generic-warmup",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:generic-warmup"
+  },
+  {
+    "id": "generic-activation",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:generic-activation"
+  },
+  {
+    "id": "automatic-progression",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:automatic-progression"
+  },
+  {
+    "id": "automatic-replacement",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:automatic-replacement"
+  },
+  {
+    "id": "duplicate-source-event",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:duplicate-source-event"
+  },
+  {
+    "id": "knowledge-ranking-effect",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_S_MUTATION_REJECTED:knowledge-ranking-effect"
+  }
+]

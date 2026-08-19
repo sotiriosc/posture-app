@@ -1,0 +1,201 @@
+[
+  {
+    "identity": "push-up",
+    "variants": [
+      "wall",
+      "elevated_or_incline",
+      "knee_supported",
+      "standard_floor",
+      "future_external_load"
+    ],
+    "decision": "same_identity",
+    "reason": "Support, lever, and load can vary while the bodyweight horizontal-press identity remains recognizable.",
+    "requiredMetadata": [
+      "support_source",
+      "lever",
+      "range",
+      "load",
+      "floor_or_wall_truth"
+    ]
+  },
+  {
+    "identity": "one-arm-dumbbell-row",
+    "variants": [
+      "bench_supported",
+      "chair_or_table_supported",
+      "unsupported",
+      "split_stance",
+      "side_specific"
+    ],
+    "decision": "same_identity",
+    "reason": "Support and side are realization facts; the unilateral free-implement horizontal-row path remains stable.",
+    "requiredMetadata": [
+      "support_surface",
+      "support_amount",
+      "stance",
+      "side",
+      "range"
+    ]
+  },
+  {
+    "identity": "goblet-squat",
+    "variants": [
+      "supported",
+      "box_target",
+      "free_standing",
+      "dumbbell_loaded"
+    ],
+    "decision": "same_identity",
+    "reason": "Support and a box target do not alone create a new loaded goblet-squat identity.",
+    "requiredMetadata": [
+      "load",
+      "support",
+      "box_target",
+      "range"
+    ]
+  },
+  {
+    "identity": "bodyweight-box-squat_vs_bodyweight-squat",
+    "variants": [
+      "box_contact",
+      "free_bodyweight"
+    ],
+    "decision": "unresolved",
+    "reason": "The box may be a bounded target realization or a meaningful support/path boundary; owner identity review is required.",
+    "requiredMetadata": [
+      "box_contact_intent",
+      "support_amount",
+      "range",
+      "receiver"
+    ]
+  },
+  {
+    "identity": "split-squat",
+    "variants": [
+      "bodyweight",
+      "supported",
+      "loaded",
+      "reduced_range"
+    ],
+    "decision": "same_identity",
+    "reason": "Load, support, and range preserve the stationary split-stance identity.",
+    "requiredMetadata": [
+      "load",
+      "support",
+      "range",
+      "side"
+    ]
+  },
+  {
+    "identity": "split-squat_vs_reverse-lunge",
+    "variants": [
+      "stationary_split_stance",
+      "dynamic_backward_step"
+    ],
+    "decision": "unresolved",
+    "reason": "The dynamic step and return may materially change movement path, balance, and coaching burden.",
+    "requiredMetadata": [
+      "movement_path",
+      "balance_demand",
+      "receiver",
+      "transition_boundary"
+    ]
+  },
+  {
+    "identity": "glute-bridge",
+    "variants": [
+      "bodyweight",
+      "loop_band",
+      "dumbbell_loaded",
+      "bilateral"
+    ],
+    "decision": "same_identity",
+    "reason": "Legal external resistance does not replace the bilateral floor-supported hip-extension identity.",
+    "requiredMetadata": [
+      "load_source",
+      "load_placement",
+      "band_path",
+      "range"
+    ]
+  },
+  {
+    "identity": "glute-bridge_unilateral_boundary",
+    "variants": [
+      "bilateral",
+      "single_leg"
+    ],
+    "decision": "unresolved",
+    "reason": "A future unilateral realization changes support, balance, and side ownership enough to require review.",
+    "requiredMetadata": [
+      "side",
+      "support",
+      "pelvic_control",
+      "receiver"
+    ]
+  },
+  {
+    "identity": "standing-calf-raise",
+    "variants": [
+      "bilateral",
+      "supported",
+      "unilateral",
+      "bodyweight",
+      "dumbbell_loaded"
+    ],
+    "decision": "same_identity",
+    "reason": "Support, laterality, and load remain explicit realization dimensions of standing plantar flexion.",
+    "requiredMetadata": [
+      "support",
+      "side",
+      "load",
+      "range"
+    ]
+  },
+  {
+    "identity": "forearm-plank",
+    "variants": [
+      "knee_supported",
+      "standard",
+      "lever_change"
+    ],
+    "decision": "same_identity",
+    "reason": "Support and lever scale the same anti-extension hold.",
+    "requiredMetadata": [
+      "support",
+      "lever",
+      "duration"
+    ]
+  },
+  {
+    "identity": "forearm-side-plank",
+    "variants": [
+      "knee_supported",
+      "standard",
+      "lever_change"
+    ],
+    "decision": "same_identity",
+    "reason": "Support and lever scale the same side-plank bracing identity.",
+    "requiredMetadata": [
+      "support",
+      "lever",
+      "side",
+      "duration"
+    ]
+  },
+  {
+    "identity": "single-leg-balance-rehearsal",
+    "variants": [
+      "substantial_support",
+      "light_touch",
+      "unsupported"
+    ],
+    "decision": "same_identity",
+    "reason": "Support amount is an explicit progression axis for the same low-load balance rehearsal.",
+    "requiredMetadata": [
+      "support_source",
+      "support_amount",
+      "side",
+      "duration"
+    ]
+  }
+]

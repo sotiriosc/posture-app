@@ -1,0 +1,14 @@
+{
+  "expectedEventCount": 860,
+  "observedEventCount": 860,
+  "uniqueEventCount": 860,
+  "duplicateEventCount": 0,
+  "missingEventCount": 0,
+  "orphanEventCount": 0,
+  "crossSessionEventCollisionCount": 0,
+  "stalePrescriptionRevisionCount": 0,
+  "staleSequenceRevisionCount": 0,
+  "wrongReservationCount": 0,
+  "wrongOpportunityCount": 0,
+  "wrongExecutionAttemptCount": 0
+}

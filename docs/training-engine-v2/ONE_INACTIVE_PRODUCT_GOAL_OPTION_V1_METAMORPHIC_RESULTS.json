@@ -1,0 +1,138 @@
+{
+  "invariant": [
+    {
+      "id": "F-META-I-01",
+      "relation": "registry property order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-02",
+      "relation": "preview-input property order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-03",
+      "relation": "source-reference order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-04",
+      "relation": "test scenario order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-05",
+      "relation": "legacy goal selection before preview",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-06",
+      "relation": "equivalent hydration source order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-07",
+      "relation": "viewport test order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-08",
+      "relation": "nonsemantic provenance order",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-09",
+      "relation": "repeated preview selection",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-10",
+      "relation": "repeated blocked submit",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-11",
+      "relation": "current account shell ID",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-12",
+      "relation": "background image crop",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-13",
+      "relation": "browser chrome",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-I-14",
+      "relation": "display-only test description",
+      "expected": "same_boundary_result",
+      "observed": "pass"
+    }
+  ],
+  "material": [
+    {
+      "id": "F-META-M-01",
+      "relation": "preview input absent versus present",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-02",
+      "relation": "valid versus invalid option ID",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-03",
+      "relation": "Get stronger selected versus legacy selected",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-04",
+      "relation": "preview submit versus legacy submit",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-05",
+      "relation": "preview input removed",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-06",
+      "relation": "current route versus explicit harness",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-07",
+      "relation": "consumer versus gyms",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    },
+    {
+      "id": "F-META-M-08",
+      "relation": "current route versus buyer demo",
+      "expected": "different_authorized_result",
+      "observed": "pass"
+    }
+  ]
+}

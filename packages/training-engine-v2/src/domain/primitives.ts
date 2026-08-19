@@ -21,10 +21,16 @@ export type TrainingGoal = (typeof TRAINING_GOALS)[number];
 export const MOVEMENT_ROLES = [
   "breathing_position",
   "mobility",
+  "accessory",
   "scapular_control",
   "anti_extension_core",
   "anti_rotation_core",
+  "anti_lateral_flexion_core",
+  "trunk_flexion",
+  "trunk_rotation",
+  "loaded_bracing",
   "squat",
+  "knee_dominant",
   "hinge",
   "single_leg",
   "horizontal_push",
@@ -90,6 +96,12 @@ export const JOINT_STRESS_TAGS = [
   "high_impact",
   "grip_intensive",
   "long_lever_core",
+  "upper_limb_support_loading",
+  "loaded_trunk_rotation",
+  "lateral_trunk_loading",
+  "loaded_gait",
+  "loaded_march",
+  "grip_loading",
 ] as const;
 
 export type JointStressTag = (typeof JOINT_STRESS_TAGS)[number];

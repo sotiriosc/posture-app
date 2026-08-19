@@ -1,0 +1,10 @@
+{
+  "contract": {
+    "contractId": "SESSION_PRACTICE_PERSISTENCE",
+    "contractVersion": "1.0.0"
+  },
+  "exactReplay": true,
+  "latestFallbackCount": 0,
+  "currentRecordMutationCount": 0,
+  "persistenceRevisionId": "session-practice-persistence-revision:db9a98fa866237fe"
+}

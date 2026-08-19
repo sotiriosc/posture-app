@@ -1,0 +1,11 @@
+{
+  "stableUserId": true,
+  "passiveResolution": true,
+  "bootstrapCount": 0,
+  "defaultMode": "off",
+  "modes": [
+    "off",
+    "preview",
+    "apply"
+  ]
+}

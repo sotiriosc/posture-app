@@ -1,0 +1,270 @@
+{
+  "classification": "SESSION_SEQUENCING_POLICY_V1_READY_FOR_PRODUCTION_KERNEL_IMPLEMENTATION_AUTHORIZATION",
+  "ontologyClassification": "FINAL_SEQUENCING_ONTOLOGY_READY",
+  "policy": {
+    "policyId": "SESSION_SEQUENCING_POLICY_V1_CAUSAL_SEQUENTIAL",
+    "version": "1.0.0",
+    "state": "OWNER_SELECTED_FOR_FINAL_CAGT_ADMISSION_NOT_PRODUCTION",
+    "reviewedAt": "2026-08-13T22:15:00-04:00",
+    "reviewerId": "PROJECT_OWNER",
+    "philosophy": [
+      "HARD_DEPENDENCIES_FIRST",
+      "DOMINANT_PURPOSE_PRESERVED",
+      "SUPPORTING_WORK_CONTEXTUAL",
+      "FATIGUE_INTERFERENCE_BOUNDED",
+      "SETUP_EFFICIENCY_LATE",
+      "NO_INVENTED_TIME",
+      "SEQUENTIAL_ONLY",
+      "NO_ARTIFICIAL_ORDER_VARIATION"
+    ],
+    "sectionPrecedence": [
+      "warmup",
+      "activation",
+      "main",
+      "accessory",
+      "cooldown"
+    ],
+    "executionMode": "SEQUENTIAL_ASSIGNMENT_EXECUTION_ONLY",
+    "pairingDisposition": "SESSION_PAIRING_AND_SUPERSET_POLICY_REVIEW",
+    "automaticSelectionPermitted": false,
+    "productionActivationAuthorized": false
+  },
+  "productionActivationStatus": "NOT_ACTIVATED",
+  "productionSequencingImplemented": false,
+  "controlledScenarioCount": 53,
+  "cagtPairCount": 32,
+  "cagt": {
+    "underAdaptationCount": 0,
+    "overAdaptationCount": 0,
+    "wrongLayerEffectCount": 0,
+    "downstreamRescueAttemptCount": 32,
+    "acceptedDownstreamRescueCount": 0,
+    "hardFailureCounts": {
+      "candidate_identity_or_label_affects_order": 0,
+      "prose_affects_order": 0,
+      "random_output": 0,
+      "hidden_clock": 0,
+      "assignment_addition": 0,
+      "assignment_removal": 0,
+      "duplicate_assignment": 0,
+      "exercise_substitution": 0,
+      "section_change": 0,
+      "role_change": 0,
+      "source_event_rewrite": 0,
+      "prescription_id_rewrite": 0,
+      "revision_rewrite": 0,
+      "block_reorder": 0,
+      "block_interleaving": 0,
+      "dependency_violation": 0,
+      "section_precedence_violation": 0,
+      "training_safety_bypass": 0,
+      "required_preparation_after_dependent": 0,
+      "required_activation_after_dependent": 0,
+      "policy_created_warmup": 0,
+      "policy_created_activation": 0,
+      "main_purpose_loss": 0,
+      "optional_before_required_without_authority": 0,
+      "candidate_rank_leakage": 0,
+      "setup_overrides_required_purpose": 0,
+      "unsupported_pairing": 0,
+      "within_exercise_rest_overwritten": 0,
+      "fake_transition_duration": 0,
+      "fake_recovery_duration": 0,
+      "fake_session_duration_or_unknown_called_fit": 0,
+      "downstream_rescue_of_gate_0_through_9": 0
+    }
+  },
+  "baselineFailures": {
+    "SEQUENCE_C0_CANONICAL_SERIALIZATION_CONTROL": [
+      "dominant purpose can follow incidental serialization",
+      "setup truth ignored"
+    ],
+    "SEQUENCE_S1_SETUP_FIRST_GREEDY_STRESS": [
+      "setup can displace required purpose"
+    ],
+    "SEQUENCE_F1_FATIGUE_ONLY_STRESS": [
+      "fatigue can override Planner purpose"
+    ],
+    "SEQUENCE_R1_CANDIDATE_RANK_STRESS": [
+      "Candidate evidence leaks past selection"
+    ],
+    "SEQUENCE_P1_PAIRING_COMPRESSION_STRESS": [
+      "unsupported grouped execution",
+      "Prescription blocks can be interleaved"
+    ],
+    "SEQUENCE_X0_NO_POLICY": [
+      "final order has no reviewed authority"
+    ]
+  },
+  "warmupActivation": {
+    "matrixCaseCount": 16,
+    "coherenceFailureCount": 0,
+    "supportingAssignmentDuplicationCount": 0,
+    "supportingMovedAfterMainCount": 0,
+    "developmentalCreditRewriteCount": 0,
+    "result": "PASS_BOUNDED_CONTEXTUAL_AND_SUBORDINATE"
+  },
+  "mainAccessory": {
+    "matrixCaseCount": 16,
+    "dominantPurposeLossCount": 0,
+    "requiredAccessoryDisplacementCount": 0,
+    "setupFirstDisplacementRejectedCount": 1,
+    "result": "PASS_CAUSAL_PRIORITY_PRESERVED"
+  },
+  "transitions": {
+    "matrixCaseCount": 21,
+    "inventedSetupTimeCount": 0,
+    "inventedRecoveryTimeCount": 0,
+    "reusedTimingFactCount": 0,
+    "unknownTransitionCount": 107,
+    "result": "PASS_EXPLICIT_OR_UNKNOWN"
+  },
+  "duration": {
+    "matrixCaseCount": 21,
+    "knownCount": 4,
+    "boundedCount": 4,
+    "unknownCount": 13,
+    "definitelyOverBudgetCount": 1,
+    "unknownCalledFitCount": 0,
+    "result": "PASS_INTERVAL_TRUTH_PRESERVED"
+  },
+  "metamorphic": {
+    "invariantCaseCount": 14,
+    "materialResponseCaseCount": 11,
+    "invariantFailureCount": 0,
+    "missedMaterialResponseCount": 0,
+    "candidateRankMutationResult": "PASS_ORDER_INVARIANT",
+    "sameOrderConvergenceResult": "PASS_JUSTIFIED_CONVERGENCE_ALLOWED"
+  },
+  "holdout": {
+    "scenarioCount": 132,
+    "genuineCompletePrescribedSessionCount": 107,
+    "executablePlanCount": 107,
+    "incompletePlanCount": 0,
+    "blockedPlanCount": 0,
+    "exerciseIdentityCountAcrossCalibrationAndHoldout": 45,
+    "sections": [
+      "accessory",
+      "activation",
+      "cooldown",
+      "main",
+      "warmup"
+    ],
+    "roles": [
+      "activation",
+      "capacity",
+      "hypertrophy_accessory",
+      "preparation",
+      "primary_strength",
+      "recovery",
+      "secondary_strength"
+    ],
+    "doseModes": [
+      "breath_cycles",
+      "distance_carry",
+      "repetition_sets",
+      "step_march",
+      "step_sets",
+      "timed_carry",
+      "timed_hold"
+    ],
+    "assignmentCount": 203,
+    "knownDurationCount": 0,
+    "boundedDurationCount": 0,
+    "unknownDurationCount": 107,
+    "definitelyOverBudgetCount": 0,
+    "assignmentAdditionCount": 0,
+    "assignmentRemovalCount": 0,
+    "duplicateAssignmentCount": 0,
+    "sourceEventRewriteCount": 0,
+    "revisionRewriteCount": 0,
+    "blockReorderCount": 0,
+    "blockInterleavingCount": 0,
+    "dependencyViolationCount": 0,
+    "sectionViolationCount": 0,
+    "mainPurposeLossCount": 0,
+    "fakeDurationCount": 0,
+    "fingerprint": "34186a5e6bef87d515dd7fb67b6cd47223a623d2e4b783aff613141b866f1134"
+  },
+  "stress": {
+    "policySessionComparisonCount": 10164,
+    "genuineCompleteSessionSearchCount": 1070,
+    "deterministicRepeatCount": 1070,
+    "deterministicMismatchCount": 0,
+    "dependencyPermutationCount": 321,
+    "sectionPermutationCount": 321,
+    "assignmentPermutationCount": 428,
+    "candidateRankMutationCount": 214,
+    "setupMutationCount": 214,
+    "fatigueMutationCount": 214,
+    "transitionDurationMutationCount": 214,
+    "blockMutationRejectionCount": 33,
+    "sourceMutationRejectionCount": 107,
+    "pairingMutationRejectionCount": 107,
+    "randomOrderRejectionCount": 107,
+    "seed": 1359006462,
+    "result": "DETERMINISTIC_STRESS_PASSED",
+    "fingerprint": "537f5b7b2ce200e236046ddd2fb31fa2c548de023725f2ecfd65b3c8689f0c75"
+  },
+  "fingerprints": {
+    "ontologyAudit": "81aec0b45cea07299afa6944fde96e9876a4e514ceb24f2e37a851f08f36d65e",
+    "ownerDecisions": "2068f1b7a98173df9a94d521185de8e96c67884654400e509314a2c9b76aa4c7",
+    "policyV1": "2068f1b7a98173df9a94d521185de8e96c67884654400e509314a2c9b76aa4c7",
+    "inputContract": "51b102c1763948f4e798cd35ef32e81a9d4db5ed193c2d5179feb33e9f52fe75",
+    "assignmentFact": "b1c9277ac3cf9500be5f1a0beede96ec1ea856ee78c03eba30a7c9201bda8eea",
+    "transitionFact": "31429f12254e9c15fe7f6a6f8fe5a1bd034085e71cdd5efa807a2b9c4e81f573",
+    "transitionInstruction": "b7a70de02c0186cacc433d6a2acbe93d4501891bb4ad0595b651eed43ed768ac",
+    "durationContract": "dcc5216b1c25c697ae86afdd55116616a70e10a382aa360e5aef5f7e84414f14",
+    "fatigueInterferenceModel": "5f9928cad0f4f883966d90a29e4b1903e02b3175179c5b1699fc38ed646510fa",
+    "setupTransitionModel": "1cca5cf21c519987ce974816353ee85084588f029bea6ffc76540c223dbf5a59",
+    "sectionPolicy": "77861147946e2c41407debd8c91a9e5f905b4f1720e351f4ae524bda20e137d5",
+    "mainOrderPolicy": "54ed25984f48a08b70be85adccfb868fc7afbaf5e213f15cba12638373a53f29",
+    "accessoryOrderPolicy": "9fc4890d506b742760eeeecc19473df2d2ee4f2d4be55724304cfded90771304",
+    "warmupPolicy": "b25263ff2c043486c7ffa50936ec1cdf6a4e624ccd924a1727a8801448314914",
+    "activationPolicy": "b25263ff2c043486c7ffa50936ec1cdf6a4e624ccd924a1727a8801448314914",
+    "cooldownPolicy": "12c7742d38204993f9dfdf14ae261435943053fffce9ba2454bc5387e1f74326",
+    "sequentialOnlyDecision": "f9fb4edc1986edeb48fdf5f643181fee92c84afc0eae74fe47324191982f9bfd",
+    "searchPolicy": "6fb437be25c7512500a6b8ac2ae5a93776352ebe568c0c34cd1041aec9d91327",
+    "evaluationPolicy": "5ac1449fa21e44fe68e53be60a3cac472a667309497e9552863e5e36ca3cc090",
+    "baselineFailureLab": "712a9763043dced7ad2765ab3b51b308de00e1987b055839db0b539df100ad28",
+    "controlledScenarios": "389f34ca0ea65cba891a2dab0dfadaf2397ab7fd3387528b17ec7fd68f57fcae",
+    "holdoutManifest": "9306fbc78d4f957e7d4c650f1926278366a5cac49a4064bf0b7e32053c558d10",
+    "cagtCausalOutcomes": "92f1b401beab3231d025d904c6f402ba2831c8ba8d79cd2ca95889d1baaa782e",
+    "fullSessionResults": "28ac5597ef85067442862ab2dc58d45803ddfde94f40541053d4709f6f16a1fe",
+    "warmupActivationResults": "8f8427540a76f362eaba13e4bc9eeeb6b47c568097d42a00ec51c96c4851b37f",
+    "durationResults": "dcc5216b1c25c697ae86afdd55116616a70e10a382aa360e5aef5f7e84414f14",
+    "realUserAudit": "e7e4bacd5c8b09ac86950cfaba3b0f11d515663c5a8ade8efa80fface1ecf59f",
+    "implementationReadiness": "0bf8ca1f5e6c384bc33aefbc381d1f6ad7927a3c46fc819b871566432fc3d3da",
+    "combinedFinalSequencingDesign": "71fcb88e231e2953d508e0a1d6389fed98ca0f6af5a67592cdb56bb3ce563f42"
+  },
+  "productionFingerprints": {
+    "candidateRanking": "d218c647c71af0fc6ae86ad9032065d37aa3006239c6dfce959483f9ebecf7f7",
+    "candidateComprehensive": "1e9abd5713469223636ead6edfdd3a7a5725027529e58a33b476ac9a0753bd1e",
+    "sessionIntentPlanner": "b7faa908aa21262ad6875b846be0fac17139ec490458a26853b58dbe5dd5a8ab",
+    "sessionComposer": "3062491178d9578ca3c4c3093cfab8cc5149bf1c9213b489102c81e88598efe9",
+    "weekPolicyV1": "21aac891d3ee9cd21e0a09bb1ec1b965d05addc0a72f4418890969bbbe60c1db",
+    "prescriptionTiming": "e9882ebfdc5dc577108eec401f9f82cc23aecb8669c47e92589b0347a917a93f",
+    "fullPrescriptionDesign": "9c32aa988525f229b8bf9d31574689fd492fc5bd7e9b3756f164c6c9f4a02805",
+    "cagtCore": "80906606b78c2918137b4e5b13a4cd4fdabb8b424b7e6425c877d2b3b8cb504e",
+    "prescriptionPolicyV1Admission": "9ea24d2cbc35ca956f4eb4c87d8bc11db87c1c498a927743c0468f90b34a3fb8",
+    "productionPrescriptionCompiler": "91049012f78cfabd13eef168ebfb339f3fdea850865f07c4d514b6a36324cda4"
+  },
+  "remainingGaps": [
+    "production Final Sequencing kernel implementation authorization",
+    "reviewed inter-exercise recovery policy values",
+    "Product Adapter delivery of actual setup and transition timing facts",
+    "pairing, superset, circuit, and station policy review"
+  ],
+  "blockersBeforeProductionKernel": [
+    "separate owner authorization to implement the production kernel",
+    "production contract/version and validator implementation",
+    "adapter-independent golden equivalence against this design lab",
+    "activation remains separately prohibited"
+  ],
+  "blockersBeforePostPrescriptionWeekValidation": [
+    "production Final Sequencing kernel",
+    "final sequenced session duration truth",
+    "completed exposure ledger receiver contract"
+  ],
+  "exactNextDependency": "OWNER_AUTHORIZATION_FOR_PRODUCTION_FINAL_SESSION_SEQUENCING_KERNEL_IMPLEMENTATION"
+}

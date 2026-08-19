@@ -1,0 +1,158 @@
+{
+  "count": 38,
+  "result": "ALL_PASSED",
+  "checks": [
+    {
+      "id": "experience_report_order",
+      "passed": true
+    },
+    {
+      "id": "familiarity_evidence_order",
+      "passed": true
+    },
+    {
+      "id": "habitual_exposure_order",
+      "passed": true
+    },
+    {
+      "id": "equipment_capability_order",
+      "passed": true
+    },
+    {
+      "id": "available_weight_order",
+      "passed": true
+    },
+    {
+      "id": "provenance_order",
+      "passed": true
+    },
+    {
+      "id": "labels",
+      "passed": true
+    },
+    {
+      "id": "display_names",
+      "passed": true
+    },
+    {
+      "id": "workout_prose",
+      "passed": true
+    },
+    {
+      "id": "cue_prose",
+      "passed": true
+    },
+    {
+      "id": "day_titles",
+      "passed": true
+    },
+    {
+      "id": "explicit_sequence_preserved",
+      "passed": true
+    },
+    {
+      "id": "age_label_same_evidence",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_pain",
+      "passed": true
+    },
+    {
+      "id": "irrelevant_assessment",
+      "passed": true
+    },
+    {
+      "id": "same_framework",
+      "passed": true
+    },
+    {
+      "id": "same_exercise",
+      "passed": true
+    },
+    {
+      "id": "same_current_load",
+      "passed": true
+    },
+    {
+      "id": "same_current_dose",
+      "passed": true
+    },
+    {
+      "id": "comments",
+      "passed": true
+    },
+    {
+      "id": "exact_performance_response",
+      "passed": true
+    },
+    {
+      "id": "recent_consistency_response",
+      "passed": true
+    },
+    {
+      "id": "exact_familiarity_response",
+      "passed": true
+    },
+    {
+      "id": "equipment_max_response",
+      "passed": true
+    },
+    {
+      "id": "equipment_increment_response",
+      "passed": true
+    },
+    {
+      "id": "support_response",
+      "passed": true
+    },
+    {
+      "id": "range_response",
+      "passed": true
+    },
+    {
+      "id": "side_response",
+      "passed": true
+    },
+    {
+      "id": "load_ceiling_response",
+      "passed": true
+    },
+    {
+      "id": "absence_response",
+      "passed": true
+    },
+    {
+      "id": "habitual_volume_response",
+      "passed": true
+    },
+    {
+      "id": "time_budget_response",
+      "passed": true
+    },
+    {
+      "id": "stable_anchor_response",
+      "passed": true
+    },
+    {
+      "id": "pain_restriction_response",
+      "passed": true
+    },
+    {
+      "id": "successful_reexposure_response",
+      "passed": true
+    },
+    {
+      "id": "return_mode_response",
+      "passed": true
+    },
+    {
+      "id": "technique_request_response",
+      "passed": true
+    },
+    {
+      "id": "catalog_mapping_response",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "sources": 15,
+  "primarySources": true,
+  "newerEvidenceQualifiesOlder": true,
+  "executableWithoutConsequenceTesting": false
+}

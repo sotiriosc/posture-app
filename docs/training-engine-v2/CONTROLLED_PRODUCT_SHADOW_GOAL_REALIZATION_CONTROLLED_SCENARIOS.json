@@ -1,0 +1,4205 @@
+{
+  "count": 420,
+  "scenarios": [
+    {
+      "scenarioId": "chunk-c-controlled-001",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-002",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-003",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-004",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-005",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-006",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-007",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-008",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-009",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-010",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-011",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-012",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-013",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-014",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-015",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-016",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-017",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-018",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-019",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-020",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-021",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-022",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-023",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-024",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-025",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-026",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-027",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-028",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-029",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-030",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-031",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-032",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-033",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-034",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-035",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-036",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-037",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-038",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-039",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-040",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-041",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-042",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-043",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-044",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-045",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-046",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-047",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-048",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-049",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-050",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-051",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-052",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-053",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-054",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-055",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-056",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-057",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-058",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-059",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-060",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-061",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-062",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-063",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-064",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-065",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-066",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-067",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-068",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-069",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-070",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-071",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-072",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-073",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-074",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-075",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-076",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-077",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-078",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-079",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-080",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-081",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-082",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-083",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-084",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-085",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-086",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-087",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-088",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-089",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-090",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-091",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-092",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-093",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-094",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-095",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-096",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-097",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-098",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-099",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-100",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-101",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-102",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-103",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-104",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-105",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-106",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-107",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-108",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-109",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-110",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-111",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-112",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-113",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-114",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-115",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-116",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-117",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-118",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-119",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-120",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-121",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-122",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-123",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-124",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-125",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-126",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-127",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-128",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-129",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-130",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-131",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-132",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-133",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-134",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-135",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-136",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-137",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-138",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-139",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-140",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-141",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-142",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-143",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-144",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-145",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-146",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-147",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-148",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-149",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-150",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-151",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-152",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-153",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-154",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-155",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-156",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-157",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-158",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-159",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-160",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-161",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-162",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-163",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-164",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-165",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-166",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-167",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-168",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-169",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-170",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-171",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-172",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-173",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-174",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-175",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-176",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-177",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-178",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-179",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-180",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-181",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-182",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-183",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-184",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-185",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-186",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-187",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-188",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-189",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-190",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-191",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-192",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-193",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-194",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-195",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-196",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-197",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-198",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-199",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-200",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-201",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-202",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-203",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-204",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-205",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-206",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-207",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-208",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-209",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-210",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-211",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-212",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-213",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-214",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-215",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-216",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-217",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-218",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-219",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-220",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-221",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-222",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-223",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-224",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-225",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-226",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-227",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-228",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-229",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-230",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-231",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-232",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-233",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-234",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-235",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-236",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-237",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-238",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-239",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-240",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-241",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-242",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-243",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-244",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-245",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-246",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-247",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-248",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-249",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-250",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-251",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-252",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-253",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-254",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-255",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-256",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-257",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-258",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-259",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-260",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-261",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-262",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-263",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-264",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-265",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-266",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-267",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-268",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-269",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-270",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-271",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-272",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-273",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-274",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-275",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-276",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-277",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-278",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-279",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-280",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-281",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-282",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-283",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-284",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-285",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-286",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-287",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-288",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-289",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-290",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-291",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-292",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-293",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-294",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-295",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-296",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-297",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-298",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-299",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-300",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-301",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-302",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-303",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-304",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-305",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-306",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-307",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-308",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-309",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-310",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-311",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-312",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-313",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-314",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-315",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-316",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-317",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-318",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-319",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-320",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-321",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-322",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-323",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-324",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-325",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-326",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-327",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-328",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-329",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-330",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-331",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-332",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-333",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-334",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-335",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-336",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-337",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-338",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-339",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-340",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-341",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-342",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-343",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-344",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-345",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-346",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-347",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-348",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-349",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-350",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-351",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-352",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-353",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-354",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-355",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-356",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-357",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-358",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-359",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-360",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-361",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-362",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-363",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-364",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-365",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-366",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-367",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-368",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-369",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-370",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-371",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-372",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-373",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-374",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-375",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-376",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-377",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-378",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-379",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-380",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-381",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-382",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-383",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-384",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-385",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-386",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-387",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-388",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-389",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-390",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-391",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-392",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-393",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-394",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-395",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-396",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-397",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-398",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-399",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-400",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-401",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-402",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-403",
+      "appSurface": "consumer",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-404",
+      "appSurface": "gyms",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-405",
+      "appSurface": "consumer",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-406",
+      "appSurface": "gyms",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-407",
+      "appSurface": "consumer",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-408",
+      "appSurface": "gyms",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-409",
+      "appSurface": "consumer",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "none",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-410",
+      "appSurface": "gyms",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "dumbbells",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "b4_boundary"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-411",
+      "appSurface": "consumer",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "bands",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "goal_mapping"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-412",
+      "appSurface": "gyms",
+      "goal": "Improve fitness and stamina",
+      "experience": "Beginner",
+      "equipment": "gym",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "planning_brief"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-413",
+      "appSurface": "consumer",
+      "goal": "Improve posture and movement",
+      "experience": "Intermediate",
+      "equipment": "none",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "experience_history"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-414",
+      "appSurface": "gyms",
+      "goal": "Improve athletic performance",
+      "experience": "Advanced",
+      "equipment": "dumbbells",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "equipment_load"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-415",
+      "appSurface": "consumer",
+      "goal": "Improve posture",
+      "experience": "Beginner",
+      "equipment": "bands",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "availability"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-416",
+      "appSurface": "gyms",
+      "goal": "Reduce pain",
+      "experience": "Intermediate",
+      "equipment": "gym",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "preference_continuity"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-417",
+      "appSurface": "consumer",
+      "goal": "Athletic performance",
+      "experience": "Advanced",
+      "equipment": "none",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "pipeline"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-418",
+      "appSurface": "gyms",
+      "goal": "General fitness",
+      "experience": "Beginner",
+      "equipment": "dumbbells",
+      "trainingIntent": "build",
+      "opportunities": 3,
+      "lane": "counterfactual"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-419",
+      "appSurface": "consumer",
+      "goal": "Get stronger",
+      "experience": "Intermediate",
+      "equipment": "bands",
+      "trainingIntent": "maintain",
+      "opportunities": 4,
+      "lane": "historical_freeze"
+    },
+    {
+      "scenarioId": "chunk-c-controlled-420",
+      "appSurface": "gyms",
+      "goal": "Build muscle",
+      "experience": "Advanced",
+      "equipment": "gym",
+      "trainingIntent": "rehab",
+      "opportunities": 5,
+      "lane": "b4_boundary"
+    }
+  ]
+}

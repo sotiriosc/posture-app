@@ -1,0 +1,1822 @@
+[
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "ninety-ninety-breathing.focus",
+        "ninety-ninety-breathing.cue.1"
+      ],
+      "summary": "ninety-ninety-breathing.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "ninety-ninety-breathing.cue.1",
+      "ninety-ninety-breathing.cue.2"
+    ],
+    "during": [
+      "ninety-ninety-breathing.during.1",
+      "ninety-ninety-breathing.during.2"
+    ],
+    "exerciseId": "ninety-ninety-breathing",
+    "focus": "ninety-ninety-breathing.focus",
+    "pattern": [
+      "ninety-ninety-breathing.pattern"
+    ],
+    "setup": [
+      "ninety-ninety-breathing.setup.1",
+      "ninety-ninety-breathing.setup.2",
+      "ninety-ninety-breathing.setup.3"
+    ],
+    "watchFor": [
+      "ninety-ninety-breathing.watch.1",
+      "ninety-ninety-breathing.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "serratus-wall-slide.focus",
+        "serratus-wall-slide.cue.1"
+      ],
+      "summary": "serratus-wall-slide.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "serratus-wall-slide.cue.1",
+      "serratus-wall-slide.cue.2"
+    ],
+    "during": [
+      "serratus-wall-slide.during.1",
+      "serratus-wall-slide.during.2"
+    ],
+    "exerciseId": "serratus-wall-slide",
+    "focus": "serratus-wall-slide.focus",
+    "pattern": [
+      "serratus-wall-slide.pattern"
+    ],
+    "setup": [
+      "serratus-wall-slide.setup.1",
+      "serratus-wall-slide.setup.2",
+      "serratus-wall-slide.setup.3"
+    ],
+    "watchFor": [
+      "serratus-wall-slide.watch.1",
+      "serratus-wall-slide.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dead-bug.focus"
+      ],
+      "summary": "dead-bug.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dead-bug.cue.1",
+      "dead-bug.cue.2"
+    ],
+    "during": [
+      "dead-bug.during.1",
+      "dead-bug.during.2"
+    ],
+    "exerciseId": "dead-bug",
+    "focus": "dead-bug.focus",
+    "pattern": [
+      "dead-bug.pattern"
+    ],
+    "setup": [
+      "dead-bug.setup.1",
+      "dead-bug.setup.2",
+      "dead-bug.setup.3"
+    ],
+    "watchFor": [
+      "dead-bug.watch.1",
+      "dead-bug.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "push-up.focus",
+        "push-up.cue.1"
+      ],
+      "summary": "push-up.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "push-up.cue.1",
+      "push-up.cue.2"
+    ],
+    "during": [
+      "push-up.during.1",
+      "push-up.during.2"
+    ],
+    "exerciseId": "push-up",
+    "focus": "push-up.focus",
+    "pattern": [
+      "push-up.pattern"
+    ],
+    "setup": [
+      "push-up.setup.1",
+      "push-up.setup.2",
+      "push-up.setup.3"
+    ],
+    "watchFor": [
+      "push-up.watch.1",
+      "push-up.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dumbbell-bench-press.focus",
+        "dumbbell-bench-press.cue.1"
+      ],
+      "summary": "dumbbell-bench-press.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-bench-press.cue.1",
+      "dumbbell-bench-press.cue.2"
+    ],
+    "during": [
+      "dumbbell-bench-press.during.1",
+      "dumbbell-bench-press.during.2"
+    ],
+    "exerciseId": "dumbbell-bench-press",
+    "focus": "dumbbell-bench-press.focus",
+    "pattern": [
+      "dumbbell-bench-press.pattern"
+    ],
+    "setup": [
+      "dumbbell-bench-press.setup.1",
+      "dumbbell-bench-press.setup.2",
+      "dumbbell-bench-press.setup.3"
+    ],
+    "watchFor": [
+      "dumbbell-bench-press.watch.1",
+      "dumbbell-bench-press.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "machine-chest-press.focus"
+      ],
+      "summary": "machine-chest-press.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "machine-chest-press.cue.1",
+      "machine-chest-press.cue.2"
+    ],
+    "during": [
+      "machine-chest-press.during.1",
+      "machine-chest-press.during.2"
+    ],
+    "exerciseId": "machine-chest-press",
+    "focus": "machine-chest-press.focus",
+    "pattern": [
+      "machine-chest-press.pattern"
+    ],
+    "setup": [
+      "machine-chest-press.setup.1",
+      "machine-chest-press.setup.2",
+      "machine-chest-press.setup.3"
+    ],
+    "watchFor": [
+      "machine-chest-press.watch.1",
+      "machine-chest-press.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "cable-chest-fly.focus",
+        "cable-chest-fly.cue.1"
+      ],
+      "summary": "cable-chest-fly.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "cable-chest-fly.cue.1",
+      "cable-chest-fly.cue.2"
+    ],
+    "during": [
+      "cable-chest-fly.during.1",
+      "cable-chest-fly.during.2"
+    ],
+    "exerciseId": "cable-chest-fly",
+    "focus": "cable-chest-fly.focus",
+    "pattern": [
+      "cable-chest-fly.pattern"
+    ],
+    "setup": [
+      "cable-chest-fly.setup.1",
+      "cable-chest-fly.setup.2",
+      "cable-chest-fly.setup.3"
+    ],
+    "watchFor": [
+      "cable-chest-fly.watch.1",
+      "cable-chest-fly.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "chest-supported-dumbbell-row.focus",
+        "chest-supported-dumbbell-row.cue.1"
+      ],
+      "summary": "chest-supported-dumbbell-row.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "chest-supported-dumbbell-row.cue.1",
+      "chest-supported-dumbbell-row.cue.2"
+    ],
+    "during": [
+      "chest-supported-dumbbell-row.during.1",
+      "chest-supported-dumbbell-row.during.2"
+    ],
+    "exerciseId": "chest-supported-dumbbell-row",
+    "focus": "chest-supported-dumbbell-row.focus",
+    "pattern": [
+      "chest-supported-dumbbell-row.pattern"
+    ],
+    "setup": [
+      "chest-supported-dumbbell-row.setup.1",
+      "chest-supported-dumbbell-row.setup.2",
+      "chest-supported-dumbbell-row.setup.3"
+    ],
+    "watchFor": [
+      "chest-supported-dumbbell-row.watch.1",
+      "chest-supported-dumbbell-row.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "one-arm-dumbbell-row.focus",
+        "one-arm-dumbbell-row.cue.1"
+      ],
+      "summary": "one-arm-dumbbell-row.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "one-arm-dumbbell-row.cue.1",
+      "one-arm-dumbbell-row.cue.2"
+    ],
+    "during": [
+      "one-arm-dumbbell-row.during.1",
+      "one-arm-dumbbell-row.during.2"
+    ],
+    "exerciseId": "one-arm-dumbbell-row",
+    "focus": "one-arm-dumbbell-row.focus",
+    "pattern": [
+      "one-arm-dumbbell-row.pattern"
+    ],
+    "setup": [
+      "one-arm-dumbbell-row.setup.1",
+      "one-arm-dumbbell-row.setup.2",
+      "one-arm-dumbbell-row.setup.3"
+    ],
+    "watchFor": [
+      "one-arm-dumbbell-row.watch.1",
+      "one-arm-dumbbell-row.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "machine-row.focus",
+        "machine-row.cue.1"
+      ],
+      "summary": "machine-row.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "machine-row.cue.1",
+      "machine-row.cue.2"
+    ],
+    "during": [
+      "machine-row.during.1",
+      "machine-row.during.2"
+    ],
+    "exerciseId": "machine-row",
+    "focus": "machine-row.focus",
+    "pattern": [
+      "machine-row.pattern"
+    ],
+    "setup": [
+      "machine-row.setup.1",
+      "machine-row.setup.2",
+      "machine-row.setup.3"
+    ],
+    "watchFor": [
+      "machine-row.watch.1",
+      "machine-row.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "seated-cable-row.focus",
+        "seated-cable-row.cue.1"
+      ],
+      "summary": "seated-cable-row.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "seated-cable-row.cue.1",
+      "seated-cable-row.cue.2"
+    ],
+    "during": [
+      "seated-cable-row.during.1",
+      "seated-cable-row.during.2"
+    ],
+    "exerciseId": "seated-cable-row",
+    "focus": "seated-cable-row.focus",
+    "pattern": [
+      "seated-cable-row.pattern"
+    ],
+    "setup": [
+      "seated-cable-row.setup.1",
+      "seated-cable-row.setup.2",
+      "seated-cable-row.setup.3"
+    ],
+    "watchFor": [
+      "seated-cable-row.watch.1",
+      "seated-cable-row.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "band-row.focus",
+        "band-row.cue.1"
+      ],
+      "summary": "band-row.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "band-row.cue.1",
+      "band-row.cue.2"
+    ],
+    "during": [
+      "band-row.during.1",
+      "band-row.during.2"
+    ],
+    "exerciseId": "band-row",
+    "focus": "band-row.focus",
+    "pattern": [
+      "band-row.pattern"
+    ],
+    "setup": [
+      "band-row.setup.1",
+      "band-row.setup.2",
+      "band-row.setup.3"
+    ],
+    "watchFor": [
+      "band-row.watch.1",
+      "band-row.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dumbbell-shoulder-press.focus",
+        "dumbbell-shoulder-press.cue.1"
+      ],
+      "summary": "dumbbell-shoulder-press.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-shoulder-press.cue.1",
+      "dumbbell-shoulder-press.cue.2"
+    ],
+    "during": [
+      "dumbbell-shoulder-press.during.1",
+      "dumbbell-shoulder-press.during.2"
+    ],
+    "exerciseId": "dumbbell-shoulder-press",
+    "focus": "dumbbell-shoulder-press.focus",
+    "pattern": [
+      "dumbbell-shoulder-press.pattern"
+    ],
+    "setup": [
+      "dumbbell-shoulder-press.setup.1",
+      "dumbbell-shoulder-press.setup.2",
+      "dumbbell-shoulder-press.setup.3"
+    ],
+    "watchFor": [
+      "dumbbell-shoulder-press.watch.1",
+      "dumbbell-shoulder-press.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "lat-pulldown.focus",
+        "lat-pulldown.cue.1"
+      ],
+      "summary": "lat-pulldown.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "lat-pulldown.cue.1",
+      "lat-pulldown.cue.2"
+    ],
+    "during": [
+      "lat-pulldown.during.1",
+      "lat-pulldown.during.2"
+    ],
+    "exerciseId": "lat-pulldown",
+    "focus": "lat-pulldown.focus",
+    "pattern": [
+      "lat-pulldown.pattern"
+    ],
+    "setup": [
+      "lat-pulldown.setup.1",
+      "lat-pulldown.setup.2",
+      "lat-pulldown.setup.3"
+    ],
+    "watchFor": [
+      "lat-pulldown.watch.1",
+      "lat-pulldown.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "band-lat-pulldown.focus",
+        "band-lat-pulldown.cue.1"
+      ],
+      "summary": "band-lat-pulldown.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "band-lat-pulldown.cue.1",
+      "band-lat-pulldown.cue.2"
+    ],
+    "during": [
+      "band-lat-pulldown.during.1",
+      "band-lat-pulldown.during.2"
+    ],
+    "exerciseId": "band-lat-pulldown",
+    "focus": "band-lat-pulldown.focus",
+    "pattern": [
+      "band-lat-pulldown.pattern"
+    ],
+    "setup": [
+      "band-lat-pulldown.setup.1",
+      "band-lat-pulldown.setup.2",
+      "band-lat-pulldown.setup.3"
+    ],
+    "watchFor": [
+      "band-lat-pulldown.watch.1",
+      "band-lat-pulldown.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "goblet-squat.focus",
+        "goblet-squat.cue.1"
+      ],
+      "summary": "goblet-squat.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "goblet-squat.cue.1",
+      "goblet-squat.cue.2"
+    ],
+    "during": [
+      "goblet-squat.during.1",
+      "goblet-squat.during.2"
+    ],
+    "exerciseId": "goblet-squat",
+    "focus": "goblet-squat.focus",
+    "pattern": [
+      "goblet-squat.pattern"
+    ],
+    "setup": [
+      "goblet-squat.setup.1",
+      "goblet-squat.setup.2",
+      "goblet-squat.setup.3"
+    ],
+    "watchFor": [
+      "goblet-squat.watch.1",
+      "goblet-squat.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "leg-press.focus",
+        "leg-press.cue.1"
+      ],
+      "summary": "leg-press.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "leg-press.cue.1",
+      "leg-press.cue.2"
+    ],
+    "during": [
+      "leg-press.during.1",
+      "leg-press.during.2"
+    ],
+    "exerciseId": "leg-press",
+    "focus": "leg-press.focus",
+    "pattern": [
+      "leg-press.pattern"
+    ],
+    "setup": [
+      "leg-press.setup.1",
+      "leg-press.setup.2",
+      "leg-press.setup.3"
+    ],
+    "watchFor": [
+      "leg-press.watch.1",
+      "leg-press.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "bodyweight-box-squat.focus",
+        "bodyweight-box-squat.cue.1"
+      ],
+      "summary": "bodyweight-box-squat.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "bodyweight-box-squat.cue.1",
+      "bodyweight-box-squat.cue.2"
+    ],
+    "during": [
+      "bodyweight-box-squat.during.1",
+      "bodyweight-box-squat.during.2"
+    ],
+    "exerciseId": "bodyweight-box-squat",
+    "focus": "bodyweight-box-squat.focus",
+    "pattern": [
+      "bodyweight-box-squat.pattern"
+    ],
+    "setup": [
+      "bodyweight-box-squat.setup.1",
+      "bodyweight-box-squat.setup.2",
+      "bodyweight-box-squat.setup.3"
+    ],
+    "watchFor": [
+      "bodyweight-box-squat.watch.1",
+      "bodyweight-box-squat.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dumbbell-romanian-deadlift.focus",
+        "dumbbell-romanian-deadlift.cue.1",
+        "dumbbell-romanian-deadlift.cue.2"
+      ],
+      "summary": "dumbbell-romanian-deadlift.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-romanian-deadlift.cue.1",
+      "dumbbell-romanian-deadlift.cue.2"
+    ],
+    "during": [
+      "dumbbell-romanian-deadlift.during.1",
+      "dumbbell-romanian-deadlift.during.2"
+    ],
+    "exerciseId": "dumbbell-romanian-deadlift",
+    "focus": "dumbbell-romanian-deadlift.focus",
+    "pattern": [
+      "dumbbell-romanian-deadlift.pattern"
+    ],
+    "setup": [
+      "dumbbell-romanian-deadlift.setup.1",
+      "dumbbell-romanian-deadlift.setup.2",
+      "dumbbell-romanian-deadlift.setup.3"
+    ],
+    "watchFor": [
+      "dumbbell-romanian-deadlift.watch.1",
+      "dumbbell-romanian-deadlift.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "cable-pull-through.focus",
+        "cable-pull-through.cue.1"
+      ],
+      "summary": "cable-pull-through.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "cable-pull-through.cue.1",
+      "cable-pull-through.cue.2"
+    ],
+    "during": [
+      "cable-pull-through.during.1",
+      "cable-pull-through.during.2"
+    ],
+    "exerciseId": "cable-pull-through",
+    "focus": "cable-pull-through.focus",
+    "pattern": [
+      "cable-pull-through.pattern"
+    ],
+    "setup": [
+      "cable-pull-through.setup.1",
+      "cable-pull-through.setup.2",
+      "cable-pull-through.setup.3"
+    ],
+    "watchFor": [
+      "cable-pull-through.watch.1",
+      "cable-pull-through.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "split-squat.focus",
+        "split-squat.cue.1"
+      ],
+      "summary": "split-squat.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "split-squat.cue.1",
+      "split-squat.cue.2"
+    ],
+    "during": [
+      "split-squat.during.1",
+      "split-squat.during.2"
+    ],
+    "exerciseId": "split-squat",
+    "focus": "split-squat.focus",
+    "pattern": [
+      "split-squat.pattern"
+    ],
+    "setup": [
+      "split-squat.setup.1",
+      "split-squat.setup.2",
+      "split-squat.setup.3"
+    ],
+    "watchFor": [
+      "split-squat.watch.1",
+      "split-squat.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "step-up.focus",
+        "step-up.cue.1"
+      ],
+      "summary": "step-up.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "step-up.cue.1",
+      "step-up.cue.2"
+    ],
+    "during": [
+      "step-up.during.1",
+      "step-up.during.2"
+    ],
+    "exerciseId": "step-up",
+    "focus": "step-up.focus",
+    "pattern": [
+      "step-up.pattern"
+    ],
+    "setup": [
+      "step-up.setup.1",
+      "step-up.setup.2",
+      "step-up.setup.3"
+    ],
+    "watchFor": [
+      "step-up.watch.1",
+      "step-up.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "lying-leg-curl.focus",
+        "lying-leg-curl.cue.1"
+      ],
+      "summary": "lying-leg-curl.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "lying-leg-curl.cue.1",
+      "lying-leg-curl.cue.2"
+    ],
+    "during": [
+      "lying-leg-curl.during.1",
+      "lying-leg-curl.during.2"
+    ],
+    "exerciseId": "lying-leg-curl",
+    "focus": "lying-leg-curl.focus",
+    "pattern": [
+      "lying-leg-curl.pattern"
+    ],
+    "setup": [
+      "lying-leg-curl.setup.1",
+      "lying-leg-curl.setup.2",
+      "lying-leg-curl.setup.3"
+    ],
+    "watchFor": [
+      "lying-leg-curl.watch.1",
+      "lying-leg-curl.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "glute-bridge.focus"
+      ],
+      "summary": "glute-bridge.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "glute-bridge.cue.1",
+      "glute-bridge.cue.2"
+    ],
+    "during": [
+      "glute-bridge.during.1",
+      "glute-bridge.during.2"
+    ],
+    "exerciseId": "glute-bridge",
+    "focus": "glute-bridge.focus",
+    "pattern": [
+      "glute-bridge.pattern"
+    ],
+    "setup": [
+      "glute-bridge.setup.1",
+      "glute-bridge.setup.2",
+      "glute-bridge.setup.3"
+    ],
+    "watchFor": [
+      "glute-bridge.watch.1",
+      "glute-bridge.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dumbbell-lateral-raise.focus",
+        "dumbbell-lateral-raise.cue.1"
+      ],
+      "summary": "dumbbell-lateral-raise.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-lateral-raise.cue.1",
+      "dumbbell-lateral-raise.cue.2"
+    ],
+    "during": [
+      "dumbbell-lateral-raise.during.1",
+      "dumbbell-lateral-raise.during.2"
+    ],
+    "exerciseId": "dumbbell-lateral-raise",
+    "focus": "dumbbell-lateral-raise.focus",
+    "pattern": [
+      "dumbbell-lateral-raise.pattern"
+    ],
+    "setup": [
+      "dumbbell-lateral-raise.setup.1",
+      "dumbbell-lateral-raise.setup.2",
+      "dumbbell-lateral-raise.setup.3"
+    ],
+    "watchFor": [
+      "dumbbell-lateral-raise.watch.1",
+      "dumbbell-lateral-raise.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "reverse-pec-deck.focus"
+      ],
+      "summary": "reverse-pec-deck.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "reverse-pec-deck.cue.1",
+      "reverse-pec-deck.cue.2"
+    ],
+    "during": [
+      "reverse-pec-deck.during.1",
+      "reverse-pec-deck.during.2"
+    ],
+    "exerciseId": "reverse-pec-deck",
+    "focus": "reverse-pec-deck.focus",
+    "pattern": [
+      "reverse-pec-deck.pattern"
+    ],
+    "setup": [
+      "reverse-pec-deck.setup.1",
+      "reverse-pec-deck.setup.2",
+      "reverse-pec-deck.setup.3"
+    ],
+    "watchFor": [
+      "reverse-pec-deck.watch.1",
+      "reverse-pec-deck.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "band-face-pull.focus"
+      ],
+      "summary": "band-face-pull.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "band-face-pull.cue.1",
+      "band-face-pull.cue.2"
+    ],
+    "during": [
+      "band-face-pull.during.1",
+      "band-face-pull.during.2"
+    ],
+    "exerciseId": "band-face-pull",
+    "focus": "band-face-pull.focus",
+    "pattern": [
+      "band-face-pull.pattern"
+    ],
+    "setup": [
+      "band-face-pull.setup.1",
+      "band-face-pull.setup.2",
+      "band-face-pull.setup.3"
+    ],
+    "watchFor": [
+      "band-face-pull.watch.1",
+      "band-face-pull.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "dumbbell-curl.focus",
+        "dumbbell-curl.cue.1"
+      ],
+      "summary": "dumbbell-curl.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-curl.cue.1",
+      "dumbbell-curl.cue.2"
+    ],
+    "during": [
+      "dumbbell-curl.during.1",
+      "dumbbell-curl.during.2"
+    ],
+    "exerciseId": "dumbbell-curl",
+    "focus": "dumbbell-curl.focus",
+    "pattern": [
+      "dumbbell-curl.pattern"
+    ],
+    "setup": [
+      "dumbbell-curl.setup.1",
+      "dumbbell-curl.setup.2",
+      "dumbbell-curl.setup.3"
+    ],
+    "watchFor": [
+      "dumbbell-curl.watch.1",
+      "dumbbell-curl.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "cable-triceps-pressdown.focus",
+        "cable-triceps-pressdown.cue.1"
+      ],
+      "summary": "cable-triceps-pressdown.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "cable-triceps-pressdown.cue.1",
+      "cable-triceps-pressdown.cue.2"
+    ],
+    "during": [
+      "cable-triceps-pressdown.during.1",
+      "cable-triceps-pressdown.during.2"
+    ],
+    "exerciseId": "cable-triceps-pressdown",
+    "focus": "cable-triceps-pressdown.focus",
+    "pattern": [
+      "cable-triceps-pressdown.pattern"
+    ],
+    "setup": [
+      "cable-triceps-pressdown.setup.1",
+      "cable-triceps-pressdown.setup.2",
+      "cable-triceps-pressdown.setup.3"
+    ],
+    "watchFor": [
+      "cable-triceps-pressdown.watch.1",
+      "cable-triceps-pressdown.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "standing-calf-raise.focus",
+        "standing-calf-raise.cue.1"
+      ],
+      "summary": "standing-calf-raise.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "standing-calf-raise.cue.1",
+      "standing-calf-raise.cue.2"
+    ],
+    "during": [
+      "standing-calf-raise.during.1",
+      "standing-calf-raise.during.2"
+    ],
+    "exerciseId": "standing-calf-raise",
+    "focus": "standing-calf-raise.focus",
+    "pattern": [
+      "standing-calf-raise.pattern"
+    ],
+    "setup": [
+      "standing-calf-raise.setup.1",
+      "standing-calf-raise.setup.2",
+      "standing-calf-raise.setup.3"
+    ],
+    "watchFor": [
+      "standing-calf-raise.watch.1",
+      "standing-calf-raise.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "pallof-press.focus",
+        "pallof-press.cue.1"
+      ],
+      "summary": "pallof-press.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "pallof-press.cue.1",
+      "pallof-press.cue.2"
+    ],
+    "during": [
+      "pallof-press.during.1",
+      "pallof-press.during.2"
+    ],
+    "exerciseId": "pallof-press",
+    "focus": "pallof-press.focus",
+    "pattern": [
+      "pallof-press.pattern",
+      "pallof-press.mechanics.1"
+    ],
+    "setup": [
+      "pallof-press.setup.1",
+      "pallof-press.setup.2",
+      "pallof-press.setup.3"
+    ],
+    "watchFor": [
+      "pallof-press.watch.1",
+      "pallof-press.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "forearm-plank.focus",
+        "forearm-plank.cue.1"
+      ],
+      "summary": "forearm-plank.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "forearm-plank.cue.1",
+      "forearm-plank.cue.2"
+    ],
+    "during": [
+      "forearm-plank.during.1",
+      "forearm-plank.during.2"
+    ],
+    "exerciseId": "forearm-plank",
+    "focus": "forearm-plank.focus",
+    "pattern": [
+      "forearm-plank.pattern"
+    ],
+    "setup": [
+      "forearm-plank.setup.1",
+      "forearm-plank.setup.2",
+      "forearm-plank.setup.3"
+    ],
+    "watchFor": [
+      "forearm-plank.watch.1",
+      "forearm-plank.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "forearm-side-plank.focus",
+        "forearm-side-plank.cue.1"
+      ],
+      "summary": "forearm-side-plank.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "forearm-side-plank.cue.1",
+      "forearm-side-plank.cue.2"
+    ],
+    "during": [
+      "forearm-side-plank.during.1",
+      "forearm-side-plank.during.2"
+    ],
+    "exerciseId": "forearm-side-plank",
+    "focus": "forearm-side-plank.focus",
+    "pattern": [
+      "forearm-side-plank.pattern"
+    ],
+    "setup": [
+      "forearm-side-plank.setup.1",
+      "forearm-side-plank.setup.2",
+      "forearm-side-plank.setup.3"
+    ],
+    "watchFor": [
+      "forearm-side-plank.watch.1",
+      "forearm-side-plank.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "machine-abdominal-crunch.focus",
+        "machine-abdominal-crunch.cue.1"
+      ],
+      "summary": "machine-abdominal-crunch.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "machine-abdominal-crunch.cue.1",
+      "machine-abdominal-crunch.cue.2"
+    ],
+    "during": [
+      "machine-abdominal-crunch.during.1",
+      "machine-abdominal-crunch.during.2"
+    ],
+    "exerciseId": "machine-abdominal-crunch",
+    "focus": "machine-abdominal-crunch.focus",
+    "pattern": [
+      "machine-abdominal-crunch.pattern"
+    ],
+    "setup": [
+      "machine-abdominal-crunch.setup.1",
+      "machine-abdominal-crunch.setup.2",
+      "machine-abdominal-crunch.setup.3"
+    ],
+    "watchFor": [
+      "machine-abdominal-crunch.watch.1",
+      "machine-abdominal-crunch.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "half-kneeling-high-to-low-cable-chop.focus",
+        "half-kneeling-high-to-low-cable-chop.cue.1"
+      ],
+      "summary": "half-kneeling-high-to-low-cable-chop.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "half-kneeling-high-to-low-cable-chop.cue.1",
+      "half-kneeling-high-to-low-cable-chop.cue.2"
+    ],
+    "during": [
+      "half-kneeling-high-to-low-cable-chop.during.1",
+      "half-kneeling-high-to-low-cable-chop.during.2"
+    ],
+    "exerciseId": "half-kneeling-high-to-low-cable-chop",
+    "focus": "half-kneeling-high-to-low-cable-chop.focus",
+    "pattern": [
+      "half-kneeling-high-to-low-cable-chop.pattern"
+    ],
+    "setup": [
+      "half-kneeling-high-to-low-cable-chop.setup.1",
+      "half-kneeling-high-to-low-cable-chop.setup.2",
+      "half-kneeling-high-to-low-cable-chop.setup.3"
+    ],
+    "watchFor": [
+      "half-kneeling-high-to-low-cable-chop.watch.1",
+      "half-kneeling-high-to-low-cable-chop.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "farmer-carry.focus",
+        "farmer-carry.cue.1"
+      ],
+      "summary": "farmer-carry.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "farmer-carry.cue.1",
+      "farmer-carry.cue.2"
+    ],
+    "during": [
+      "farmer-carry.during.1",
+      "farmer-carry.during.2"
+    ],
+    "exerciseId": "farmer-carry",
+    "focus": "farmer-carry.focus",
+    "pattern": [
+      "farmer-carry.pattern"
+    ],
+    "setup": [
+      "farmer-carry.setup.1",
+      "farmer-carry.setup.2",
+      "farmer-carry.setup.3"
+    ],
+    "watchFor": [
+      "farmer-carry.watch.1",
+      "farmer-carry.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "suitcase-carry.focus",
+        "suitcase-carry.cue.1"
+      ],
+      "summary": "suitcase-carry.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "suitcase-carry.cue.1",
+      "suitcase-carry.cue.2"
+    ],
+    "during": [
+      "suitcase-carry.during.1",
+      "suitcase-carry.during.2"
+    ],
+    "exerciseId": "suitcase-carry",
+    "focus": "suitcase-carry.focus",
+    "pattern": [
+      "suitcase-carry.pattern"
+    ],
+    "setup": [
+      "suitcase-carry.setup.1",
+      "suitcase-carry.setup.2",
+      "suitcase-carry.setup.3"
+    ],
+    "watchFor": [
+      "suitcase-carry.watch.1",
+      "suitcase-carry.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "wall-supported-suitcase-march.focus",
+        "wall-supported-suitcase-march.cue.1"
+      ],
+      "summary": "wall-supported-suitcase-march.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "wall-supported-suitcase-march.cue.1",
+      "wall-supported-suitcase-march.cue.2"
+    ],
+    "during": [
+      "wall-supported-suitcase-march.during.1",
+      "wall-supported-suitcase-march.during.2"
+    ],
+    "exerciseId": "wall-supported-suitcase-march",
+    "focus": "wall-supported-suitcase-march.focus",
+    "pattern": [
+      "wall-supported-suitcase-march.pattern"
+    ],
+    "setup": [
+      "wall-supported-suitcase-march.setup.1",
+      "wall-supported-suitcase-march.setup.2",
+      "wall-supported-suitcase-march.setup.3"
+    ],
+    "watchFor": [
+      "wall-supported-suitcase-march.watch.1",
+      "wall-supported-suitcase-march.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "side-lying-hip-adduction.focus",
+        "side-lying-hip-adduction.cue.1"
+      ],
+      "summary": "side-lying-hip-adduction.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "side-lying-hip-adduction.cue.1",
+      "side-lying-hip-adduction.cue.2"
+    ],
+    "during": [
+      "side-lying-hip-adduction.during.1",
+      "side-lying-hip-adduction.during.2"
+    ],
+    "exerciseId": "side-lying-hip-adduction",
+    "focus": "side-lying-hip-adduction.focus",
+    "pattern": [
+      "side-lying-hip-adduction.pattern"
+    ],
+    "setup": [
+      "side-lying-hip-adduction.setup.1",
+      "side-lying-hip-adduction.setup.2",
+      "side-lying-hip-adduction.setup.3"
+    ],
+    "watchFor": [
+      "side-lying-hip-adduction.watch.1",
+      "side-lying-hip-adduction.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "loop-band-lateral-walk.focus",
+        "loop-band-lateral-walk.cue.1"
+      ],
+      "summary": "loop-band-lateral-walk.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "loop-band-lateral-walk.cue.1",
+      "loop-band-lateral-walk.cue.2"
+    ],
+    "during": [
+      "loop-band-lateral-walk.during.1",
+      "loop-band-lateral-walk.during.2"
+    ],
+    "exerciseId": "loop-band-lateral-walk",
+    "focus": "loop-band-lateral-walk.focus",
+    "pattern": [
+      "loop-band-lateral-walk.pattern"
+    ],
+    "setup": [
+      "loop-band-lateral-walk.setup.1",
+      "loop-band-lateral-walk.setup.2",
+      "loop-band-lateral-walk.setup.3"
+    ],
+    "watchFor": [
+      "loop-band-lateral-walk.watch.1",
+      "loop-band-lateral-walk.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "side-lying-dumbbell-external-rotation.focus",
+        "side-lying-dumbbell-external-rotation.cue.1"
+      ],
+      "summary": "side-lying-dumbbell-external-rotation.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "side-lying-dumbbell-external-rotation.cue.1",
+      "side-lying-dumbbell-external-rotation.cue.2"
+    ],
+    "during": [
+      "side-lying-dumbbell-external-rotation.during.1",
+      "side-lying-dumbbell-external-rotation.during.2"
+    ],
+    "exerciseId": "side-lying-dumbbell-external-rotation",
+    "focus": "side-lying-dumbbell-external-rotation.focus",
+    "pattern": [
+      "side-lying-dumbbell-external-rotation.pattern"
+    ],
+    "setup": [
+      "side-lying-dumbbell-external-rotation.setup.1",
+      "side-lying-dumbbell-external-rotation.setup.2",
+      "side-lying-dumbbell-external-rotation.setup.3"
+    ],
+    "watchFor": [
+      "side-lying-dumbbell-external-rotation.watch.1",
+      "side-lying-dumbbell-external-rotation.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "supine-hamstring-walkout.focus",
+        "supine-hamstring-walkout.cue.1"
+      ],
+      "summary": "supine-hamstring-walkout.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "supine-hamstring-walkout.cue.1",
+      "supine-hamstring-walkout.cue.2"
+    ],
+    "during": [
+      "supine-hamstring-walkout.during.1",
+      "supine-hamstring-walkout.during.2"
+    ],
+    "exerciseId": "supine-hamstring-walkout",
+    "focus": "supine-hamstring-walkout.focus",
+    "pattern": [
+      "supine-hamstring-walkout.pattern"
+    ],
+    "setup": [
+      "supine-hamstring-walkout.setup.1",
+      "supine-hamstring-walkout.setup.2",
+      "supine-hamstring-walkout.setup.3"
+    ],
+    "watchFor": [
+      "supine-hamstring-walkout.watch.1",
+      "supine-hamstring-walkout.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "wall-ankle-dorsiflexion-rock.focus",
+        "wall-ankle-dorsiflexion-rock.cue.1"
+      ],
+      "summary": "wall-ankle-dorsiflexion-rock.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "wall-ankle-dorsiflexion-rock.cue.1",
+      "wall-ankle-dorsiflexion-rock.cue.2"
+    ],
+    "during": [
+      "wall-ankle-dorsiflexion-rock.during.1",
+      "wall-ankle-dorsiflexion-rock.during.2"
+    ],
+    "exerciseId": "wall-ankle-dorsiflexion-rock",
+    "focus": "wall-ankle-dorsiflexion-rock.focus",
+    "pattern": [
+      "wall-ankle-dorsiflexion-rock.pattern"
+    ],
+    "setup": [
+      "wall-ankle-dorsiflexion-rock.setup.1",
+      "wall-ankle-dorsiflexion-rock.setup.2",
+      "wall-ankle-dorsiflexion-rock.setup.3"
+    ],
+    "watchFor": [
+      "wall-ankle-dorsiflexion-rock.watch.1",
+      "wall-ankle-dorsiflexion-rock.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "bodyweight-hip-hinge-rehearsal.focus",
+        "bodyweight-hip-hinge-rehearsal.cue.1"
+      ],
+      "summary": "bodyweight-hip-hinge-rehearsal.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "bodyweight-hip-hinge-rehearsal.cue.1",
+      "bodyweight-hip-hinge-rehearsal.cue.2"
+    ],
+    "during": [
+      "bodyweight-hip-hinge-rehearsal.during.1",
+      "bodyweight-hip-hinge-rehearsal.during.2"
+    ],
+    "exerciseId": "bodyweight-hip-hinge-rehearsal",
+    "focus": "bodyweight-hip-hinge-rehearsal.focus",
+    "pattern": [
+      "bodyweight-hip-hinge-rehearsal.pattern"
+    ],
+    "setup": [
+      "bodyweight-hip-hinge-rehearsal.setup.1",
+      "bodyweight-hip-hinge-rehearsal.setup.2",
+      "bodyweight-hip-hinge-rehearsal.setup.3"
+    ],
+    "watchFor": [
+      "bodyweight-hip-hinge-rehearsal.watch.1",
+      "bodyweight-hip-hinge-rehearsal.watch.2"
+    ]
+  },
+  {
+    "compactFallbackRefs": {
+      "coachingFocus": [
+        "single-leg-balance-rehearsal.focus",
+        "single-leg-balance-rehearsal.cue.1"
+      ],
+      "summary": "single-leg-balance-rehearsal.pattern"
+    },
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "single-leg-balance-rehearsal.cue.1",
+      "single-leg-balance-rehearsal.cue.2"
+    ],
+    "during": [
+      "single-leg-balance-rehearsal.during.1",
+      "single-leg-balance-rehearsal.during.2"
+    ],
+    "exerciseId": "single-leg-balance-rehearsal",
+    "focus": "single-leg-balance-rehearsal.focus",
+    "pattern": [
+      "single-leg-balance-rehearsal.pattern"
+    ],
+    "setup": [
+      "single-leg-balance-rehearsal.setup.1",
+      "single-leg-balance-rehearsal.setup.2",
+      "single-leg-balance-rehearsal.setup.3"
+    ],
+    "watchFor": [
+      "single-leg-balance-rehearsal.watch.1",
+      "single-leg-balance-rehearsal.watch.2"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-floor-press.cue.wrist-over-elbow",
+      "dumbbell-floor-press.cue.steady-base",
+      "dumbbell-floor-press.cue.controlled-touch"
+    ],
+    "during": [
+      "dumbbell-floor-press.during.vertical-forearms",
+      "dumbbell-floor-press.during.bounded-range",
+      "dumbbell-floor-press.during.finish-controlled"
+    ],
+    "exerciseId": "dumbbell-floor-press",
+    "focus": "dumbbell-floor-press.focus.floor-bounded-press",
+    "pattern": [
+      "dumbbell-floor-press.pattern.horizontal-press"
+    ],
+    "setup": [
+      "dumbbell-floor-press.setup.supine-floor",
+      "dumbbell-floor-press.setup.feet-supported",
+      "dumbbell-floor-press.equipment.no-bench"
+    ],
+    "watchFor": [
+      "dumbbell-floor-press.watch.elbows-drifting",
+      "dumbbell-floor-press.watch.bouncing",
+      "dumbbell-floor-press.watch.unstable-finish"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "dumbbell-triceps-extension.cue.secure-grip",
+      "dumbbell-triceps-extension.cue.ribs-stacked",
+      "dumbbell-triceps-extension.cue.smooth-turnaround"
+    ],
+    "during": [
+      "dumbbell-triceps-extension.during.elbows-drive",
+      "dumbbell-triceps-extension.during.range-owned",
+      "dumbbell-triceps-extension.during.safe-finish"
+    ],
+    "exerciseId": "dumbbell-triceps-extension",
+    "focus": "dumbbell-triceps-extension.focus.elbow-extension",
+    "pattern": [
+      "dumbbell-triceps-extension.pattern.direct-extension"
+    ],
+    "setup": [
+      "dumbbell-triceps-extension.setup.standing-overhead",
+      "dumbbell-triceps-extension.setup.elbow-path",
+      "dumbbell-triceps-extension.equipment.single-dumbbell"
+    ],
+    "watchFor": [
+      "dumbbell-triceps-extension.watch.torso-extension",
+      "dumbbell-triceps-extension.watch.elbow-path-change",
+      "dumbbell-triceps-extension.watch.grip-shift"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "bent-over-dumbbell-reverse-fly.cue.soft-elbows",
+      "bent-over-dumbbell-reverse-fly.cue.steady-hinge",
+      "bent-over-dumbbell-reverse-fly.cue.light-enough"
+    ],
+    "during": [
+      "bent-over-dumbbell-reverse-fly.during.horizontal-abduction",
+      "bent-over-dumbbell-reverse-fly.during.controlled-lower",
+      "bent-over-dumbbell-reverse-fly.during.range"
+    ],
+    "exerciseId": "bent-over-dumbbell-reverse-fly",
+    "focus": "bent-over-dumbbell-reverse-fly.focus.rear-delt-arc",
+    "pattern": [
+      "bent-over-dumbbell-reverse-fly.pattern.rear-delt-accessory"
+    ],
+    "setup": [
+      "bent-over-dumbbell-reverse-fly.setup.hinge",
+      "bent-over-dumbbell-reverse-fly.setup.arms-below",
+      "bent-over-dumbbell-reverse-fly.equipment.pair-space"
+    ],
+    "watchFor": [
+      "bent-over-dumbbell-reverse-fly.watch.rowing",
+      "bent-over-dumbbell-reverse-fly.watch.trunk-swing",
+      "bent-over-dumbbell-reverse-fly.watch.shoulder-shrug"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "side-lying-hip-abduction.cue.long-leg",
+      "side-lying-hip-abduction.cue.toes-forward",
+      "side-lying-hip-abduction.cue.quiet-waist"
+    ],
+    "during": [
+      "side-lying-hip-abduction.during.abduct",
+      "side-lying-hip-abduction.during.control-return",
+      "side-lying-hip-abduction.during.side-owned"
+    ],
+    "exerciseId": "side-lying-hip-abduction",
+    "focus": "side-lying-hip-abduction.focus.lateral-lift",
+    "pattern": [
+      "side-lying-hip-abduction.pattern.floor-abduction"
+    ],
+    "setup": [
+      "side-lying-hip-abduction.setup.side-lying",
+      "side-lying-hip-abduction.setup.lower-leg",
+      "side-lying-hip-abduction.equipment.floor-bodyweight"
+    ],
+    "watchFor": [
+      "side-lying-hip-abduction.watch.pelvis-roll",
+      "side-lying-hip-abduction.watch.trunk-sidebend",
+      "side-lying-hip-abduction.watch.toe-turn"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "bird-dog.cue.push-floor",
+      "bird-dog.cue.reach-long",
+      "bird-dog.cue.quiet-pelvis"
+    ],
+    "during": [
+      "bird-dog.during.opposite-limbs",
+      "bird-dog.during.return",
+      "bird-dog.during.side-explicit"
+    ],
+    "exerciseId": "bird-dog",
+    "focus": "bird-dog.focus.contralateral-reach",
+    "pattern": [
+      "bird-dog.pattern.contralateral-trunk"
+    ],
+    "setup": [
+      "bird-dog.setup.quadruped",
+      "bird-dog.setup.stack",
+      "bird-dog.equipment.floor"
+    ],
+    "watchFor": [
+      "bird-dog.watch.trunk-rotation",
+      "bird-dog.watch.lumbar-extension",
+      "bird-dog.watch.rushed-switch"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "band-biceps-curl.cue.stand-on-band",
+      "band-biceps-curl.cue.wrists-neutral",
+      "band-biceps-curl.cue.control-return"
+    ],
+    "during": [
+      "band-biceps-curl.during.flex",
+      "band-biceps-curl.during.lower",
+      "band-biceps-curl.during.no-kg"
+    ],
+    "exerciseId": "band-biceps-curl",
+    "focus": "band-biceps-curl.focus.elbow-flexion",
+    "pattern": [
+      "band-biceps-curl.pattern.anchorless-curl"
+    ],
+    "setup": [
+      "band-biceps-curl.setup.tube-under-feet",
+      "band-biceps-curl.setup.handle-grip",
+      "band-biceps-curl.equipment.self-anchor"
+    ],
+    "watchFor": [
+      "band-biceps-curl.watch.foot-slip",
+      "band-biceps-curl.watch.torso-swing",
+      "band-biceps-curl.watch.upper-arm-drift"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "machine-shoulder-press.cue.back-supported",
+      "machine-shoulder-press.cue.wrists-stacked",
+      "machine-shoulder-press.cue.smooth-path"
+    ],
+    "during": [
+      "machine-shoulder-press.during.press",
+      "machine-shoulder-press.during.return",
+      "machine-shoulder-press.during.finish"
+    ],
+    "exerciseId": "machine-shoulder-press",
+    "focus": "machine-shoulder-press.focus.guided-press",
+    "pattern": [
+      "machine-shoulder-press.pattern.supported-vertical-push"
+    ],
+    "setup": [
+      "machine-shoulder-press.setup.adjust-seat",
+      "machine-shoulder-press.setup.select-load",
+      "machine-shoulder-press.equipment.exact-machine"
+    ],
+    "watchFor": [
+      "machine-shoulder-press.watch.seat-mismatch",
+      "machine-shoulder-press.watch.back-lift",
+      "machine-shoulder-press.watch.machine-stops"
+    ]
+  },
+  {
+    "contract": {
+      "contractId": "EXERCISE_KNOWLEDGE_PRESENTATION_MAP",
+      "contractVersion": "1.0.0"
+    },
+    "cues": [
+      "machine-leg-extension.cue.seat-contact",
+      "machine-leg-extension.cue.pad-position",
+      "machine-leg-extension.cue.control-return"
+    ],
+    "during": [
+      "machine-leg-extension.during.extend",
+      "machine-leg-extension.during.return",
+      "machine-leg-extension.during.finish"
+    ],
+    "exerciseId": "machine-leg-extension",
+    "focus": "machine-leg-extension.focus.knee-extension",
+    "pattern": [
+      "machine-leg-extension.pattern.direct-knee-extension"
+    ],
+    "setup": [
+      "machine-leg-extension.setup.adjust-axis",
+      "machine-leg-extension.setup.pad-load",
+      "machine-leg-extension.equipment.exact-machine"
+    ],
+    "watchFor": [
+      "machine-leg-extension.watch.hip-lift",
+      "machine-leg-extension.watch.pad-shift",
+      "machine-leg-extension.watch.stack-impact"
+    ]
+  }
+]

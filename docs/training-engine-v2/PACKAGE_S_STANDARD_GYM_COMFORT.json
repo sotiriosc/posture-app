@@ -1,0 +1,112 @@
+{
+  "policy": {
+    "contract": {
+      "contractId": "STANDARD_GYM_COMFORT_LATE_TIE_POLICY",
+      "contractVersion": "1.0.0"
+    },
+    "precedence": [
+      "training_safety_and_hard_contraindication",
+      "equipment_legality_and_required_purpose",
+      "productive_continuity_or_exact_familiarity",
+      "exact_machine_capability",
+      "clearer_standard_machine_setup_when_familiarity_unknown",
+      "local_candidate_rank_or_deterministic_tie"
+    ],
+    "weightedScore": null,
+    "noveltyQuota": 0,
+    "varietyQuota": 0,
+    "machineMandatory": false,
+    "machineSaferClaim": false
+  },
+  "profiles": {
+    "pull-up": {
+      "exerciseId": "pull-up",
+      "exactMachineId": "assisted_pull_up",
+      "setupClarity": "machine_specific_review",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "hack-squat": {
+      "exerciseId": "hack-squat",
+      "exactMachineId": "hack_squat",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "seated-leg-curl": {
+      "exerciseId": "seated-leg-curl",
+      "exactMachineId": "seated_leg_curl",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "machine-chest-fly": {
+      "exerciseId": "machine-chest-fly",
+      "exactMachineId": "chest_fly",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "machine-hip-adduction": {
+      "exerciseId": "machine-hip-adduction",
+      "exactMachineId": "hip_adduction",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "machine-hip-abduction": {
+      "exerciseId": "machine-hip-abduction",
+      "exactMachineId": "hip_abduction",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "seated-calf-raise": {
+      "exerciseId": "seated-calf-raise",
+      "exactMachineId": "seated_calf_raise",
+      "setupClarity": "clear",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    },
+    "machine-hip-thrust": {
+      "exerciseId": "machine-hip-thrust",
+      "exactMachineId": "hip_thrust",
+      "setupClarity": "machine_specific_review",
+      "machineMandatory": false,
+      "machineSaferClaim": false,
+      "provenance": [
+        "PACKAGE_S_STANDARD_COMMERCIAL_GYM_FOUNDATIONS_OWNER_DECISION",
+        "STANDARD_GYM_COMFORT_LATE_TIE_POLICY"
+      ]
+    }
+  },
+  "homeProfileCount": 64
+}

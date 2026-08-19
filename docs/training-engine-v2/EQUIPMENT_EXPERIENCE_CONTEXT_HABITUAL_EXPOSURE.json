@@ -1,0 +1,19 @@
+{
+  "contract": {
+    "contractId": "HABITUAL_TRAINING_EXPOSURE_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "states": [
+    "established_stable_range",
+    "established_high_but_tolerated",
+    "established_low_but_productive",
+    "recently_increased",
+    "recently_decreased",
+    "inconsistent",
+    "stale",
+    "restricted_legacy_context",
+    "unknown"
+  ],
+  "fractionalCoefficients": 0,
+  "draftCompletedEvents": 0
+}

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@praxis/engine": "*",
+    "@praxis/training-engine-v2": "*",
     "@vercel/analytics": "^2.0.1",
     "next": "^16.2.11",
     "next-plausible": "^4.0.0",
@@ -30,6 +31,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
+    "test:inactive-product-goal-option": "vitest --run tests/unit/inactiveGetStrongerOption.test.ts tests/unit/inactiveGetStrongerGuards.test.tsx tests/unit/inactiveProductGoalEvidence.test.ts",
+    "report:inactive-product-goal-option": "node --import tsx dev/reportInactiveProductGoalOption.ts",
     "test:e2e": "playwright test"
   }
 }

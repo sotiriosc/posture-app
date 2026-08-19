@@ -1,0 +1,5312 @@
+[
+  {
+    "id": "holdout-current-01-01",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-02",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-03",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-04",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-05",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-06",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-07",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-08",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-09",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-01-10",
+    "lane": "current_catalog",
+    "subject": "ninety-ninety-breathing",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-01",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-02",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-03",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-04",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-05",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-06",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-07",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-08",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-09",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-02-10",
+    "lane": "current_catalog",
+    "subject": "serratus-wall-slide",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-01",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-02",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-03",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-04",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-05",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-06",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-07",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-08",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-09",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-03-10",
+    "lane": "current_catalog",
+    "subject": "dead-bug",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-01",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-02",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-03",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-04",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-05",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-06",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-07",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-08",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-09",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-04-10",
+    "lane": "current_catalog",
+    "subject": "push-up",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-01",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-02",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-03",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-04",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-05",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-06",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-07",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-08",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-09",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-05-10",
+    "lane": "current_catalog",
+    "subject": "dumbbell-bench-press",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-01",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-02",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-03",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-04",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-05",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-06",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-07",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-08",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-09",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-06-10",
+    "lane": "current_catalog",
+    "subject": "machine-chest-press",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-01",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-02",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-03",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-04",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-05",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-06",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-07",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-08",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-09",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-07-10",
+    "lane": "current_catalog",
+    "subject": "cable-chest-fly",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-01",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-02",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-03",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-04",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-05",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-06",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-07",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-08",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-09",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-08-10",
+    "lane": "current_catalog",
+    "subject": "chest-supported-dumbbell-row",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-01",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-02",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-03",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-04",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-05",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-06",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-07",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-08",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-09",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-09-10",
+    "lane": "current_catalog",
+    "subject": "one-arm-dumbbell-row",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-01",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-02",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-03",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-04",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-05",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-06",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-07",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-08",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-09",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-10-10",
+    "lane": "current_catalog",
+    "subject": "machine-row",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-01",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-02",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-03",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-04",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-05",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-06",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-07",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-08",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-09",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-11-10",
+    "lane": "current_catalog",
+    "subject": "seated-cable-row",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-01",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-02",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-03",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-04",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-05",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-06",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-07",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-08",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-09",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-12-10",
+    "lane": "current_catalog",
+    "subject": "band-row",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-01",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-02",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-03",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-04",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-05",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-06",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-07",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-08",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-09",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-13-10",
+    "lane": "current_catalog",
+    "subject": "dumbbell-shoulder-press",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-01",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-02",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-03",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-04",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-05",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-06",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-07",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-08",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-09",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-14-10",
+    "lane": "current_catalog",
+    "subject": "lat-pulldown",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-01",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-02",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-03",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-04",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-05",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-06",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-07",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-08",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-09",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-15-10",
+    "lane": "current_catalog",
+    "subject": "band-lat-pulldown",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-01",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-02",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-03",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-04",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-05",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-06",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-07",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-08",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-09",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-16-10",
+    "lane": "current_catalog",
+    "subject": "goblet-squat",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-01",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-02",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-03",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-04",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-05",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-06",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-07",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-08",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-09",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-17-10",
+    "lane": "current_catalog",
+    "subject": "leg-press",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-01",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-02",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-03",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-04",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-05",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-06",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-07",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-08",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-09",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-18-10",
+    "lane": "current_catalog",
+    "subject": "bodyweight-box-squat",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-01",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-02",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-03",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-04",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-05",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-06",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-07",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-08",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-09",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-19-10",
+    "lane": "current_catalog",
+    "subject": "dumbbell-romanian-deadlift",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-01",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-02",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-03",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-04",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-05",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-06",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-07",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-08",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-09",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-20-10",
+    "lane": "current_catalog",
+    "subject": "cable-pull-through",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-01",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-02",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-03",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-04",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-05",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-06",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-07",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-08",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-09",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-21-10",
+    "lane": "current_catalog",
+    "subject": "split-squat",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-01",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-02",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-03",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-04",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-05",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-06",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-07",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-08",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-09",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-22-10",
+    "lane": "current_catalog",
+    "subject": "step-up",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-01",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-02",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-03",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-04",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-05",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-06",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-07",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-08",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-09",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-23-10",
+    "lane": "current_catalog",
+    "subject": "lying-leg-curl",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-01",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-02",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-03",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-04",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-05",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-06",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-07",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-08",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-09",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-24-10",
+    "lane": "current_catalog",
+    "subject": "glute-bridge",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-01",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-02",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-03",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-04",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-05",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-06",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-07",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-08",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-09",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-25-10",
+    "lane": "current_catalog",
+    "subject": "dumbbell-lateral-raise",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-01",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-02",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-03",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-04",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-05",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-06",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-07",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-08",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-09",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-26-10",
+    "lane": "current_catalog",
+    "subject": "reverse-pec-deck",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-01",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-02",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-03",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-04",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-05",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-06",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-07",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-08",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-09",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-27-10",
+    "lane": "current_catalog",
+    "subject": "band-face-pull",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-01",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-02",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-03",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-04",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-05",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-06",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-07",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-08",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-09",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-28-10",
+    "lane": "current_catalog",
+    "subject": "dumbbell-curl",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-01",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-02",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-03",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-04",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-05",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-06",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-07",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-08",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-09",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-29-10",
+    "lane": "current_catalog",
+    "subject": "cable-triceps-pressdown",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-01",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-02",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-03",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-04",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-05",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-06",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-07",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-08",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-09",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-30-10",
+    "lane": "current_catalog",
+    "subject": "pallof-press",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-01",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-02",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-03",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-04",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-05",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-06",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-07",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-08",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-09",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-31-10",
+    "lane": "current_catalog",
+    "subject": "forearm-plank",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-01",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-02",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-03",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-04",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-05",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-06",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-07",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-08",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-09",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-32-10",
+    "lane": "current_catalog",
+    "subject": "forearm-side-plank",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-01",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-02",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-03",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-04",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-05",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-06",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-07",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-08",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-09",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-33-10",
+    "lane": "current_catalog",
+    "subject": "machine-abdominal-crunch",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-01",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-02",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-03",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-04",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-05",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-06",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-07",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-08",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-09",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-34-10",
+    "lane": "current_catalog",
+    "subject": "half-kneeling-high-to-low-cable-chop",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-01",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-02",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-03",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-04",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-05",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-06",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-07",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-08",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-09",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-35-10",
+    "lane": "current_catalog",
+    "subject": "farmer-carry",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-01",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-02",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-03",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-04",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-05",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-06",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-07",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-08",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-09",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-36-10",
+    "lane": "current_catalog",
+    "subject": "suitcase-carry",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-01",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-02",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-03",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-04",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-05",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-06",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-07",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-08",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-09",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-37-10",
+    "lane": "current_catalog",
+    "subject": "wall-supported-suitcase-march",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-01",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-02",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-03",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-04",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-05",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-06",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-07",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-08",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-09",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-38-10",
+    "lane": "current_catalog",
+    "subject": "standing-calf-raise",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-01",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-02",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-03",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-04",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-05",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-06",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-07",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-08",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-09",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-39-10",
+    "lane": "current_catalog",
+    "subject": "side-lying-hip-adduction",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-01",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-02",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-03",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-04",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-05",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-06",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-07",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-08",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-09",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-40-10",
+    "lane": "current_catalog",
+    "subject": "loop-band-lateral-walk",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-01",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-02",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-03",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-04",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-05",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-06",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-07",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-08",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-09",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-41-10",
+    "lane": "current_catalog",
+    "subject": "side-lying-dumbbell-external-rotation",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-01",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-02",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "dumbbells_without_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-03",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-04",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "loop_band_only",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-05",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "tube_band_without_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-06",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "tube_band_low_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-07",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "tube_band_mid_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-08",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "tube_band_high_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-09",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "full_gym",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-42-10",
+    "lane": "current_catalog",
+    "subject": "supine-hamstring-walkout",
+    "environment": "selected_machine_capabilities",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-01",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-02",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-03",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-04",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-05",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-06",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-07",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-08",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-09",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-43-10",
+    "lane": "current_catalog",
+    "subject": "wall-ankle-dorsiflexion-rock",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-01",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-02",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "dumbbells_without_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-03",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "dumbbells_with_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-04",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "loop_band_only",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-05",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "tube_band_without_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-06",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "tube_band_low_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-07",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-08",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "tube_band_high_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-09",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "full_gym",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-44-10",
+    "lane": "current_catalog",
+    "subject": "bodyweight-hip-hinge-rehearsal",
+    "environment": "selected_machine_capabilities",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-01",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-02",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "spaceRequirement",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-03",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-04",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-05",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-06",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-07",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-08",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unknowns",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-09",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-current-45-10",
+    "lane": "current_catalog",
+    "subject": "single-leg-balance-rehearsal",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "provenance",
+    "expected": "no_production_change"
+  },
+  {
+    "id": "holdout-candidate-01",
+    "lane": "candidate_boundary",
+    "subject": "dumbbell-floor-press",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "ready_for_owner_selection"
+  },
+  {
+    "id": "holdout-candidate-02",
+    "lane": "candidate_boundary",
+    "subject": "dumbbell-triceps-extension",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-03",
+    "lane": "candidate_boundary",
+    "subject": "bent-over-dumbbell-reverse-fly",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-04",
+    "lane": "candidate_boundary",
+    "subject": "side-lying-hip-abduction",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "ready_for_owner_selection"
+  },
+  {
+    "id": "holdout-candidate-05",
+    "lane": "candidate_boundary",
+    "subject": "bird-dog",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "ready_for_owner_selection"
+  },
+  {
+    "id": "holdout-candidate-06",
+    "lane": "candidate_boundary",
+    "subject": "reverse-lunge",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "catalog_identity_gap_confirmed"
+  },
+  {
+    "id": "holdout-candidate-07",
+    "lane": "candidate_boundary",
+    "subject": "bodyweight-squat",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "catalog_identity_gap_confirmed"
+  },
+  {
+    "id": "holdout-candidate-08",
+    "lane": "candidate_boundary",
+    "subject": "band-biceps-curl",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-09",
+    "lane": "candidate_boundary",
+    "subject": "band-pull-apart",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "receiver_policy_required"
+  },
+  {
+    "id": "holdout-candidate-10",
+    "lane": "candidate_boundary",
+    "subject": "band-squat",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "duplicate_low_value"
+  },
+  {
+    "id": "holdout-candidate-11",
+    "lane": "candidate_boundary",
+    "subject": "band-romanian-deadlift",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "support_or_safety_review_required"
+  },
+  {
+    "id": "holdout-candidate-12",
+    "lane": "candidate_boundary",
+    "subject": "foot-anchored-seated-band-row",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "home_comfort_rejected"
+  },
+  {
+    "id": "holdout-candidate-13",
+    "lane": "candidate_boundary",
+    "subject": "body-wrapped-band-chest-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "home_comfort_rejected"
+  },
+  {
+    "id": "holdout-candidate-14",
+    "lane": "candidate_boundary",
+    "subject": "machine-shoulder-press",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "ready_for_owner_selection"
+  },
+  {
+    "id": "holdout-candidate-15",
+    "lane": "candidate_boundary",
+    "subject": "assisted-pull-up",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-16",
+    "lane": "candidate_boundary",
+    "subject": "machine-leg-extension",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-17",
+    "lane": "candidate_boundary",
+    "subject": "incline-dumbbell-bench-press",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "reviewState",
+    "expected": "same_identity_realization"
+  },
+  {
+    "id": "holdout-candidate-18",
+    "lane": "candidate_boundary",
+    "subject": "suspension-row",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "provenance",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-19",
+    "lane": "candidate_boundary",
+    "subject": "half-kneeling-hip-flexor-mobility",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "receiver_policy_required"
+  },
+  {
+    "id": "holdout-candidate-20",
+    "lane": "candidate_boundary",
+    "subject": "side-lying-thoracic-rotation",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "setupComplexity",
+    "expected": "receiver_policy_required"
+  },
+  {
+    "id": "holdout-candidate-21",
+    "lane": "candidate_boundary",
+    "subject": "cable-hip-adduction",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "instructionBurden",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-22",
+    "lane": "candidate_boundary",
+    "subject": "cable-hip-abduction",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-23",
+    "lane": "candidate_boundary",
+    "subject": "barbell-bench-press",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "coordinationDemand",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-24",
+    "lane": "candidate_boundary",
+    "subject": "barbell-back-squat",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "supportClarity",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-25",
+    "lane": "candidate_boundary",
+    "subject": "conventional-or-trap-bar-deadlift",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-26",
+    "lane": "candidate_boundary",
+    "subject": "unassisted-pull-up",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "anchorComplexity",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-27",
+    "lane": "candidate_boundary",
+    "subject": "seated-calf-raise",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "ready_after_targeted_metadata_curation"
+  },
+  {
+    "id": "holdout-candidate-28",
+    "lane": "candidate_boundary",
+    "subject": "slider-leg-curl",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-29",
+    "lane": "candidate_boundary",
+    "subject": "landmine-press",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "identity_familiar",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "equipment_contract_required"
+  },
+  {
+    "id": "holdout-candidate-30",
+    "lane": "candidate_boundary",
+    "subject": "hanging-knee-raise",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "exact_realization_familiar",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "exercise_science_review_required"
+  },
+  {
+    "id": "holdout-deferred-01",
+    "lane": "deferred_category",
+    "subject": "olympic_lifts",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-02",
+    "lane": "deferred_category",
+    "subject": "jumps",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-03",
+    "lane": "deferred_category",
+    "subject": "throws",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-04",
+    "lane": "deferred_category",
+    "subject": "ballistic_push_ups",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-05",
+    "lane": "deferred_category",
+    "subject": "kettlebell_swings_as_power_or_conditioning",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-06",
+    "lane": "deferred_category",
+    "subject": "sprints",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-07",
+    "lane": "deferred_category",
+    "subject": "rowing_air_bike_treadmill_conditioning",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-08",
+    "lane": "deferred_category",
+    "subject": "loaded_complexes",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "deferred_power_or_conditioning"
+  },
+  {
+    "id": "holdout-deferred-09",
+    "lane": "deferred_category",
+    "subject": "advanced_intensity_technique_identities",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "rejected"
+  },
+  {
+    "id": "holdout-deferred-10",
+    "lane": "deferred_category",
+    "subject": "unstable_surface_novelty",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "rejected"
+  },
+  {
+    "id": "holdout-deferred-11",
+    "lane": "deferred_category",
+    "subject": "sport_specific_drills",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "rejected"
+  },
+  {
+    "id": "holdout-deferred-12",
+    "lane": "deferred_category",
+    "subject": "clinical_rehabilitation_identities",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "deferred_accessibility_owner"
+  },
+  {
+    "id": "holdout-deferred-13",
+    "lane": "deferred_category",
+    "subject": "equipment_brand_specific_machines",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "rejected"
+  },
+  {
+    "id": "holdout-owner-01",
+    "lane": "owner_decision",
+    "subject": "Should Home Comfort Core precede Commercial Gym Core?",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-02",
+    "lane": "owner_decision",
+    "subject": "Which exact candidates belong in the first production tranche?",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-03",
+    "lane": "owner_decision",
+    "subject": "Should barbell bench, squat, and deadlift be admitted before owner delivery?",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-04",
+    "lane": "owner_decision",
+    "subject": "Should Dumbbell Floor Press be a top-priority identity?",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-05",
+    "lane": "owner_decision",
+    "subject": "Is Reverse Lunge distinct from Split Squat?",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-06",
+    "lane": "owner_decision",
+    "subject": "Is Bodyweight Squat distinct from Bodyweight Box Squat?",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-07",
+    "lane": "owner_decision",
+    "subject": "Should incline, wall, and knee push-ups remain one Push-Up identity?",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-08",
+    "lane": "owner_decision",
+    "subject": "Which anchorless band patterns are acceptable?",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-09",
+    "lane": "owner_decision",
+    "subject": "Should foot-anchored band rows be rejected for setup risk?",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-10",
+    "lane": "owner_decision",
+    "subject": "Is body-wrapped band chest press acceptable?",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-11",
+    "lane": "owner_decision",
+    "subject": "Should advanced home users opt into complex choices through exact familiarity rather than a separate catalog?",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-12",
+    "lane": "owner_decision",
+    "subject": "Which catalog gaps may remain explicit limitations at initial release?",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-13",
+    "lane": "owner_decision",
+    "subject": "How many expansion tranches should occur before G?",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-14",
+    "lane": "owner_decision",
+    "subject": "Should Knowledge Layer curation follow each row immediately or remain a later adapter?",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-owner-15",
+    "lane": "owner_decision",
+    "subject": "Is the Full/Lighter/Recovery bridge a hard blocker before owner delivery?",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "owner_decision_required"
+  },
+  {
+    "id": "holdout-practice-full",
+    "lane": "practice_option_invariance",
+    "subject": "full",
+    "environment": "bodyweight_no_equipment",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "future_only_no_implementation"
+  },
+  {
+    "id": "holdout-practice-lighter",
+    "lane": "practice_option_invariance",
+    "subject": "lighter",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "future_only_no_implementation"
+  },
+  {
+    "id": "holdout-practice-recovery",
+    "lane": "practice_option_invariance",
+    "subject": "recovery",
+    "environment": "dumbbells_with_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "future_only_no_implementation"
+  },
+  {
+    "id": "holdout-freeze-01",
+    "lane": "product_engine_freeze",
+    "subject": "homeSetsBeginner",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-02",
+    "lane": "product_engine_freeze",
+    "subject": "homeBlocksAdvanced",
+    "environment": "dumbbells_without_bench",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-03",
+    "lane": "product_engine_freeze",
+    "subject": "comfortMeansLowStimulus",
+    "environment": "dumbbells_with_bench",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "instructionBurden",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-04",
+    "lane": "product_engine_freeze",
+    "subject": "precedence",
+    "environment": "loop_band_only",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "balanceDemand",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-05",
+    "lane": "product_engine_freeze",
+    "subject": "noveltyQuota",
+    "environment": "tube_band_without_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "coordinationDemand",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-06",
+    "lane": "product_engine_freeze",
+    "subject": "varietyQuota",
+    "environment": "tube_band_low_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "supportClarity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-07",
+    "lane": "product_engine_freeze",
+    "subject": "inferredEquipment",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "equipmentAmbiguity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-08",
+    "lane": "product_engine_freeze",
+    "subject": "fakeSubstitutions",
+    "environment": "tube_band_high_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "anchorComplexity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-09",
+    "lane": "product_engine_freeze",
+    "subject": "duplicateIdentityReasons",
+    "environment": "full_gym",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "floorTransitionDemand",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-10",
+    "lane": "product_engine_freeze",
+    "subject": "candidateWithoutReceiverCount",
+    "environment": "selected_machine_capabilities",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "spaceRequirement",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-11",
+    "lane": "product_engine_freeze",
+    "subject": "catalogSizeTarget",
+    "environment": "bodyweight_no_equipment",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "failureConsequenceClarity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-12",
+    "lane": "product_engine_freeze",
+    "subject": "productionRowAdditions",
+    "environment": "dumbbells_without_bench",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unilateralComplexity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-13",
+    "lane": "product_engine_freeze",
+    "subject": "productionRowModifications",
+    "environment": "dumbbells_with_bench",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "externalLoadHandlingComplexity",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-14",
+    "lane": "product_engine_freeze",
+    "subject": "productionRowDeletions",
+    "environment": "loop_band_only",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "firstSessionConfidenceSuitability",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-15",
+    "lane": "product_engine_freeze",
+    "subject": "rankingChanges",
+    "environment": "tube_band_without_anchor",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "homeEnvironmentFit",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-16",
+    "lane": "product_engine_freeze",
+    "subject": "eligibilityChanges",
+    "environment": "tube_band_low_anchor",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "unknowns",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-17",
+    "lane": "product_engine_freeze",
+    "subject": "composerChanges",
+    "environment": "tube_band_mid_anchor",
+    "experience": "Beginner",
+    "familiarity": "unknown",
+    "comfortDimension": "reviewState",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-18",
+    "lane": "product_engine_freeze",
+    "subject": "weekChanges",
+    "environment": "tube_band_high_anchor",
+    "experience": "Intermediate",
+    "familiarity": "unknown",
+    "comfortDimension": "provenance",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-19",
+    "lane": "product_engine_freeze",
+    "subject": "prescriptionChanges",
+    "environment": "full_gym",
+    "experience": "Advanced",
+    "familiarity": "unknown",
+    "comfortDimension": "recognizability",
+    "expected": "unchanged"
+  },
+  {
+    "id": "holdout-freeze-20",
+    "lane": "product_engine_freeze",
+    "subject": "productShadowChanges",
+    "environment": "selected_machine_capabilities",
+    "experience": "unknown",
+    "familiarity": "unknown",
+    "comfortDimension": "setupComplexity",
+    "expected": "unchanged"
+  }
+]

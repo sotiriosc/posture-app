@@ -1,0 +1,47 @@
+[
+  {
+    "goal": "Build muscle",
+    "scenarioCount": 108,
+    "completeCount": 108,
+    "honestIncompleteCount": 0,
+    "terminalClasses": [
+      "calibration_complete"
+    ]
+  },
+  {
+    "goal": "Get stronger",
+    "scenarioCount": 496,
+    "completeCount": 496,
+    "honestIncompleteCount": 0,
+    "terminalClasses": [
+      "calibration_complete"
+    ]
+  },
+  {
+    "goal": "Improve athletic performance",
+    "scenarioCount": 13,
+    "completeCount": 0,
+    "honestIncompleteCount": 13,
+    "terminalClasses": [
+      "honest_incomplete_product_input"
+    ]
+  },
+  {
+    "goal": "Improve fitness and stamina",
+    "scenarioCount": 75,
+    "completeCount": 75,
+    "honestIncompleteCount": 0,
+    "terminalClasses": [
+      "calibration_complete"
+    ]
+  },
+  {
+    "goal": "Improve posture and movement",
+    "scenarioCount": 108,
+    "completeCount": 108,
+    "honestIncompleteCount": 0,
+    "terminalClasses": [
+      "calibration_complete"
+    ]
+  }
+]

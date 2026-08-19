@@ -1,0 +1,299 @@
+{
+  "policy": {
+    "reference": {
+      "policyId": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE",
+      "version": "1.0.0"
+    },
+    "historicalCompatibilityLabels": [
+      "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE"
+    ],
+    "frequencyRules": [
+      {
+        "family": "strength",
+        "priority": "required",
+        "ruleId": "STRENGTH_S2_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 2,
+          "softMaximumAllocatedSessions": 3,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_REQUIRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "preferred",
+        "ruleId": "STRENGTH_S2_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_PREFERRED"
+        }
+      },
+      {
+        "family": "strength",
+        "priority": "optional",
+        "ruleId": "STRENGTH_S2_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:STRENGTH_S2_OPTIONAL"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "required",
+        "ruleId": "MUSCLE_H1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_REQUIRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "preferred",
+        "ruleId": "MUSCLE_H1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 2,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_PREFERRED"
+        }
+      },
+      {
+        "family": "muscle",
+        "priority": "optional",
+        "ruleId": "MUSCLE_H1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:MUSCLE_H1_OPTIONAL"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "required",
+        "ruleId": "DIRECT_D1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_REQUIRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "preferred",
+        "ruleId": "DIRECT_D1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_PREFERRED"
+        }
+      },
+      {
+        "family": "direct",
+        "priority": "optional",
+        "ruleId": "DIRECT_D1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:DIRECT_D1_OPTIONAL"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "required",
+        "ruleId": "ASSESSMENT_A1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_REQUIRED"
+        }
+      },
+      {
+        "family": "assessment",
+        "priority": "preferred",
+        "ruleId": "ASSESSMENT_A1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:ASSESSMENT_A1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "required",
+        "ruleId": "CAPACITY_C1_REQUIRED",
+        "frequency": {
+          "minimumAllocatedSessions": 1,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_REQUIRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "preferred",
+        "ruleId": "CAPACITY_C1_PREFERRED",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_PREFERRED"
+        }
+      },
+      {
+        "family": "capacity",
+        "priority": "optional",
+        "ruleId": "CAPACITY_C1_OPTIONAL",
+        "frequency": {
+          "minimumAllocatedSessions": 0,
+          "targetAllocatedSessions": 1,
+          "softMaximumAllocatedSessions": 1,
+          "sourceRef": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0:CAPACITY_C1_OPTIONAL"
+        }
+      }
+    ],
+    "participationState": "advisory_only_no_executable_frequency",
+    "spacingState": "SPACING_R0_PRESCRIPTION_PENDING",
+    "supportedScopes": [
+      "major_strength_movement_development:S2",
+      "muscle_development:H1",
+      "direct_action_or_muscle_development:D1",
+      "assessment_priority:A1",
+      "supported_capacity:C1",
+      "participation_advisory:P0",
+      "spacing_prescription_pending:R0"
+    ],
+    "unsupportedScopes": [
+      "general_fitness_movement_frequency",
+      "posture_movement_quality_frequency",
+      "systemic_conditioning",
+      "external_load_receiver",
+      "standalone_recovery_session_semantics",
+      "phase_specific_frequency_or_volume_override",
+      "direct_secondary_numeric_equivalence",
+      "response_led_h2_muscle_distribution",
+      "universal_recovery_spacing",
+      "deload_construction",
+      "completed_exposure_interpretation",
+      "adaptation"
+    ],
+    "provenance": {
+      "owner": "weekly_intent_planner",
+      "sourceRefs": [
+        "WEEK_POLICY_V1_OWNER_ADMISSION",
+        "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE"
+      ],
+      "ruleRefs": [
+        "S2",
+        "H1",
+        "D1",
+        "A1",
+        "C1",
+        "P0",
+        "R0"
+      ]
+    }
+  },
+  "historicalProjection": {
+    "policyId": "WEEK_POLICY_V1_CAUSAL_CORE_CANDIDATE",
+    "version": "1.0.0",
+    "sourcePolicy": {
+      "policyId": "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE",
+      "version": "1.0.0"
+    },
+    "strength": {
+      "required": [
+        1,
+        2,
+        3
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    "muscle": {
+      "required": [
+        1,
+        1,
+        2
+      ],
+      "preferred": [
+        0,
+        1,
+        2
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    "direct": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    "assessment": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ]
+    },
+    "capacity": {
+      "required": [
+        1,
+        1,
+        1
+      ],
+      "preferred": [
+        0,
+        1,
+        1
+      ],
+      "optional": [
+        0,
+        1,
+        1
+      ]
+    },
+    "participation": "PARTICIPATION_P0_NONE",
+    "spacing": "SPACING_R0_PRESCRIPTION_PENDING"
+  },
+  "duplicateLivePolicyCount": 0
+}

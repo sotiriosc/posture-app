@@ -1,0 +1,13 @@
+{
+  "admittedControlledChainCount": 130,
+  "admittedFixedShellCount": 40,
+  "admittedHoldoutCount": 360,
+  "genuineCompletedHistoryCount": 325,
+  "productionControlledScenarioCount": 130,
+  "allExerciseIdentityCount": 45,
+  "allDoseModeCount": 7,
+  "semanticMismatchCount": 0,
+  "productionValidationFailureCount": 0,
+  "result": "PRODUCTION_LONGITUDINAL_ADAPTATION_GOLDEN_EQUIVALENCE_PASS",
+  "fingerprint": "3df5c7be00ccd07c6e7669c6fe4e535f4596395c8c3cfe466637165764ab2ac5"
+}

@@ -1,0 +1,6 @@
+{
+  "builds": 10000,
+  "failures": 0,
+  "relationalMembership": true,
+  "immutable": true
+}

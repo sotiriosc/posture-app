@@ -1,0 +1,29 @@
+{
+  "evaluationTime": "2026-08-15T21:15:00-04:00",
+  "counts": {
+    "experienceProfile": 10000,
+    "identityFamiliarity": 10000,
+    "realizationFamiliarity": 10000,
+    "habitualExposure": 10000,
+    "equipmentRealization": 10000,
+    "startingPoint": 10000,
+    "contextRealization": 10000,
+    "compilerV1_3": 8000,
+    "gate13V1_2": 5000,
+    "loadCeiling": 3000,
+    "returnRebuild": 3000,
+    "timeConstrained": 3000,
+    "rampPolicy": 3000,
+    "advancedAthlete": 2000,
+    "beginnerNovice": 2000,
+    "bodyweightBand": 2000,
+    "multiGoalSpecialization": 2000,
+    "intensityTechniqueDeferrals": 1000,
+    "calendarProgressionMutations": 1000,
+    "automaticDeloadMutations": 1000,
+    "productShadowFreeze": 1000,
+    "noRescueMutations": 1000,
+    "repeatedDeterministicExecutions": 1000
+  },
+  "failures": []
+}

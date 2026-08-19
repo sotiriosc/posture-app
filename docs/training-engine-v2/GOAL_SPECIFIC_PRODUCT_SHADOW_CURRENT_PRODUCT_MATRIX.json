@@ -1,0 +1,38 @@
+[
+  {
+    "goal": "Athletic performance",
+    "scenarioCount": 13,
+    "completeCount": 0,
+    "honestIncompleteCount": 13,
+    "terminalClasses": [
+      "honest_incomplete_product_input"
+    ]
+  },
+  {
+    "goal": "General fitness",
+    "scenarioCount": 13,
+    "completeCount": 0,
+    "honestIncompleteCount": 13,
+    "terminalClasses": [
+      "honest_incomplete_product_input"
+    ]
+  },
+  {
+    "goal": "Improve posture",
+    "scenarioCount": 14,
+    "completeCount": 0,
+    "honestIncompleteCount": 14,
+    "terminalClasses": [
+      "honest_incomplete_mapping"
+    ]
+  },
+  {
+    "goal": "Reduce pain",
+    "scenarioCount": 14,
+    "completeCount": 0,
+    "honestIncompleteCount": 14,
+    "terminalClasses": [
+      "honest_incomplete_product_input"
+    ]
+  }
+]

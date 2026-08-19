@@ -1,0 +1,111 @@
+{
+  "source": "packages/engine/src/exercises.ts",
+  "sourceSha256": "c3a557c1bb0b50e1f531c6bd762ba608a7665ac2adb3daa42f50a0d04f7721b6",
+  "currentRowCount": 225,
+  "currentUniqueIdCount": 225,
+  "screenshotReference": "packages/training-engine-v2/docs/training-engine-v2/Screenshot (1027).png",
+  "screenshotBinariesCommitted": 0,
+  "authority": "legacy_product_context_only_not_v2_identity_or_equipment_authority",
+  "exactMappingPolicy": "exact reviewed mapping only; no fuzzy aliases or second V2 catalog",
+  "rows": [
+    {
+      "legacyId": "band-pull-aparts",
+      "displayName": "Band Pull-Aparts",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "band-pull-apart candidate",
+      "finding": "Legacy horizontal_pull classification cannot promote pull-apart to a full horizontal-pull receiver; rear-delt/preparation review remains.",
+      "disposition": "receiver_policy_required"
+    },
+    {
+      "legacyId": "split-stance-row",
+      "displayName": "Split Stance Row",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "possible band-row realization",
+      "finding": "Split stance is a realization fact, but the exact band anchor/path is not proven by the legacy equipment label.",
+      "disposition": "equipment_contract_required"
+    },
+    {
+      "legacyId": "split-stance-band-chest-press",
+      "displayName": "Split Stance Band Chest Press",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "band chest-press concept outside first package",
+      "finding": "The legacy row does not prove anchor, routing, or body-contact truth; stance alone does not create identity.",
+      "disposition": "support_or_safety_review_required"
+    },
+    {
+      "legacyId": "band-overhead-press",
+      "displayName": "Band Overhead Press",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "vertical-press resistance-path candidate",
+      "finding": "Potentially familiar, but self-anchor/routing, load ceiling, and overhead stress require exact review before V2 admission.",
+      "disposition": "support_or_safety_review_required"
+    },
+    {
+      "legacyId": "band-biceps-curl",
+      "displayName": "Band Biceps Curl",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "band-biceps-curl candidate",
+      "finding": "Supports recognizability and receiver value, not automatic production readiness; foot retention and band path remain explicit.",
+      "disposition": "ready_after_targeted_metadata_curation"
+    },
+    {
+      "legacyId": "bodyweight-triceps-extension",
+      "displayName": "Bodyweight Triceps Extension",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "none"
+      ],
+      "v2Relationship": "additional direct-home-triceps candidate",
+      "finding": "Legacy none does not prove the hand-support surface, height, wrist tolerance, or exit path. Compare against dumbbell triceps extension in Pre-G2.",
+      "disposition": "support_or_safety_review_required"
+    },
+    {
+      "legacyId": "prone-t-raise",
+      "displayName": "Prone T Raise",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "none"
+      ],
+      "v2Relationship": "bodyweight rear-delt/scapular candidate",
+      "finding": "Floor space and prone/shoulder tolerance are hidden by none; receiver must avoid generic corrective filler.",
+      "disposition": "receiver_policy_required"
+    },
+    {
+      "legacyId": "band-rear-delt-fly",
+      "displayName": "Band Rear Delt Fly",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "bands"
+      ],
+      "v2Relationship": "band rear-delt candidate",
+      "finding": "Exact anchor or self-held path is missing; it may improve rear-delt coverage but cannot be counted as horizontal pulling by label.",
+      "disposition": "equipment_contract_required"
+    },
+    {
+      "legacyId": "marching-brace-hold",
+      "displayName": "Marching Brace Hold",
+      "screenshotObserved": true,
+      "legacyEquipment": [
+        "none"
+      ],
+      "v2Relationship": "standing trunk-control candidate",
+      "finding": "Standing space, balance, cadence, and anti-rotation receiver require review; it is not a generic core filler.",
+      "disposition": "receiver_policy_required"
+    }
+  ]
+}

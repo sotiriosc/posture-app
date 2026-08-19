@@ -1,0 +1,12 @@
+{
+  "legacyProgramEqual": true,
+  "programProgressEqual": true,
+  "sessionRecordEqual": true,
+  "exerciseLogEqual": true,
+  "trainingSyncRequestEqual": true,
+  "trainingSyncResponseEqual": true,
+  "offlineQueueEqual": true,
+  "navigationEqual": true,
+  "legacyAdaptationPreviewEqual": true,
+  "userVisibleDifferenceCount": 0
+}

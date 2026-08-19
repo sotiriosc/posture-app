@@ -4,7 +4,7 @@ import {
   DUMBBELLS_NO_BENCH_EQUIPMENT,
   FULL_GYM_EQUIPMENT,
   NO_PAIN_OR_INJURY,
-  REFERENCE_EXERCISES,
+  PRE_PACKAGE_R_REFERENCE_EXERCISES as REFERENCE_EXERCISES,
   composeCandidateScore,
   createDecisionTrace,
   evaluateHardEligibility,
@@ -130,6 +130,10 @@ describe("hard eligibility, score contracts, and trace structure", () => {
           id: "b",
           family: "pain_suitability",
           value: 8,
+          rawValue: 8,
+          weight: 0,
+          unnormalizedWeight: 0,
+          weightedContribution: 0,
           reason: "Low lumbar stabilization requirement.",
           reasonCode: "ASSESSMENT_PRIORITY_SUPPORTED",
           source: "pain_injury",
@@ -138,6 +142,10 @@ describe("hard eligibility, score contracts, and trace structure", () => {
           id: "a",
           family: "role_fit",
           value: 9,
+          rawValue: 9,
+          weight: 0,
+          unnormalizedWeight: 0,
+          weightedContribution: 0,
           reason: "Direct horizontal-pull role fit.",
           reasonCode: "ALIGNMENT_PRIORITY_SUPPORTED",
           source: "session_intent",
@@ -145,11 +153,12 @@ describe("hard eligibility, score contracts, and trace structure", () => {
       ],
     });
 
-    expect(score.aggregate).toEqual({
-      method: "unweighted_mean_foundation_placeholder",
-      value: 8.5,
-    });
+    expect(score.aggregate.method).toBe("unweighted_mean_foundation_placeholder");
+    expect(score.aggregate.value).toBe(8.5);
+    expect(score.aggregate.totalWeight).toBe(2);
+    expect(score.aggregate.weightNormalization).toBe("equal_component_weight");
     expect(score.components.map((component) => component.id)).toEqual(["a", "b"]);
+    expect(score.components.map((component) => component.weightedContribution)).toEqual([4.5, 4]);
   });
 
   it("provides developer-facing trace structure for candidates and hard rejections", () => {
@@ -178,6 +187,10 @@ describe("hard eligibility, score contracts, and trace structure", () => {
               id: "role",
               family: "role_fit",
               value: 9,
+              rawValue: 9,
+              weight: 0,
+              unnormalizedWeight: 0,
+              weightedContribution: 0,
               reason: "Horizontal pull match.",
               reasonCode: "ALIGNMENT_PRIORITY_SUPPORTED",
               source: "session_intent",

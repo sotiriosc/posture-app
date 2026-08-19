@@ -1,0 +1,6 @@
+{
+  "contractReference": "PRESCRIPTION_PURPOSE_EVIDENCE_SNAPSHOT@1.0.0",
+  "deterministicIdentity": true,
+  "hiddenClock": false,
+  "productionRandomness": false
+}

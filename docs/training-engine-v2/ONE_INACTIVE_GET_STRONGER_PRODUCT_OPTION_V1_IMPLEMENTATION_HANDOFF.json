@@ -1,0 +1,79 @@
+{
+  "reference": {
+    "contractId": "ONE_INACTIVE_GET_STRONGER_PRODUCT_OPTION_V1_IMPLEMENTATION_HANDOFF",
+    "contractVersion": "1.0.0"
+  },
+  "option": {
+    "id": "get_stronger",
+    "displayLabel": "Get stronger",
+    "canonicalOutcome": "strength",
+    "state": "future_inactive_internal"
+  },
+  "likelyAffectedFiles": [
+    "apps/consumer/src/components/QuestionnaireForm.tsx",
+    "apps/consumer/src/components/questionnaire/productGoalOptionRegistry.ts",
+    "apps/consumer/tests/unit/inactiveGetStrongerOption.test.tsx",
+    "apps/consumer/tests/e2e/inactiveGetStrongerPreview.spec.ts"
+  ],
+  "prohibitedFilesAndAreas": [
+    "apps/consumer/src/app/questionnaire/page.tsx current route invocation",
+    "apps/gyms runtime source",
+    "packages/engine/src/questionnaireSignature.ts",
+    "packages/engine/src/engine/engine.ts",
+    "packages/engine/src/engine/engineAdapter.ts",
+    "Product persistence and training sync",
+    "Product Shadow trigger or current-route integration"
+  ],
+  "previewInjection": {
+    "mechanism": "explicit internal preview prop or isolated component harness",
+    "currentRoutesSupplyProp": false,
+    "environmentVariableDefault": false,
+    "ordinaryQueryStringActivation": false
+  },
+  "visibility": {
+    "consumerOrdinary": false,
+    "gymsOrdinary": false,
+    "buyerDemo": false
+  },
+  "behavior": {
+    "render": true,
+    "select": true,
+    "exposeStructuredValue": true,
+    "persist": false,
+    "generateProgram": false,
+    "currentRouteShadow": false,
+    "returnV2Output": false,
+    "nonPreviewSubmit": "fail_closed",
+    "previewSubmit": "future_submission_unavailable"
+  },
+  "responsive": {
+    "360": "required",
+    "390": "required",
+    "1440": "required",
+    "noOverflow": true
+  },
+  "accessibility": {
+    "nativeSelectSemantics": true,
+    "availabilityExplained": true,
+    "disabledWithoutExplanation": false,
+    "keyboard": true,
+    "visibleFocus": true
+  },
+  "testIds": [
+    "goal-option-get-stronger",
+    "goal-option-get-stronger-status",
+    "inactive-goal-preview",
+    "inactive-goal-submit-blocked"
+  ],
+  "activationGuards": [
+    "current_route_absent",
+    "gyms_absent",
+    "no_persistence",
+    "no_signature_change",
+    "no_generateProgram",
+    "no_shadow_call",
+    "no_v2_output"
+  ],
+  "rollback": "remove preview registry option prop harness and F tests; current route remains byte-for-byte behaviorally unchanged",
+  "expectedClassification": "ONE_INACTIVE_PRODUCT_GOAL_OPTION_V1_READY_FOR_OWNER_ACCOUNT_GOAL_DELIVERY_DESIGN_AUTHORIZATION"
+}

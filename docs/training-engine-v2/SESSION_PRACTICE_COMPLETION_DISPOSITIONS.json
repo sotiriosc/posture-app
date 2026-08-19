@@ -1,0 +1,71 @@
+{
+  "full": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_COMPLETION_DISPOSITION",
+      "contractVersion": "1.0.0"
+    },
+    "dispositionId": "session-practice-completion-disposition:b6d03a9876ca7044",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "realizationRevisionId": "session-practice-realization-revision:cabb8344eaa90f10",
+    "status": "full_completed_as_prescribed",
+    "creditedSourceEventIds": [
+      "event-accessory",
+      "event-cooldown",
+      "event-main",
+      "event-prep"
+    ],
+    "unfulfilledResponsibilityIds": [],
+    "weekReviewRequired": false,
+    "automaticReallocationApplied": false,
+    "automaticDoublingApplied": false,
+    "adaptationActionApplied": false,
+    "reasonCodes": [
+      "FULL_REALIZED_EVENTS_COMPLETED"
+    ]
+  },
+  "lighter": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_COMPLETION_DISPOSITION",
+      "contractVersion": "1.0.0"
+    },
+    "dispositionId": "session-practice-completion-disposition:7383f69e77afdeea",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "realizationRevisionId": "session-practice-realization-revision:4d048aa5996fe211",
+    "status": "lighter_completed_required_responsibilities_satisfied",
+    "creditedSourceEventIds": [
+      "event-main",
+      "event-prep"
+    ],
+    "unfulfilledResponsibilityIds": [],
+    "weekReviewRequired": false,
+    "automaticReallocationApplied": false,
+    "automaticDoublingApplied": false,
+    "adaptationActionApplied": false,
+    "reasonCodes": [
+      "LIGHTER_REQUIRED_RESPONSIBILITIES_SATISFIED"
+    ]
+  },
+  "recovery": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_COMPLETION_DISPOSITION",
+      "contractVersion": "1.0.0"
+    },
+    "dispositionId": "session-practice-completion-disposition:54263654dea94d98",
+    "attemptId": "session-practice-attempt:54ee878a89b6cb0e",
+    "realizationRevisionId": "session-practice-realization-revision:5bd9d4b0316092c4",
+    "status": "recovery_support_completed_original_responsibility_unfulfilled",
+    "creditedSourceEventIds": [
+      "event-cooldown"
+    ],
+    "unfulfilledResponsibilityIds": [
+      "responsibility-strength"
+    ],
+    "weekReviewRequired": true,
+    "automaticReallocationApplied": false,
+    "automaticDoublingApplied": false,
+    "adaptationActionApplied": false,
+    "reasonCodes": [
+      "RECOVERY_SUPPORT_COMPLETED_WITHOUT_DEVELOPMENTAL_CREDIT"
+    ]
+  }
+}

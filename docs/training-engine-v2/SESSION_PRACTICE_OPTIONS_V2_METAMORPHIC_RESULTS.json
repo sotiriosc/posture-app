@@ -1,0 +1,90 @@
+{
+  "invariants": [
+    {
+      "relation": "source_assignment_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "optional_candidate_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "recommendation_reason_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "provenance_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "persistence_retrieval_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "report_order",
+      "result": "invariant"
+    },
+    {
+      "relation": "display_label_canonical_mode",
+      "result": "invariant"
+    },
+    {
+      "relation": "irrelevant_pain",
+      "result": "invariant"
+    },
+    {
+      "relation": "irrelevant_assessment",
+      "result": "invariant"
+    },
+    {
+      "relation": "same_source_fingerprint",
+      "result": "invariant"
+    },
+    {
+      "relation": "repeated_deterministic_execution",
+      "result": "invariant"
+    }
+  ],
+  "materialResponses": [
+    {
+      "relation": "requested_mode",
+      "result": "material_response"
+    },
+    {
+      "relation": "safety_state",
+      "result": "material_response"
+    },
+    {
+      "relation": "need_priority",
+      "result": "material_response"
+    },
+    {
+      "relation": "anchor_status",
+      "result": "material_response"
+    },
+    {
+      "relation": "dependency_ownership",
+      "result": "material_response"
+    },
+    {
+      "relation": "admitted_prescription_minimum",
+      "result": "material_response"
+    },
+    {
+      "relation": "execution_start_state",
+      "result": "material_response"
+    },
+    {
+      "relation": "source_revision",
+      "result": "material_response"
+    },
+    {
+      "relation": "completed_realized_performance",
+      "result": "material_response"
+    },
+    {
+      "relation": "remaining_responsibility",
+      "result": "material_response"
+    }
+  ]
+}

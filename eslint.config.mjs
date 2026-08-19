@@ -1,7 +1,6 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 // ─── Boundary rules (bloom-plan §1.4) ────────────────────────────────────────
 //
@@ -116,9 +115,6 @@ const R4_GYMS = {
 // before reaching the test suite.
 const IMPORT_TYPE_SAFETY = {
   files: ["**/*.{ts,tsx}"],
-  plugins: {
-    "@typescript-eslint": tsPlugin,
-  },
   rules: {
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/consistent-type-imports": [

@@ -1,0 +1,204 @@
+{
+  "reference": {
+    "contractId": "PRODUCT_INPUT_NECESSITY_MATRIX",
+    "contractVersion": "1.0.0"
+  },
+  "uiDesigned": false,
+  "productAuthority": false,
+  "firstSurfaceRecommendation": [
+    "primary_goal_or_follow_up",
+    "goal_specific_purpose_or_focus",
+    "pain_context_separation",
+    "exact_equipment_capabilities_when_legality_requires_them"
+  ],
+  "rows": [
+    {
+      "fact": "primary_goal",
+      "classifications": [
+        "required_for_primary_goal_mapping"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "product_mapping",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": false,
+      "finding": "A closed primary outcome or an explicit follow-up answer is required."
+    },
+    {
+      "fact": "general_fitness_purpose_bundle",
+      "classifications": [
+        "required_for_purpose_bundle"
+      ],
+      "affectedGoals": [
+        "General fitness"
+      ],
+      "earliestBlockerStage": "planning_brief",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": false,
+      "finding": "General fitness cannot silently default to strength or endurance."
+    },
+    {
+      "fact": "fitness_stamina_focus",
+      "classifications": [
+        "required_for_purpose_bundle"
+      ],
+      "affectedGoals": [
+        "Improve fitness and stamina"
+      ],
+      "earliestBlockerStage": "planning_brief",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": false,
+      "finding": "Local muscular endurance is admitted; systemic conditioning remains separate policy."
+    },
+    {
+      "fact": "athletic_performance_follow_up",
+      "classifications": [
+        "deferred_policy_required"
+      ],
+      "affectedGoals": [
+        "Athletic performance",
+        "Improve athletic performance"
+      ],
+      "earliestBlockerStage": "product_mapping",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": true,
+      "finding": "Power, systemic conditioning, and sport-specific preparation are not inferred."
+    },
+    {
+      "fact": "pain_context_separate_from_goal",
+      "classifications": [
+        "required_for_exercise_legality",
+        "prohibited_inference"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "candidate_intelligence",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": false,
+      "finding": "Pain is local context and never a primary goal, diagnosis, or permanent block."
+    },
+    {
+      "fact": "secondary_goal",
+      "classifications": [
+        "optional_personalization"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": null,
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": false,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": false,
+      "finding": "A secondary goal improves weekly ordering but is not required for initial generation."
+    },
+    {
+      "fact": "session_minutes",
+      "classifications": [
+        "required_for_session_feasibility"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "week_allocation",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": false,
+      "finding": "Unknown minutes preserve unknown duration; exact minutes are needed for exact fit claims."
+    },
+    {
+      "fact": "exact_equipment_capabilities",
+      "classifications": [
+        "present_but_coarse",
+        "required_for_exercise_legality",
+        "required_for_exact_realization"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "candidate_intelligence",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": true,
+      "canWaitUntilLater": false,
+      "separatePolicyRequired": false,
+      "finding": "Environment labels do not prove a machine, anchor, support, ceiling, or increment."
+    },
+    {
+      "fact": "coarse_experience",
+      "classifications": [
+        "optional_personalization"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": null,
+      "calibrationCanSubstitute": true,
+      "belongsInChunkE": false,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": false,
+      "finding": "The coarse label alone does not authorize volume, load, or progression."
+    },
+    {
+      "fact": "exact_realization_familiarity",
+      "classifications": [
+        "required_for_exact_realization",
+        "calibration_can_substitute"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "prescription",
+      "calibrationCanSubstitute": true,
+      "belongsInChunkE": false,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": false,
+      "finding": "Self-selected reviewed calibration can replace absent exact starting-load history."
+    },
+    {
+      "fact": "exact_load_history",
+      "classifications": [
+        "calibration_can_substitute"
+      ],
+      "affectedGoals": [
+        "strength",
+        "hypertrophy"
+      ],
+      "earliestBlockerStage": "prescription",
+      "calibrationCanSubstitute": true,
+      "belongsInChunkE": false,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": false,
+      "finding": "Exact load is not required when a legal self-selected effort calibration is available."
+    },
+    {
+      "fact": "completed_performance_and_response",
+      "classifications": [
+        "required_only_for_longitudinal_adaptation",
+        "prohibited_inference"
+      ],
+      "affectedGoals": [
+        "all"
+      ],
+      "earliestBlockerStage": "longitudinal",
+      "calibrationCanSubstitute": false,
+      "belongsInChunkE": false,
+      "canWaitUntilLater": true,
+      "separatePolicyRequired": true,
+      "finding": "Only completed Performance and Response can authorize material adaptation."
+    }
+  ],
+  "fingerprint": "4a90047795376b0b2c7180ef8a3c24c0ff1fa68f540313963868f0da5c935745"
+}

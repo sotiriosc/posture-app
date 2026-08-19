@@ -1,0 +1,110 @@
+{
+  "experience": [
+    {
+      "reference": {
+        "contractId": "PRODUCT_EXPERIENCE_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "sourceExperience": "Beginner",
+      "coarseExperience": "beginner",
+      "trainingYears": null,
+      "recentConsistency": null,
+      "exactExerciseFamiliarity": null,
+      "exactLoadAuthority": false,
+      "status": "coarse_experience_only",
+      "explicitUnknowns": [
+        "training_years",
+        "recent_consistency",
+        "exact_exercise_familiarity",
+        "exact_realization_familiarity",
+        "exact_load_authority"
+      ]
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_EXPERIENCE_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "sourceExperience": "Intermediate",
+      "coarseExperience": "intermediate",
+      "trainingYears": null,
+      "recentConsistency": null,
+      "exactExerciseFamiliarity": null,
+      "exactLoadAuthority": false,
+      "status": "coarse_experience_only",
+      "explicitUnknowns": [
+        "training_years",
+        "recent_consistency",
+        "exact_exercise_familiarity",
+        "exact_realization_familiarity",
+        "exact_load_authority"
+      ]
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_EXPERIENCE_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "sourceExperience": "Advanced",
+      "coarseExperience": "advanced",
+      "trainingYears": null,
+      "recentConsistency": null,
+      "exactExerciseFamiliarity": null,
+      "exactLoadAuthority": false,
+      "status": "coarse_experience_only",
+      "explicitUnknowns": [
+        "training_years",
+        "recent_consistency",
+        "exact_exercise_familiarity",
+        "exact_realization_familiarity",
+        "exact_load_authority"
+      ]
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_EXPERIENCE_REALIZATION_SHADOW_MAPPING",
+        "contractVersion": "1.0.0"
+      },
+      "sourceExperience": "unknown",
+      "coarseExperience": null,
+      "trainingYears": null,
+      "recentConsistency": null,
+      "exactExerciseFamiliarity": null,
+      "exactLoadAuthority": false,
+      "status": "mapping_required",
+      "explicitUnknowns": [
+        "training_years",
+        "recent_consistency",
+        "exact_exercise_familiarity",
+        "exact_realization_familiarity",
+        "exact_load_authority"
+      ]
+    }
+  ],
+  "history": {
+    "reference": {
+      "contractId": "PRODUCT_LEGACY_HISTORY_AUTHORITY_PROJECTION",
+      "contractVersion": "1.0.0"
+    },
+    "activeLegacyProgramId": "legacy-program-c1",
+    "programCount": 1,
+    "sessionRecordCount": 0,
+    "exerciseLogCount": 0,
+    "canonicalIdentityExposureIds": [
+      "dead-bug"
+    ],
+    "unresolvedIdentityIds": [],
+    "authority": "restricted_identity_and_continuity_context_only",
+    "continuityContext": "LEGACY_DELIVERED_PROGRAM_CONTINUITY_CONTEXT",
+    "athleteAuthoredProgrammingCount": 0,
+    "exactRealizationFamiliarityCount": 0,
+    "completedV2PerformanceCount": 0,
+    "progressionAuthorityCount": 0,
+    "missingLineage": [
+      "final_v2_prescription_revision",
+      "final_v2_sequence_revision",
+      "v2_source_exposure_event",
+      "v2_completed_performance"
+    ]
+  }
+}

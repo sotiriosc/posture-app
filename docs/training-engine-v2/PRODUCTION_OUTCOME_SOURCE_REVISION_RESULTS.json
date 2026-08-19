@@ -1,0 +1,8 @@
+{
+  "appendOnly": true,
+  "corrections": 1000,
+  "supersession": "append",
+  "withdrawal": "append",
+  "invalidation": "append",
+  "historicalRewriteCount": 0
+}

@@ -1,0 +1,78 @@
+{
+  "full": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+      "contractVersion": "1.0.0"
+    },
+    "mode": "full",
+    "state": "available",
+    "reasonCodes": [
+      "FULL_SOURCE_EXECUTABLE"
+    ],
+    "sourceEvidenceRefs": [
+      "session-rev-1",
+      "sequence-rev-1",
+      "gate13-rev-1"
+    ],
+    "materiality": {
+      "assignmentOmissionCount": 0,
+      "developmentalCountReduction": 0,
+      "explicitLowerVariantCount": 0,
+      "materialReduction": false,
+      "reasonCodes": [
+        "FULL_REQUIRES_ZERO_SEMANTIC_DIFFERENCE"
+      ]
+    },
+    "fallbackApplied": false
+  },
+  "lighter": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+      "contractVersion": "1.0.0"
+    },
+    "mode": "lighter",
+    "state": "available",
+    "reasonCodes": [
+      "LIGHTER_VALID_PURPOSE_PRESERVING_REALIZATION"
+    ],
+    "sourceEvidenceRefs": [
+      "session-rev-1",
+      "sequence-rev-1"
+    ],
+    "materiality": {
+      "assignmentOmissionCount": 2,
+      "developmentalCountReduction": 0,
+      "explicitLowerVariantCount": 0,
+      "materialReduction": true,
+      "reasonCodes": [
+        "STRUCTURAL_OMISSION_MATERIAL"
+      ]
+    },
+    "fallbackApplied": false
+  },
+  "recovery": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_OPTION_AVAILABILITY",
+      "contractVersion": "1.0.0"
+    },
+    "mode": "recovery",
+    "state": "available_with_pending_week_responsibility",
+    "reasonCodes": [
+      "RECOVERY_EXPLICIT_SUPPORT_REALIZATION_AVAILABLE"
+    ],
+    "sourceEvidenceRefs": [
+      "session-rev-1",
+      "event-cooldown"
+    ],
+    "materiality": {
+      "assignmentOmissionCount": 3,
+      "developmentalCountReduction": 2,
+      "explicitLowerVariantCount": 0,
+      "materialReduction": true,
+      "reasonCodes": [
+        "ZERO_DEVELOPMENTAL_BLOCK_RECOVERY_REALIZATION"
+      ]
+    },
+    "fallbackApplied": false
+  }
+}

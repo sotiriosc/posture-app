@@ -1,0 +1,226 @@
+{
+  "reference": {
+    "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+    "contractVersion": "2.0.0"
+  },
+  "currentLabels": [
+    "Improve posture",
+    "Reduce pain",
+    "Athletic performance",
+    "General fitness"
+  ],
+  "futureFixtureLabels": [
+    "Get stronger",
+    "Build muscle",
+    "Improve fitness and stamina",
+    "Improve posture and movement",
+    "Improve athletic performance"
+  ],
+  "entries": [
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Improve posture",
+      "sourceVocabulary": "current_product",
+      "primaryOutcome": "posture_and_movement_quality",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "movement_quality_development",
+      "status": "mapped",
+      "followUpRequirements": [
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [
+        "NO_CLINICAL_CORRECTION_OR_PAIN_REDUCTION_CLAIM"
+      ],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Reduce pain",
+      "sourceVocabulary": "current_product",
+      "primaryOutcome": null,
+      "secondaryOutcome": null,
+      "goalRelationships": [],
+      "programmingContexts": [
+        "pain_aware_return"
+      ],
+      "planningBriefFamily": null,
+      "status": "follow_up_required",
+      "followUpRequirements": [
+        "PRODUCT_PRIMARY_OUTCOME_GOAL_REQUIRED",
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Athletic performance",
+      "sourceVocabulary": "current_product",
+      "primaryOutcome": null,
+      "secondaryOutcome": null,
+      "goalRelationships": [],
+      "programmingContexts": [],
+      "planningBriefFamily": null,
+      "status": "follow_up_required",
+      "followUpRequirements": [
+        "ATHLETIC_PERFORMANCE_FOLLOW_UP_REQUIRED",
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "General fitness",
+      "sourceVocabulary": "current_product",
+      "primaryOutcome": "general_fitness",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "general_fitness",
+      "status": "follow_up_required",
+      "followUpRequirements": [
+        "GENERAL_FITNESS_PURPOSE_BUNDLE_REQUIRED",
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Get stronger",
+      "sourceVocabulary": "approved_future_fixture",
+      "primaryOutcome": "strength",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "strength_development",
+      "status": "mapped",
+      "followUpRequirements": [
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Build muscle",
+      "sourceVocabulary": "approved_future_fixture",
+      "primaryOutcome": "hypertrophy",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "hypertrophy_development",
+      "status": "mapped",
+      "followUpRequirements": [
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [
+        "BODY_COMPOSITION_AND_NUTRITION_OUTSIDE_MAPPING_SCOPE"
+      ],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Improve fitness and stamina",
+      "sourceVocabulary": "approved_future_fixture",
+      "primaryOutcome": "general_fitness",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "general_fitness",
+      "status": "follow_up_required",
+      "followUpRequirements": [
+        "FITNESS_AND_STAMINA_FOCUS_REQUIRED",
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Improve posture and movement",
+      "sourceVocabulary": "approved_future_fixture",
+      "primaryOutcome": "posture_and_movement_quality",
+      "secondaryOutcome": null,
+      "goalRelationships": [
+        "primary"
+      ],
+      "programmingContexts": [],
+      "planningBriefFamily": "movement_quality_development",
+      "status": "mapped",
+      "followUpRequirements": [
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [
+        "NO_CLINICAL_CORRECTION_OR_PAIN_REDUCTION_CLAIM"
+      ],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    },
+    {
+      "reference": {
+        "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_MAPPING",
+        "contractVersion": "2.0.0"
+      },
+      "sourceLabel": "Improve athletic performance",
+      "sourceVocabulary": "approved_future_fixture",
+      "primaryOutcome": null,
+      "secondaryOutcome": null,
+      "goalRelationships": [],
+      "programmingContexts": [],
+      "planningBriefFamily": null,
+      "status": "follow_up_required",
+      "followUpRequirements": [
+        "ATHLETIC_PERFORMANCE_FOLLOW_UP_REQUIRED",
+        "PRODUCT_SECONDARY_GOAL_NOT_CAPTURED"
+      ],
+      "unsupportedScope": [],
+      "goalCreatesExercises": false,
+      "goalCreatesNumericDose": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "projection": {
+    "prescription": "prescription",
+    "candidate_intelligence_and_composer": "candidate_composer",
+    "week": "week",
+    "phase_continuity": "phase_continuity",
+    "training_safety": "training_safety",
+    "product_application": "product_human",
+    "human_owner_review": "product_human"
+  },
+  "duplicateLiveRoutingMapCount": 0
+}

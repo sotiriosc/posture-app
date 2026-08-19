@@ -1,0 +1,7 @@
+{
+  "comparisons": 10000,
+  "failures": 0,
+  "exactRetry": "returns_prior_result",
+  "conflict": "same_key_different_checksum_rejected",
+  "databaseBacked": true
+}

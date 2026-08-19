@@ -1,0 +1,21 @@
+{
+  "full": "SESSION_PRACTICE_FULL_POLICY_V1_EXACT_PASS_THROUGH@1.0.0",
+  "lighter": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_OPTION_POLICY_V2",
+      "contractVersion": "1.0.0"
+    },
+    "policyId": "SESSION_PRACTICE_LIGHTER_POLICY_V1_STRUCTURAL_FIRST",
+    "version": "1.0.0",
+    "mode": "lighter"
+  },
+  "recovery": {
+    "contractReference": {
+      "contractId": "SESSION_PRACTICE_OPTION_POLICY_V2",
+      "contractVersion": "1.0.0"
+    },
+    "policyId": "SESSION_PRACTICE_RECOVERY_POLICY_V1_EXPLICIT_SUPPORT_ONLY",
+    "version": "1.0.0",
+    "mode": "recovery"
+  }
+}

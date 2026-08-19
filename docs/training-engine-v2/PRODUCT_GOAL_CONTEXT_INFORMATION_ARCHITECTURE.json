@@ -1,0 +1,71 @@
+{
+  "direction": "ONE_SURFACE_PROGRESSIVE_DISCLOSURE_UNDER_60_SECONDS",
+  "selectedSurface": {
+    "app": "consumer",
+    "route": "/questionnaire",
+    "component": "apps/consumer/src/components/QuestionnaireForm.tsx",
+    "pageTitle": "Build your Praxis movement profile"
+  },
+  "eventualOrder": [
+    "primary_goal",
+    "conditional_goal_focus",
+    "optional_secondary_goal_disclosure",
+    "pain_or_limitations_context",
+    "training_mode",
+    "days_per_week",
+    "session_minutes_when_exact_feasibility_required",
+    "coarse_experience",
+    "equipment_environment",
+    "conditional_equipment_capability",
+    "submit"
+  ],
+  "sections": [
+    {
+      "id": "goal",
+      "fields": [
+        "primary_goal",
+        "conditional_goal_focus",
+        "optional_secondary_goal_disclosure"
+      ]
+    },
+    {
+      "id": "train_around_context",
+      "fields": [
+        "pain_or_limitations_context",
+        "minimal_legality_context"
+      ]
+    },
+    {
+      "id": "training_mode",
+      "fields": [
+        "develop",
+        "maintain",
+        "return_or_rebuild"
+      ]
+    },
+    {
+      "id": "schedule",
+      "fields": [
+        "days_per_week",
+        "conditional_session_minutes"
+      ]
+    },
+    {
+      "id": "experience",
+      "fields": [
+        "coarse_experience"
+      ]
+    },
+    {
+      "id": "equipment",
+      "fields": [
+        "equipment_environment",
+        "conditional_capability"
+      ]
+    }
+  ],
+  "ordinarySupportedPathTargetSeconds": 60,
+  "giantQuestionnaire": false,
+  "multiPageWizard": false,
+  "fReordersCurrentFields": false
+}

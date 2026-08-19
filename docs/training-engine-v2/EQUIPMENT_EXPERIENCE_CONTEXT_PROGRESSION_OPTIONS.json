@@ -1,0 +1,8 @@
+{
+  "contract": {
+    "contractId": "PROGRESSION_AXIS_REALIZATION_OPTIONS",
+    "contractVersion": "1.0.0"
+  },
+  "selectedAxis": null,
+  "progressionAuthorized": false
+}

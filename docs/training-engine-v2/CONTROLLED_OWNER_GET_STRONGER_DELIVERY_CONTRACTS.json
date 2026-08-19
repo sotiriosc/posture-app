@@ -1,0 +1,46 @@
+{
+  "identityPolicy": {
+    "contractId": "CONTROLLED_OWNER_ACCOUNT_IDENTITY_POLICY",
+    "contractVersion": "1.0.0"
+  },
+  "enrollment": {
+    "contractId": "CONTROLLED_OWNER_V2_ENROLLMENT",
+    "contractVersion": "1.0.0"
+  },
+  "profile": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_PROFILE",
+    "contractVersion": "1.0.0"
+  },
+  "generation": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_GENERATION",
+    "contractVersion": "1.0.0"
+  },
+  "preview": {
+    "contractId": "CONTROLLED_OWNER_V2_PROGRAM_PREVIEW",
+    "contractVersion": "1.0.0"
+  },
+  "approval": {
+    "contractId": "CONTROLLED_OWNER_V2_PROGRAM_APPROVAL",
+    "contractVersion": "1.0.0"
+  },
+  "application": {
+    "contractId": "CONTROLLED_OWNER_V2_PROGRAM_APPLICATION",
+    "contractVersion": "1.0.0"
+  },
+  "programEnvelope": {
+    "contractId": "OWNER_V2_PRODUCT_PROGRAM_ENVELOPE",
+    "contractVersion": "1.0.0"
+  },
+  "rollback": {
+    "contractId": "CONTROLLED_OWNER_V2_ROLLBACK",
+    "contractVersion": "1.0.0"
+  },
+  "stateMachine": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_DELIVERY_STATE_MACHINE",
+    "contractVersion": "1.0.0"
+  },
+  "implementationHandoff": {
+    "contractId": "CONTROLLED_OWNER_GET_STRONGER_DELIVERY_IMPLEMENTATION_HANDOFF",
+    "contractVersion": "1.0.0"
+  }
+}

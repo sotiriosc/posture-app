@@ -3,6 +3,7 @@
 import type { TrainingSnapshot } from "@/lib/trainingStateModel";
 import { stableTrainingStringify } from "@/lib/trainingStateModel";
 import { logTrainingSync } from "@/lib/trainingSyncDebug";
+import { notifyControlledProductShadowAfterSuccessfulSync } from "@/lib/controlledProductShadow/triggerClient";
 
 export type { TrainingSnapshot } from "@/lib/trainingStateModel";
 
@@ -257,6 +258,7 @@ export const pushTrainingPatchWithStatus = async (patch: TrainingSnapshot) => {
       lastSuccessfulPatchAt = Date.now();
       invalidateSnapshotCache();
       logTrainingSync("training-sync", "patch pushed", summarizePatch(patch));
+      notifyControlledProductShadowAfterSuccessfulSync({ patch });
       return true;
     }
     if (response.status === 401) {

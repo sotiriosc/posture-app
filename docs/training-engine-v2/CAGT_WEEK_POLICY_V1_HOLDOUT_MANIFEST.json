@@ -1,0 +1,1102 @@
+{
+  "manifestId": "CAGT_WEEK_POLICY_V1_HOLDOUT_MANIFEST",
+  "version": "1.0.0",
+  "fixedSeed": 550675,
+  "frozenBeforeExecution": true,
+  "priorHoldoutScenarioIdsExcluded": true,
+  "scenarios": [
+    {
+      "id": "v1-holdout-01-one-opportunity-strength",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 1,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s1",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "one_opportunity_strength"
+    },
+    {
+      "id": "v1-holdout-02-two-opportunity-strength-rehearsal",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s2",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "two_opportunity_strength_rehearsal"
+    },
+    {
+      "id": "v1-holdout-03-three-opportunity-hypertrophy",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s3",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-h3",
+          "family": "muscle",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_hypertrophy",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "three_opportunity_hypertrophy"
+    },
+    {
+      "id": "v1-holdout-04-four-opportunity-direct-support",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s4",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-d4",
+          "family": "direct",
+          "priority": "preferred",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "four_opportunity_direct_support"
+    },
+    {
+      "id": "v1-holdout-05-five-opportunity-smaller-commitment",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 5,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s5",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-h5",
+          "family": "muscle",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_hypertrophy",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "five_opportunity_smaller_commitment"
+    },
+    {
+      "id": "v1-holdout-06-six-opportunity-capacity-once",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 6,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-s6",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-c6",
+          "family": "capacity",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_supported_capacity",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "six_opportunity_capacity_once"
+    },
+    {
+      "id": "v1-holdout-07-irregular-ordered-cycle",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": true,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-irregular",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "irregular_ordered_cycle"
+    },
+    {
+      "id": "v1-holdout-08-mixed-equipment-main-change",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [
+        1
+      ],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-mixed",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "mixed_equipment_main_change"
+    },
+    {
+      "id": "v1-holdout-09-travel-bodyweight",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [
+        0
+      ],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "travel",
+      "objectives": [
+        {
+          "id": "v1-travel",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "travel_bodyweight"
+    },
+    {
+      "id": "v1-holdout-10-condensed-required-main",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [
+        0
+      ],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-condensed",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "condensed_required_main"
+    },
+    {
+      "id": "v1-holdout-11-cancelled-opportunity-truth",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [
+        1
+      ],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-cancel",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "cancelled_opportunity_truth"
+    },
+    {
+      "id": "v1-holdout-12-explicit-direct-once",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-direct-main",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-direct",
+          "family": "direct",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_direct",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "explicit_direct_once"
+    },
+    {
+      "id": "v1-holdout-13-assessment-cluster-once",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-assessment-main",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-assessment",
+          "family": "assessment",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true,
+          "assessmentRepeatAuthorized": false
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_assessment_cluster",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "assessment_cluster_once"
+    },
+    {
+      "id": "v1-holdout-14-capacity-responsibility-once",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-cap-main",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-capacity",
+          "family": "capacity",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_supported_capacity",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "capacity_responsibility_once"
+    },
+    {
+      "id": "v1-holdout-15-productive-preparation-continuity",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "productive_continuity",
+      "objectives": [
+        {
+          "id": "v1-continuity",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "productive_preparation_continuity"
+    },
+    {
+      "id": "v1-holdout-16-adverse-response-reselection",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "adverse_response",
+      "objectives": [
+        {
+          "id": "v1-adverse",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "adverse_response_reselection"
+    },
+    {
+      "id": "v1-holdout-17-relevant-pain-dependency",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "pain_aware",
+      "objectives": [
+        {
+          "id": "v1-pain-relevant",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "relevant_pain_dependency"
+    },
+    {
+      "id": "v1-holdout-18-irrelevant-pain-convergence",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "pain_aware",
+      "objectives": [
+        {
+          "id": "v1-pain-inert",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": true,
+      "materialAdaptiveDifference": false,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "irrelevant_pain_convergence"
+    },
+    {
+      "id": "v1-holdout-19-explicit-warmup-dependency",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-warmup",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "explicit_warmup_dependency"
+    },
+    {
+      "id": "v1-holdout-20-explicit-activation-dependency",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-activation",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "explicit_activation_dependency"
+    },
+    {
+      "id": "v1-holdout-21-empty-preparation-sections",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-empty",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": true,
+      "materialAdaptiveDifference": false,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "empty_preparation_sections"
+    },
+    {
+      "id": "v1-holdout-22-justified-repeated-preparation",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-repeat",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "justified_repeated_preparation"
+    },
+    {
+      "id": "v1-holdout-23-unjustified-repetition-mutation",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-filler",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "unjustified_repetition_mutation"
+    },
+    {
+      "id": "v1-holdout-24-shared-framework-different-chain",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-chain",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-chain-h",
+          "family": "muscle",
+          "priority": "preferred",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "shared_framework_different_chain"
+    },
+    {
+      "id": "v1-holdout-25-exact-fact-convergence",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-converge",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": true,
+      "materialAdaptiveDifference": false,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "exact_fact_convergence"
+    },
+    {
+      "id": "v1-holdout-26-hypertrophy-h1-single",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-h-only",
+          "family": "muscle",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_hypertrophy",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "hypertrophy_h1_single"
+    },
+    {
+      "id": "v1-holdout-27-preferred-strength-zero-minimum",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-pref-s",
+          "family": "strength",
+          "priority": "preferred",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "preferred_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "preferred_strength_zero_minimum"
+    },
+    {
+      "id": "v1-holdout-28-optional-muscle-unique-value",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-opt-h",
+          "family": "muscle",
+          "priority": "optional",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "optional_muscle",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "optional_muscle_unique_value"
+    },
+    {
+      "id": "v1-holdout-29-preferred-assessment-zero-minimum",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-pref-a",
+          "family": "assessment",
+          "priority": "preferred",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "preferred_assessment_cluster",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "preferred_assessment_zero_minimum"
+    },
+    {
+      "id": "v1-holdout-30-optional-capacity-no-mandate",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-opt-c",
+          "family": "capacity",
+          "priority": "optional",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "optional_supported_capacity",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "optional_capacity_no_mandate"
+    },
+    {
+      "id": "v1-holdout-31-unknown-equipment-search",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [
+        1
+      ],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-unknown-equipment",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "unknown_equipment_search"
+    },
+    {
+      "id": "v1-holdout-32-below-target-no-doubling",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 1,
+      "condensedOpportunityOrders": [
+        0
+      ],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [
+        {
+          "id": "v1-below",
+          "family": "strength",
+          "priority": "required",
+          "priorityOrder": 0,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        },
+        {
+          "id": "v1-below-d",
+          "family": "direct",
+          "priority": "required",
+          "priorityOrder": 1,
+          "explicit": true,
+          "uniqueMarginalValue": true
+        }
+      ],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "required_primary_strength",
+      "expectedPolicyStatus": "EXECUTE_V1",
+      "coherenceFocus": "below_target_no_doubling"
+    },
+    {
+      "id": "v1-holdout-33-general-fitness-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "general_fitness_movement",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "general_fitness_scope_gap"
+    },
+    {
+      "id": "v1-holdout-34-posture-quality-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "posture_movement_quality",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "posture_quality_scope_gap"
+    },
+    {
+      "id": "v1-holdout-35-systemic-conditioning-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "systemic_conditioning",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "systemic_conditioning_scope_gap"
+    },
+    {
+      "id": "v1-holdout-36-external-sport-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "external_sport_load",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "external_sport_scope_gap"
+    },
+    {
+      "id": "v1-holdout-37-recovery-session-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 2,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "recovery_session",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "recovery_session_scope_gap"
+    },
+    {
+      "id": "v1-holdout-38-phase-override-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "phase_override",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "phase_override_scope_gap"
+    },
+    {
+      "id": "v1-holdout-39-direct-secondary-dose-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 3,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "direct_secondary_dose",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "direct_secondary_dose_scope_gap"
+    },
+    {
+      "id": "v1-holdout-40-prescription-muscle-distribution-scope-gap",
+      "cohort": "holdout",
+      "locked": true,
+      "opportunityCount": 4,
+      "condensedOpportunityOrders": [],
+      "cancelledOpportunityOrders": [],
+      "bodyweightOpportunityOrders": [],
+      "unknownEquipmentOpportunityOrders": [],
+      "consecutive": false,
+      "context": "ordinary",
+      "objectives": [],
+      "expectedConvergence": false,
+      "materialAdaptiveDifference": true,
+      "policyScope": "prescription_informed_muscle_distribution",
+      "expectedPolicyStatus": "WEEKLY_POLICY_REQUIRED",
+      "coherenceFocus": "prescription_muscle_distribution_scope_gap"
+    }
+  ]
+}

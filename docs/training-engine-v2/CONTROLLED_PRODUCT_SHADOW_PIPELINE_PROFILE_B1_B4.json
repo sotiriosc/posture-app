@@ -1,0 +1,85 @@
+{
+  "reference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_PIPELINE_PROFILE_B1_B4",
+    "contractVersion": "1.0.0"
+  },
+  "mappingProfileReference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_GOAL_AND_REALIZATION_MAPPING",
+    "contractVersion": "1.0.0"
+  },
+  "planningBriefPolicyReference": {
+    "contractId": "PRODUCT_GOAL_TO_PLANNING_BRIEF_SHADOW_POLICY_V1",
+    "contractVersion": "1.0.0"
+  },
+  "stageReferences": [
+    {
+      "contractId": "PRODUCT_GOAL_ARCHITECTURE_SHADOW_PLANNING_BRIEF",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCTION_WEEKLY_INTENT_PLANNER",
+      "contractVersion": "1.1.0"
+    },
+    {
+      "contractId": "PRODUCTION_WEEK_ALLOCATION_COMPOSER",
+      "contractVersion": "1.1.0"
+    },
+    {
+      "contractId": "PRODUCTION_WEEK_PLAN_MATERIALIZER",
+      "contractVersion": "1.1.0"
+    },
+    {
+      "contractId": "SESSION_INTENT_PLANNER_PRODUCTION_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "CANDIDATE_INTELLIGENCE_PRODUCTION_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "SESSION_COMPOSER_PRODUCTION_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCTION_PRESCRIPTION_COMPILER_KERNEL",
+      "contractVersion": "1.3.0"
+    },
+    {
+      "contractId": "PRODUCTION_FINAL_SESSION_SEQUENCING_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCTION_POST_PRESCRIPTION_WEEK_VALIDATOR_KERNEL",
+      "contractVersion": "1.2.0"
+    },
+    {
+      "contractId": "PRODUCTION_PHASE_CONTINUITY_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "PRODUCTION_LONGITUDINAL_ADAPTATION_KERNEL",
+      "contractVersion": "1.0.0"
+    },
+    {
+      "contractId": "ADAPTATION_APPLICATION_ORCHESTRATION",
+      "contractVersion": "1.0.0"
+    }
+  ],
+  "purposeResolverReference": {
+    "contractId": "PRESCRIPTION_PURPOSE_RESOLVER_POLICY_V1_SUPPORTED_CORE",
+    "contractVersion": "1.1.0"
+  },
+  "prescriptionPolicyReference": {
+    "contractId": "PRESCRIPTION_POLICY_V2_PURPOSE_SPECIFIC_SUPPORTED_CORE",
+    "contractVersion": "2.0.0"
+  },
+  "comparisonReference": {
+    "contractId": "CONTROLLED_PRODUCT_SHADOW_COMPARISON",
+    "contractVersion": "1.1.0"
+  },
+  "evaluationTimeRequired": true,
+  "explicitSelectionOnly": true,
+  "hiddenStagePortCount": 0,
+  "defaultSelected": false,
+  "applicationAuthorized": false
+}

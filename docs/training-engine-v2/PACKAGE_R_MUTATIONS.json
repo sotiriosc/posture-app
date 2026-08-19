@@ -1,0 +1,366 @@
+[
+  {
+    "id": "ninth-unselected-row",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:ninth-unselected-row"
+  },
+  {
+    "id": "selected-row-replaced",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:selected-row-replaced"
+  },
+  {
+    "id": "duplicate-id",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:duplicate-id"
+  },
+  {
+    "id": "library-exercise-id",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:library-exercise-id"
+  },
+  {
+    "id": "floor-press-needs-bench",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:floor-press-needs-bench"
+  },
+  {
+    "id": "reverse-fly-is-row",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:reverse-fly-is-row"
+  },
+  {
+    "id": "band-curl-is-pull",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:band-curl-is-pull"
+  },
+  {
+    "id": "bird-dog-pain-default",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:bird-dog-pain-default"
+  },
+  {
+    "id": "leg-extension-is-squat",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:leg-extension-is-squat"
+  },
+  {
+    "id": "gym-implies-machine",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:gym-implies-machine"
+  },
+  {
+    "id": "band-kilograms",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:band-kilograms"
+  },
+  {
+    "id": "fake-vertical-pull",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:fake-vertical-pull"
+  },
+  {
+    "id": "home-is-beginner",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:home-is-beginner"
+  },
+  {
+    "id": "advanced-home-forced-simple",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:advanced-home-forced-simple"
+  },
+  {
+    "id": "comfort-overrides-safety",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:comfort-overrides-safety"
+  },
+  {
+    "id": "comfort-overrides-legality",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:comfort-overrides-legality"
+  },
+  {
+    "id": "comfort-overrides-purpose",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:comfort-overrides-purpose"
+  },
+  {
+    "id": "novelty-reward",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:novelty-reward"
+  },
+  {
+    "id": "variety-quota",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:variety-quota"
+  },
+  {
+    "id": "opaque-comfort-score",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:opaque-comfort-score"
+  },
+  {
+    "id": "stable-anchor-displaced",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:stable-anchor-displaced"
+  },
+  {
+    "id": "second-catalog",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:second-catalog"
+  },
+  {
+    "id": "duplicated-category-text",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:duplicated-category-text"
+  },
+  {
+    "id": "instructions-blob",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:instructions-blob"
+  },
+  {
+    "id": "missing-focus",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-focus"
+  },
+  {
+    "id": "missing-cues",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-cues"
+  },
+  {
+    "id": "missing-setup",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-setup"
+  },
+  {
+    "id": "missing-during",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-during"
+  },
+  {
+    "id": "missing-pattern",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-pattern"
+  },
+  {
+    "id": "missing-watch-for",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-watch-for"
+  },
+  {
+    "id": "missing-fact-ref",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:missing-fact-ref"
+  },
+  {
+    "id": "orphan-accepted-fact",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:orphan-accepted-fact"
+  },
+  {
+    "id": "whole-entry-override",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:whole-entry-override"
+  },
+  {
+    "id": "diagnosis-claim",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:diagnosis-claim"
+  },
+  {
+    "id": "treatment-claim",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:treatment-claim"
+  },
+  {
+    "id": "pain-topic-eligibility",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:pain-topic-eligibility"
+  },
+  {
+    "id": "engine-parses-prose",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:engine-parses-prose"
+  },
+  {
+    "id": "candidate-knowledge-import",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:candidate-knowledge-import"
+  },
+  {
+    "id": "stale-fallback",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:stale-fallback"
+  },
+  {
+    "id": "hand-edited-fallback",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:hand-edited-fallback"
+  },
+  {
+    "id": "current45-false-complete",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:current45-false-complete"
+  },
+  {
+    "id": "library-route",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:library-route"
+  },
+  {
+    "id": "coaching-rail-ui",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:coaching-rail-ui"
+  },
+  {
+    "id": "cms-database-network",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:cms-database-network"
+  },
+  {
+    "id": "get-stronger-visible",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:get-stronger-visible"
+  },
+  {
+    "id": "questionnaire-changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:questionnaire-changed"
+  },
+  {
+    "id": "product-shadow-changed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:product-shadow-changed"
+  },
+  {
+    "id": "owner-delivery",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:owner-delivery"
+  },
+  {
+    "id": "practice-options-implemented",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:practice-options-implemented"
+  },
+  {
+    "id": "product-activated",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:product-activated"
+  },
+  {
+    "id": "preg2k-removed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:preg2k-removed"
+  },
+  {
+    "id": "ledger-final-completed",
+    "semanticStructureChanged": true,
+    "rejected": true,
+    "acceptedDownstreamRescueCount": 0,
+    "rejectionCode": "PACKAGE_R_MUTATION_REJECTED:ledger-final-completed"
+  }
+]

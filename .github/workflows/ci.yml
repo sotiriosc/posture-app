@@ -2,21 +2,116 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
   schedule:
     # Nightly full suite at 07:00 UTC
     - cron: "0 7 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ─── PR gate ──────────────────────────────────────────────────────────────
-  # Runs on every pull request. Fast enough to be a blocking gate (target:
-  # under 3 minutes — see Phase 6f Commit 6 / ED-6f.8 in
-  # docs/engine-decisions.md for how this set was chosen).
-  pr-gate:
-    name: PR gate (lint + critical tests + smoke e2e + both builds)
-    if: github.event_name == 'pull_request'
+  draft-fast:
+    name: Draft fast feedback (boundary + critical + consumer)
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pure/server boundary
+        run: npm run validate:pure-server-boundary --workspace=@praxis/training-engine-v2
+
+      - name: Lint changed source files
+        env:
+          DIFF_BASE: ${{ github.event.before || github.event.pull_request.base.sha }}
+          DIFF_HEAD: ${{ github.event.after || github.event.pull_request.head.sha }}
+        run: |
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$DIFF_BASE...$DIFF_HEAD" -- '*.js' '*.jsx' '*.ts' '*.tsx')
+          if ((${#files[@]})); then
+            npx eslint "${files[@]}"
+          else
+            echo "No changed JavaScript or TypeScript source files."
+          fi
+
+      - name: Critical engine tests
+        run: npm run test:critical
+
+      - name: Consumer tests
+        run: npm run test:full:consumer
+
+  outcome-source-postgres:
+    name: Outcome source, orchestration, and Product shadow PostgreSQL integration
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: praxis_outcome_sources
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d praxis_outcome_sources"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://postgres@localhost:5432/praxis_outcome_sources
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build pure and server persistence contracts
+        run: >-
+          npm run build --workspace=@praxis/training-engine-v2 &&
+          npm run build:outcome-sources --workspace=@praxis/engine &&
+          npm run build:application-orchestration --workspace=@praxis/engine &&
+          npm run build:product-shadow --workspace=@praxis/engine &&
+          npm run build:goal-specific-evidence --workspace=@praxis/engine &&
+          npm run build:session-practice-v2 --workspace=@praxis/engine &&
+          npm run build:controlled-owner-delivery --workspace=@praxis/engine
+      - name: Run real Outcome Source PostgreSQL integration
+        run: npm run test:outcome-sources:postgres
+      - name: Run real orchestration PostgreSQL integration
+        run: npm run test:application-orchestration:postgres
+      - name: Run real controlled Product shadow PostgreSQL integration
+        run: npm run test:product-shadow:postgres
+
+      - name: Run real Session Practice V2 PostgreSQL integration
+        run: npm run test:session-practice-v2:postgres
+
+      - name: Run real controlled owner delivery PostgreSQL integration
+        run: npm run test:controlled-owner-delivery:postgres --workspace=@praxis/engine
+
+  # ─── PR gate ──────────────────────────────────────────────────────────────
+  # Runs when a pull request is ready for review. Draft pushes use draft-fast;
+  # the complete final proof remains available without paying its cost during
+  # active setup.
+  pr-gate:
+    name: PR gate (lint + critical tests + smoke e2e + both builds)
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -29,6 +124,7 @@ jobs:
       # ── Boundary lint (R2/R3/R4) ──────────────────────────────────────────
       - name: Boundary lint
         run: >-
+          npm run validate:pure-server-boundary --workspace=@praxis/training-engine-v2 &&
           npx eslint
           packages/engine/src
           apps/consumer/src
@@ -40,6 +136,27 @@ jobs:
       # `test:critical` in package.json for the exact file list.
       - name: Critical engine tests
         run: npm run test:critical
+
+      - name: Controlled Product shadow default-off gate
+        run: npm run test:product-shadow
+
+      - name: Session Practice V2 default-off gate
+        run: >-
+          npm run build --workspace=@praxis/training-engine-v2 &&
+          npm run build:session-practice-v2 --workspace=@praxis/engine &&
+          npm run test:session-practice-v2 &&
+          npm run check:session-practice-v2-reports
+
+      - name: Controlled owner delivery design-only gate
+        run: >-
+          npm run test:controlled-owner-delivery-design --workspace=@praxis/training-engine-v2 &&
+          npm run check:controlled-owner-delivery-design-reports --workspace=@praxis/training-engine-v2
+
+      - name: Controlled owner delivery default-off implementation gate
+        run: >-
+          npm run build:controlled-owner-delivery --workspace=@praxis/engine &&
+          npm run test:controlled-owner-delivery --workspace=@praxis/engine &&
+          npm run check:controlled-owner-delivery-reports --workspace=@praxis/engine
 
       # ── Playwright smoke: first-run happy path + per-account isolation,
       # for both apps. Blocking per bloom-plan Phase 6f Commit 6.

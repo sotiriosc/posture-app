@@ -1,0 +1,176 @@
+{
+  "stateVocabulary": [
+    "legacy_active",
+    "future_inactive_internal",
+    "future_shadow_only",
+    "owner_account_only",
+    "generally_available",
+    "follow_up_required",
+    "policy_required",
+    "deprecated_legacy",
+    "unsupported"
+  ],
+  "options": [
+    {
+      "id": "improve_posture_legacy",
+      "displayLabel": "Improve posture",
+      "canonicalOutcome": "posture_and_movement_quality",
+      "states": [
+        "legacy_active"
+      ],
+      "requiredFollowUp": null,
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "legacy_product_plus_bounded_shadow_mapping",
+      "productMappingProfile": "current_and_B1_B4_shadow",
+      "legacyMappingBehavior": "unchanged",
+      "submissionBehavior": "legacy_generateProgram",
+      "provenance": "current_consumer_and_gyms"
+    },
+    {
+      "id": "reduce_pain_legacy",
+      "displayLabel": "Reduce pain",
+      "canonicalOutcome": null,
+      "states": [
+        "legacy_active",
+        "deprecated_legacy",
+        "follow_up_required"
+      ],
+      "requiredFollowUp": "primary_outcome",
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "legacy_only_context_in_future",
+      "productMappingProfile": "context_only",
+      "legacyMappingBehavior": "unchanged_until_confirmed_migration",
+      "submissionBehavior": "legacy_generateProgram_only",
+      "provenance": "current_consumer_and_gyms"
+    },
+    {
+      "id": "athletic_performance_legacy",
+      "displayLabel": "Athletic performance",
+      "canonicalOutcome": null,
+      "states": [
+        "legacy_active",
+        "follow_up_required",
+        "policy_required"
+      ],
+      "requiredFollowUp": "performance_focus",
+      "compatibleContexts": [],
+      "supportedPolicyScope": "strength_and_local_endurance_only_when_explicit",
+      "productMappingProfile": "follow_up_required",
+      "legacyMappingBehavior": "unchanged",
+      "submissionBehavior": "legacy_generateProgram_only",
+      "provenance": "current_consumer_and_gyms"
+    },
+    {
+      "id": "general_fitness_legacy",
+      "displayLabel": "General fitness",
+      "canonicalOutcome": "general_fitness",
+      "states": [
+        "legacy_active",
+        "follow_up_required"
+      ],
+      "requiredFollowUp": "fitness_focus",
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "reviewed_purpose_bundle_required",
+      "productMappingProfile": "follow_up_required",
+      "legacyMappingBehavior": "unchanged",
+      "submissionBehavior": "legacy_generateProgram_only",
+      "provenance": "current_consumer_and_gyms"
+    },
+    {
+      "id": "get_stronger",
+      "displayLabel": "Get stronger",
+      "canonicalOutcome": "strength",
+      "states": [
+        "future_inactive_internal"
+      ],
+      "requiredFollowUp": null,
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "bounded_strength_supported_core",
+      "productMappingProfile": "B1_B4_explicit_only",
+      "legacyMappingBehavior": "none",
+      "submissionBehavior": "preview_only_fail_closed",
+      "provenance": "owner_selected_F"
+    },
+    {
+      "id": "build_muscle",
+      "displayLabel": "Build muscle",
+      "canonicalOutcome": "hypertrophy",
+      "states": [
+        "future_shadow_only"
+      ],
+      "requiredFollowUp": null,
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "bounded_hypertrophy_supported_core_no_body_composition_claim",
+      "productMappingProfile": "B1_B4_explicit_only",
+      "legacyMappingBehavior": "none",
+      "submissionBehavior": "unavailable",
+      "provenance": "owner_approved_eventual_vocabulary"
+    },
+    {
+      "id": "improve_fitness_and_stamina",
+      "displayLabel": "Improve fitness and stamina",
+      "canonicalOutcome": "general_fitness",
+      "states": [
+        "future_shadow_only",
+        "follow_up_required",
+        "policy_required"
+      ],
+      "requiredFollowUp": "fitness_focus",
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "local_muscular_endurance_only_systemic_conditioning_unsupported",
+      "productMappingProfile": "B1_B4_explicit_only",
+      "legacyMappingBehavior": "none",
+      "submissionBehavior": "unavailable",
+      "provenance": "owner_approved_eventual_vocabulary"
+    },
+    {
+      "id": "improve_posture_and_movement",
+      "displayLabel": "Improve posture and movement",
+      "canonicalOutcome": "posture_and_movement_quality",
+      "states": [
+        "future_shadow_only"
+      ],
+      "requiredFollowUp": null,
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "bounded_movement_quality_no_clinical_claim",
+      "productMappingProfile": "B1_B4_explicit_only",
+      "legacyMappingBehavior": "explicit_future_migration",
+      "submissionBehavior": "unavailable",
+      "provenance": "owner_approved_eventual_vocabulary"
+    },
+    {
+      "id": "improve_athletic_performance",
+      "displayLabel": "Improve athletic performance",
+      "canonicalOutcome": null,
+      "states": [
+        "future_shadow_only",
+        "follow_up_required",
+        "policy_required"
+      ],
+      "requiredFollowUp": "performance_focus",
+      "compatibleContexts": [
+        "pain_aware_return"
+      ],
+      "supportedPolicyScope": "strength_or_local_endurance_only_when_explicit_power_conditioning_sport_specific_unsupported",
+      "productMappingProfile": "B1_B4_explicit_only",
+      "legacyMappingBehavior": "none",
+      "submissionBehavior": "unavailable",
+      "provenance": "owner_approved_eventual_vocabulary"
+    }
+  ],
+  "selectedImmediateOption": "get_stronger"
+}

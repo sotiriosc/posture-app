@@ -1,0 +1,7 @@
+{
+  "exactHistoricalMatch": true,
+  "unavailableOwnerPortResult": "ORCHESTRATION_OWNER_PORT_VERSION_UNAVAILABLE",
+  "ownerInvocationCount": 0,
+  "applicationCount": 0,
+  "duplicateWriteCount": 0
+}

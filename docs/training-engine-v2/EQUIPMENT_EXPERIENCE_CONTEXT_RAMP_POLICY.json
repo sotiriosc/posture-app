@@ -1,0 +1,9 @@
+{
+  "contract": {
+    "contractId": "PRESCRIPTION_RAMP_UP_POLICY_V1_CONTEXT_SPECIFIC",
+    "contractVersion": "1.0.0"
+  },
+  "minimumBlocks": 0,
+  "maximumBlocks": 4,
+  "developmentalCredit": 0
+}

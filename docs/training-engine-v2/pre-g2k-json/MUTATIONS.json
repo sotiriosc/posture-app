@@ -1,0 +1,482 @@
+[
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "original-row-omitted",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "package-r-row-changed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "category-empty",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "mandatory-fact-needs-review",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "provenance-removed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "extra-library-exercise",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "second-registry",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "duplicate-entry",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "duplicate-semantic-fact",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "summary-changed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "coaching-focus-changed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "cue-order-changed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "generated-fallback-edited",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "generator-omitted",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "stale-output-accepted",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "manual-fallback-retained",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "identity-boundary-silently-resolved",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "whole-parent-override",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "unapproved-grip",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "unapproved-angle",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "unapproved-stance",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "wrong-override-parent",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "unsupported-realization",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "diagnosis-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "treatment-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "injury-prevention-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "pain-reduction-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "posture-correction-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "universal-safety-claim",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "fear-language",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "jargon-cue",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "cue-essay",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "hidden-sets",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "hidden-reps",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "hidden-rest",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "hidden-tempo",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "hidden-load",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "pattern-filler",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "watch-for-pathology",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "candidate-imports-knowledge",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "scoring-parses-text",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "pain-matching-parses-text",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "numeric-policy-reads-knowledge",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "product-imports-knowledge",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "shadow-imports-knowledge",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "coaching-rail-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "library-route-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "cms-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "network-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "database-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "catalog-row-added",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "catalog-row-removed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "get-stronger-changed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "practice-options-implemented",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "owner-delivery-started",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "product-activated",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "pre-g3-removed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "ledger-final-completed",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "downstream-rescue",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 1
+  },
+  {
+    "acceptedDownstreamRescueCount": 0,
+    "id": "fallback-source-fact-orphaned",
+    "rejected": true,
+    "result": "pass",
+    "semanticStructureChanged": true,
+    "wrongLayerCount": 0
+  }
+]

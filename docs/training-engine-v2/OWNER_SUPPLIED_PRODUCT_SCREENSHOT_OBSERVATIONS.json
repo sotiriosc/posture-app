@@ -1,0 +1,107 @@
+{
+  "reference": {
+    "contractId": "OWNER_SUPPLIED_PRODUCT_SCREENSHOT_OBSERVATION_CORPUS",
+    "contractVersion": "1.0.0"
+  },
+  "source": "owner_supplied_product_visual_context_evidence",
+  "declaredLogicalImageCount": 13,
+  "declaredComposition": {
+    "desktopComposites": 5,
+    "representativeMobileCrops": 8
+  },
+  "locallyObservedBinaryCount": 8,
+  "locallyObservedDimensions": "4480x1440 for all eight supplied PNG binaries",
+  "locallyVerifiedProductCompositeCount": 5,
+  "locallyVerifiedMobileCropCount": 0,
+  "localDisposition": {
+    "productComposites": 5,
+    "partialProductWithDevelopmentContext": 1,
+    "unrelatedDevelopmentDesktopContext": 2
+  },
+  "discrepancyDisposition": "The owner-declared 13-image logical corpus and mobile observations remain Product evidence, while the local eight-binary inventory is recorded separately. No missing image is requested and no mobile screenshot content is invented.",
+  "screenshotBinariesCommitted": 0,
+  "personalDataCommitted": 0,
+  "binaryPolicy": "owner binaries remain untracked and are excluded from architecture documentation",
+  "sanitizedObservationIds": [
+    "global_visual_language",
+    "desktop_onboarding",
+    "questionnaire_field_order",
+    "questionnaire_control_styles",
+    "conditional_band_owner_report",
+    "mobile_responsive_language_owner_report",
+    "global_progressive_disclosure_language",
+    "dashboard_and_week_consistency_context",
+    "active_session_context",
+    "pain_report_context",
+    "session_completion_context",
+    "progress_history_and_insights_context"
+  ],
+  "observations": {
+    "globalVisualLanguage": [
+      "full_viewport_photographic_background",
+      "translucent_navy_slate_surfaces",
+      "thin_low_contrast_borders",
+      "white_primary_text_and_slate_secondary_text",
+      "cyan_to_blue_primary_cta",
+      "sky_ring_selected_surface",
+      "compact_uppercase_eyebrow",
+      "compact_rounded_rectangular_cards",
+      "fixed_information_and_menu_controls"
+    ],
+    "desktopOnboarding": [
+      "centered_constrained_column",
+      "step_header_above_one_large_form_panel",
+      "back_to_photos_in_header",
+      "vertically_stacked_sections",
+      "compact_multi_choice_grids",
+      "full_width_submit_cta"
+    ],
+    "currentScreenshotFieldOrder": [
+      "days_per_week",
+      "primary_goal",
+      "current_approach",
+      "pain_areas",
+      "training_experience",
+      "equipment",
+      "submit"
+    ],
+    "screenshotSpecific": {
+      "kneesVisible": true,
+      "consumerCurrentApproachCardsVisible": true,
+      "resistanceBandDetailReportedByOwner": true,
+      "resistanceBandExpandedStatePhotographed": false
+    },
+    "mobileOwnerObservations": [
+      "same_responsive_product_language",
+      "one_column_stacking",
+      "approximately_16_to_24_pixel_gutters",
+      "inline_conditional_expansion",
+      "fixed_controls_need_bottom_safe_space",
+      "no_horizontal_scroll"
+    ],
+    "globalInteractionLanguage": [
+      "view_hide_and_view_details_disclosures",
+      "compact_status_pills",
+      "gradient_primary_actions",
+      "outlined_supporting_actions",
+      "progressive_detail_reveal",
+      "self_contained_active_workout_information"
+    ]
+  },
+  "sanitization": {
+    "omitted": [
+      "username",
+      "account_identifiers",
+      "personal_history_dates",
+      "personal_workout_values",
+      "browser_account_state",
+      "email",
+      "photos",
+      "personal_notes"
+    ],
+    "copiedPersonalValues": 0,
+    "copiedImagePixels": 0
+  },
+  "desktopObservationResult": "VERIFIED_FROM_FIVE_PRODUCT_COMPOSITES",
+  "mobileObservationResult": "OWNER_REPORTED_NOT_INDEPENDENTLY_VISIBLE_IN_LOCAL_BINARY_INVENTORY_CURRENT_HEAD_RENDER_USED_FOR_IMPLEMENTATION_REVIEW"
+}
