@@ -8,6 +8,7 @@ import type {
   StructuralCapacityMode,
 } from "./session";
 import type { BodyRegion, MovementRole, MuscleGroup, Side } from "./primitives";
+import type { ProductionWeeklyExecutionRequirements } from "./weeklyExecutionRequirements";
 
 export const TRAINING_OUTCOME_GOALS = [
   "strength",
@@ -149,6 +150,7 @@ export interface AllocatedSessionObjective {
   readonly standaloneAdmissionDirection: ObjectiveStandaloneAdmissionDirection;
   readonly reasonCode: string;
   readonly explanation: string;
+  readonly executionRequirements?: ProductionWeeklyExecutionRequirements;
 }
 
 export type UnresolvedPlannerContextCategory =

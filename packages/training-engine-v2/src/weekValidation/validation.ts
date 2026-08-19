@@ -3,6 +3,7 @@ import {
   PRODUCTION_PRESCRIPTION_COMPILER_CONTRACT_VERSION,
 } from "../prescription/compiler/contracts";
 import { explicitIsoTime } from "../prescription/compiler/utilities";
+import { validateProductionWeeklyExecutionRequirements } from "../domain/weeklyExecutionRequirements";
 import {
   PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_ID,
   PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_VERSION,
@@ -80,6 +81,9 @@ export function validateProductionWeekObjectives(
         objective.frequencyIntent.targetAllocatedSessions < objective.frequencyIntent.minimumAllocatedSessions ||
         objective.frequencyIntent.softMaximumAllocatedSessions < objective.frequencyIntent.targetAllocatedSessions) {
       reasons.push("INVALID_SOURCE_OBJECTIVE_FREQUENCY");
+    }
+    if (objective.executionRequirements) {
+      reasons.push(...validateProductionWeeklyExecutionRequirements(objective.executionRequirements));
     }
   }
   return [...new Set(reasons)].sort();

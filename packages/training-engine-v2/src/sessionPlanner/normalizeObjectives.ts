@@ -114,6 +114,10 @@ export function normalizeAllocatedObjectives(input: {
               ? `capacity_policy:${input.capacity}`
               : `explicit_direction:${objective.standaloneAdmissionDirection}`,
             unknowns: [],
+            ...(objective.executionRequirements ? { weeklyExecutionRequirements: [{
+              objectiveId: weeklyObjectiveLineageIds[0] ?? objective.id,
+              requirements: objective.executionRequirements,
+            }] } : {}),
           },
         },
       };

@@ -498,6 +498,7 @@ function reservationDraft(input: ProductionWeekAllocationComposerInput, assignme
       sourceEvidenceRefs: uniqueSorted(objective.sourceEvidence.flatMap((entry) => entry.evidenceRefs)),
       reasonCode: objective.purpose === "assessment_priority_development" ? "explicit_assessment_or_preparation" :
         objective.purpose === "recovery_support" ? "explicit_recovery_responsibility" : "allocated_weekly_responsibility",
+      ...(objective.executionRequirements ? { executionRequirements: objective.executionRequirements } : {}),
       provenance: Object.freeze({ owner: "week_allocation_composer", sourceRefs: Object.freeze([objective.objectiveId]),
         ruleRefs: Object.freeze(["OBJECTIVE_TO_SESSION_RESPONSIBILITY"]) }),
     }))),
@@ -545,11 +546,12 @@ export function validateProductionWeekTopologyPolicy(
   if (!policy.reference.policyId.trim() || !policy.reference.version.trim()) {
     reasons.push("WEEK_TOPOLOGY_POLICY_REFERENCE_REQUIRED");
   }
-  if (policy.scope !== "controlled_owner_get_stronger_four_required_strength_responsibilities") {
+  if (policy.scope !== "controlled_owner_get_stronger_product_responsibilities") {
     reasons.push("WEEK_TOPOLOGY_POLICY_SCOPE_UNSUPPORTED");
   }
-  if (policy.eligibleObjectiveIds.length !== 4 || new Set(policy.eligibleObjectiveIds).size !== 4) {
-    reasons.push("OWNER_TOPOLOGY_REQUIRES_EXACTLY_FOUR_UNIQUE_RESPONSIBILITIES");
+  if (policy.eligibleObjectiveIds.length === 0 ||
+      new Set(policy.eligibleObjectiveIds).size !== policy.eligibleObjectiveIds.length) {
+    reasons.push("OWNER_TOPOLOGY_REQUIRES_UNIQUE_PRODUCT_RESPONSIBILITIES");
   }
   if (policy.preferredMaximumRequiredResponsibilitiesPerSession !== 2) {
     reasons.push("OWNER_TOPOLOGY_REVIEWED_CONCENTRATION_POLICY_REQUIRED");
@@ -557,12 +559,12 @@ export function validateProductionWeekTopologyPolicy(
   const objectiveById = new Map(input.weeklyIntent.objectives.map((objective) => [objective.objectiveId, objective]));
   if (policy.eligibleObjectiveIds.some((objectiveId) => {
     const objective = objectiveById.get(objectiveId);
-    return !objective || objective.priority !== "required" || objective.family !== "strength" ||
-      objective.purpose !== "movement_development";
+    return !objective || objective.priority !== "required" || objective.purpose === "recovery_support" ||
+      !objective.executionRequirements?.developmentalCreditRequired;
   })) reasons.push("OWNER_TOPOLOGY_OBJECTIVE_SCOPE_MISMATCH");
   const groupedObjectiveIds = policy.coherenceGroups.flatMap((group) => group.objectiveIds);
-  if (policy.coherenceGroups.length !== 2 || policy.coherenceGroups.some((group) =>
-    !group.groupId.trim() || group.objectiveIds.length !== 2) ||
+  if (policy.coherenceGroups.length === 0 || policy.coherenceGroups.some((group) =>
+    !group.groupId.trim() || group.objectiveIds.length === 0) ||
     new Set(policy.coherenceGroups.map((group) => group.groupId)).size !== policy.coherenceGroups.length ||
     new Set(groupedObjectiveIds).size !== groupedObjectiveIds.length ||
     JSON.stringify([...groupedObjectiveIds].sort()) !== JSON.stringify([...policy.eligibleObjectiveIds].sort())) {

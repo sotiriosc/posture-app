@@ -56,3 +56,4 @@ export * from "./domain/session";
 export * from "./domain/sessionPlanningDirective";
 export * from "./domain/trainingResponse";
 export * from "./domain/trainingSafety";
+export * from "./domain/weeklyExecutionRequirements";

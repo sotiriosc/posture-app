@@ -5,6 +5,7 @@ import type { BodyRegion, MovementRole, MuscleGroup, TrainingGoal } from "./prim
 import type { ProgrammingContextMode, TrainingOutcomeGoal } from "./sessionPlanningDirective";
 import type { Side } from "./primitives";
 import type { EquipmentCapabilityKey } from "./equipment";
+import type { ProductionWeeklyExecutionRequirements } from "./weeklyExecutionRequirements";
 import type {
   PreparationCategory,
 } from "../preparation/contracts";
@@ -141,6 +142,10 @@ export interface SessionNeedPlannerProvenance {
   readonly sectionRoleMappingOrigin: string;
   readonly standaloneAdmissionOrigin: string;
   readonly unknowns: readonly string[];
+  readonly weeklyExecutionRequirements?: readonly {
+    readonly objectiveId: string;
+    readonly requirements: ProductionWeeklyExecutionRequirements;
+  }[];
 }
 
 export type SessionKind = "ordinary_training";

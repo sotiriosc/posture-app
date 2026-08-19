@@ -1,15 +1,20 @@
-import { OWNER_GET_STRONGER_RESPONSIBILITY_KEYS } from "@praxis/training-engine-v2";
+const LEGACY_WEEK_OBJECTIVE_PREFIX = "week-v1_1:objective:owner-strength-responsibility:";
 
-type OwnerStrengthResponsibility = (typeof OWNER_GET_STRONGER_RESPONSIBILITY_KEYS)[number];
-
-const WEEK_OBJECTIVE_PREFIX = "week-v1_1:objective:owner-strength-responsibility:";
-
-const RESPONSIBILITY_LABELS: Readonly<Record<OwnerStrengthResponsibility, string>> = Object.freeze({
+const RESPONSIBILITY_LABELS: Readonly<Record<string, string>> = Object.freeze({
+  knee_dominant_squat: "Knee-dominant lower body",
+  hinge_hip_extension: "Hinge lower body",
+  upper_push: "Upper-body push",
+  upper_pull: "Upper-body pull",
+  // Immutable previews created before the canonical Product policy keep their original IDs.
   knee_dominant_lower_body: "Knee-dominant lower body",
   hinge_lower_body: "Hinge lower body",
   upper_body_push: "Upper-body push",
   upper_body_pull: "Upper-body pull",
 });
+
+const RESPONSIBILITY_CLASSIFICATIONS = new Set([
+  "conditional_required", "preferred", "optional",
+]);
 
 const SESSION_PURPOSE_LABELS: Readonly<Record<string, string>> = Object.freeze({
   strength_development: "Strength development",
@@ -41,25 +46,86 @@ export interface OwnerWeekObjectivePresentation {
   readonly order: number;
 }
 
-export function presentOwnerWeekObjective(canonicalId: string): OwnerWeekObjectivePresentation {
-  for (const [order, responsibility] of OWNER_GET_STRONGER_RESPONSIBILITY_KEYS.entries()) {
-    const recognizedPrefix = `${WEEK_OBJECTIVE_PREFIX}${responsibility}:`;
-    if (canonicalId.startsWith(recognizedPrefix) && canonicalId.length > recognizedPrefix.length) {
-      return Object.freeze({ canonicalId, label: RESPONSIBILITY_LABELS[responsibility], recognized: true, order });
+interface OwnerPresentationStageArtifact {
+  readonly stage: string;
+  readonly payload: unknown;
+}
+
+function record(value: unknown): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value) ?
+    value as Record<string, unknown> : null;
+}
+
+function responsibilityLabel(responsibilityKey: string): string | null {
+  const [classification, responsibility, plane, ...remainder] = responsibilityKey.split(":");
+  if (classification === "foundation" && responsibility && remainder.length === 0 &&
+      RESPONSIBILITY_LABELS[responsibility] &&
+      (!plane || plane === "horizontal" || plane === "vertical")) {
+    return `${plane ? `${presentDiagnosticIdentity(plane)} ` : ""}${RESPONSIBILITY_LABELS[responsibility]}`;
+  }
+  if (classification && RESPONSIBILITY_CLASSIFICATIONS.has(classification) && responsibility) {
+    return presentDiagnosticIdentity(responsibility);
+  }
+  return null;
+}
+
+// Current objective IDs are opaque; their persisted Product-to-Week lineage owns presentation semantics.
+function responsibilityKeysByObjectiveId(
+  artifacts: readonly OwnerPresentationStageArtifact[],
+): ReadonlyMap<string, readonly string[]> {
+  const mapping = record(artifacts.find((artifact) => artifact.stage === "product_mapping")?.payload);
+  const policy = record(mapping?.weeklyResponsibilityPolicy);
+  const traces = Array.isArray(policy?.responsibilityTraces) ? policy.responsibilityTraces : [];
+  const responsibilityByPriorityId = new Map<string, string>();
+  for (const value of traces) {
+    const trace = record(value);
+    if (typeof trace?.priorityId === "string" && typeof trace.responsibilityKey === "string") {
+      responsibilityByPriorityId.set(trace.priorityId, trace.responsibilityKey);
     }
   }
-  return Object.freeze({ canonicalId, label: canonicalId, recognized: false,
-    order: OWNER_GET_STRONGER_RESPONSIBILITY_KEYS.length });
+  const planning = record(artifacts.find((artifact) => artifact.stage === "week_intent")?.payload);
+  const intent = record(planning?.weeklyIntent);
+  const objectives = Array.isArray(intent?.objectives) ? intent.objectives : [];
+  const result = new Map<string, readonly string[]>();
+  for (const value of objectives) {
+    const objective = record(value);
+    if (typeof objective?.objectiveId !== "string" || !Array.isArray(objective.sourcePriorityIds)) continue;
+    const keys = [...new Set(objective.sourcePriorityIds.flatMap((priorityId) => {
+      const key = typeof priorityId === "string" ? responsibilityByPriorityId.get(priorityId) : undefined;
+      return key ? [key] : [];
+    }))];
+    if (keys.length > 0) result.set(objective.objectiveId, Object.freeze(keys));
+  }
+  return result;
+}
+
+export function presentOwnerWeekObjective(
+  canonicalId: string,
+  responsibilityKeys: readonly string[] = [],
+): OwnerWeekObjectivePresentation {
+  const canonicalLabels = responsibilityKeys.map(responsibilityLabel);
+  if (canonicalLabels.length > 0 && canonicalLabels.every((label): label is string => label !== null)) {
+    return Object.freeze({ canonicalId, label: canonicalLabels.join(" / "), recognized: true, order: 0 });
+  }
+  if (canonicalId.startsWith(LEGACY_WEEK_OBJECTIVE_PREFIX)) {
+    const legacyIdentity = canonicalId.slice(LEGACY_WEEK_OBJECTIVE_PREFIX.length);
+    for (const [responsibility, label] of Object.entries(RESPONSIBILITY_LABELS)) {
+      if (legacyIdentity.startsWith(`${responsibility}:`)) {
+        return Object.freeze({ canonicalId, label, recognized: true, order: 0 });
+      }
+    }
+  }
+  return Object.freeze({ canonicalId, label: canonicalId, recognized: false, order: 0 });
 }
 
 export function presentOwnerWeekObjectives(
   canonicalIds: readonly string[],
+  artifacts: readonly OwnerPresentationStageArtifact[] = [],
 ): readonly OwnerWeekObjectivePresentation[] {
-  return Object.freeze(canonicalIds.map((canonicalId, sourceOrder) => ({
-    ...presentOwnerWeekObjective(canonicalId), sourceOrder,
-  })).sort((left, right) => left.order - right.order || left.sourceOrder - right.sourceOrder)
-    .map((entry) => Object.freeze({ canonicalId: entry.canonicalId, label: entry.label,
-      recognized: entry.recognized, order: entry.order })));
+  const responsibilityKeys = responsibilityKeysByObjectiveId(artifacts);
+  return Object.freeze(canonicalIds.map((canonicalId, order) => Object.freeze({
+    ...presentOwnerWeekObjective(canonicalId, responsibilityKeys.get(canonicalId)), order,
+  })));
 }
 
 export function presentSessionPurpose(value: string): string {

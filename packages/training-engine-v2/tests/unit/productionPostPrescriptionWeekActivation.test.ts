@@ -11,15 +11,16 @@ function recursiveSource(root: string): string {
 }
 
 describe("production post-Prescription Week activation guards", () => {
-  it("exports an inert API without wiring any current runtime consumer", () => {
+  it("activates only through the controlled-owner boundary", () => {
     const workspace = resolve(process.cwd(), "../..");
     const appSource = recursiveSource(resolve(workspace, "apps"));
     const productionSource = recursiveSource(resolve(process.cwd(), "src"));
     const weekValidationSource = recursiveSource(resolve(process.cwd(), "src/weekValidation"));
+    const ownerDeliverySource = recursiveSource(resolve(process.cwd(), "src/ownerDelivery"));
     const orchestrationSource = readdirSync(resolve(process.cwd(), "src"), { withFileTypes: true })
       .filter((entry) => entry.isDirectory() &&
         entry.name !== "weekValidation" && entry.name !== "weekValidationV1_1" &&
-        entry.name !== "weekValidationV1_2")
+        entry.name !== "weekValidationV1_2" && entry.name !== "ownerDelivery")
       .map((entry) => recursiveSource(resolve(process.cwd(), "src", entry.name))).join("\n");
     const rootIndex = readFileSync(resolve(process.cwd(), "src/index.ts"), "utf8");
     const weekIndex = readFileSync(resolve(process.cwd(), "src/weekValidation/index.ts"), "utf8");
@@ -27,6 +28,8 @@ describe("production post-Prescription Week activation guards", () => {
     expect(weekIndex).not.toContain("designContracts");
     expect(appSource).not.toContain("validatePostPrescriptionWeek");
     expect(appSource).not.toContain("POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE");
+    expect(ownerDeliverySource).toContain("validatePostPrescriptionWeek(");
+    expect(ownerDeliverySource).not.toContain("postPrescriptionWeekDesignAdapter");
     expect(orchestrationSource).not.toContain("validatePostPrescriptionWeek");
     expect(orchestrationSource).not.toContain("postPrescriptionWeekDesignAdapter");
     expect(productionSource).not.toContain("tests/helpers");

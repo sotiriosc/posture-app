@@ -614,6 +614,36 @@ function thresholdState(value: number, threshold: number): ProductionObjectiveTh
   return value < threshold ? "below" : value === threshold ? "met" : "above";
 }
 
+function executionRequirementReasons(
+  objective: ProductionWeekObjectiveSnapshot,
+  qualifyingEvents: readonly ProductionPlannedSourceExposureLedgerEntry[],
+): readonly string[] {
+  const requirements = objective.executionRequirements;
+  if (!requirements) return [];
+  const reasons: string[] = [];
+  const developmental = qualifyingEvents.some((event) => event.blockPurposeViews.some((block) =>
+    block.developmentalCreditEligible));
+  if (requirements.developmentalCreditRequired && !developmental) {
+    reasons.push("WEEKLY_EXECUTION_DEVELOPMENTAL_CREDIT_REQUIRED");
+  }
+  const purposeMatches = requirements.requiredPrescriptionPurpose === "strength_development" ?
+    objective.purpose === "movement_development" && qualifyingEvents.some((event) =>
+      ["primary_strength", "secondary_strength"].includes(event.role)) :
+    requirements.requiredPrescriptionPurpose === "hypertrophy_development" ?
+      objective.purpose === "muscle_development" :
+      requirements.requiredPrescriptionPurpose === "direct_development" ?
+        objective.purpose === "direct_action_development" :
+        requirements.requiredPrescriptionPurpose === "capacity_development" ?
+          objective.purpose === "capacity_development" && qualifyingEvents.some((event) => event.role === "capacity") :
+          objective.purpose === "assessment_priority_development";
+  if (!purposeMatches) reasons.push("WEEKLY_EXECUTION_REQUIRED_PRESCRIPTION_PURPOSE_MISSING");
+  if (requirements.loadingSuitabilityRequired &&
+      ["unresolved", "insufficient"].includes(requirements.loadingCompletenessState)) {
+    reasons.push(`WEEKLY_EXECUTION_LOADING_${requirements.loadingCompletenessState.toUpperCase()}`);
+  }
+  return sortedUnique(reasons);
+}
+
 function buildObjectiveTraces(input: {
   readonly source: PrescribedWeekSourceSnapshot;
   readonly ledger: readonly ProductionPlannedSourceExposureLedgerEntry[];
@@ -640,6 +670,7 @@ function buildObjectiveTraces(input: {
         !sessionByReservation.get(id)?.executableMinimumEligible && !sessionByReservation.get(id)?.pendingFeasibilityEligible);
       const rule = input.policy?.frequencyRules.find((entry) => entry.purpose === objective.purpose);
       const thresholds = rule ? frequencyRuleForPriority(rule, objective.priority) : null;
+      const executionReasons = executionRequirementReasons(objective, qualifying.map((entry) => entry.event));
       let status: ProductionObjectivePrescribedRealizationStatus;
       if (input.policyStatus === "conflict") status = "weekly_policy_conflict";
       else if (!input.policy || input.policyStatus !== "resolved") status = "weekly_policy_required";
@@ -684,10 +715,16 @@ function buildObjectiveTraces(input: {
         softMaximumState: thresholds ? thresholdState(executableReservationIds.length, thresholds[2]) : "not_applicable",
         dosePolicyState: objective.dosePolicyState,
         spacingState: "spacing_policy_not_defined",
+        executionRequirements: objective.executionRequirements ?? null,
+        executionRequirementsSatisfied: executionReasons.length === 0,
+        executionRequirementReasonCodes: executionReasons,
+        loadingCompletenessState: objective.executionRequirements?.loadingCompletenessState ?? "not_applicable",
         status,
         unresolvedRefs: [
           ...(status === "unsupported_objective_scope" ? ["UNSUPPORTED_OBJECTIVE_SCOPE"] : []),
           ...(objective.dosePolicyState === "prescribed_dose_target_not_defined" ? ["INSUFFICIENT_FOR_NUMERIC_VALIDATION"] : []),
+          ...executionReasons,
+          ...(objective.executionRequirements?.unresolvedCapabilityRefs ?? []),
         ],
         provenance: [...objective.sourceEvidenceRefs],
       };

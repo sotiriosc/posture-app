@@ -35,6 +35,7 @@ function targetKey(priority: ProductionExplicitWeeklyPriority): string {
     sourceOwners: uniqueSorted(priority.sourceEvidence.map((entry) => entry.sourceKind)),
     exactActionOwnership: priority.exactActionOwnership ?? null,
     uniqueMarginalValueRef: priority.uniqueMarginalValueRef ?? null,
+    executionRequirements: priority.executionRequirements ?? null,
   }));
 }
 
@@ -102,6 +103,7 @@ function objectiveGroups(
       policyState: "resolved_for_allocation",
       reasonCode: ordered.length > 1 ? "merged_structurally_equivalent_objective" :
         authority.purpose === "recovery_support" ? "explicit_recovery_support" : "explicit_supported_weekly_priority",
+      ...(authority.executionRequirements ? { executionRequirements: authority.executionRequirements } : {}),
       provenance: Object.freeze({ owner: "weekly_intent_planner",
         sourceRefs: uniqueSorted(ordered.flatMap((entry) => entry.sourceEvidence.map((evidence) => evidence.sourceId))),
         ruleRefs: Object.freeze([frequency.sourceRef, "STRUCTURAL_OBJECTIVE_MERGE"]),

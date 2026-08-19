@@ -2,6 +2,7 @@ import type { ExerciseActionFunction } from "../domain/exercise";
 import type { MuscleRelationshipRequirement } from "../domain/exerciseSelectionNeed";
 import type { BodyRegion, MovementRole, MuscleGroup } from "../domain/primitives";
 import type { EvidenceProvenance, ISODateTimeString } from "../prescription/types";
+import type { ProductionWeeklyExecutionRequirements } from "../domain/weeklyExecutionRequirements";
 
 export const PRODUCTION_PRESCRIBED_WEEK_SOURCE_CONTRACT_ID =
   "PRODUCTION_PRESCRIBED_WEEK_SOURCE_CONTRACT" as const;
@@ -63,6 +64,7 @@ export interface ProductionWeekObjectiveSnapshot {
   readonly dosePolicyState: "prescribed_dose_target_not_defined" | "explicit_reviewed_target" | "not_applicable";
   readonly spacingState: "SPACING_R0_PRESCRIPTION_PENDING";
   readonly sourceEvidenceRefs: readonly string[];
+  readonly executionRequirements?: ProductionWeeklyExecutionRequirements;
   readonly provenance: readonly EvidenceProvenance[];
 }
 

@@ -54,7 +54,9 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
       { status: "explicit_unknown", minutes: null },
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
       capabilityIds: input.capabilityIds ?? ["commercial_gym", "dumbbells", "adjustable_bench"], confirmed: true,
-      sourceRevision: "owner-equipment:synthetic-1" }, coarseExperience: "beginner", familiarity: [],
+      sourceRevision: "owner-equipment:synthetic-1" }, coarseExperience: "beginner", familiarity: [{
+        exerciseId: "dumbbell-romanian-deadlift", realizationId: null, status: "known",
+      }],
     painContext: input.painContext ??
       { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
     assessmentReferences: input.assessmentReferences ?? [], trainingSafety: "clear",
@@ -116,16 +118,18 @@ describe("controlled owner genuine generation and application", () => {
     ]);
     expect(value.generated).toMatchObject({ productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
     expect(value.generated.preview).toMatchObject({ counterfactual: true, applied: false, stale: false,
-      readinessStatus: "preview_only_unknown_duration" });
+      readinessStatus: "blocked" });
+    expect(value.generated.preview?.unresolvedFacts).toContain(
+      "OWNER_CONFIRM_FOUNDATION_HINGE_HIP_EXTENSION_LOADING_CAPABILITY");
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
       fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
     expect(JSON.stringify(value.generated.preview)).not.toContain("owner@example");
   });
 
-  it("permits explicit unknown duration preview but makes approval unavailable", async () => {
+  it("permits explicit unknown duration preview but blocks approval on unresolved truth", async () => {
     const value = await fixture({ mode: "preview", knownMinutes: false });
     expect(value.generated.status, JSON.stringify(value.generated.reasonCodes)).toBe("generated");
-    expect(value.generated.preview?.readinessStatus).toBe("preview_only_unknown_duration");
+    expect(value.generated.preview?.readinessStatus).toBe("blocked");
     expect(value.generated.preview?.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
   });
 

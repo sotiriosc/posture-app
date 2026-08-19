@@ -59,6 +59,11 @@ function mergeGroup(group: readonly NormalizedPlannerNeed[]): NormalizedPlannerN
         sectionRoleMappingOrigin: first.need.plannerProvenance?.sectionRoleMappingOrigin ?? first.need.id,
         standaloneAdmissionOrigin: first.need.plannerProvenance?.standaloneAdmissionOrigin ?? first.need.id,
         unknowns: unique(ordered.flatMap((entry) => entry.need.plannerProvenance?.unknowns ?? [])),
+        weeklyExecutionRequirements: ordered.flatMap((entry) =>
+          entry.need.plannerProvenance?.weeklyExecutionRequirements ?? [])
+          .filter((entry, index, all) => all.findIndex((candidate) =>
+            candidate.objectiveId === entry.objectiveId) === index)
+          .sort((left, right) => left.objectiveId.localeCompare(right.objectiveId)),
       },
     },
   };

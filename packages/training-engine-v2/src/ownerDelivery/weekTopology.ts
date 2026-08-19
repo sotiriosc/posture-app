@@ -1,4 +1,7 @@
 import { buildTrainingReadinessTrace, type TrainingSafetyState } from "../domain/trainingSafety";
+import type { MovementRole } from "../domain/primitives";
+import { PRODUCT_GET_STRONGER_DEVELOP_WEEKLY_RESPONSIBILITY_POLICY_REFERENCE } from
+  "../productGoalArchitecture/getStrongerDevelopWeeklyPolicyV1";
 import {
   canonicalWeekFingerprint,
   type ProductionSessionFeasibilityOracle,
@@ -11,7 +14,7 @@ import {
 
 export const OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE = Object.freeze({
   policyId: "CONTROLLED_OWNER_GET_STRONGER_TOPOLOGY_POLICY",
-  version: "1.0.0",
+  version: "2.0.0",
 } as const);
 
 export const OWNER_WEEK_TOPOLOGY_SEARCH_POLICY: ProductionWeekSearchResourcePolicy = Object.freeze({
@@ -27,43 +30,51 @@ export const OWNER_WEEK_TOPOLOGY_SEARCH_POLICY: ProductionWeekSearchResourcePoli
     ruleRefs: Object.freeze(["EXACT_ONLY", "NO_BEST_SO_FAR_APPLICATION"]) }),
 });
 
-function objectiveForRole(intent: ProductionWeeklyIntent, role: "knee" | "hinge" | "push" | "pull") {
-  const matches = intent.objectives.filter((objective) => {
-    const roles = new Set(objective.target.targetMovementRoles);
-    if (role === "knee") return roles.has("squat") && roles.has("single_leg");
-    if (role === "hinge") return roles.has("hinge");
-    if (role === "push") return roles.has("horizontal_push");
-    return roles.has("horizontal_pull");
-  });
-  if (matches.length !== 1) throw new Error(`OWNER_TOPOLOGY_${role.toUpperCase()}_RESPONSIBILITY_REQUIRED`);
-  return matches[0]!;
+function isProductPolicyObjective(objective: ProductionWeeklyIntent["objectives"][number]): boolean {
+  return objective.executionRequirements?.provenance.policyRef ===
+    PRODUCT_GET_STRONGER_DEVELOP_WEEKLY_RESPONSIBILITY_POLICY_REFERENCE;
+}
+
+function coherenceGroupId(objective: ProductionWeeklyIntent["objectives"][number]): string {
+  const roles = new Set(objective.target.targetMovementRoles);
+  const lowerRoles: readonly MovementRole[] = ["squat", "knee_dominant", "hinge", "single_leg"];
+  const upperRoles: readonly MovementRole[] = ["horizontal_push", "vertical_push", "horizontal_pull", "vertical_pull"];
+  if (lowerRoles.some((role) => roles.has(role))) {
+    return "lower_body_product_responsibilities";
+  }
+  if (upperRoles.some((role) => roles.has(role))) return "upper_body_product_responsibilities";
+  return "additional_typed_product_responsibilities";
 }
 
 export function buildOwnerGetStrongerTopologyPolicy(
   intent: ProductionWeeklyIntent,
 ): ProductionWeekTopologyPolicy {
-  const knee = objectiveForRole(intent, "knee");
-  const hinge = objectiveForRole(intent, "hinge");
-  const push = objectiveForRole(intent, "push");
-  const pull = objectiveForRole(intent, "pull");
-  const eligibleObjectiveIds = Object.freeze([
-    knee.objectiveId, hinge.objectiveId, push.objectiveId, pull.objectiveId,
-  ]);
+  const eligible = intent.objectives.filter((objective) => objective.priority === "required" &&
+    objective.executionRequirements?.developmentalCreditRequired && isProductPolicyObjective(objective))
+    .sort((left, right) => left.priorityOrder - right.priorityOrder ||
+      left.objectiveId.localeCompare(right.objectiveId));
+  if (eligible.length === 0) throw new Error("OWNER_TOPOLOGY_PRODUCT_RESPONSIBILITIES_REQUIRED");
+  const eligibleObjectiveIds = Object.freeze(eligible.map((objective) => objective.objectiveId));
+  const grouped = new Map<string, string[]>();
+  for (const objective of eligible) {
+    const groupId = coherenceGroupId(objective);
+    grouped.set(groupId, [...(grouped.get(groupId) ?? []), objective.objectiveId]);
+  }
   return Object.freeze({
     reference: OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE,
-    scope: "controlled_owner_get_stronger_four_required_strength_responsibilities",
+    scope: "controlled_owner_get_stronger_product_responsibilities",
     eligibleObjectiveIds,
     preferredMaximumRequiredResponsibilitiesPerSession: 2,
-    coherenceGroups: Object.freeze([
-      Object.freeze({ groupId: "lower_body_strength_responsibilities",
-        objectiveIds: Object.freeze([knee.objectiveId, hinge.objectiveId]) }),
-      Object.freeze({ groupId: "upper_body_strength_responsibilities",
-        objectiveIds: Object.freeze([push.objectiveId, pull.objectiveId]) }),
-    ]),
+    coherenceGroups: Object.freeze([...grouped.entries()].map(([groupId, objectiveIds]) =>
+      Object.freeze({ groupId, objectiveIds: Object.freeze(objectiveIds) }))),
     provenance: Object.freeze({ owner: "week_allocation_composer",
-      sourceRefs: Object.freeze(intent.objectives.flatMap((objective) => objective.sourcePriorityIds).sort()),
+      sourceRefs: Object.freeze(eligible.flatMap((objective) => [
+        ...objective.sourcePriorityIds,
+        ...(objective.executionRequirements?.provenance.sourceFactIds ?? []),
+      ]).sort()),
       ruleRefs: Object.freeze([
-        "FOUR_REQUIRED_STRENGTH_RESPONSIBILITIES_ONLY",
+        PRODUCT_GET_STRONGER_DEVELOP_WEEKLY_RESPONSIBILITY_POLICY_REFERENCE,
+        "ALL_REQUIRED_PRODUCT_RESPONSIBILITIES_ELIGIBLE",
         "PREFER_AT_MOST_TWO_PER_SESSION_WHEN_AVAILABLE",
         "FEWEST_OCCUPIED_AFTER_CONCENTRATION",
         "NO_AUTOMATIC_RECOVERY_SESSION",
@@ -80,19 +91,19 @@ export function buildOwnerWeekFeasibilityOracle(
     oracleVersion: "1.0.0",
     evaluate: (input: ProductionSessionFeasibilityOracleInput) => {
       const readiness = buildTrainingReadinessTrace({ trainingSafety });
-      const requiredStrengthResponsibilities = input.objectives.every((objective) =>
-        objective.priority === "required" && objective.family === "strength" &&
-        objective.purpose === "movement_development");
+      const productDevelopmentResponsibilities = input.objectives.every((objective) =>
+        objective.purpose !== "recovery_support" &&
+        objective.executionRequirements?.developmentalCreditRequired && isProductPolicyObjective(objective));
       const equipmentKnown = input.opportunity.expectedEquipment.kind === "capability_snapshot";
       const status = !readiness.downstreamTrainingAllowed ? "blocked_by_training_readiness" as const :
-        !requiredStrengthResponsibilities ? "unsupported_objective_scope" as const :
+        !productDevelopmentResponsibilities ? "unsupported_objective_scope" as const :
           !equipmentKnown ? "candidate_review_required" as const :
             "prescription_resolution_required" as const;
       const costClasses = input.objectives.map((objective) =>
         `${objective.objectiveId}:standard_required_strength_responsibility`);
       const unresolvedRequirementRefs = status === "blocked_by_training_readiness" ?
         readiness.unresolvedSignalIds : status === "unsupported_objective_scope" ?
-          ["OWNER_FEASIBILITY_ONLY_SUPPORTS_REQUIRED_STRENGTH_DEVELOPMENT"] : !equipmentKnown ?
+            ["OWNER_FEASIBILITY_ONLY_SUPPORTS_TYPED_PRODUCT_DEVELOPMENT"] : !equipmentKnown ?
             ["CURRENT_EQUIPMENT_CAPABILITY_REVIEW_REQUIRED"] :
             ["FINAL_DURATION_REQUIRES_PRESCRIPTION_AND_SEQUENCING"];
       const sourceRefs = Object.freeze([
@@ -195,8 +206,12 @@ export function evaluateOwnerWeekTopology(input: {
       !input.plan.provenance.ruleRefs.includes(policyRef)) {
     reasons.push("OWNER_TOPOLOGY_PROVENANCE_INVALID");
   }
-  if (reservations.some((reservation) => reservation.allocatedObjectives.some((objective) =>
-    !eligible.has(objective.weeklyObjectiveId) || objective.purpose === "recovery"))) {
+  const objectiveById = new Map(input.intent.objectives.map((objective) => [objective.objectiveId, objective]));
+  if (reservations.some((reservation) => reservation.allocatedObjectives.some((objective) => {
+    const source = objectiveById.get(objective.weeklyObjectiveId);
+    return objective.purpose === "recovery" || !source || !isProductPolicyObjective(source) ||
+      source.priority === "required" && !eligible.has(source.objectiveId);
+  }))) {
     reasons.push("OWNER_TOPOLOGY_UNAUTHORIZED_RESPONSIBILITY_INVALID");
   }
   const occupied = new Set(reservations.map((reservation) => reservation.opportunityId));

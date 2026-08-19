@@ -47,20 +47,29 @@ describe("production Prescription Compiler architecture", () => {
     expect(violations, "PRODUCTION_COMPILER_TEST_DEPENDENCY_VIOLATION").toEqual([]);
   });
 
-  it("is not called by live program generation or app source", () => {
+  it("is activated only through controlled-owner delivery", () => {
     const excludedRoots = [compilerRoot, compilerV1_1Root, compilerV1_2Root, purposeResolutionRoot,
       purposeResolutionV1_1Root, policyRoot, policyV2Root];
+    const ownerDeliveryRoot = resolve(repositoryRoot, "packages/training-engine-v2/src/ownerDelivery");
+    const ownerDeliveryFiles = productionTypeScriptFiles(ownerDeliveryRoot);
     const liveFiles = [
       ...productionTypeScriptFiles(resolve(repositoryRoot, "apps")),
       ...productionTypeScriptFiles(resolve(repositoryRoot, "packages/engine/src")),
       ...productionTypeScriptFiles(resolve(repositoryRoot, "packages/training-engine-v2/src")),
-    ].filter((file) => !excludedRoots.some((excluded) => file.startsWith(`${excluded}/`)));
+    ].filter((file) => !excludedRoots.some((excluded) => file.startsWith(`${excluded}/`)) &&
+      !file.startsWith(`${ownerDeliveryRoot}/`));
     const violations = liveFiles.filter((file) =>
       /\b(?:compilePrescriptionAssignment|compileSessionPrescription|PRESCRIPTION_POLICY_V1)\b/.test(
         readFileSync(file, "utf8"),
       )
     ).map((file) => file.slice(repositoryRoot.length + 1));
+    const ownerActivation = ownerDeliveryFiles.filter((file) =>
+      /\bcompileSessionPrescription\b/.test(readFileSync(file, "utf8")),
+    ).map((file) => file.slice(repositoryRoot.length + 1));
     expect(liveFiles.length).toBeGreaterThan(0);
     expect(violations, "PRODUCTION_COMPILER_ACTIVATION_BOUNDARY_VIOLATION").toEqual([]);
+    expect(ownerActivation).toEqual([
+      "packages/training-engine-v2/src/ownerDelivery/pipeline.ts",
+    ]);
   });
 });

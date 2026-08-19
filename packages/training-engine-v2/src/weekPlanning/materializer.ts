@@ -135,6 +135,7 @@ export function materializeSessionAllocation(
       standaloneAdmissionDirection: "policy_default" as const,
       reasonCode: objective.reasonCode,
       explanation: "Materialized from an explicitly reserved weekly responsibility; no new policy was added.",
+      ...(objective.executionRequirements ? { executionRequirements: objective.executionRequirements } : {}),
     }))),
     neighboringSessionContextRefs: input.reservation.neighboringReservationRefs,
     unresolvedWeeklyContextRefs: input.reservation.unresolvedWeekContext.map((entry) => entry.observationId),

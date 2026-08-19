@@ -11,7 +11,6 @@ import {
   THREE_PHASE_FOUNDATION,
   buildOwnerGenerationCommand,
   buildOwnerGetStrongerTopologyPolicy,
-  buildOwnerGetStrongerWeeklyPriorities,
   buildOwnerProfileRevision,
   buildOwnerWeekFeasibilityOracle,
   composeWeekAllocation,
@@ -27,6 +26,9 @@ import {
   type ProductionWeeklyIntent,
   type ProductionWeeklyIntentPlanningResult,
 } from "../../src";
+import { applyProductGetStrongerDevelopWeeklyResponsibilityPolicyV1,
+  type ProductGetStrongerDevelopWeeklyPolicyResult } from
+  "../../src/productGoalArchitecture/getStrongerDevelopWeeklyPolicyV1";
 
 const NOW = "2026-08-18T12:00:00.000Z";
 const USER_ID = "owner-week-topology-test-user";
@@ -54,7 +56,8 @@ function fixture(days: OwnerAvailableTrainingDays): TopologyFixture {
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
       capabilityIds: ["commercial_gym", "bodyweight", "dumbbells", "adjustable_bench", "barbell_rack",
         "cables", "pull_up_station", "wall"], confirmed: true, sourceRevision: "owner-equipment:topology" },
-    coarseExperience: "advanced", familiarity: [],
+    coarseExperience: "advanced", familiarity: [{ exerciseId: "dumbbell-romanian-deadlift",
+      realizationId: null, status: "known" }],
     painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
     assessmentReferences: [], trainingSafety: "clear", continuityReferences: [], evaluationTime: NOW,
     provenance: { source: "owner_confirmation", sourceRefs: ["owner-topology-fixture"] },
@@ -117,9 +120,75 @@ describe("controlled-owner canonical Week topology", () => {
     ]);
   });
 
+  it("keeps two- and three-session primary emphasis stable in canonical priority order", () => {
+    expect(fixture(2).evidence.assignments.map((assignment) => roleFor(fixture(2).intent,
+      assignment.responsibilities.find((responsibility) => responsibility.role === "primary")!
+        .weeklyObjectiveId))).toEqual(["knee", "push"]);
+    expect(fixture(3).evidence.assignments.map((assignment) => roleFor(fixture(3).intent,
+      assignment.responsibilities.find((responsibility) => responsibility.role === "primary")!
+        .weeklyObjectiveId))).toEqual(["knee", "push", "hinge"]);
+    expect(fixture(2).evidence.primaryEmphasisFingerprint)
+      .toBe(fixture(2).plan.wholeWeekEvaluation?.primaryEmphasisFingerprint);
+    expect(fixture(3).evidence.primaryEmphasisFingerprint)
+      .toBe(fixture(3).plan.wholeWeekEvaluation?.primaryEmphasisFingerprint);
+  });
+
+  it("supports a variable required set when typed evidence separately owns both push planes", () => {
+    const value = fixture(4);
+    const policyResult = applyProductGetStrongerDevelopWeeklyResponsibilityPolicyV1({
+      productLabel: "get_stronger", trainingMode: "develop", outcomeGoal: "strength",
+      sourceProductRevisionId: "product-revision:topology",
+      goalFactId: "product-fact:get-stronger", modeFactId: "product-fact:develop",
+      experience: "advanced", experienceFactId: "owner-fact:advanced",
+      availableOpportunityCount: 4,
+      separatePlaneFacts: [{ factId: "product-fact:both-push-planes", family: "upper_push",
+        requiredPlanes: ["horizontal", "vertical"], owner: "explicit_subgoal",
+        evidenceRefs: ["owner-confirmation:both-push-planes"] }],
+      additionalResponsibilityFacts: [], loadingEvidence: [],
+    });
+    expect(policyResult.status).toBe("resolved");
+    const athlete = Object.freeze({ id: value.profile.userId, label: "Controlled owner", experience: "advanced" as const,
+      primaryGoal: "strength" as const, secondaryGoals: Object.freeze([]),
+      preferences: Object.freeze({ preferredExerciseIds: Object.freeze([]), dislikedExerciseIds: Object.freeze([]),
+        varietyPreference: "low" as const, notes: Object.freeze([]) }),
+      availability: Object.freeze({ daysPerWeek: 4, minutesPerSession: 90, preferredTrainingDays: Object.freeze([]) }) });
+    const intentResult = planWeeklyIntent({ plannerContract: PRODUCTION_WEEKLY_INTENT_PLANNER_CONTRACT_REFERENCE,
+      policy: PRODUCTION_WEEK_POLICY_V1, sourceSnapshot: value.source, athlete,
+      explicitOutcomeGoal: "strength", outcomeGoalLineageId: "product-fact:get-stronger",
+      orderedSecondaryGoals: [], programmingContextModes: [],
+      phaseIntent: Object.freeze({ ...THREE_PHASE_FOUNDATION[1], primaryGoal: "strength" as const }),
+      assessment: { signals: [], historicalWeaknesses: [] }, painAndInjury: NO_PAIN_OR_INJURY,
+      trainingSafety: NO_TRAINING_SAFETY_SIGNALS, history: EMPTY_TRAINING_HISTORY,
+      trainingResponseHistory: EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
+      explicitWeeklyPriorities: policyResult.priorities, externalLoadObservations: [],
+      continuityEvidence: { priorPlanRevisionId: null, productiveRelationships: [], completedOpportunityIds: [],
+        missedOpportunityIds: [], changeReasonRefs: [] }, evaluationTime: NOW,
+      intentAttemptId: "owner-variable-topology-intent-attempt" });
+    expect(intentResult.weeklyIntent).not.toBeNull();
+    const intent = intentResult.weeklyIntent!;
+    const topologyPolicy = buildOwnerGetStrongerTopologyPolicy(intent);
+    expect(topologyPolicy.eligibleObjectiveIds).toHaveLength(5);
+    const plan = composeWeekAllocation({ composerContract: PRODUCTION_WEEK_ALLOCATION_COMPOSER_CONTRACT_REFERENCE,
+      weeklyIntent: intent, sourceSnapshot: value.source, orderedOpportunities: value.source.opportunities,
+      completionState: Object.fromEntries(value.source.opportunities.map((entry) =>
+        [entry.opportunityId, entry.completionStatus])), previousWeekStructureEvidence: intent.continuityEvidence,
+      policy: PRODUCTION_WEEK_POLICY_V1, spacingRequirements: [], topologyPolicy,
+      feasibilityOracle: buildOwnerWeekFeasibilityOracle(NO_TRAINING_SAFETY_SIGNALS),
+      searchResourcePolicy: OWNER_WEEK_TOPOLOGY_SEARCH_POLICY, evaluationTime: NOW,
+      allocationAttemptId: "owner-variable-topology-allocation-attempt" });
+    const evidence = evaluateOwnerWeekTopology({ plan, intent, policy: topologyPolicy,
+      opportunityIds: value.source.opportunities.map((entry) => entry.opportunityId) });
+    expect(plan.status, plan.decisionTrace.join(",")).toBe("allocation_composed");
+    expect(evidence.valid, evidence.reasonCodes.join(",")).toBe(true);
+    expect(Object.values(evidence.weeklyExposureCounts)).toEqual([2, 2, 2, 2, 2]);
+  });
+
   it("is deterministic, permutation-stable, and introduces no automatic future-week rotation", () => {
     const value = fixture(5);
-    const priorities = [...buildOwnerGetStrongerWeeklyPriorities(value.profile)].reverse();
+    const mapping = value.result.stages.find((entry) => entry.stage === "product_mapping")!.payload as {
+      readonly weeklyResponsibilityPolicy: ProductGetStrongerDevelopWeeklyPolicyResult;
+    };
+    const priorities = [...mapping.weeklyResponsibilityPolicy.priorities].reverse();
     const athlete = Object.freeze({ id: value.profile.userId, label: "Controlled owner", experience: "advanced" as const,
       primaryGoal: "strength" as const, secondaryGoals: Object.freeze([]),
       preferences: Object.freeze({ preferredExerciseIds: Object.freeze([]), dislikedExerciseIds: Object.freeze([]),

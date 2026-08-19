@@ -20,7 +20,7 @@ function sourceFiles(path: string): string[] {
 }
 
 describe("Product goal architecture activation and behavior guards", () => {
-  it("keeps owner policy disconnected except for the authorized B2 resolver namespace", () => {
+  it("keeps activation confined to B2 purpose resolution and controlled-owner weekly delivery", () => {
     const roots = [
       "packages/training-engine-v2/src",
       "packages/engine/src",
@@ -31,8 +31,12 @@ describe("Product goal architecture activation and behavior guards", () => {
       .filter((path) => readFileSync(path, "utf8").includes("productGoalArchitecture"));
     const authorizedB2Imports = imports.filter((path) =>
       /prescription\/purposeResolution\/(?:policy|validation)\.ts$/.test(path));
+    const authorizedControlledOwnerImports = imports.filter((path) =>
+      /ownerDelivery\/(?:pipeline|weekTopology)\.ts$/.test(path));
     expect(authorizedB2Imports).toHaveLength(2);
-    expect(imports.filter((path) => !authorizedB2Imports.includes(path))).toEqual([]);
+    expect(authorizedControlledOwnerImports).toHaveLength(2);
+    expect(imports.filter((path) => !authorizedB2Imports.includes(path) &&
+      !authorizedControlledOwnerImports.includes(path))).toEqual([]);
     expect(read("packages/training-engine-v2/src/index.ts")).not.toContain("productGoalArchitecture");
     expect(JSON.parse(read("packages/training-engine-v2/package.json")).exports)
       .not.toHaveProperty("./product-goal-architecture");

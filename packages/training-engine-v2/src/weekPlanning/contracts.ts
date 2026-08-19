@@ -18,6 +18,7 @@ import type {
 import type { StructuralCapacityMode } from "../domain/session";
 import type { TrainingResponseHistory } from "../domain/trainingResponse";
 import type { TrainingReadinessTrace, TrainingSafetyState } from "../domain/trainingSafety";
+import type { ProductionWeeklyExecutionRequirements } from "../domain/weeklyExecutionRequirements";
 
 export const PRODUCTION_WEEK_PLANNING_SOURCE_CONTRACT_REFERENCE = Object.freeze({
   contractId: "PRODUCTION_WEEK_PLANNING_SOURCE",
@@ -262,6 +263,7 @@ export interface ProductionExplicitWeeklyPriority {
   readonly goalRelationships: readonly ProductionWeeklyObjectiveGoalRelationship[];
   readonly exactActionOwnership?: "primary_required" | "exact_action";
   readonly uniqueMarginalValueRef?: string;
+  readonly executionRequirements?: ProductionWeeklyExecutionRequirements;
 }
 
 export type ProductionWeeklyObjectivePolicyState = "resolved_for_allocation" | "frequency_policy_required" |
@@ -285,6 +287,7 @@ export interface ProductionWeeklyDevelopmentObjective {
   readonly policyState: ProductionWeeklyObjectivePolicyState;
   readonly reasonCode: "explicit_supported_weekly_priority" | "supported_primary_goal_responsibility" |
     "merged_structurally_equivalent_objective" | "explicit_recovery_support";
+  readonly executionRequirements?: ProductionWeeklyExecutionRequirements;
   readonly provenance: ProductionWeekProvenance;
 }
 
@@ -395,6 +398,7 @@ export interface ProductionReservedSessionObjective {
   readonly sourceEvidenceRefs: readonly string[];
   readonly reasonCode: "allocated_weekly_responsibility" | "explicit_assessment_or_preparation" |
     "explicit_recovery_responsibility";
+  readonly executionRequirements?: ProductionWeeklyExecutionRequirements;
   readonly provenance: ProductionWeekProvenance;
 }
 
@@ -459,7 +463,7 @@ export interface ProductionWeekTopologyCoherenceGroup {
 
 export interface ProductionWeekTopologyPolicy {
   readonly reference: ProductionWeekTopologyPolicyReference;
-  readonly scope: "controlled_owner_get_stronger_four_required_strength_responsibilities";
+  readonly scope: "controlled_owner_get_stronger_product_responsibilities";
   readonly eligibleObjectiveIds: readonly string[];
   readonly preferredMaximumRequiredResponsibilitiesPerSession: number;
   readonly coherenceGroups: readonly ProductionWeekTopologyCoherenceGroup[];

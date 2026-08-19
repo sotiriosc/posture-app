@@ -53,7 +53,10 @@ const SECTION_LABELS = Object.freeze({ prepare: "Prepare", main: "Main work",
   supporting: "Supporting work", cooldown: "Cooldown" });
 
 export default function OwnerPreviewPresentation({ preview, actions, styles }: OwnerPreviewPresentationProps) {
-  const objectives = presentOwnerWeekObjectives(preview.productProjection.weekObjectiveIds);
+  const objectives = presentOwnerWeekObjectives(
+    preview.productProjection.weekObjectiveIds,
+    preview.completeProgramSnapshot,
+  );
   return <main className={`${styles.shell} ${styles.previewShell}`} data-testid="owner-preview-presentation">
     <header className={styles.previewHeader}>
       <div className={styles.headerCopy}>

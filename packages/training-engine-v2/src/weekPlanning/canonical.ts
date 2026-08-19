@@ -1,4 +1,5 @@
 import { canonicalize, explicitIsoTime, sameSemanticValue, stableId, uniqueSorted } from "../prescription/compiler/utilities";
+import { validateProductionWeeklyExecutionRequirements } from "../domain/weeklyExecutionRequirements";
 import {
   PRODUCTION_REMAINING_WEEK_REALLOCATION_CONTRACT_REFERENCE,
   PRODUCTION_SESSION_ALLOCATION_MATERIALIZER_CONTRACT_REFERENCE,
@@ -250,6 +251,9 @@ export function validateProductionWeeklyObjective(objective: ProductionWeeklyDev
   if (objective.family === "direct" && objective.target.muscleRequirement !== "primary_required" &&
       objective.target.targetActionFunctions.length === 0) {
     reasons.push("DIRECT_OBJECTIVE_REQUIRES_PRIMARY_OR_EXACT_ACTION");
+  }
+  if (objective.executionRequirements) {
+    reasons.push(...validateProductionWeeklyExecutionRequirements(objective.executionRequirements));
   }
   return uniqueSorted(reasons);
 }

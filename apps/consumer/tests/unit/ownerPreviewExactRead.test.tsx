@@ -93,6 +93,8 @@ vi.mock("@/server/controlledOwnerDelivery", async () => {
 });
 
 import OwnerPreviewPage from "@/app/account/praxis-v2/preview/[previewId]/page";
+import { presentOwnerWeekObjectives } from
+  "@/app/account/praxis-v2/preview/[previewId]/presentation";
 import { GET as readPreviewApi } from "@/app/api/training/v2-owner/preview/[previewId]/route";
 import { normalizeOwnerDynamicRecordId } from "@/server/ownerDynamicRecordId";
 
@@ -180,6 +182,28 @@ describe("owner preview exact page and API reads", () => {
     expect(normalizeOwnerDynamicRecordId("owner-v2-preview%253A8dda19cf38065a53",
       "owner-v2-preview")).toBeNull();
     expect(normalizeOwnerDynamicRecordId("owner-v2-preview%E0%A4%A", "owner-v2-preview")).toBeNull();
+  });
+
+  it("presents canonical variable Product responsibilities in policy source order", () => {
+    const objectiveIds = ["weekly-objective:opaque-push", "weekly-objective:opaque-trunk",
+      "weekly-objective:opaque-knee"];
+    const objectives = presentOwnerWeekObjectives([
+      ...objectiveIds,
+    ], [{ stage: "product_mapping", payload: { weeklyResponsibilityPolicy: { responsibilityTraces: [
+      { priorityId: "priority:push", responsibilityKey: "foundation:upper_push:vertical" },
+      { priorityId: "priority:trunk", responsibilityKey: "conditional_required:trunk_bracing:fact-1" },
+      { priorityId: "priority:knee", responsibilityKey: "foundation:knee_dominant_squat" },
+    ] } } }, { stage: "week_intent", payload: { weeklyIntent: { objectives: [
+      { objectiveId: objectiveIds[0], sourcePriorityIds: ["priority:push"] },
+      { objectiveId: objectiveIds[1], sourcePriorityIds: ["priority:trunk"] },
+      { objectiveId: objectiveIds[2], sourcePriorityIds: ["priority:knee"] },
+    ] } } }]);
+
+    expect(objectives.map((objective) => objective.label)).toEqual([
+      "Vertical Upper-body push", "Trunk bracing", "Knee-dominant lower body",
+    ]);
+    expect(objectives.map((objective) => objective.order)).toEqual([0, 1, 2]);
+    expect(objectives.every((objective) => objective.recognized)).toBe(true);
   });
 
   it("renders an encoded colon preview through the canonical exact persisted ID", async () => {

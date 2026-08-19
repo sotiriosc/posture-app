@@ -5,7 +5,6 @@ import {
   buildOwnerEnrollmentRevision,
   buildOwnerEquipmentCapabilities,
   buildOwnerGenerationCommand,
-  buildOwnerGetStrongerWeeklyPriorities,
   buildOwnerProfileRevision,
   buildOwnerProgramPreview,
   composeSupportedPurposeWeekV1_1,
@@ -21,6 +20,8 @@ import {
   type ProductionWeeklyIntentPlanningResult,
   type AssessmentState,
 } from "../../src";
+import { applyProductGetStrongerDevelopWeeklyResponsibilityPolicyV1 } from
+  "../../src/productGoalArchitecture/getStrongerDevelopWeeklyPolicyV1";
 
 const NOW = "2026-08-17T20:00:00.000Z";
 
@@ -54,7 +55,9 @@ function fixture(input: {
     equipmentCapabilitySnapshot: { environment: input.environment ?? "commercial_gym",
       capabilityIds: input.capabilityIds ?? ["commercial_gym", "dumbbells", "adjustable_bench"],
       confirmed: true, sourceRevision: "owner-equipment:frozen-live-equivalent" },
-    coarseExperience: input.experience ?? "advanced", familiarity: input.familiarity ?? [],
+    coarseExperience: input.experience ?? "advanced", familiarity: input.familiarity ?? [{
+      exerciseId: "dumbbell-romanian-deadlift", realizationId: null, status: "known" as const,
+    }],
     painContext: { regionIds: input.painRegions ?? [], limitationIds: [], confirmed: true,
       diagnosticClaimCount: 0 },
     assessmentReferences: input.assessment?.signals.map((signal) =>
@@ -99,16 +102,17 @@ function stage<T>(stages: readonly OwnerPipelineStageArtifact[], name: OwnerPipe
 
 describe("controlled owner Get stronger program scope and projection truth", () => {
   it("freezes the live-equivalent whole-person trace without filling availability", () => {
-    const { result } = fixture({ id: "live-equivalent", days: 5 });
+    const { result } = fixture({ id: "live-equivalent", days: 5, familiarity: [] });
 
-    expect(result.status, JSON.stringify(result.unresolvedFacts)).toBe("complete");
+    expect(result.status, JSON.stringify(result.unresolvedFacts)).toBe("blocked");
     expect(result.approvalAllowed).toBe(false);
-    expect(result.unresolvedFacts.some((fact) =>
-      fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
+    expect(result.unresolvedFacts).toContain("OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:hinge-control");
+    expect(result.unresolvedFacts.filter((fact) => fact.endsWith("_LOADING_CAPABILITY"))).toHaveLength(4);
     const intentResult = stage<ProductionWeeklyIntentPlanningResult>(result.stages, "week_intent");
     const intent = intentResult.weeklyIntent!;
     expect(intent.objectives.map((objective) => [...objective.target.targetMovementRoles].sort())).toEqual([
-      ["single_leg", "squat"], ["hinge"], ["horizontal_push"], ["horizontal_pull"],
+      ["knee_dominant", "squat"], ["hinge"], ["horizontal_push", "vertical_push"],
+      ["horizontal_pull", "vertical_pull"],
     ]);
     const week = stage<{ readonly weekPlan: ProductionWeekAllocationPlan;
       readonly topologyEvidence: OwnerWeekTopologyEvidence }>(result.stages, "week_allocation");
@@ -120,17 +124,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
         entry.weeklyObjectiveId === objective.objectiveId))).toHaveLength(2);
     }
 
-    expect(result.projection?.sessions).toHaveLength(4);
-    const exerciseIds = result.projection!.sessions.map((session) =>
-      session.exerciseAssignments.map((assignment) => assignment.exerciseId).sort());
-    expect(exerciseIds[0]).toEqual(["dumbbell-romanian-deadlift", "goblet-squat"]);
-    expect(exerciseIds[1]).toEqual(["chest-supported-dumbbell-row", "dumbbell-bench-press"]);
-    expect(exerciseIds[2]).toEqual(exerciseIds[0]);
-    expect(exerciseIds[3]).toEqual(exerciseIds[1]);
-    expect(result.projection!.sessions.every((session) =>
-      session.practiceModes.join("|") === "full|lighter|recovery")).toBe(true);
-    expect(result.projection!.sessions.every((session) =>
-      session.availableMinutes === 90 && session.calculatedDuration?.noInventedTime)).toBe(true);
+    expect(result.projection).toBeNull();
   });
 
   it("preserves every ordered Prescription block as readable, calibration-honest display truth", () => {
@@ -166,6 +160,40 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     const legacyAssignment = { ...preview.productProjection.sessions[0]!.exerciseAssignments[0]!,
       doseBlocks: undefined };
     expect(resolveOwnerExerciseDoseBlocks(preview, legacyAssignment)).toHaveLength(2);
+  });
+
+  it("preserves Product execution requirements through Week, Session Intent, and Gate 13", () => {
+    const { result } = fixture({ id: "execution-requirement-lineage" });
+    expect(result.status, result.unresolvedFacts.join(",")).toBe("complete");
+    const mapping = stage<{ readonly weeklyResponsibilityPolicy: {
+      readonly priorities: readonly { readonly priorityId: string; readonly executionRequirements?: unknown }[];
+    } }>(result.stages, "product_mapping");
+    const intent = stage<ProductionWeeklyIntentPlanningResult>(result.stages, "week_intent").weeklyIntent!;
+    const week = stage<{ readonly weekPlan: ProductionWeekAllocationPlan }>(result.stages, "week_allocation").weekPlan;
+    const planning = stage<readonly { readonly sessionIntent: {
+      readonly needs: readonly { readonly plannerProvenance?: {
+        readonly weeklyExecutionRequirements?: readonly { readonly objectiveId: string }[];
+      } }[];
+    } }[]>(result.stages, "session_intent");
+    const gate13 = stage<{ readonly objectiveRealizationTraces: readonly {
+      readonly objectiveId: string;
+      readonly executionRequirements: unknown;
+      readonly executionRequirementReasonCodes: readonly string[];
+    }[] }>(result.stages, "gate_13");
+
+    expect(mapping.weeklyResponsibilityPolicy.priorities.every((priority) =>
+      priority.executionRequirements)).toBe(true);
+    expect(intent.objectives.every((objective) => objective.executionRequirements?.provenance.policyRef ===
+      "PRODUCT_GET_STRONGER_DEVELOP_WEEKLY_RESPONSIBILITY_POLICY_V1@1.0.0")).toBe(true);
+    expect(week.reservations.every((reservation) => reservation.allocatedObjectives.every((objective) =>
+      objective.executionRequirements))).toBe(true);
+    expect(planning.every((entry) => entry.sessionIntent.needs.every((need) =>
+      need.plannerProvenance?.weeklyExecutionRequirements?.length))).toBe(true);
+    expect(gate13.objectiveRealizationTraces.every((trace) => trace.executionRequirements &&
+      trace.executionRequirementReasonCodes.every((reason) =>
+        reason === "WEEKLY_EXECUTION_LOADING_UNRESOLVED"))).toBe(true);
+    expect(result.unresolvedFacts.filter((fact) => fact.endsWith("_LOADING_CAPABILITY"))).toHaveLength(4);
+    expect(result.unresolvedFacts).toContain("OWNER_REQUIRED_LOADING_COMPLETENESS_SATISFIED");
   });
 
   it("maps only explicitly confirmed equipment capabilities", () => {
@@ -244,12 +272,17 @@ describe("controlled owner Get stronger program scope and projection truth", () 
 
   it("uses explicit causal completeness invariants and fails each mutation closed", () => {
     const complete = {
+      productPolicyComplete: true,
       weeklyResponsibilitiesComplete: true, allocationCoverageComplete: true,
       sessionNeedCoverageComplete: true, assignmentCoverageComplete: true,
       developmentalPrescriptionCoverageComplete: true, projectionCoverageComplete: true,
       availabilityNotAutomaticallyFilled: true, exactEquipmentCapabilityPreserved: true,
       supportingWorkCarriesNoDevelopmentalCredit: true, durationProjectionTruthful: true,
       topologyQualitySatisfied: true,
+      executionRequirementLineageComplete: true,
+      postPrescriptionExecutionRequirementsPreserved: true,
+      requiredLoadingCompletenessSatisfied: true,
+      advancedTruthPreserved: true,
     } as const;
     expect(evaluateOwnerProgramSemanticCompleteness(complete)).toMatchObject({ approvalAllowed: true,
       reasonCodes: [] });
@@ -262,7 +295,16 @@ describe("controlled owner Get stronger program scope and projection truth", () 
 
   it("keeps distributed Week composition as the unchanged default", () => {
     const profile = fixture({ id: "week-composer-default" }).profile;
-    const canonicalPriorities = buildOwnerGetStrongerWeeklyPriorities(profile);
+    const canonicalPriorities = applyProductGetStrongerDevelopWeeklyResponsibilityPolicyV1({
+      productLabel: "get_stronger", trainingMode: "develop", outcomeGoal: "strength",
+      sourceProductRevisionId: "product-revision:frozen",
+      goalFactId: `owner-profile:${profile.revisionId}:primary-goal`,
+      modeFactId: `owner-profile:${profile.revisionId}:training-mode`,
+      experience: profile.coarseExperience,
+      experienceFactId: `owner-profile:${profile.revisionId}:experience`,
+      availableOpportunityCount: profile.sessionOpportunities.length,
+      separatePlaneFacts: [], additionalResponsibilityFacts: [], loadingEvidence: [],
+    }).priorities;
     const intent = planSupportedPurposeWeeklyIntentV1_1({ policy: PRODUCTION_WEEK_POLICY_V2,
       intentId: "legacy-week-intent", athleteId: profile.userId, outcomeGoal: "strength",
       priorities: canonicalPriorities.map((priority) => ({ ...priority,
@@ -321,6 +363,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     expect(painResults.every((result) => result.approvalAllowed === false)).toBe(true);
 
     const familiar = fixture({ id: "familiar", familiarity: [{ exerciseId: "dumbbell-bench-press",
+      realizationId: null, status: "known" }, { exerciseId: "dumbbell-romanian-deadlift",
       realizationId: null, status: "known" }], continuityReferences: ["history:opaque-owner-reference"] });
     const repeated = familiar.result.projection!.sessions.map((session) =>
       session.exerciseAssignments.map((assignment) => assignment.exerciseId).sort());

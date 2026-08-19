@@ -8,6 +8,10 @@ import type {
 } from "../domain/exercise";
 import type { JointStressTag, MovementRole, MuscleGroup } from "../domain/primitives";
 import type { SessionIntent, SessionSection, TrainingRole } from "../domain/session";
+import type {
+  ProductionLoadingCompletenessState,
+  ProductionWeeklyExecutionRequirements,
+} from "../domain/weeklyExecutionRequirements";
 import type { ExerciseDose, ExerciseDoseMode } from "../prescription/dose";
 import type {
   PrescriptionDurationInterval,
@@ -323,6 +327,10 @@ export interface ProductionWeeklyObjectivePrescribedRealizationTrace {
   readonly softMaximumState: ProductionObjectiveThresholdState;
   readonly dosePolicyState: ProductionWeekObjectiveSnapshot["dosePolicyState"];
   readonly spacingState: ProductionPostPrescriptionWeekSpacingResult;
+  readonly executionRequirements: ProductionWeeklyExecutionRequirements | null;
+  readonly executionRequirementsSatisfied: boolean;
+  readonly executionRequirementReasonCodes: readonly string[];
+  readonly loadingCompletenessState: ProductionLoadingCompletenessState | "not_applicable";
   readonly status: ProductionObjectivePrescribedRealizationStatus;
   readonly unresolvedRefs: readonly string[];
   readonly provenance: readonly string[];
