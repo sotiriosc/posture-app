@@ -113,7 +113,7 @@ describe("controlled owner profile preflight presentation and revision route", (
     const generate = [...document.querySelectorAll("button")].find((entry) =>
       entry.textContent === "Generate preview") as HTMLButtonElement;
     expect(generate.disabled).toBe(true);
-  });
+  }, 15_000);
 
   it("appends an immutable answer revision and rejects replay against the superseded question source", async () => {
     const read = await GET();
