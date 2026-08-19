@@ -77,6 +77,28 @@ describe("controlled owner delivery pure contracts", () => {
     expect(OWNER_DELIVERY_STATE_MACHINE.transitions).toHaveLength(23);
   });
 
+  it("lets a confirmed empty equipment snapshot reach progressive preflight", () => {
+    const profile = buildOwnerProfileRevision({ basedOnRevisionId: null, userId: "owner-preflight-bootstrap",
+      primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
+      sessionOpportunities: [
+        { opportunityId: "opportunity-1", order: 1, minutes: 45 },
+        { opportunityId: "opportunity-2", order: 2, minutes: 45 },
+      ], sessionMinutes: { status: "known", minutes: 45 }, equipmentCapabilitySnapshot: {
+        environment: "commercial_gym", capabilityIds: [], confirmed: true,
+        sourceRevision: "equipment:preflight-bootstrap",
+      }, coarseExperience: "advanced", familiarity: [],
+      painContext: { regionIds: [], limitationIds: [], confirmed: true, diagnosticClaimCount: 0 },
+      assessmentReferences: [], trainingSafety: "clear", continuityReferences: [], evaluationTime: NOW,
+      provenance: { source: "owner_confirmation", sourceRefs: ["profile:preflight-bootstrap"] },
+      reviewState: "confirmed", createdAt: NOW });
+
+    expect(evaluateOwnerProfileReadiness(profile)).toMatchObject({
+      status: "ready_for_preview",
+      previewAllowed: true,
+      reasonCodes: [],
+    });
+  });
+
   it.each([1, 7] as const)("keeps legacy %s-day profiles readable but requires reconfirmation", (days) => {
     const current = buildOwnerProfileRevision({ basedOnRevisionId: null, userId: "legacy-owner",
       primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,

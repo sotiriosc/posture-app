@@ -29,14 +29,10 @@ function OwnerProfilePresentationFixture() {
         <select id="owner-environment" defaultValue="commercial_gym">
           <option value="commercial_gym">Commercial gym</option>
         </select></div>
-      <fieldset><legend className={styles.legend}>Confirmed capabilities</legend>
-        <div className={styles.choices}>
-          <label className={styles.check}><input type="checkbox" defaultChecked /><span>commercial gym</span></label>
-          <label className={styles.check}><input type="checkbox" defaultChecked /><span>dumbbells</span></label>
-          <label className={styles.check}><input type="checkbox" defaultChecked /><span>adjustable bench</span></label>
-          <label className={styles.check}><input type="checkbox" /><span>pull up station</span></label>
-        </div>
-      </fieldset>
+      <div className={styles.equipmentFacts}><h3>Current confirmations</h3><ul>
+        <li>dumbbells</li><li>adjustable bench</li><li>dumbbell pair: Yes, confirmed</li>
+        <li>dumbbells maximum: 100 lb</li>
+      </ul></div>
     </section>
     <section className={styles.section}>
       <h2>Readiness</h2>
@@ -53,11 +49,26 @@ function OwnerProfilePresentationFixture() {
         <span>primary goal</span><span className={styles.status}>proposed</span>
       </li></ul>
     </section>
+    <section className={styles.section}>
+      <div className={styles.reviewHeading}><div><h2>Required review</h2>
+        <p className={styles.muted}>Required before preview</p></div><span className={styles.status}>1 current</span></div>
+      <div className={styles.reviewQuestions}><fieldset className={styles.reviewQuestion}>
+        <legend className={styles.legend}>Hinge and hip-extension strength</legend>
+        <p className={styles.questionPrompt}>Can you perform a hip hinge with a comfortable, controlled trunk position?</p>
+        <p className={styles.questionReason}>This is required before the current hinge candidate can be considered.</p>
+        <div className={styles.answerChoices}>{["Yes, confirmed", "No, unavailable", "Not sure",
+          "Not yet reviewed"].map((answer) => <label className={styles.radio} key={answer}>
+            <input type="radio" name="hinge-control" /><span>{answer}</span></label>)}</div>
+        <details className={styles.questionTechnical}><summary>Technical details</summary><dl><div>
+          <dt>Canonical fact</dt><dd className={styles.code}>hinge-control</dd></div></dl></details>
+      </fieldset></div>
+      <button className={styles.button} type="button">Save review answers</button>
+    </section>
     <label className={styles.check}><input type="checkbox" />
       <span>Enroll in controlled Praxis V2 owner delivery</span></label>
     <div className={styles.actions}>
       <button className={styles.button} type="button" disabled>Save profile</button>
-      <button className={`${styles.button} ${styles.buttonSecondary}`} type="button">Generate preview</button>
+      <button className={`${styles.button} ${styles.buttonSecondary}`} type="button" disabled>Generate preview</button>
     </div>
     <p aria-live="polite" className={styles.muted}>Profile revision saved.</p>
   </main>;

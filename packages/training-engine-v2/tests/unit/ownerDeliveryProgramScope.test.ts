@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
   PRODUCTION_WEEK_POLICY_V2,
+  REFERENCE_EXERCISES,
   buildOwnerEnrollmentRevision,
   buildOwnerEquipmentCapabilities,
   buildOwnerGenerationCommand,
+  buildOwnerPrerequisiteQuestion,
+  buildOwnerProfilePreflight,
   buildOwnerProfileRevision,
   buildOwnerProgramPreview,
   composeSupportedPurposeWeekV1_1,
@@ -12,6 +15,7 @@ import {
   planSupportedPurposeWeeklyIntentV1_1,
   resolveOwnerExerciseDoseBlocks,
   runControlledOwnerProductionPipeline,
+  applyOwnerProfilePreflightAnswers,
   type OwnerGetStrongerProfileRevision,
   type OwnerAvailableTrainingDays,
   type OwnerWeekTopologyEvidence,
@@ -36,6 +40,7 @@ function fixture(input: {
   readonly familiarity?: OwnerGetStrongerProfileRevision["familiarity"];
   readonly continuityReferences?: readonly string[];
   readonly assessment?: AssessmentState;
+  readonly hingeControlConfirmed?: boolean;
 } = {}) {
   const days = input.days ?? 2;
   const minutes = input.minutes === undefined ? 90 : input.minutes;
@@ -45,7 +50,7 @@ function fixture(input: {
     acceptedVersions: ["controlled-owner-delivery@1.0.0"],
     provenance: { source: "owner_confirmation", sourceRefs: ["frozen-owner-scope-fixture"] },
     createdAt: NOW });
-  const profile = buildOwnerProfileRevision({ userId, basedOnRevisionId: null,
+  const baseProfile = buildOwnerProfileRevision({ userId, basedOnRevisionId: null,
     primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: days,
     sessionOpportunities: Array.from({ length: days }, (_, index) => ({
       opportunityId: `owner-opportunity-${index + 1}`, order: index + 1, minutes,
@@ -66,6 +71,18 @@ function fixture(input: {
     continuityReferences: input.continuityReferences ?? [], evaluationTime: NOW,
     provenance: { source: "owner_confirmation", sourceRefs: ["frozen-owner-scope-fixture"] },
     reviewState: "confirmed", createdAt: NOW });
+  const hingeControlConfirmed = input.hingeControlConfirmed ?? true;
+  const prerequisite = REFERENCE_EXERCISES.find((entry) =>
+    entry.id === "dumbbell-romanian-deadlift")!.prerequisites[0]!;
+  const question = buildOwnerPrerequisiteQuestion({ profile: baseProfile, prerequisite,
+    sourceProductRevisionId: "product-revision:frozen",
+    engineVersion: "training-engine-v2@owner-scope-test",
+    responsibilityKey: "foundation:hinge_hip_extension",
+    exerciseId: "dumbbell-romanian-deadlift" });
+  const profile = hingeControlConfirmed ? applyOwnerProfilePreflightAnswers({ profile: baseProfile,
+    preflight: buildOwnerProfilePreflight({ profile: baseProfile, questions: [question], blockerCodes: [] }),
+    answers: [{ questionId: question.questionId, questionRevisionId: question.questionRevisionId,
+      answer: "yes" }], answeredAt: NOW }).profile! : baseProfile;
   const command = buildOwnerGenerationCommand({ userId, enrollmentRevisionId: enrollment.revisionId,
     profileRevisionId: profile.revisionId, sourceProductSnapshotId: "product-snapshot:frozen",
     sourceProductRevisionId: "product-revision:frozen", activeLegacyProgramRevisionId: "legacy-program:frozen",
@@ -102,12 +119,14 @@ function stage<T>(stages: readonly OwnerPipelineStageArtifact[], name: OwnerPipe
 
 describe("controlled owner Get stronger program scope and projection truth", () => {
   it("freezes the live-equivalent whole-person trace without filling availability", () => {
-    const { result } = fixture({ id: "live-equivalent", days: 5, familiarity: [] });
+    const { result } = fixture({ id: "live-equivalent", days: 5, familiarity: [],
+      hingeControlConfirmed: false });
 
     expect(result.status, JSON.stringify(result.unresolvedFacts)).toBe("blocked");
     expect(result.approvalAllowed).toBe(false);
     expect(result.unresolvedFacts).toContain("OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:hinge-control");
-    expect(result.unresolvedFacts.filter((fact) => fact.endsWith("_LOADING_CAPABILITY"))).toHaveLength(4);
+    expect(result.unresolvedFacts.filter((fact) =>
+      fact.startsWith("owner-query:loading-suitability:"))).toHaveLength(4);
     const intentResult = stage<ProductionWeeklyIntentPlanningResult>(result.stages, "week_intent");
     const intent = intentResult.weeklyIntent!;
     expect(intent.objectives.map((objective) => [...objective.target.targetMovementRoles].sort())).toEqual([
@@ -192,7 +211,8 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     expect(gate13.objectiveRealizationTraces.every((trace) => trace.executionRequirements &&
       trace.executionRequirementReasonCodes.every((reason) =>
         reason === "WEEKLY_EXECUTION_LOADING_UNRESOLVED"))).toBe(true);
-    expect(result.unresolvedFacts.filter((fact) => fact.endsWith("_LOADING_CAPABILITY"))).toHaveLength(4);
+    expect(result.unresolvedFacts.filter((fact) =>
+      fact.startsWith("owner-query:loading-suitability:"))).toHaveLength(4);
     expect(result.unresolvedFacts).toContain("OWNER_REQUIRED_LOADING_COMPLETENESS_SATISFIED");
   });
 
@@ -202,7 +222,7 @@ describe("controlled owner Get stronger program scope and projection truth", () 
       trainingSpace: { stableLoadedStandingSpace: false, loadedGait: { available: false } },
       bodyweight: { floorSpace: false, pullUpBar: false },
       bench: { types: ["adjustable"], stable: true },
-      dumbbells: { available: true, pairAvailable: true },
+      dumbbells: { available: true, pairAvailable: false },
       cables: { available: false, availableHeights: [] },
       bands: { types: [], anchors: [] }, machines: { availableMachineIds: [] } });
 

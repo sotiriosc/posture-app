@@ -5,6 +5,8 @@ import {
   buildOwnerProgramPreview,
   buildControlledOwnerPainAndInjuryState,
   CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS,
+  applyOwnerProfilePreflightAnswers,
+  type OwnerProfilePreflightAnswerSubmission,
   type OwnerPainContext,
   type ProposedOwnerImportFact,
 } from "@praxis/training-engine-v2";
@@ -19,6 +21,7 @@ import {
   loadControlledOwnerDeliveryMigrations,
   recordControlledOwnerSessionDraft,
   proposeOwnerImportsFromTrainingSnapshot,
+  preflightControlledOwnerGetStrongerProfile,
   resolveOwnerPreviewReadinessStatus,
   rollbackControlledOwnerProgram,
   reviseControlledOwnerSessionMode,
@@ -38,7 +41,8 @@ const gate = (mode: "preview" | "apply"): ControlledOwnerRequestGateResult => Ob
 async function fixture(input: { readonly mode: "preview" | "apply"; readonly knownMinutes: boolean;
   readonly assessmentReferences?: readonly string[]; readonly assessmentReport?: Record<string, unknown> | null;
   readonly capabilityIds?: readonly string[]; readonly painContext?: OwnerPainContext;
-  readonly proposedProductFacts?: readonly ProposedOwnerImportFact[] }) {
+  readonly proposedProductFacts?: readonly ProposedOwnerImportFact[];
+  readonly preflightPassLimit?: number }) {
   const enrollmentProfiles = createInMemoryOwnerEnrollmentProfileRepository();
   const delivery = createInMemoryOwnerDeliveryRepository();
   const enrollment = buildOwnerEnrollmentRevision({ userId: USER_ID, basedOnRevisionId: null,
@@ -46,7 +50,7 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     explicitConsent: true, acceptedVersions: ["controlled-owner-delivery@1.0.0"],
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-consent"] }, createdAt: NOW });
   await enrollmentProfiles.appendEnrollment(enrollment);
-  const profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
+  let profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
     primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
     sessionOpportunities: [1, 2].map((order) => ({ opportunityId: `owner-opportunity-${order}`, order,
       minutes: input.knownMinutes ? 45 : null })),
@@ -64,6 +68,29 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-profile"] },
     reviewState: "confirmed", createdAt: NOW });
   await enrollmentProfiles.appendProfile(profile);
+  const source = { sourceProductSnapshotId: "product-snapshot:synthetic-1",
+    sourceProductRevisionId: "product-revision:synthetic-1",
+    activeLegacyProgramRevisionId: "legacy-program:synthetic-1",
+    assessmentReport: input.assessmentReport ?? null };
+  for (let pass = 0; pass < (input.preflightPassLimit ?? 12); pass += 1) {
+    const preflight = preflightControlledOwnerGetStrongerProfile({ profile,
+      enrollmentRevisionId: enrollment.revisionId, source,
+      proposedProductFacts: input.proposedProductFacts ?? [], evaluationTime: NOW,
+      engineVersion: "training-engine-v2@owner-1.0.0",
+      policyVersions: CONTROLLED_OWNER_PRODUCTION_POLICY_VERSIONS }).preflight;
+    if (preflight.questions.length === 0) break;
+    const answers = preflight.questions.map((question): OwnerProfilePreflightAnswerSubmission =>
+      question.responseType === "load_ceiling"
+        ? { questionId: question.questionId, questionRevisionId: question.questionRevisionId,
+          answer: "provided", value: 50, unit: "kg" }
+        : { questionId: question.questionId, questionRevisionId: question.questionRevisionId,
+          answer: "yes" });
+    const answeredAt = new Date(Date.parse(NOW) + pass + 1).toISOString();
+    const revised = applyOwnerProfilePreflightAnswers({ profile, preflight, answers, answeredAt });
+    if (!revised.profile) break;
+    profile = revised.profile;
+    await enrollmentProfiles.appendProfile(profile);
+  }
   const context = { currentProductRevisionId: "product-revision:synthetic-1",
     currentLegacyProgramRevisionId: "legacy-program:synthetic-1",
     currentEquipmentSourceRevision: profile.equipmentCapabilitySnapshot.sourceRevision,
@@ -75,10 +102,7 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     idempotencyKey: `preview-${input.mode}-${input.knownMinutes}`,
     gate: async () => gate(input.mode), enrollmentProfiles, delivery,
     productImport: { loadProposedFacts: async () => input.proposedProductFacts ?? [] },
-    loadSourceContext: async () => ({ sourceProductSnapshotId: "product-snapshot:synthetic-1",
-      sourceProductRevisionId: context.currentProductRevisionId,
-      activeLegacyProgramRevisionId: context.currentLegacyProgramRevisionId,
-      assessmentReport: input.assessmentReport ?? null }) });
+    loadSourceContext: async () => source });
   return { generated, enrollmentProfiles, delivery, profile, context };
 }
 
@@ -118,9 +142,9 @@ describe("controlled owner genuine generation and application", () => {
     ]);
     expect(value.generated).toMatchObject({ productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
     expect(value.generated.preview).toMatchObject({ counterfactual: true, applied: false, stale: false,
-      readinessStatus: "blocked" });
-    expect(value.generated.preview?.unresolvedFacts).toContain(
-      "OWNER_CONFIRM_FOUNDATION_HINGE_HIP_EXTENSION_LOADING_CAPABILITY");
+      readinessStatus: "preview_only_unknown_duration" });
+    expect(value.generated.preview?.unresolvedFacts.some((fact) =>
+      fact.startsWith("owner-query:loading-suitability:"))).toBe(false);
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
       fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
     expect(JSON.stringify(value.generated.preview)).not.toContain("owner@example");
@@ -129,8 +153,21 @@ describe("controlled owner genuine generation and application", () => {
   it("permits explicit unknown duration preview but blocks approval on unresolved truth", async () => {
     const value = await fixture({ mode: "preview", knownMinutes: false });
     expect(value.generated.status, JSON.stringify(value.generated.reasonCodes)).toBe("generated");
-    expect(value.generated.preview?.readinessStatus).toBe("blocked");
+    expect(value.generated.preview?.readinessStatus).toBe("preview_only_unknown_duration");
     expect(value.generated.preview?.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
+  });
+
+  it("does not persist a preview while typed loading preflight remains unresolved", async () => {
+    const value = await fixture({ mode: "preview", knownMinutes: true, preflightPassLimit: 3 });
+
+    expect(value.generated).toMatchObject({ status: "generation_blocked", preview: null,
+      productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
+    expect(value.generated.reasonCodes).toEqual(expect.arrayContaining([
+      "owner-query:loading-suitability:foundation:hinge_hip_extension",
+      "owner-query:loading-suitability:foundation:knee_dominant_squat",
+      "owner-query:loading-suitability:foundation:upper_pull",
+      "owner-query:loading-suitability:foundation:upper_push",
+    ]));
   });
 
   it("carries a confirmed structured Product assessment into causal owner preparation", async () => {

@@ -69,6 +69,10 @@
   color: var(--owner-text, inherit); }
 .check input { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--owner-accent, auto); }
 .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.equipmentFacts { margin-top: 18px; border-top: 1px solid var(--owner-border); padding-top: 14px; }
+.equipmentFacts h3 { margin: 0 0 8px; color: var(--owner-heading); font-size: 14px; letter-spacing: 0; }
+.equipmentFacts ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding-left: 20px; }
+.equipmentFacts p { margin: 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 22px; }
 .button { min-height: 44px; border: 1px solid var(--owner-button-border, #171717); border-radius: 4px;
   padding: 9px 15px; background: var(--owner-button-surface, #171717); color: var(--owner-button-text, #fff);
@@ -85,6 +89,30 @@
   outline: 2px solid var(--owner-accent);
   outline-offset: 3px;
   box-shadow: var(--focus-ring);
+}
+.reviewHeading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.reviewHeading h2, .reviewHeading p { margin: 0; }
+.reviewQuestions { display: grid; gap: 14px; margin: 18px 0; }
+.shell:not(.previewShell) .reviewQuestion { margin: 0; padding: 18px; }
+.questionPrompt { margin: 0; color: var(--owner-heading); font-size: 16px; font-weight: 750; line-height: 1.45; }
+.questionReason { margin: 7px 0 16px; color: var(--owner-muted); font-size: 14px; line-height: 1.5; }
+.answerChoices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; }
+.radio { display: flex; align-items: flex-start; gap: 9px; min-width: 0; min-height: 38px; color: var(--owner-text); }
+.radio input { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; accent-color: var(--owner-accent); }
+.ceilingAnswer { display: grid; gap: 14px; }
+.ceilingValue { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 16px; }
+.shell:not(.previewShell) .unitChoice { display: flex; gap: 14px; min-width: 128px; margin: 0;
+  border: 0; padding: 0 0 3px; }
+.unitChoice legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.questionTechnical { margin-top: 12px; border-top: 1px solid var(--owner-border); padding-top: 10px; }
+.questionTechnical summary { min-height: 36px; cursor: pointer; color: var(--owner-text); font-size: 13px;
+  font-weight: 700; }
+.questionTechnical dl { display: grid; gap: 8px; margin: 4px 0 0; }
+.questionTechnical dl > div { display: grid; grid-template-columns: minmax(110px, 150px) minmax(0, 1fr); gap: 12px; }
+.questionTechnical dt { color: var(--owner-muted); font-size: 12px; font-weight: 700; }
+.questionTechnical dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.shell:not(.previewShell) :is(.radio input, .questionTechnical summary):focus-visible {
+  outline: 2px solid var(--owner-accent); outline-offset: 3px; box-shadow: var(--focus-ring);
 }
 .facts { margin: 0; padding: 0; list-style: none; }
 .fact { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(120px, auto); gap: 16px; padding: 10px 0;
@@ -316,6 +344,9 @@
   .grid, .choices { grid-template-columns: 1fr; }
   .fact, .exercise { grid-template-columns: 1fr; gap: 5px; }
   .button { width: 100%; }
+  .reviewHeading, .ceilingValue { display: grid; }
+  .answerChoices { grid-template-columns: 1fr; }
+  .questionTechnical dl > div { grid-template-columns: 1fr; gap: 2px; }
 }
 
 @media (max-width: 900px) {

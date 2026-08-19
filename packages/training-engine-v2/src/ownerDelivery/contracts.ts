@@ -1,3 +1,5 @@
+import type { EquipmentCapabilityKey, MachineId } from "../domain/equipment";
+import type { ExercisePrerequisiteType } from "../domain/exercise";
 import { deterministicToken, explicitIsoTime, sameSemanticValue, stableId, uniqueSorted } from
   "../prescription/compiler/utilities";
 
@@ -24,6 +26,8 @@ export const OWNER_DELIVERY_CONTRACTS = Object.freeze({
   modePolicy: contract("CONTROLLED_OWNER_DELIVERY_MODE_POLICY"),
   eligibilityResult: contract("CONTROLLED_OWNER_ELIGIBILITY_RESULT"),
   profileRevision: contract("CONTROLLED_OWNER_PROFILE_REVISION"),
+  profilePreflight: contract("CONTROLLED_OWNER_PROFILE_PREFLIGHT"),
+  profilePreflightAnswer: contract("CONTROLLED_OWNER_PROFILE_PREFLIGHT_ANSWER"),
   generationCommand: contract("CONTROLLED_OWNER_GENERATION_COMMAND"),
   previewRepository: contract("CONTROLLED_OWNER_PREVIEW_REPOSITORY"),
   approvalRepository: contract("CONTROLLED_OWNER_APPROVAL_REPOSITORY"),
@@ -113,12 +117,74 @@ export interface OwnerEquipmentCapabilitySnapshot {
   readonly capabilityIds: readonly string[];
   readonly confirmed: boolean;
   readonly sourceRevision: string;
+  readonly availabilityConfirmations?: readonly OwnerEquipmentAvailabilityConfirmation[];
+  readonly loadCeilings?: readonly OwnerEquipmentLoadCeiling[];
 }
 
 export interface OwnerFamiliarityReference {
   readonly exerciseId: string;
   readonly realizationId: string | null;
   readonly status: "known" | "unknown" | "calibration_required";
+  readonly answer?: OwnerConfirmationAnswer;
+  readonly questionId?: string;
+  readonly questionRevisionId?: string;
+  readonly confirmationTime?: string | null;
+  readonly provenance?: OwnerRecordProvenance;
+}
+
+export const OWNER_CONFIRMATION_ANSWERS = Object.freeze([
+  "yes",
+  "no",
+  "not_sure",
+  "not_reviewed",
+] as const);
+
+export type OwnerConfirmationAnswer = (typeof OWNER_CONFIRMATION_ANSWERS)[number];
+export type OwnerLoadUnit = "kg" | "lb";
+
+export interface OwnerPrerequisiteConfirmation {
+  readonly prerequisiteId: string;
+  readonly prerequisiteType: ExercisePrerequisiteType;
+  readonly answer: OwnerConfirmationAnswer;
+  readonly questionId: string;
+  readonly questionRevisionId: string;
+  readonly sourceRevision: string;
+  readonly confirmationTime: string | null;
+  readonly provenance: OwnerRecordProvenance;
+}
+
+export interface OwnerEquipmentAvailabilityConfirmation {
+  readonly capabilityId: EquipmentCapabilityKey | `machine:${MachineId}`;
+  readonly answer: OwnerConfirmationAnswer;
+  readonly questionId: string;
+  readonly questionRevisionId: string;
+  readonly sourceRevision: string;
+  readonly confirmationTime: string | null;
+  readonly provenance: OwnerRecordProvenance;
+}
+
+export interface OwnerEquipmentLoadCeiling {
+  readonly equipmentId: "dumbbells" | "barbell";
+  readonly status: "provided" | "unavailable" | "not_sure" | "not_reviewed";
+  readonly enteredValue: number | null;
+  readonly enteredUnit: OwnerLoadUnit | null;
+  readonly normalizedKilograms: number | null;
+  readonly questionId: string;
+  readonly questionRevisionId: string;
+  readonly sourceRevision: string;
+  readonly confirmationTime: string | null;
+  readonly provenance: OwnerRecordProvenance;
+}
+
+export interface OwnerLoadingSuitabilityConfirmation {
+  readonly responsibilityKey: string;
+  readonly exerciseId: string;
+  readonly answer: OwnerConfirmationAnswer;
+  readonly questionId: string;
+  readonly questionRevisionId: string;
+  readonly sourceRevision: string;
+  readonly confirmationTime: string | null;
+  readonly provenance: OwnerRecordProvenance;
 }
 
 export interface OwnerPainContext {
@@ -146,6 +212,8 @@ export interface OwnerGetStrongerProfileRevision {
   readonly equipmentCapabilitySnapshot: OwnerEquipmentCapabilitySnapshot;
   readonly coarseExperience: "beginner" | "intermediate" | "advanced";
   readonly familiarity: readonly OwnerFamiliarityReference[];
+  readonly prerequisiteConfirmations?: readonly OwnerPrerequisiteConfirmation[];
+  readonly loadingSuitabilityConfirmations?: readonly OwnerLoadingSuitabilityConfirmation[];
   readonly painContext: OwnerPainContext;
   readonly assessmentReferences: readonly string[];
   readonly trainingSafety: OwnerTrainingSafetyState;
@@ -567,10 +635,37 @@ export function buildOwnerProfileRevision(input: Omit<OwnerGetStrongerProfileRev
     equipmentCapabilitySnapshot: Object.freeze({
       ...input.equipmentCapabilitySnapshot,
       capabilityIds: Object.freeze(uniqueSorted(input.equipmentCapabilitySnapshot.capabilityIds)),
+      ...(input.equipmentCapabilitySnapshot.availabilityConfirmations ? {
+        availabilityConfirmations: Object.freeze([...input.equipmentCapabilitySnapshot.availabilityConfirmations]
+          .map((entry) => Object.freeze({ ...entry, provenance: Object.freeze({ ...entry.provenance,
+            sourceRefs: Object.freeze(uniqueSorted(entry.provenance.sourceRefs)) }) }))
+          .sort((left, right) => left.capabilityId.localeCompare(right.capabilityId))),
+      } : {}),
+      ...(input.equipmentCapabilitySnapshot.loadCeilings ? {
+        loadCeilings: Object.freeze([...input.equipmentCapabilitySnapshot.loadCeilings]
+          .map((entry) => Object.freeze({ ...entry, provenance: Object.freeze({ ...entry.provenance,
+            sourceRefs: Object.freeze(uniqueSorted(entry.provenance.sourceRefs)) }) }))
+          .sort((left, right) => left.equipmentId.localeCompare(right.equipmentId))),
+      } : {}),
     }),
-    familiarity: Object.freeze([...input.familiarity].map((entry) => Object.freeze({ ...entry }))
+    familiarity: Object.freeze([...input.familiarity].map((entry) => Object.freeze({ ...entry,
+      ...(entry.provenance ? { provenance: Object.freeze({ ...entry.provenance,
+        sourceRefs: Object.freeze(uniqueSorted(entry.provenance.sourceRefs)) }) } : {}) }))
       .sort((left, right) => left.exerciseId.localeCompare(right.exerciseId) ||
         (left.realizationId ?? "").localeCompare(right.realizationId ?? ""))),
+    ...(input.prerequisiteConfirmations ? {
+      prerequisiteConfirmations: Object.freeze([...input.prerequisiteConfirmations]
+        .map((entry) => Object.freeze({ ...entry, provenance: Object.freeze({ ...entry.provenance,
+          sourceRefs: Object.freeze(uniqueSorted(entry.provenance.sourceRefs)) }) }))
+        .sort((left, right) => left.prerequisiteId.localeCompare(right.prerequisiteId))),
+    } : {}),
+    ...(input.loadingSuitabilityConfirmations ? {
+      loadingSuitabilityConfirmations: Object.freeze([...input.loadingSuitabilityConfirmations]
+        .map((entry) => Object.freeze({ ...entry, provenance: Object.freeze({ ...entry.provenance,
+          sourceRefs: Object.freeze(uniqueSorted(entry.provenance.sourceRefs)) }) }))
+        .sort((left, right) => left.responsibilityKey.localeCompare(right.responsibilityKey) ||
+          left.exerciseId.localeCompare(right.exerciseId))),
+    } : {}),
     painContext: Object.freeze({
       ...input.painContext,
       regionIds: Object.freeze(uniqueSorted(input.painContext.regionIds)),
@@ -602,8 +697,7 @@ export function evaluateOwnerProfileReadiness(profile: OwnerGetStrongerProfileRe
         profile.sessionOpportunities.length) {
     reasons.push("OWNER_PROFILE_DAYS_OPPORTUNITIES_INVALID");
   }
-  if (!profile.equipmentCapabilitySnapshot.confirmed ||
-      profile.equipmentCapabilitySnapshot.capabilityIds.length === 0) {
+  if (!profile.equipmentCapabilitySnapshot.confirmed) {
     reasons.push("OWNER_PROFILE_EXACT_EQUIPMENT_REQUIRED");
   }
   if (!profile.painContext.confirmed) reasons.push("OWNER_PROFILE_PAIN_CONTEXT_CONFIRMATION_REQUIRED");

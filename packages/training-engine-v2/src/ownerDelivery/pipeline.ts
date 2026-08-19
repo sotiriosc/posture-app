@@ -6,7 +6,14 @@ import { EMPTY_TRAINING_HISTORY } from "../domain/history";
 import { NO_PAIN_OR_INJURY, type PainAndInjuryState } from "../domain/painInjury";
 import { THREE_PHASE_FOUNDATION } from "../domain/phase";
 import type { AthleteProfile } from "../domain/athlete";
-import type { EquipmentCapabilities } from "../domain/equipment";
+import {
+  EQUIPMENT_CAPABILITY_KEYS,
+  MACHINE_IDS,
+  evaluateEquipmentRequirement,
+  type EquipmentCapabilities,
+  type EquipmentCapabilityKey,
+  type MachineId,
+} from "../domain/equipment";
 import type { ExerciseDefinition } from "../domain/exercise";
 import { BODY_REGIONS, type BodyRegion, type JointStressTag } from "../domain/primitives";
 import type { CurrentSessionEquipment } from "../domain/sessionPlanningDirective";
@@ -76,6 +83,20 @@ import {
   type OwnerProgramProjection,
   type ProposedOwnerImportFact,
 } from "./contracts";
+import {
+  buildOwnerEquipmentAvailabilityQuestion,
+  buildOwnerEquipmentCeilingQuestion,
+  buildOwnerLoadingEvidence,
+  buildOwnerLoadingSuitabilityQuestion,
+  buildOwnerPrerequisiteQuestion,
+  buildOwnerProfilePreflight,
+  currentOwnerEquipmentAvailabilityAnswer,
+  currentOwnerEquipmentLoadCeiling,
+  currentOwnerLoadingSuitabilityConfirmation,
+  ownerSatisfiedPrerequisiteIds,
+  type OwnerProfilePreflight,
+  type OwnerProfilePreflightQuestion,
+} from "./preflight";
 import { projectOwnerPrescriptionDoseBlocks } from "./projection";
 import {
   buildOwnerGetStrongerTopologyPolicy,
@@ -128,6 +149,122 @@ interface SessionExecution {
   readonly sequence: Sequence;
 }
 
+class OwnerPipelinePreflightError extends Error {
+  readonly questions: readonly OwnerProfilePreflightQuestion[];
+  readonly blockerCodes: readonly string[];
+
+  constructor(code: string, questions: readonly OwnerProfilePreflightQuestion[],
+    blockerCodes: readonly string[]) {
+    super(code);
+    this.name = "OwnerPipelinePreflightError";
+    this.questions = questions;
+    this.blockerCodes = blockerCodes;
+  }
+}
+
+function responsibilityKeyForNeed(input: {
+  readonly needId: string;
+  readonly intent: WeeklyIntent;
+  readonly sessionIntent: NonNullable<Planning["sessionIntent"]>;
+  readonly policy: ProductGetStrongerDevelopWeeklyPolicyResult;
+}): string | null {
+  const need = input.sessionIntent.needs.find((entry) => entry.id === input.needId);
+  const objectiveIds = need?.plannerProvenance?.objectiveIds ?? [];
+  const objective = input.intent.objectives.find((entry) => objectiveIds.includes(entry.objectiveId));
+  return input.policy.responsibilityTraces.find((trace) =>
+    objective?.sourcePriorityIds.includes(trace.priorityId))?.responsibilityKey ?? null;
+}
+
+const loadingPotentialRank = Object.freeze({ unknown: 0, low: 1, moderate: 2, high: 3 });
+
+function candidateQuestions(input: {
+  readonly pipelineInput: ControlledOwnerProductionPipelineInput;
+  readonly intent: WeeklyIntent;
+  readonly sessionIntent: NonNullable<Planning["sessionIntent"]>;
+  readonly candidates: Candidates;
+  readonly policy: ProductGetStrongerDevelopWeeklyPolicyResult;
+  readonly equipment: EquipmentCapabilities;
+}): { readonly questions: readonly OwnerProfilePreflightQuestion[];
+  readonly blockerCodes: readonly string[]; readonly prerequisiteIds: readonly string[] } {
+  const questions: OwnerProfilePreflightQuestion[] = [];
+  const blockerCodes: string[] = [];
+  const prerequisiteIds: string[] = [];
+  for (const need of input.sessionIntent.needs.filter((entry) => entry.priority === "required" &&
+    (input.candidates[entry.id]?.rankedCandidates.length ?? 0) === 0)) {
+    const result = input.candidates[need.id];
+    const responsibilityKey = responsibilityKeyForNeed({ needId: need.id, intent: input.intent,
+      sessionIntent: input.sessionIntent, policy: input.policy }) ?? "required:unmapped";
+    const recoverable = result?.hardRejectedCandidates.filter((candidate) =>
+      candidate.eligibility.rejectionReasons.length > 0 &&
+      candidate.eligibility.rejectionReasons.every((reason) =>
+        reason.code === "CAPABILITY_MISSING" || reason.code === "SETUP_IMPOSSIBLE" ||
+        reason.code === "EQUIPMENT_UNAVAILABLE")) ?? [];
+    const selected = [...recoverable].sort((left, right) =>
+      loadingPotentialRank[right.exercise.loading.loadingPotential] -
+        loadingPotentialRank[left.exercise.loading.loadingPotential] ||
+      left.exercise.id.localeCompare(right.exercise.id))[0];
+    if (!selected) {
+      const contradicted = (input.pipelineInput.profile.loadingSuitabilityConfirmations ?? []).filter((entry) =>
+        entry.responsibilityKey === responsibilityKey &&
+        currentOwnerLoadingSuitabilityConfirmation({ profile: input.pipelineInput.profile,
+          sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+          engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey,
+          exerciseId: entry.exerciseId })?.answer === "no");
+      blockerCodes.push(contradicted.length > 0
+        ? `OWNER_REQUIRED_LOADING_INSUFFICIENT:${responsibilityKey}:${contradicted.map((entry) =>
+          entry.exerciseId).sort().join("|")}`
+        : `OWNER_REQUIRED_RESPONSIBILITY_NO_LEGAL_REALIZATION:${responsibilityKey}`);
+      continue;
+    }
+    for (const prerequisite of selected.exercise.prerequisites) {
+      const missing = selected.eligibility.rejectionReasons.some((reason) =>
+        (reason.code === "CAPABILITY_MISSING" || reason.code === "SETUP_IMPOSSIBLE") &&
+        reason.evidence.includes(prerequisite.id));
+      if (!missing) continue;
+      prerequisiteIds.push(prerequisite.id);
+      const question = buildOwnerPrerequisiteQuestion({ profile: input.pipelineInput.profile, prerequisite,
+        sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+        engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey,
+        exerciseId: selected.exercise.id });
+      questions.push(question);
+      if (question.currentAnswer === "no") {
+        blockerCodes.push(`OWNER_REQUIRED_CANDIDATE_CAPABILITY_DECLINED:${prerequisite.id}`);
+      } else if (question.currentAnswer === "not_sure" || question.currentAnswer === "not_reviewed") {
+        blockerCodes.push(`OWNER_REQUIRED_CANDIDATE_CAPABILITY_NOT_CONFIRMED:${prerequisite.id}`);
+      }
+    }
+    for (const requirement of selected.exercise.equipmentRequirements) {
+      const evaluation = evaluateEquipmentRequirement(input.equipment, requirement);
+      if (evaluation.satisfied) continue;
+      const missingChecks = evaluation.trace.checks.filter((check) => !check.available);
+      const checks = [
+        ...missingChecks.filter((check) => check.requirementKind === "all_of" ||
+          check.requirementKind === "machine_id"),
+        ...missingChecks.filter((check) => check.requirementKind === "one_of" ||
+          check.requirementKind === "one_of_machine_id").slice(0, 1),
+      ];
+      for (const check of checks) {
+        const capabilityId = check.capability.startsWith("machine:") &&
+          MACHINE_IDS.includes(check.capability.slice("machine:".length) as MachineId)
+          ? check.capability as `machine:${MachineId}`
+          : EQUIPMENT_CAPABILITY_KEYS.includes(check.capability as EquipmentCapabilityKey)
+            ? check.capability as EquipmentCapabilityKey : null;
+        if (!capabilityId) continue;
+        const question = buildOwnerEquipmentAvailabilityQuestion({ profile: input.pipelineInput.profile,
+          capabilityId, sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+          engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey,
+          exerciseId: selected.exercise.id });
+        questions.push(question);
+        if (question.currentAnswer === "no") {
+          blockerCodes.push(`OWNER_REQUIRED_CANDIDATE_EQUIPMENT_UNAVAILABLE:${capabilityId}`);
+        }
+      }
+    }
+  }
+  return Object.freeze({ questions: Object.freeze(questions), blockerCodes: uniqueSorted(blockerCodes),
+    prerequisiteIds: uniqueSorted(prerequisiteIds) });
+}
+
 export interface ControlledOwnerAssessmentHandoff {
   readonly assessment: AssessmentState;
   readonly sourceProductRevisionId: string;
@@ -163,6 +300,7 @@ export interface ControlledOwnerProductionPipelineResult {
   readonly stages: readonly OwnerPipelineStageArtifact[];
   readonly projection: OwnerProgramProjection | null;
   readonly unresolvedFacts: readonly string[];
+  readonly preflight: OwnerProfilePreflight;
   readonly genuineProductionStageCount: number;
   readonly productShadowCallCount: 0;
   readonly legacyGenerateProgramCallCount: 0;
@@ -236,27 +374,57 @@ function artifact(stage: OwnerPipelineStageArtifact["stage"], productionKernel: 
 
 export function buildOwnerEquipmentCapabilities(profile: OwnerGetStrongerProfileRevision): EquipmentCapabilities {
   const ids = new Set(profile.equipmentCapabilitySnapshot.capabilityIds);
-  const bodyweight = ids.has("bodyweight");
-  const dumbbells = ids.has("dumbbells");
-  const barbellRack = ids.has("barbell_rack");
-  const adjustableBench = ids.has("adjustable_bench");
-  const cables = ids.has("cables");
-  const wall = ids.has("wall");
+  const available = (id: EquipmentCapabilityKey, legacy = false) => {
+    const answer = currentOwnerEquipmentAvailabilityAnswer(profile, id);
+    return answer ? answer === "yes" : ids.has(id) || legacy;
+  };
+  const bodyweight = available("bodyweight");
+  const floorSpace = available("floor_space", bodyweight);
+  const dumbbells = available("dumbbells");
+  const dumbbellPair = available("dumbbell_pair");
+  const barbell = available("barbell", ids.has("barbell_rack"));
+  const rack = available("squat_rack", ids.has("barbell_rack"));
+  const adjustableBench = available("adjustable_bench");
+  const flatBench = available("flat_bench");
+  const cables = available("cable_stack", ids.has("cables"));
+  const wall = available("wall");
+  const dumbbellCeilingValue = currentOwnerEquipmentLoadCeiling(profile, "dumbbells")?.normalizedKilograms;
+  const barbellCeilingValue = currentOwnerEquipmentLoadCeiling(profile, "barbell")?.normalizedKilograms;
+  const dumbbellCeiling = typeof dumbbellCeilingValue === "number" ? dumbbellCeilingValue : undefined;
+  const barbellCeiling = typeof barbellCeilingValue === "number" ? barbellCeilingValue : undefined;
+  const machineIds = MACHINE_IDS.filter((machineId) =>
+    currentOwnerEquipmentAvailabilityAnswer(profile, `machine:${machineId}`) === "yes");
+  const cableHeights = (["low", "mid", "high"] as const).filter((height) =>
+    available(`cable_anchor_${height}`));
+  const bandTypes = Object.freeze([
+    ...(available("loop_band") ? ["loop" as const] : []),
+    ...(available("tube_band") ? ["tube_handles" as const] : []),
+  ]);
+  const bandAnchors = (["low", "mid", "high"] as const).filter((height) =>
+    available(`band_anchor_${height}`)).map((height) => Object.freeze({ height, stableFor: "moderate" as const }));
+  const supportSurfaces = Object.freeze([
+    ...(available("box") ? ["box" as const] : []),
+    ...(wall ? ["wall" as const] : []),
+  ]);
   return Object.freeze({
     environment: profile.equipmentCapabilitySnapshot.environment === "commercial_gym" ?
       "commercial_gym" : "home",
-    trainingSpace: Object.freeze({ stableLoadedStandingSpace: ids.has("stable_loaded_standing_space"),
-      loadedGait: Object.freeze({ available: false }) }),
-    bodyweight: Object.freeze({ floorSpace: bodyweight, wallAvailable: wall,
-      pullUpBar: ids.has("pull_up_station") }),
-    bench: Object.freeze({ types: Object.freeze(adjustableBench ? ["adjustable" as const] : []),
-      stable: adjustableBench }),
-    dumbbells: Object.freeze({ available: dumbbells, pairAvailable: dumbbells, adjustable: false }),
-    barbell: Object.freeze({ available: barbellRack, rackAvailable: barbellRack }),
-    cables: Object.freeze({ available: cables, adjustableHeight: false, availableHeights: Object.freeze([]) }),
-    bands: Object.freeze({ types: Object.freeze([]), anchors: Object.freeze([]) }),
-    machines: Object.freeze({ availableMachineIds: Object.freeze([]) }),
-    supportSurfaces: Object.freeze(wall ? ["wall" as const] : []),
+    trainingSpace: Object.freeze({ stableLoadedStandingSpace: available("stable_loaded_standing_space"),
+      loadedGait: Object.freeze({ available: available("loaded_gait_space") }) }),
+    bodyweight: Object.freeze({ floorSpace, wallAvailable: wall,
+      pullUpBar: available("pull_up_bar", ids.has("pull_up_station")) }),
+    bench: Object.freeze({ types: Object.freeze([...(flatBench ? ["flat" as const] : []),
+      ...(adjustableBench ? ["adjustable" as const] : [])]), stable: flatBench || adjustableBench }),
+    dumbbells: Object.freeze({ available: dumbbells, pairAvailable: dumbbells && dumbbellPair,
+      adjustable: false, ...(dumbbells && dumbbellPair && dumbbellCeiling !== undefined ? {
+        maxPairWeightKg: dumbbellCeiling } : {}) }),
+    barbell: Object.freeze({ available: barbell, rackAvailable: barbell && rack,
+      ...(barbell && rack && barbellCeiling !== undefined ? { maxLoadKg: barbellCeiling } : {}) }),
+    cables: Object.freeze({ available: cables, adjustableHeight: cableHeights.length > 1,
+      availableHeights: Object.freeze(cables ? cableHeights : []) }),
+    bands: Object.freeze({ types: bandTypes, anchors: Object.freeze(bandAnchors) }),
+    machines: Object.freeze({ availableMachineIds: Object.freeze(machineIds) }),
+    supportSurfaces,
   });
 }
 
@@ -298,17 +466,6 @@ function athleteFor(profile: OwnerGetStrongerProfileRevision): AthleteProfile {
     availability: Object.freeze({ daysPerWeek: profile.daysPerWeek,
       minutesPerSession: profile.sessionMinutes.status === "known" ? profile.sessionMinutes.minutes : 45,
       preferredTrainingDays: Object.freeze([]) }) });
-}
-
-function confirmedOwnerExercisePrerequisiteIds(
-  profile: OwnerGetStrongerProfileRevision,
-): readonly string[] {
-  const confirmedExerciseIds = new Set(profile.familiarity
-    .filter((reference) => reference.status === "known")
-    .map((reference) => reference.exerciseId));
-  return uniqueSorted(REFERENCE_EXERCISES
-    .filter((exercise) => confirmedExerciseIds.has(exercise.id))
-    .flatMap((exercise) => exercise.prerequisites.map((prerequisite) => prerequisite.id)));
 }
 
 function ownerStructuralCapacity(minutes: number | null): "condensed" | "standard" | "expanded" {
@@ -442,8 +599,74 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
   return compileSessionPrescription(compilerInput);
 }
 
+function loadingPreflightQuestions(input: {
+  readonly pipelineInput: ControlledOwnerProductionPipelineInput;
+  readonly intent: WeeklyIntent;
+  readonly policy: ProductGetStrongerDevelopWeeklyPolicyResult;
+  readonly sessions: readonly SessionExecution[];
+}): { readonly questions: readonly OwnerProfilePreflightQuestion[]; readonly blockerCodes: readonly string[] } {
+  const questions: OwnerProfilePreflightQuestion[] = [];
+  const blockers: string[] = [];
+  const equipment = buildOwnerEquipmentCapabilities(input.pipelineInput.profile);
+  for (const trace of input.policy.responsibilityTraces.filter((entry) =>
+    entry.classification === "foundation_required")) {
+    const objective = input.intent.objectives.find((entry) => entry.sourcePriorityIds.includes(trace.priorityId));
+    if (!objective) continue;
+    const assignment = input.sessions.flatMap((session) => {
+      const needIds = session.planning.sessionIntent!.needs.filter((need) =>
+        need.plannerProvenance?.objectiveIds.includes(objective.objectiveId)).map((need) => need.id);
+      return session.handoff.assignments.filter((entry) => entry.satisfiedNeedIds.some((id) => needIds.includes(id)) &&
+        (entry.section === "main" || entry.section === "accessory"));
+    })[0];
+    const exercise = assignment ? REFERENCE_EXERCISES.find((entry) => entry.id === assignment.exerciseId) : null;
+    if (!exercise) {
+      blockers.push(`OWNER_REQUIRED_RESPONSIBILITY_NO_SELECTED_REALIZATION:${trace.responsibilityKey}`);
+      continue;
+    }
+    const equipmentCapabilities = exercise.equipmentRequirements.flatMap((requirement) => [
+      ...(requirement.allOf ?? []), ...(requirement.oneOf ?? []),
+    ]);
+    const usesDumbbells = equipmentCapabilities.includes("dumbbells") ||
+      equipmentCapabilities.includes("dumbbell_pair");
+    const usesBarbell = equipmentCapabilities.includes("barbell") || equipmentCapabilities.includes("squat_rack");
+    if (usesDumbbells && !equipment.dumbbells.pairAvailable) {
+      questions.push(buildOwnerEquipmentAvailabilityQuestion({ profile: input.pipelineInput.profile,
+        capabilityId: "dumbbell_pair", sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+        engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey: trace.responsibilityKey,
+        exerciseId: exercise.id }));
+      continue;
+    }
+    if (usesDumbbells && equipment.dumbbells.maxPairWeightKg === undefined) {
+      questions.push(buildOwnerEquipmentCeilingQuestion({ profile: input.pipelineInput.profile,
+        equipmentId: "dumbbells", sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+        engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey: trace.responsibilityKey,
+        exerciseId: exercise.id }));
+      continue;
+    }
+    if (usesBarbell && equipment.barbell.maxLoadKg === undefined) {
+      questions.push(buildOwnerEquipmentCeilingQuestion({ profile: input.pipelineInput.profile,
+        equipmentId: "barbell", sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+        engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey: trace.responsibilityKey,
+        exerciseId: exercise.id }));
+      continue;
+    }
+    const question = buildOwnerLoadingSuitabilityQuestion({ profile: input.pipelineInput.profile,
+      sourceProductRevisionId: input.pipelineInput.command.sourceProductRevisionId,
+      engineVersion: input.pipelineInput.command.engineVersion, responsibilityKey: trace.responsibilityKey,
+      exerciseId: exercise.id });
+    if (question.currentAnswer !== "yes") questions.push(question);
+    if (question.currentAnswer === "no") {
+      blockers.push(`OWNER_REQUIRED_LOADING_INSUFFICIENT:${trace.responsibilityKey}:${exercise.id}`);
+    } else if (question.currentAnswer === "not_sure" || question.currentAnswer === "not_reviewed") {
+      blockers.push(`OWNER_REQUIRED_LOADING_NOT_CONFIRMED:${trace.responsibilityKey}:${exercise.id}`);
+    }
+  }
+  return Object.freeze({ questions: Object.freeze(questions), blockerCodes: uniqueSorted(blockers) });
+}
+
 function executeSessions(input: ControlledOwnerProductionPipelineInput, source: ProductionWeekPlanningSourceSnapshot,
-  intent: WeeklyIntent, weekPlan: WeekPlan): readonly SessionExecution[] {
+  intent: WeeklyIntent, weekPlan: WeekPlan,
+  responsibilityPolicy: ProductGetStrongerDevelopWeeklyPolicyResult): readonly SessionExecution[] {
   const equipment = buildOwnerEquipmentCapabilities(input.profile);
   const athlete = athleteFor(input.profile);
   const assessment = input.assessmentHandoff?.assessment ??
@@ -488,7 +711,9 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, source: 
           sourceRef: input.profile.equipmentCapabilitySnapshot.sourceRevision }) satisfies CurrentSessionEquipment,
         history: EMPTY_TRAINING_HISTORY,
         trainingResponseHistory: EMPTY_TRAINING_HISTORY.trainingResponseHistory ?? { observations: [] },
-        satisfiedPrerequisiteIds: confirmedOwnerExercisePrerequisiteIds(input.profile),
+        satisfiedPrerequisiteIds: ownerSatisfiedPrerequisiteIds({ profile: input.profile,
+          sourceProductRevisionId: input.command.sourceProductRevisionId,
+          engineVersion: input.command.engineVersion }),
         evaluationAsOf: input.command.evaluationTime,
       });
       const planning = planSessionIntent(plannerInput);
@@ -498,28 +723,36 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, source: 
       if (!planning.trainingReadiness.downstreamTrainingAllowed) {
         throw new Error("OWNER_TRAINING_SAFETY_REVIEW_REQUIRED_BEFORE_CANDIDATE");
       }
+      const activeResponsibilityKeys = uniqueSorted(planning.sessionIntent.needs.flatMap((need) => {
+        const key = responsibilityKeyForNeed({ needId: need.id, intent,
+          sessionIntent: planning.sessionIntent!, policy: responsibilityPolicy });
+        return key ? [key] : [];
+      }));
+      const loadingContradictedExerciseIds = new Set(REFERENCE_EXERCISES.flatMap((exercise) =>
+        activeResponsibilityKeys.some((responsibilityKey) =>
+          currentOwnerLoadingSuitabilityConfirmation({ profile: input.profile,
+            sourceProductRevisionId: input.command.sourceProductRevisionId,
+            engineVersion: input.command.engineVersion, responsibilityKey,
+            exerciseId: exercise.id })?.answer === "no") ? [exercise.id] : []));
+      const ownerCandidatePool = REFERENCE_EXERCISES.filter((exercise) =>
+        !loadingContradictedExerciseIds.has(exercise.id));
       const candidates = buildSessionCandidateResults(planning.sessionIntent, {
         athlete, assessment, alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
         painAndInjury: plannerInput.painAndInjury, trainingSafety: plannerInput.trainingSafety,
         equipment, history: plannerInput.history, satisfiedPrerequisiteIds: plannerInput.satisfiedPrerequisiteIds,
         evaluationAsOf: input.command.evaluationTime,
-      }, { candidatePool: REFERENCE_EXERCISES });
+      }, { candidatePool: ownerCandidatePool });
       const skeleton = composeSessionSkeleton({ intent: planning.sessionIntent, candidateResultsByNeed: candidates });
       const handoff = buildSessionPrescriptionHandoff({ intent: planning.sessionIntent, skeleton,
         candidateResultsByNeed: candidates });
       if (!skeleton.assignments.length || !handoff.assignments.length) {
-        const unresolvedRequiredCapabilities = uniqueSorted(planning.sessionIntent.needs
-          .filter((need) => need.priority === "required" &&
-            (candidates[need.id]?.rankedCandidates.length ?? 0) === 0)
-          .flatMap((need) => candidates[need.id]?.hardRejectedCandidates
-            .filter((candidate) => candidate.eligibility.rejectionReasons.length > 0 &&
-              candidate.eligibility.rejectionReasons.every((reason) => reason.code === "CAPABILITY_MISSING"))
-            .flatMap((candidate) => candidate.eligibility.rejectionReasons
-              .filter((reason) => reason.code === "CAPABILITY_MISSING")
-              .flatMap((reason) => reason.evidence)) ?? []));
-        throw new Error(unresolvedRequiredCapabilities.length > 0 ?
-          `OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:${unresolvedRequiredCapabilities.join("|")}` :
-          "OWNER_SESSION_COMPOSER_EMPTY");
+        const unresolved = candidateQuestions({ pipelineInput: input, intent,
+          sessionIntent: planning.sessionIntent, candidates, policy: responsibilityPolicy, equipment });
+        const code = unresolved.prerequisiteIds.length > 0
+          ? `OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:${unresolved.prerequisiteIds.join("|")}`
+          : "OWNER_SESSION_COMPOSER_EMPTY";
+        throw new OwnerPipelinePreflightError(code, unresolved.questions,
+          unresolved.blockerCodes.length ? unresolved.blockerCodes : [code]);
       }
       const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput, planning,
         skeleton, candidates, handoff });
@@ -666,6 +899,7 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
 }
 
 function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfileRevision;
+  readonly command: OwnerGenerationCommand;
   readonly source: ProductionWeekPlanningSourceSnapshot; readonly intent: WeeklyIntent;
   readonly weekPlan: WeekPlan; readonly sessions: readonly SessionExecution[];
   readonly projection: OwnerProgramProjection;
@@ -688,6 +922,20 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
   const projectedAssignments = input.projection.sessions.flatMap((session) => session.exerciseAssignments);
   const exactEquipment = buildOwnerEquipmentCapabilities(input.profile);
   const capabilityIds = new Set(input.profile.equipmentCapabilitySnapshot.capabilityIds);
+  const equipmentAnswers = new Map<string, string>([
+    ...EQUIPMENT_CAPABILITY_KEYS.flatMap((id) => {
+      const answer = currentOwnerEquipmentAvailabilityAnswer(input.profile, id);
+      return answer ? [[id, answer] as const] : [];
+    }),
+    ...MACHINE_IDS.flatMap((id) => {
+      const answer = currentOwnerEquipmentAvailabilityAnswer(input.profile, `machine:${id}`);
+      return answer ? [[`machine:${id}`, answer] as const] : [];
+    }),
+  ]);
+  const explicitlyAvailable = (id: EquipmentCapabilityKey, legacy = false) => {
+    const answer = equipmentAnswers.get(id);
+    return answer ? answer === "yes" : capabilityIds.has(id) || legacy;
+  };
   const topology = evaluateOwnerWeekTopology({ plan: input.weekPlan, intent: input.intent,
     policy: buildOwnerGetStrongerTopologyPolicy(input.intent),
     opportunityIds: input.source.opportunities.map((entry) => entry.opportunityId) });
@@ -739,18 +987,25 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
     }),
     availabilityNotAutomaticallyFilled: input.sessions.length === topology.occupiedSessionCount &&
       input.sessions.length <= input.profile.sessionOpportunities.length,
-    exactEquipmentCapabilityPreserved: exactEquipment.machines.availableMachineIds.length === 0 &&
-      exactEquipment.bands.types.length === 0 && exactEquipment.bands.anchors.length === 0 &&
-      !exactEquipment.trainingSpace.loadedGait.available &&
+    exactEquipmentCapabilityPreserved:
+      JSON.stringify(exactEquipment.machines.availableMachineIds) === JSON.stringify(MACHINE_IDS.filter((id) =>
+        equipmentAnswers.get(`machine:${id}`) === "yes")) &&
+      exactEquipment.trainingSpace.loadedGait.available === explicitlyAvailable("loaded_gait_space") &&
       exactEquipment.trainingSpace.stableLoadedStandingSpace ===
-        capabilityIds.has("stable_loaded_standing_space") &&
-      exactEquipment.dumbbells.available === capabilityIds.has("dumbbells") &&
-      exactEquipment.bench.stable === capabilityIds.has("adjustable_bench") &&
-      exactEquipment.barbell.available === capabilityIds.has("barbell_rack") &&
-      exactEquipment.cables.available === capabilityIds.has("cables") &&
-      exactEquipment.bodyweight.pullUpBar === capabilityIds.has("pull_up_station") &&
-      exactEquipment.bodyweight.wallAvailable === capabilityIds.has("wall") &&
-      exactEquipment.supportSurfaces.includes("wall") === capabilityIds.has("wall"),
+        explicitlyAvailable("stable_loaded_standing_space") &&
+      exactEquipment.dumbbells.available === explicitlyAvailable("dumbbells") &&
+      exactEquipment.dumbbells.pairAvailable ===
+        (explicitlyAvailable("dumbbells") && explicitlyAvailable("dumbbell_pair")) &&
+      exactEquipment.bench.stable ===
+        (explicitlyAvailable("flat_bench") || explicitlyAvailable("adjustable_bench")) &&
+      exactEquipment.barbell.available === explicitlyAvailable("barbell", capabilityIds.has("barbell_rack")) &&
+      exactEquipment.barbell.rackAvailable === (exactEquipment.barbell.available &&
+        explicitlyAvailable("squat_rack", capabilityIds.has("barbell_rack"))) &&
+      exactEquipment.cables.available === explicitlyAvailable("cable_stack", capabilityIds.has("cables")) &&
+      exactEquipment.bodyweight.pullUpBar === explicitlyAvailable("pull_up_bar",
+        capabilityIds.has("pull_up_station")) &&
+      exactEquipment.bodyweight.wallAvailable === explicitlyAvailable("wall") &&
+      exactEquipment.supportSurfaces.includes("wall") === explicitlyAvailable("wall"),
     supportingWorkCarriesNoDevelopmentalCredit: input.sessions.every((session) => session.skeleton.assignments
       .filter((assignment) => ["warmup", "activation", "cooldown"].includes(assignment.section))
       .every((assignment) => session.compilation.plans.some((plan) =>
@@ -769,8 +1024,9 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       objective.executionRequirements && ["confirmed", "bounded_initial_calibration"]
         .includes(objective.executionRequirements.loadingCompletenessState)),
     advancedTruthPreserved: input.sessions.every((session) =>
-      JSON.stringify(session.plannerInput.satisfiedPrerequisiteIds) ===
-        JSON.stringify(confirmedOwnerExercisePrerequisiteIds(input.profile)) &&
+      JSON.stringify(session.plannerInput.satisfiedPrerequisiteIds) === JSON.stringify(ownerSatisfiedPrerequisiteIds({
+        profile: input.profile, sourceProductRevisionId: input.command.sourceProductRevisionId,
+        engineVersion: input.command.engineVersion })) &&
       JSON.stringify(session.plannerInput.history) === JSON.stringify(EMPTY_TRAINING_HISTORY)),
   });
 }
@@ -806,7 +1062,9 @@ export function runControlledOwnerProductionPipeline(
       availableOpportunityCount: input.profile.sessionOpportunities.length,
       separatePlaneFacts: Object.freeze([]),
       additionalResponsibilityFacts: Object.freeze([]),
-      loadingEvidence: Object.freeze([]),
+      loadingEvidence: buildOwnerLoadingEvidence({ profile: input.profile,
+        sourceProductRevisionId: input.command.sourceProductRevisionId,
+        engineVersion: input.command.engineVersion }),
     });
     if (responsibilityPolicy.status !== "resolved") {
       throw new Error(`OWNER_PRODUCT_WEEKLY_POLICY_BLOCKED:${responsibilityPolicy.reasonCodes.join(",")}`);
@@ -875,7 +1133,7 @@ export function runControlledOwnerProductionPipeline(
     stages.push(artifact("week_allocation", "composeWeekAllocation", Object.freeze({ weekPlan, topologyEvidence }),
       weekReasons));
     if (weekReasons.length) throw new Error(weekReasons.join(","));
-    const sessions = executeSessions(input, source, intent, weekPlan);
+    const sessions = executeSessions(input, source, intent, weekPlan, responsibilityPolicy);
     unresolvedFacts = uniqueSorted([...unresolvedFacts, ...sessions.flatMap((session) => {
       const status = session.sequence.plan!.duration.status;
       return status === "fully_determinable" || status === "fits_known_bound" ? [] :
@@ -908,7 +1166,8 @@ export function runControlledOwnerProductionPipeline(
       provenance: ["controlled-owner-delivery:planned-truth-only"] });
     stages.push(artifact("phase_snapshot", "buildProductionPhaseProgramSnapshot", phase));
     let projection = displayProjection(input, intent, sessions, unresolvedFacts);
-    const completeness = semanticCompleteness({ profile: input.profile, source, intent, weekPlan, sessions,
+    const completeness = semanticCompleteness({ profile: input.profile, command: input.command,
+      source, intent, weekPlan, sessions,
       projection, responsibilityPolicy, gate13 });
     const finalUnresolvedFacts = uniqueSorted([...unresolvedFacts, ...completeness.reasonCodes]);
     if (finalUnresolvedFacts.length !== unresolvedFacts.length) {
@@ -921,17 +1180,24 @@ export function runControlledOwnerProductionPipeline(
     stages.push(artifact("application_readiness", "validateControlledOwnerApplicationReadiness", readiness,
       completeness.reasonCodes));
     stages.push(artifact("owner_envelope_projection", "buildOwnerProgramProjection", projection));
+    const loadingPreflight = loadingPreflightQuestions({ pipelineInput: input, intent,
+      policy: responsibilityPolicy, sessions });
+    const preflight = buildOwnerProfilePreflight({ profile: input.profile,
+      questions: loadingPreflight.questions, blockerCodes: loadingPreflight.blockerCodes });
     return Object.freeze({ status: "complete", approvalAllowed: readiness.approvalAvailable,
       programSemanticCompletenessSatisfied: completeness.approvalAllowed,
-      stages: Object.freeze(stages), projection,
+      stages: Object.freeze(stages), projection, preflight,
       unresolvedFacts: Object.freeze(finalUnresolvedFacts), genuineProductionStageCount: 13,
       productShadowCallCount: 0, legacyGenerateProgramCallCount: 0,
       pipelineFingerprint: deterministicToken(stages) });
   } catch (error) {
     const code = error instanceof Error ? error.message : "OWNER_GENERATION_UNKNOWN_FAILURE";
+    const questions = error instanceof OwnerPipelinePreflightError ? error.questions : Object.freeze([]);
+    const blockerCodes = error instanceof OwnerPipelinePreflightError ? error.blockerCodes : Object.freeze([code]);
+    const preflight = buildOwnerProfilePreflight({ profile: input.profile, questions, blockerCodes });
     return Object.freeze({ status: "blocked", approvalAllowed: false,
       programSemanticCompletenessSatisfied: false,
-      stages: Object.freeze(stages), projection: null,
+      stages: Object.freeze(stages), projection: null, preflight,
       unresolvedFacts: Object.freeze(uniqueSorted([...unresolvedFacts, code])),
       genuineProductionStageCount: stages.length, productShadowCallCount: 0,
       legacyGenerateProgramCallCount: 0, pipelineFingerprint: deterministicToken({ stages, code }) });

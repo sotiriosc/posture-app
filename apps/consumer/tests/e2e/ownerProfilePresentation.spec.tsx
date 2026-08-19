@@ -24,7 +24,11 @@ test("owner profile uses readable dark Praxis presentation without overflow", as
     const root = page.getByTestId("owner-profile-presentation");
     await expect(root).toBeVisible();
     await expect(page.getByRole("heading", { name: "Training profile" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Required review" })).toBeVisible();
+    await expect(page.getByText("Can you perform a hip hinge with a comfortable, controlled trunk position?"))
+      .toBeVisible();
     await expect(page.getByText("Enroll in controlled Praxis V2 owner delivery")).toBeVisible();
+    await expect(page.getByText("hinge-control")).toBeHidden();
 
     const layout = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
@@ -64,7 +68,8 @@ test("owner profile uses readable dark Praxis presentation without overflow", as
       };
       return [".shell", ".title", ".kicker", ".status", ".section h2", ".field label", ".legend",
         ".check span", "#owner-goal", "#owner-mode", "#owner-days", "#owner-environment",
-        "#owner-experience", ".fact > span:first-child", ".button", ".buttonSecondary", ".muted"]
+        "#owner-experience", ".fact > span:first-child", ".questionPrompt", ".questionReason", ".radio span",
+        ".equipmentFacts h3", ".equipmentFacts li", ".button", ".buttonSecondary", ".muted"]
         .map((selector) => {
           const element = document.querySelector(selector)!;
           const behind = background(element);
@@ -91,6 +96,11 @@ test("owner profile uses readable dark Praxis presentation without overflow", as
     const focus = await select.evaluate((element) => ({ outline: getComputedStyle(element).outlineStyle,
       shadow: getComputedStyle(element).boxShadow }));
     expect(focus.outline === "none" && focus.shadow === "none").toBe(false);
+    const reviewRadio = page.getByRole("radio", { name: "Yes, confirmed" });
+    await reviewRadio.focus();
+    const reviewFocus = await reviewRadio.evaluate((element) => ({ outline: getComputedStyle(element).outlineStyle,
+      shadow: getComputedStyle(element).boxShadow }));
+    expect(reviewFocus.outline === "none" && reviewFocus.shadow === "none").toBe(false);
 
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: testInfo.outputPath(`owner-profile-${viewport.name}-viewport.png`) });

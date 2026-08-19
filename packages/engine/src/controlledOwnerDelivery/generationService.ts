@@ -8,7 +8,9 @@ import {
   uniqueSorted,
   type ControlledOwnerV2ProgramPreview,
   type OwnerDeliveryMode,
+  type OwnerGetStrongerProfileRevision,
   type OwnerPainContext,
+  type OwnerProfilePreflight,
   type ProposedOwnerImportFact,
   type TrainingSafetyState,
 } from "@praxis/training-engine-v2";
@@ -157,6 +159,45 @@ export interface GenerateControlledOwnerPreviewResult {
   readonly legacyGenerateProgramCallCount: 0;
 }
 
+export interface ControlledOwnerProfilePreflightResult {
+  readonly preflight: OwnerProfilePreflight;
+  readonly unresolvedFacts: readonly string[];
+  readonly pipelineStatus: "complete" | "blocked";
+  readonly productShadowCallCount: 0;
+  readonly legacyGenerateProgramCallCount: 0;
+}
+
+export function preflightControlledOwnerGetStrongerProfile(input: {
+  readonly profile: OwnerGetStrongerProfileRevision;
+  readonly enrollmentRevisionId: string;
+  readonly source: OwnerGenerationSourceContext;
+  readonly proposedProductFacts: readonly ProposedOwnerImportFact[];
+  readonly evaluationTime: string;
+  readonly engineVersion: string;
+  readonly policyVersions: readonly string[];
+}): ControlledOwnerProfilePreflightResult {
+  const assessmentHandoff = buildControlledOwnerAssessmentHandoff({
+    profileAssessmentReferences: input.profile.assessmentReferences,
+    profilePainContext: input.profile.painContext,
+    proposedProductFacts: input.proposedProductFacts,
+    assessmentReport: input.source.assessmentReport ?? null,
+    sourceProductRevisionId: input.source.sourceProductRevisionId,
+    evaluationTime: input.evaluationTime,
+  });
+  const command = buildOwnerGenerationCommand({ userId: input.profile.userId,
+    enrollmentRevisionId: input.enrollmentRevisionId, profileRevisionId: input.profile.revisionId,
+    sourceProductSnapshotId: input.source.sourceProductSnapshotId,
+    sourceProductRevisionId: input.source.sourceProductRevisionId,
+    activeLegacyProgramRevisionId: input.source.activeLegacyProgramRevisionId,
+    engineVersion: input.engineVersion, policyVersions: input.policyVersions,
+    evaluationTime: input.evaluationTime, requestedAt: input.evaluationTime });
+  const pipeline = runControlledOwnerProductionPipeline({ command, profile: input.profile,
+    proposedProductFacts: input.proposedProductFacts, assessmentHandoff });
+  return Object.freeze({ preflight: pipeline.preflight, unresolvedFacts: pipeline.unresolvedFacts,
+    pipelineStatus: pipeline.status, productShadowCallCount: 0 as const,
+    legacyGenerateProgramCallCount: 0 as const });
+}
+
 export function resolveOwnerPreviewReadinessStatus(input: {
   readonly programSemanticCompletenessSatisfied: boolean;
   readonly profileApprovalAllowed: boolean;
@@ -215,6 +256,13 @@ export async function generateControlledOwnerGetStrongerPreview(input: {
     assessmentHandoff });
   if (pipeline.status !== "complete" || !pipeline.projection) {
     return result("generation_blocked", null, pipeline.unresolvedFacts);
+  }
+  if (pipeline.preflight.status !== "ready") {
+    return result("generation_blocked", null, uniqueSorted([
+      ...pipeline.unresolvedFacts,
+      ...pipeline.preflight.blockerCodes,
+      ...pipeline.preflight.questions.map((question) => question.questionId),
+    ]));
   }
   const preview = buildOwnerProgramPreview({ userId: gate.userId, generationCommandId: command.commandId,
     profileId: profile.profileId, profileRevisionId: profile.revisionId,

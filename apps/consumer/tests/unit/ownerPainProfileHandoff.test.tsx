@@ -86,7 +86,8 @@ describe("controlled owner typed pain profile handoff", () => {
 
   it("renders a distinct explicit confirmation for each typed Product pain fact", () => {
     const document = new JSDOM(renderToStaticMarkup(<OwnerProfileClient profile={null}
-      proposedFacts={facts()} csrf={{ enrollment: "csrf", profile: "csrf", preview: "csrf" }}
+      proposedFacts={facts()} preflight={null}
+      csrf={{ enrollment: "csrf", profile: "csrf", preview: "csrf" }}
       canApply={false} />)).window.document;
 
     expect(document.body.textContent).toContain("Pain region: Lower back");
@@ -143,7 +144,8 @@ describe("controlled owner typed pain profile handoff", () => {
       coarseExperience: "advanced", painContext: { confirmed: true, sourceFactIds: [] },
       trainingSafety: "clear", assessmentReferences: [] } as never;
     const document = new JSDOM(renderToStaticMarkup(<OwnerProfileClient profile={profile}
-      proposedFacts={facts()} csrf={{ enrollment: "csrf", profile: "csrf", preview: "csrf" }}
+      proposedFacts={facts()} preflight={null}
+      csrf={{ enrollment: "csrf", profile: "csrf", preview: "csrf" }}
       canApply={false} />)).window.document;
     expect([...document.querySelectorAll("#owner-days option")].map((option) => option.textContent))
       .toEqual(["1 (reconfirmation required)", "2", "3", "4", "5", "6"]);

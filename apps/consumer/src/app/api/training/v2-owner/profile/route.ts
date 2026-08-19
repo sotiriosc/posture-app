@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       sessionMinutes.minutes >= 15 && sessionMinutes.minutes <= 180;
   if (!isOwnerAvailableTrainingDays(days) || !validMinutes ||
       !["home", "commercial_gym", "mixed"].includes(String(environment)) ||
-      !Array.isArray(capabilityIds) || !capabilityIds.length || !capabilityIds.every((value) => typeof value === "string") ||
+      !Array.isArray(capabilityIds) || !capabilityIds.every((value) => typeof value === "string") ||
       !Array.isArray(assessmentReferences) || !assessmentReferences.every((value) => typeof value === "string") ||
       !Array.isArray(painFactIds) || !painFactIds.every((value) => typeof value === "string") ||
       !["beginner", "intermediate", "advanced"].includes(String(experience)) || body.painConfirmed !== true) {
@@ -51,6 +51,7 @@ export async function POST(request: Request) {
     opportunityId: `owner-opportunity-${index + 1}`, order: index + 1,
     minutes: sessionMinutes?.status === "known" ? sessionMinutes.minutes as number : null,
   }));
+  const normalizedCapabilityIds = [...new Set(capabilityIds as string[])].sort();
   try {
     return await withControlledOwnerRepositories(async ({ enrollmentProfiles }) => {
       const product = await loadOwnerProductRuntimeContext(authorization.userId);
@@ -77,17 +78,25 @@ export async function POST(request: Request) {
           message: "Review and confirm each current pain region before saving." } }, 409);
       }
       const current = await enrollmentProfiles.readCurrentProfile(authorization.userId);
-      const sourceRevision = `owner-equipment:${createHash("sha256").update(JSON.stringify({ environment,
-        capabilityIds: [...new Set(capabilityIds as string[])].sort() })).digest("hex")}`;
+      const sameEquipmentContext = current !== null &&
+        current.equipmentCapabilitySnapshot.environment === environment &&
+        JSON.stringify(current.equipmentCapabilitySnapshot.capabilityIds) === JSON.stringify(normalizedCapabilityIds);
+      const sourceRevision = sameEquipmentContext ? current!.equipmentCapabilitySnapshot.sourceRevision :
+        `owner-equipment:${createHash("sha256").update(JSON.stringify({ environment,
+          capabilityIds: normalizedCapabilityIds })).digest("hex")}`;
       const profile = buildOwnerProfileRevision({ profileId: current?.profileId, userId: authorization.userId,
         basedOnRevisionId: current?.revisionId ?? null, primaryGoal: "strength", trainingMode: "develop",
         secondaryGoal: null, daysPerWeek: days, sessionOpportunities: normalizedOpportunities,
         sessionMinutes: sessionMinutes?.status === "known" ? { status: "known", minutes: sessionMinutes.minutes as number } :
           { status: "explicit_unknown", minutes: null },
         equipmentCapabilitySnapshot: { environment: environment as "home" | "commercial_gym" | "mixed",
-          capabilityIds: capabilityIds as string[], confirmed: true, sourceRevision },
+          capabilityIds: normalizedCapabilityIds, confirmed: true, sourceRevision,
+          availabilityConfirmations: current?.equipmentCapabilitySnapshot.availabilityConfirmations ?? [],
+          loadCeilings: current?.equipmentCapabilitySnapshot.loadCeilings ?? [] },
         coarseExperience: experience as "beginner" | "intermediate" | "advanced",
         familiarity: current?.familiarity ?? [],
+        prerequisiteConfirmations: current?.prerequisiteConfirmations ?? [],
+        loadingSuitabilityConfirmations: current?.loadingSuitabilityConfirmations ?? [],
         painContext: { regionIds: normalizedPainFacts.flatMap((fact) => fact ? [fact.regionId] : []),
           limitationIds: current?.painContext.limitationIds ?? [], confirmed: true, diagnosticClaimCount: 0,
           sourceFactIds: confirmedPainFactIds, sourceRevision: product.sourceProductRevisionId },
