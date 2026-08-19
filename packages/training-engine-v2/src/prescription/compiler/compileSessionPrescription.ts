@@ -53,7 +53,7 @@ export function compileSessionPrescription(
   const sessionDurationInterval = combinePrescriptionDurationIntervals({
     intervals: plans.map((plan) => plan.durationInterval),
     availableSeconds: input.sessionIntent.availableMinutes * 60,
-    includeSequencingUnknowns: true,
+    includeSequencingUnknowns: !input.operationalDurationPolicy,
   });
   const status = inputErrors.length > 0
     ? "invalid_session_handoff" as const

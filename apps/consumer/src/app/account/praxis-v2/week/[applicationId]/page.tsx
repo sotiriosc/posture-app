@@ -16,14 +16,18 @@ function durationSummary(session: OwnerProgramSessionProjection): string {
   const available = typeof session.availableMinutes === "number" ? `${session.availableMinutes} minutes available` :
     "Available time unknown";
   if (!session.calculatedDuration) return session.durationStatus === "known" ?
-    `${session.durationMinutes} minutes` : available;
-  const seconds = (value: number) => value % 60 === 0 ? `${value / 60} minutes` :
-    `${Math.floor(value / 60)} minutes ${value % 60} seconds`;
-  const lower = seconds(session.calculatedDuration.knownLowerBoundSeconds);
+    `${available} · Planned duration: ${session.durationMinutes} minutes` :
+    `${available} · Planned duration unavailable`;
   const upper = session.calculatedDuration.knownUpperBoundSeconds;
-  return upper === null ? `${available} · Calculated at least ${lower}` :
-    `${available} · Calculated ${lower}${upper === session.calculatedDuration.knownLowerBoundSeconds ? "" :
-      ` to ${seconds(upper)}`}`;
+  if (upper === null) {
+    const unresolved = session.calculatedDuration.unknownComponents[0]?.replaceAll("_", " ") ??
+      "operational timing";
+    return `${available} · Planned duration unavailable: ${unresolved} is unresolved`;
+  }
+  const lowerMinutes = Math.max(1, Math.round(session.calculatedDuration.knownLowerBoundSeconds / 60));
+  const upperMinutes = Math.max(lowerMinutes, Math.round(upper / 60));
+  return `${available} · Planned duration: approximately ${lowerMinutes}${
+    upperMinutes === lowerMinutes ? "" : `-${upperMinutes}`} minutes`;
 }
 
 export default async function OwnerWeekPage({ params }: { readonly params: Promise<{ applicationId: string }> }) {

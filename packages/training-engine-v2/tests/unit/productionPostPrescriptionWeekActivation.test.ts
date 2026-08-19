@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 function recursiveSource(root: string): string {
-  return readdirSync(root).sort().flatMap((name) => {
+  return readdirSync(root).sort().filter((name) => name !== ".next").flatMap((name) => {
     const path = resolve(root, name);
     return statSync(path).isDirectory() ? [recursiveSource(path)] : /\.(ts|tsx|js|jsx)$/.test(name)
       ? [readFileSync(path, "utf8")] : [];

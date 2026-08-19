@@ -394,11 +394,83 @@ export type PrescriptionDurationUnknownComponent =
   | "sequencing_transition"
   | "sequencing_recovery";
 
+export type OperationalDurationBoundClassification =
+  | "evidence_backed"
+  | "praxis_operational_doctrine";
+
+export interface OperationalDurationBound {
+  readonly lowerBoundSeconds: number;
+  readonly upperBoundSeconds: number;
+  readonly classification: OperationalDurationBoundClassification;
+  readonly policyRef: string;
+  readonly provenance: EvidenceProvenance;
+}
+
+export type OperationalDurationComponentKind =
+  | "dose_execution"
+  | "prescribed_rest"
+  | "load_calibration"
+  | "side_transition"
+  | "initial_session_setup"
+  | "exercise_setup"
+  | "equipment_adjustment"
+  | "assignment_transition"
+  | "section_transition"
+  | "explicit_transition_timing";
+
+export interface OperationalDurationComponent {
+  readonly componentId: string;
+  readonly owner: "prescription" | "sequencing";
+  readonly kind: OperationalDurationComponentKind;
+  readonly lowerBoundSeconds: number;
+  readonly upperBoundSeconds: number;
+  readonly policyRef: string;
+  readonly classification: OperationalDurationBoundClassification;
+  readonly sourceAssignmentId: string | null;
+  readonly sourceDoseBlockId: string | null;
+  readonly countedExactlyOnce: true;
+  readonly provenance: EvidenceProvenance;
+}
+
+export type PrescriptionOperationalExecutionTimingClass =
+  | "lift_acclimation"
+  | "primary_developmental_strength"
+  | "supporting_developmental"
+  | "dependency_preparation"
+  | "activation_control"
+  | "accessory_support"
+  | "cooldown_recovery";
+
+export interface PrescriptionOperationalDurationPolicy {
+  readonly policyId: string;
+  readonly version: string;
+  readonly state: "reviewed_controlled_owner";
+  readonly reviewer: string;
+  readonly reviewedOn: string;
+  readonly scope: "controlled_owner_duration_feasibility_only";
+  readonly executionSecondsPerRepetition: Readonly<Record<
+    PrescriptionOperationalExecutionTimingClass,
+    OperationalDurationBound
+  >>;
+  readonly secondsPerBreathCycle: OperationalDurationBound;
+  readonly secondsPerMetre: OperationalDurationBound;
+  readonly secondsPerStep: OperationalDurationBound;
+  readonly sideTransition: OperationalDurationBound;
+  readonly loadCalibration: Readonly<Partial<Record<
+    PrescriptionOperationalExecutionTimingClass,
+    OperationalDurationBound
+  >>>;
+  readonly provenance: EvidenceProvenance;
+}
+
 export interface PrescriptionDurationInterval {
   readonly knownLowerBoundSeconds: number;
   readonly knownUpperBoundSeconds: number | null;
   readonly unknownComponents: readonly PrescriptionDurationUnknownComponent[];
   readonly status: PrescriptionDurationIntervalStatus;
+  /** Present when a reviewed operational policy owns a finite feasibility interval. */
+  readonly includedComponents?: readonly OperationalDurationComponent[];
+  readonly operationalPolicyRefs?: readonly string[];
   readonly provenance: EvidenceProvenance;
 }
 
@@ -493,6 +565,7 @@ export interface PrescriptionAssignmentCompilerInput {
   readonly evaluationTime: ISODateTimeString;
   readonly policy: ExplicitPrescriptionPolicyInput;
   readonly availablePolicies?: readonly ProductionPrescriptionPolicy[];
+  readonly operationalDurationPolicy?: PrescriptionOperationalDurationPolicy | null;
   readonly revisionContext: PrescriptionRevisionContext | null;
 }
 

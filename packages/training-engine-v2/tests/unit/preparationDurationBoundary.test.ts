@@ -3,6 +3,7 @@ import {
   PREPARATION_TAXONOMY,
   REFERENCE_EXERCISES,
   applyDurationRecompositionToIntent,
+  executeBoundedDurationRecompositionLoop,
   planDurationAwareRecomposition,
   planSessionIntent,
   sequenceFinalSession,
@@ -119,7 +120,7 @@ describe("cooldown ownership and duration-aware recomposition boundary", () => {
       finalDuration: input.finalDuration,
     });
     expect(decision).toMatchObject({
-      status: "session_local_recomposition_required",
+      status: "duration_over_capacity_recomposable",
       availableSeconds: 60,
       calculatedLowerBoundSeconds: 120,
       calculatedUpperBoundSeconds: 120,
@@ -196,6 +197,100 @@ describe("cooldown ownership and duration-aware recomposition boundary", () => {
     }));
   });
 
+  it("preserves dependency-required activation", () => {
+    const input = optionalCooldownInput();
+    const supportingNeed = input.intent.needs.find((need) => need.section === "cooldown")!;
+    const mainNeed = input.intent.needs.find((need) => need.section === "main")!;
+    const requiredDependency = {
+      dependencyId: "required-activation",
+      targetNeedIds: [mainNeed.id],
+      targetExerciseIds: [],
+      movementRoles: [],
+      actionFunctions: [],
+      bodyRegions: [],
+      assessmentSignalIds: [],
+      painResponseRequirementIds: [],
+      required: true,
+    };
+    const intent = { ...input.intent, needs: input.intent.needs.map((need) =>
+      need.id === supportingNeed.id ? { ...need, section: "activation" as const,
+        selection: { ...need.selection, requestedRole: "activation" as const },
+        dependencies: [requiredDependency] } : need) };
+    const skeleton = { ...input.skeleton, assignments: input.skeleton.assignments.map((assignment) =>
+      assignment.satisfiedNeedIds.includes(supportingNeed.id) ? { ...assignment,
+        section: "activation" as const, role: "activation" as const } : assignment) };
+    const decision = planDurationAwareRecomposition({ intent, skeleton,
+      prescription: input.prescriptionSession, finalDuration: input.finalDuration });
+
+    expect(decision.status).toBe("duration_over_capacity_required_work");
+    expect(decision.nextRemoval).toBeNull();
+    expect(decision.protectedAssignmentIds).toHaveLength(skeleton.assignments.length);
+  });
+
+  it("removes optional accessory work and does not repeat an already-applied state", () => {
+    const input = optionalCooldownInput();
+    const optionalNeed = input.intent.needs.find((need) => need.section === "cooldown")!;
+    const intent = { ...input.intent, needs: input.intent.needs.map((need) =>
+      need.id === optionalNeed.id ? { ...need, section: "accessory" as const,
+        selection: { ...need.selection, requestedRole: "hypertrophy_accessory" as const } } : need) };
+    const skeleton = { ...input.skeleton, assignments: input.skeleton.assignments.map((assignment) =>
+      assignment.satisfiedNeedIds.includes(optionalNeed.id) ? { ...assignment,
+        section: "accessory" as const, role: "hypertrophy_accessory" as const } : assignment) };
+    const first = planDurationAwareRecomposition({ intent, skeleton,
+      prescription: input.prescriptionSession, finalDuration: input.finalDuration });
+    const replay = planDurationAwareRecomposition({ intent, skeleton,
+      prescription: input.prescriptionSession, finalDuration: input.finalDuration });
+    expect(first).toEqual(replay);
+    expect(first.nextRemoval).toMatchObject({ section: "accessory", priority: "optional" });
+    const once = applyDurationRecompositionToIntent({ intent, decision: first });
+    const twice = applyDurationRecompositionToIntent({ intent: once, decision: first });
+    expect(twice).toEqual(once);
+    expect(once.plannerSourceTrace.sourceRefs).toContain(
+      `duration-recomposition:${first.nextRemoval!.assignmentId}`,
+    );
+  });
+
+  it("removes preferred work only after all removable optional work", () => {
+    const input = optionalCooldownInput();
+    const optionalNeed = input.intent.needs.find((need) => need.section === "cooldown")!;
+    const optionalAssignment = input.skeleton.assignments.find((assignment) =>
+      assignment.satisfiedNeedIds.includes(optionalNeed.id))!;
+    const optionalPlan = input.prescriptionSession.plans.find((plan) =>
+      plan.sourceExposureEvent.sessionAssignmentId === optionalAssignment.routinePrescriptionHandoffId)!;
+    const preferredNeed = { ...optionalNeed, id: `${optionalNeed.id}:preferred`,
+      section: "accessory" as const, priority: "preferred" as const,
+      priorityOrder: optionalNeed.priorityOrder + 1,
+      selection: { ...optionalNeed.selection, requestedRole: "hypertrophy_accessory" as const } };
+    const preferredAssignmentId = `${optionalAssignment.routinePrescriptionHandoffId}:preferred`;
+    const preferredAssignment = { ...optionalAssignment,
+      routinePrescriptionHandoffId: preferredAssignmentId,
+      section: "accessory" as const, role: "hypertrophy_accessory" as const,
+      satisfiedNeedIds: [preferredNeed.id] };
+    const preferredPlan = { ...optionalPlan,
+      sourceExposureEvent: { ...optionalPlan.sourceExposureEvent,
+        sessionAssignmentId: preferredAssignmentId } };
+    const intent = { ...input.intent, needs: [...input.intent.needs, preferredNeed] };
+    const skeleton = { ...input.skeleton,
+      assignments: [...input.skeleton.assignments, preferredAssignment] };
+    const prescription = { ...input.prescriptionSession,
+      plans: [...input.prescriptionSession.plans, preferredPlan] };
+    const first = planDurationAwareRecomposition({ intent, skeleton, prescription,
+      finalDuration: input.finalDuration });
+    expect(first.nextRemoval).toMatchObject({ assignmentId: optionalAssignment.routinePrescriptionHandoffId,
+      priority: "optional" });
+
+    const afterOptional = applyDurationRecompositionToIntent({ intent, decision: first });
+    const skeletonAfterOptional = { ...skeleton, assignments: skeleton.assignments.filter((assignment) =>
+      assignment.routinePrescriptionHandoffId !== optionalAssignment.routinePrescriptionHandoffId) };
+    const prescriptionAfterOptional = { ...prescription, plans: prescription.plans.filter((plan) =>
+      plan.sourceExposureEvent.sessionAssignmentId !== optionalAssignment.routinePrescriptionHandoffId) };
+    const second = planDurationAwareRecomposition({ intent: afterOptional,
+      skeleton: skeletonAfterOptional, prescription: prescriptionAfterOptional,
+      finalDuration: input.finalDuration });
+    expect(second.nextRemoval).toMatchObject({ assignmentId: preferredAssignmentId,
+      priority: "preferred" });
+  });
+
   it("fails closed when required main work alone cannot fit", () => {
     const exercise = REFERENCE_EXERCISES.find((entry) => entry.id === "machine-row")!;
     const input = prepareCatalogProductionFinalSequencingInput(exercise);
@@ -227,10 +322,96 @@ describe("cooldown ownership and duration-aware recomposition boundary", () => {
       skeleton: input.skeleton,
       prescription: input.prescriptionSession,
     });
-    expect(decision.status).toBe("duration_indeterminate");
+    expect(decision.status).toBe("duration_unknown");
     expect(decision.nextRemoval).toBeNull();
     expect(decision.calculatedUpperBoundSeconds).toBeNull();
     expect(decision.unresolvedDurationComponents.length).toBeGreaterThan(0);
     expect(decision.noInventedTime).toBe(true);
+  });
+
+  it("does not treat a finite work interval as over-budget when capacity is unknown", () => {
+    const input = optionalCooldownInput();
+    const decision = planDurationAwareRecomposition({
+      intent: input.intent,
+      skeleton: input.skeleton,
+      prescription: input.prescriptionSession,
+      finalDuration: {
+        ...input.finalDuration,
+        availableCapacityStatus: "unknown",
+        status: "unknown_due_to_available_capacity",
+        unknownComponents: ["available_session_capacity:AVAILABLE_SESSION_CAPACITY_NOT_CONFIRMED"],
+      },
+    });
+
+    expect(decision).toMatchObject({
+      status: "duration_unknown",
+      nextRemoval: null,
+      calculatedLowerBoundSeconds: 120,
+      calculatedUpperBoundSeconds: 120,
+    });
+    expect(decision.unresolvedDurationComponents)
+      .toContain("available_session_capacity:AVAILABLE_SESSION_CAPACITY_NOT_CONFIRMED");
+  });
+
+  it("rebuilds deterministically through intent and stops on the first fitting final result", () => {
+    const input = optionalCooldownInput();
+    const run = () => executeBoundedDurationRecompositionLoop({
+      initialIntent: input.intent,
+      fingerprintIntent: (intent) => JSON.stringify(intent.needs.map((need) => need.id).sort()),
+      build: (intent) => {
+        const retainedNeedIds = new Set(intent.needs.map((need) => need.id));
+        const assignments = input.skeleton.assignments.filter((assignment) =>
+          assignment.satisfiedNeedIds.some((id) => retainedNeedIds.has(id)));
+        const assignmentIds = new Set(assignments.map((assignment) =>
+          assignment.routinePrescriptionHandoffId));
+        const plans = input.prescriptionSession.plans.filter((plan) =>
+          assignmentIds.has(plan.sourceExposureEvent.sessionAssignmentId)).map((plan) => ({ ...plan,
+            durationInterval: { ...plan.durationInterval, knownLowerBoundSeconds: 10,
+              knownUpperBoundSeconds: 20, unknownComponents: [],
+              status: "bounded_before_sequencing" as const } }));
+        const over = intent.needs.some((need) => need.section === "cooldown");
+        return {
+          skeleton: { ...input.skeleton, assignments },
+          prescription: { ...input.prescriptionSession, plans },
+          finalDuration: over ? input.finalDuration : {
+            ...input.finalDuration,
+            knownLowerBoundSeconds: 40,
+            knownUpperBoundSeconds: 50,
+            lowerBoundSeconds: 40,
+            upperBoundSeconds: 50,
+            status: "fits_known_bound" as const,
+          },
+          artifact: { assignmentIds: [...assignmentIds].sort() },
+        };
+      },
+    });
+    const first = run();
+    const replay = run();
+    expect(first).toEqual(replay);
+    expect(first).toMatchObject({ status: "duration_within_capacity", rebuildCount: 1,
+      structuralIterationBound: 1 });
+    expect(first.decisions.map((decision) => decision.status)).toEqual([
+      "duration_over_capacity_recomposable", "duration_within_capacity",
+    ]);
+    expect(first.intentStateFingerprints).toHaveLength(2);
+    expect(new Set(first.intentStateFingerprints).size).toBe(2);
+    expect(first.finalIntent.needs.some((need) => need.section === "cooldown")).toBe(false);
+  });
+
+  it("fails a non-monotonic recomposition fingerprint closed without a retry loop", () => {
+    const input = optionalCooldownInput();
+    let buildCount = 0;
+    const result = executeBoundedDurationRecompositionLoop({
+      initialIntent: input.intent,
+      fingerprintIntent: () => "same-state",
+      build: () => {
+        buildCount += 1;
+        return { skeleton: input.skeleton, prescription: input.prescriptionSession,
+          finalDuration: input.finalDuration, artifact: null };
+      },
+    });
+    expect(result.status).toBe("duration_recomposition_exhausted");
+    expect(result.reasonCodes).toEqual(["DURATION_RECOMPOSITION_NON_MONOTONIC_OR_REPEATED_STATE"]);
+    expect(buildCount).toBe(1);
   });
 });

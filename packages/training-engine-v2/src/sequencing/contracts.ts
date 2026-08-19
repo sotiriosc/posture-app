@@ -16,6 +16,8 @@ import type {
 import type { TrainingReadinessTrace } from "../domain/trainingSafety";
 import type { EffortTarget } from "../prescription/executionStandard";
 import type {
+  OperationalDurationBound,
+  OperationalDurationComponent,
   PrescriptionDurationInterval,
   PrescriptionEquipmentRealization,
   PrescriptionSessionCompilationResult,
@@ -267,7 +269,28 @@ export interface ProductionInterExerciseTransitionInstruction {
   readonly target: ProductionSequencingTransitionTarget;
   readonly sourceTransitionFactId: string | null;
   readonly countedInDurationExactlyOnce: true;
+  /** Component detail for reviewed operational bounds; absent on frozen compatibility artifacts. */
+  readonly operationalComponents?: readonly OperationalDurationComponent[];
   readonly provenance: readonly EvidenceProvenance[];
+}
+
+export interface SequencingOperationalDurationPolicy {
+  readonly policyId: string;
+  readonly version: string;
+  readonly state: "reviewed_controlled_owner";
+  readonly reviewer: string;
+  readonly reviewedOn: string;
+  readonly scope: "controlled_owner_duration_feasibility_only";
+  readonly initialSessionSetup: OperationalDurationBound;
+  readonly initialExerciseSetup: OperationalDurationBound;
+  readonly assignmentTransition: OperationalDurationBound;
+  readonly exerciseSetupByRelationship: Readonly<Record<
+    ProductionSequencingSetupRelationship,
+    OperationalDurationBound
+  >>;
+  readonly equipmentAdjustment: OperationalDurationBound;
+  readonly sectionTransition: OperationalDurationBound;
+  readonly provenance: EvidenceProvenance;
 }
 
 export const FINAL_SEQUENCED_SESSION_DURATION_STATUSES = [
@@ -277,6 +300,7 @@ export const FINAL_SEQUENCED_SESSION_DURATION_STATUSES = [
   "unknown_due_to_setup_transition",
   "unknown_due_to_interexercise_recovery",
   "unknown_due_to_section_transition",
+  "unknown_due_to_available_capacity",
   "definitely_over_budget",
   "possibly_over_budget",
   "fits_known_bound",
@@ -289,11 +313,17 @@ export interface FinalSequencedSessionDurationInterval {
   readonly sequencingContract: ProductionFinalSessionSequencingContractReference;
   readonly knownLowerBoundSeconds: number;
   readonly knownUpperBoundSeconds: number | null;
+  readonly lowerBoundSeconds?: number;
+  readonly upperBoundSeconds?: number | null;
   readonly availableSeconds: number;
+  readonly availableCapacityStatus?: "known" | "unknown";
+  readonly completeness?: "complete" | "unknown";
   readonly status: FinalSequencedSessionDurationStatus;
   readonly unknownComponents: readonly string[];
   readonly prescriptionIntervalRefs: readonly string[];
   readonly transitionInstructionIds: readonly string[];
+  readonly includedComponents?: readonly OperationalDurationComponent[];
+  readonly operationalPolicyRefs?: readonly string[];
   readonly timingFactReuseCount: number;
   readonly noInventedTime: true;
   readonly provenance: readonly EvidenceProvenance[];
@@ -311,7 +341,9 @@ export interface ProductionFinalSessionSequencingInput {
   readonly currentEquipment: EquipmentCapabilities;
   readonly equipmentRealizations: readonly PrescriptionEquipmentRealization[];
   readonly explicitTransitionFacts: readonly ExplicitProductionSequencingTransitionFact[];
+  readonly operationalDurationPolicy?: SequencingOperationalDurationPolicy | null;
   readonly availableMinutes: number;
+  readonly availableCapacityStatus?: "known" | "unknown";
   readonly trainingReadiness: TrainingReadinessTrace;
   readonly executionAttemptId: string;
   readonly evaluationTime: ISODateTimeString;
@@ -551,6 +583,8 @@ export interface ProductionFinalSessionSequencingResult {
   readonly sequencePlanId: string;
   readonly sequenceRevisionId: string | null;
   readonly plan: ProductionFinalSessionSequencePlan | null;
+  /** Exposes a failed over-capacity calculation so the caller can recompose upstream intent. */
+  readonly calculatedDuration?: FinalSequencedSessionDurationInterval | null;
   readonly diagnosticBestOrder: FinalSequencingDiagnosticBestOrder | null;
   readonly findings: readonly FinalSessionSequencingValidationFinding[];
   readonly decisionTrace: FinalSequencingDecisionTrace;

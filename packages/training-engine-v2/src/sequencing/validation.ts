@@ -85,7 +85,8 @@ export function deriveFinalSequencingIntegrityTrace(input: {
   ).length;
   const timingFactReuseCount = input.plan.duration.timingFactReuseCount;
   const fakeDurationCount = input.plan.transitionInstructions.filter((instruction) =>
-    ["exact", "range"].includes(instruction.target.kind) && instruction.sourceTransitionFactId === null
+    ["exact", "range"].includes(instruction.target.kind) && instruction.sourceTransitionFactId === null &&
+    !(instruction.operationalComponents?.length)
   ).length + (input.plan.duration.noInventedTime === true ? 0 : 1);
   const counts = {
     assignmentAdditionCount,
@@ -127,11 +128,37 @@ export function validateFinalSessionSequencePlan(input: {
     prescriptionUpperBoundSeconds: input.sequencingInput.prescriptionSession.sessionDurationInterval.knownUpperBoundSeconds,
     prescriptionUnknownComponents: input.sequencingInput.prescriptionSession.sessionDurationInterval.unknownComponents,
     prescriptionIntervalRefs: input.assignmentFacts.map((fact) => fact.finalPrescriptionRevisionId),
+    prescriptionComponents: input.sequencingInput.prescriptionSession.plans.flatMap((plan) =>
+      plan.durationInterval.includedComponents ?? []),
     transitionInstructions: input.plan.transitionInstructions,
+    operationalDurationPolicy: input.sequencingInput.operationalDurationPolicy,
+    firstAssignmentId: input.plan.steps[0]?.assignmentId ?? null,
     availableMinutes: input.sequencingInput.availableMinutes,
+    availableCapacityStatus: input.sequencingInput.availableCapacityStatus,
   });
   if (JSON.stringify(expectedDuration) !== JSON.stringify(input.plan.duration)) {
     findings.push({ severity: "error", code: "SEQUENCE_DURATION_INTERVAL_NOT_DERIVED" });
+  }
+  const durationComponents = input.plan.duration.includedComponents ?? [];
+  if (durationComponents.length > 0) {
+    if (new Set(durationComponents.map((component) => component.componentId)).size !==
+      durationComponents.length) {
+      findings.push({ severity: "error", code: "DUPLICATE_DURATION_COMPONENT_ID" });
+    }
+    if (durationComponents.some((component) => component.lowerBoundSeconds < 0 ||
+      component.upperBoundSeconds < component.lowerBoundSeconds || !component.policyRef ||
+      component.countedExactlyOnce !== true)) {
+      findings.push({ severity: "error", code: "INVALID_DURATION_COMPONENT_BOUND" });
+    }
+    if (durationComponents.reduce((total, component) =>
+      total + component.lowerBoundSeconds, 0) !== input.plan.duration.knownLowerBoundSeconds) {
+      findings.push({ severity: "error", code: "DURATION_COMPONENT_LOWER_SUM_MISMATCH" });
+    }
+    if (input.plan.duration.knownUpperBoundSeconds !== null &&
+      durationComponents.reduce((total, component) =>
+        total + component.upperBoundSeconds, 0) !== input.plan.duration.knownUpperBoundSeconds) {
+      findings.push({ severity: "error", code: "DURATION_COMPONENT_UPPER_SUM_MISMATCH" });
+    }
   }
   const expectedCompatibility = buildFinalSessionSequenceCompatibilityProjection({
     steps: input.plan.steps,

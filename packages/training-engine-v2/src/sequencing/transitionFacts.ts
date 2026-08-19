@@ -10,6 +10,10 @@ import type {
   ProductionSequencingTransitionTarget,
   SequencingInterferenceObservation,
 } from "./contracts";
+import type {
+  OperationalDurationBound,
+  OperationalDurationComponent,
+} from "../prescription/compiler/contracts";
 import { PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE } from "./contracts";
 import { buildSequencingInterferenceObservations } from "./interference";
 import { finalSequencingDeterministicToken } from "./planIdentity";
@@ -195,14 +199,18 @@ export function buildProductionSequencingTransitionFacts(input: {
       ].flatMap((fact) => fact ? [fact.transitionFactId] : []).sort();
       const sectionBoundary = left.section !== right.section;
       const unknownTimingComponents = [
-        ...[unresolvedTimingComponent("setup_duration", resolved.setupDuration.fact)].filter(
+        ...[(input.sequencingInput.operationalDurationPolicy && !resolved.setupDuration.fact)
+          ? null
+          : unresolvedTimingComponent("setup_duration", resolved.setupDuration.fact)].filter(
           (value): value is string => value !== null,
         ),
         ...[unresolvedTimingComponent("inter_exercise_recovery", resolved.recovery.fact)].filter(
           (value): value is string => value !== null,
         ),
         ...(sectionBoundary
-          ? [unresolvedTimingComponent("section_boundary_duration", resolved.sectionDuration.fact)].filter(
+          ? [(input.sequencingInput.operationalDurationPolicy && !resolved.sectionDuration.fact)
+            ? null
+            : unresolvedTimingComponent("section_boundary_duration", resolved.sectionDuration.fact)].filter(
             (value): value is string => value !== null,
           )
           : []),
@@ -279,6 +287,65 @@ function timingTarget(
   return fact?.target.kind === "timing" ? fact.target.value : fallback;
 }
 
+const EXPLICIT_TRANSITION_POLICY_REF = "SESSION_EXPLICIT_TRANSITION_EVIDENCE_POLICY@1.0.0";
+
+function operationalComponent(input: {
+  readonly transition: ProductionSequencingTransitionFact;
+  readonly kind: OperationalDurationComponent["kind"];
+  readonly bound: OperationalDurationBound;
+}): OperationalDurationComponent {
+  return Object.freeze({
+    componentId: `sequencing-duration:${finalSequencingDeterministicToken({
+      transitionFactId: input.transition.transitionFactId,
+      kind: input.kind,
+      policyRef: input.bound.policyRef,
+      sourceRef: input.bound.provenance.sourceRef,
+    })}`,
+    owner: "sequencing",
+    kind: input.kind,
+    lowerBoundSeconds: input.bound.lowerBoundSeconds,
+    upperBoundSeconds: input.bound.upperBoundSeconds,
+    policyRef: input.bound.policyRef,
+    classification: input.bound.classification,
+    sourceAssignmentId: input.transition.toAssignmentId,
+    sourceDoseBlockId: null,
+    countedExactlyOnce: true,
+    provenance: input.bound.provenance,
+  });
+}
+
+function explicitTimingComponent(input: {
+  readonly transition: ProductionSequencingTransitionFact;
+  readonly fact: ExplicitProductionSequencingTransitionFact;
+}): readonly OperationalDurationComponent[] {
+  if (input.fact.target.kind !== "timing") return [];
+  const target = input.fact.target.value;
+  if (target.kind !== "exact" && target.kind !== "range") return [];
+  const lower = target.kind === "exact" ? target.seconds : target.minimumSeconds;
+  const upper = target.kind === "exact" ? target.seconds : target.maximumSeconds;
+  return [operationalComponent({
+    transition: input.transition,
+    kind: "explicit_transition_timing",
+    bound: {
+      lowerBoundSeconds: lower,
+      upperBoundSeconds: upper,
+      classification: "evidence_backed",
+      policyRef: EXPLICIT_TRANSITION_POLICY_REF,
+      provenance: input.fact.provenance,
+    },
+  })];
+}
+
+function aggregateTarget(
+  components: readonly OperationalDurationComponent[],
+): ProductionSequencingTransitionTarget {
+  return {
+    kind: "range",
+    minimumSeconds: components.reduce((total, entry) => total + entry.lowerBoundSeconds, 0),
+    maximumSeconds: components.reduce((total, entry) => total + entry.upperBoundSeconds, 0),
+  };
+}
+
 export function resolveProductionSequencingTransitionInstructions(input: {
   readonly sequencingInput: ProductionFinalSessionSequencingInput;
   readonly transition: ProductionSequencingTransitionFact;
@@ -294,6 +361,7 @@ export function resolveProductionSequencingTransitionInstructions(input: {
     type: ProductionInterExerciseTransitionInstruction["type"],
     source: ExplicitProductionSequencingTransitionFact | undefined,
     target: ProductionSequencingTransitionTarget,
+    operationalComponents: readonly OperationalDurationComponent[] = [],
   ): ProductionInterExerciseTransitionInstruction => ({
     sequencingContract: PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE,
     instructionId: `sequencing-instruction:${finalSequencingDeterministicToken({ transitionFactId: input.transition.transitionFactId, type })}`,
@@ -302,25 +370,55 @@ export function resolveProductionSequencingTransitionInstructions(input: {
     target,
     sourceTransitionFactId: source?.transitionFactId ?? null,
     countedInDurationExactlyOnce: true,
+    ...(input.sequencingInput.operationalDurationPolicy ? {
+      operationalComponents: Object.freeze(operationalComponents),
+    } : {}),
     provenance: source
       ? [source.provenance]
-      : [{ source: "policy", sourceRef: "SESSION_SEQUENCING_POLICY_V1:NO_INVENTED_TIME" }],
+      : operationalComponents.length
+        ? operationalComponents.map((entry) => entry.provenance)
+        : [{ source: "policy", sourceRef: "SESSION_SEQUENCING_POLICY_V1:NO_INVENTED_TIME" }],
   });
+  const durationPolicy = input.sequencingInput.operationalDurationPolicy;
+  const setupComponents = setup && durationPolicy
+    ? explicitTimingComponent({ transition: input.transition, fact: setup })
+    : durationPolicy
+      ? [
+        operationalComponent({ transition: input.transition, kind: "assignment_transition",
+          bound: durationPolicy.assignmentTransition }),
+        operationalComponent({ transition: input.transition, kind: "exercise_setup",
+          bound: durationPolicy.exerciseSetupByRelationship[input.transition.setupRelationship] }),
+        ...(input.transition.equipmentRelationship === "changed" ||
+          input.transition.setupRelationship === "equipment_change_required"
+          ? [operationalComponent({ transition: input.transition, kind: "equipment_adjustment",
+            bound: durationPolicy.equipmentAdjustment })]
+          : []),
+      ]
+      : [];
+  const sectionComponents = section && durationPolicy
+    ? explicitTimingComponent({ transition: input.transition, fact: section })
+    : durationPolicy && input.transition.sectionRelationship === "section_boundary"
+      ? [operationalComponent({ transition: input.transition, kind: "section_transition",
+        bound: durationPolicy.sectionTransition })]
+      : [];
+  const recoveryComponents = recovery && durationPolicy
+    ? explicitTimingComponent({ transition: input.transition, fact: recovery })
+    : [];
   const instructions: ProductionInterExerciseTransitionInstruction[] = [
-    instruction("setup", setup, timingTarget(setup, {
-      kind: "unknown",
-      reasonCode: "SETUP_DURATION_NOT_EXPLICIT",
-    })),
-    instruction("recovery", recovery, timingTarget(recovery, {
-      kind: "not_prescribed",
-      reasonCode: "INTER_EXERCISE_RECOVERY_NOT_PRESCRIBED",
-    })),
+    instruction("setup", setup, setupComponents.length
+      ? aggregateTarget(setupComponents)
+      : timingTarget(setup, { kind: "unknown", reasonCode: "SETUP_DURATION_NOT_EXPLICIT" }),
+    setupComponents),
+    instruction("recovery", recovery, recoveryComponents.length
+      ? aggregateTarget(recoveryComponents)
+      : timingTarget(recovery, { kind: "not_prescribed",
+        reasonCode: "INTER_EXERCISE_RECOVERY_NOT_PRESCRIBED" }), recoveryComponents),
   ];
   if (input.transition.sectionRelationship === "section_boundary") {
-    instructions.push(instruction("section_boundary", section, timingTarget(section, {
-      kind: "unknown",
-      reasonCode: "SECTION_BOUNDARY_DURATION_NOT_EXPLICIT",
-    })));
+    instructions.push(instruction("section_boundary", section, sectionComponents.length
+      ? aggregateTarget(sectionComponents)
+      : timingTarget(section, { kind: "unknown",
+        reasonCode: "SECTION_BOUNDARY_DURATION_NOT_EXPLICIT" }), sectionComponents));
   }
   return instructions;
 }

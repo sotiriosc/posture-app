@@ -76,6 +76,7 @@ function result(input: {
   readonly policyRef: ProductionFinalSessionSequencingResult["policyRef"];
   readonly sequenceRevisionId?: string | null;
   readonly plan?: ProductionFinalSessionSequencePlan | null;
+  readonly calculatedDuration?: ProductionFinalSessionSequencingResult["calculatedDuration"];
   readonly diagnosticBestOrder?: ProductionFinalSessionSequencingResult["diagnosticBestOrder"];
   readonly findings?: readonly FinalSessionSequencingValidationFinding[];
   readonly trace: FinalSequencingDecisionTrace;
@@ -87,6 +88,9 @@ function result(input: {
     sequencePlanId: input.sequencePlanId,
     sequenceRevisionId: input.sequenceRevisionId ?? null,
     plan: input.plan ?? null,
+    ...(input.calculatedDuration !== undefined ? {
+      calculatedDuration: input.calculatedDuration,
+    } : {}),
     diagnosticBestOrder: input.diagnosticBestOrder ?? null,
     findings: input.findings ?? [],
     decisionTrace: input.trace,
@@ -103,6 +107,7 @@ function failure(input: {
   readonly trace: FinalSequencingDecisionTrace;
   readonly findings?: readonly FinalSessionSequencingValidationFinding[];
   readonly diagnosticBestOrder?: ProductionFinalSessionSequencingResult["diagnosticBestOrder"];
+  readonly calculatedDuration?: ProductionFinalSessionSequencingResult["calculatedDuration"];
 }): ProductionFinalSessionSequencingResult {
   return result({
     status: input.status,
@@ -110,6 +115,7 @@ function failure(input: {
     policyRef: input.policyRef,
     findings: input.findings,
     diagnosticBestOrder: input.diagnosticBestOrder,
+    calculatedDuration: input.calculatedDuration,
     trace: withTrace(input.trace, { finalReasonCodes: input.reasons }),
   });
 }
@@ -406,8 +412,13 @@ export function sequenceFinalSession(
     prescriptionUpperBoundSeconds: input.prescriptionSession.sessionDurationInterval.knownUpperBoundSeconds,
     prescriptionUnknownComponents: input.prescriptionSession.sessionDurationInterval.unknownComponents,
     prescriptionIntervalRefs: assignmentBuild.facts.map((fact) => fact.finalPrescriptionRevisionId),
+    prescriptionComponents: input.prescriptionSession.plans.flatMap((plan) =>
+      plan.durationInterval.includedComponents ?? []),
     transitionInstructions,
+    operationalDurationPolicy: input.operationalDurationPolicy,
+    firstAssignmentId: search.order[0]?.assignmentId ?? null,
     availableMinutes: input.availableMinutes,
+    availableCapacityStatus: input.availableCapacityStatus,
   });
   if (duration.status === "definitely_over_budget" || duration.status === "possibly_over_budget") {
     const recomposition = planDurationAwareRecomposition({
@@ -416,7 +427,7 @@ export function sequenceFinalSession(
       prescription: input.prescriptionSession,
       finalDuration: duration,
     });
-    const canRemoveSessionLocalWork = recomposition.status === "session_local_recomposition_required";
+    const canRemoveSessionLocalWork = recomposition.status === "duration_over_capacity_recomposable";
     return failure({
       status: canRemoveSessionLocalWork
         ? "duration_recomposition_required"
@@ -426,6 +437,7 @@ export function sequenceFinalSession(
       sequencePlanId,
       policyRef,
       reasons: recomposition.reasonCodes,
+      calculatedDuration: duration,
       trace: withTrace(trace, {
         duration: [duration.status, ...duration.unknownComponents, ...recomposition.reasonCodes],
       }),

@@ -51,10 +51,10 @@ async function fixture(input: { readonly mode: "preview" | "apply"; readonly kno
     provenance: { source: "owner_confirmation", sourceRefs: ["synthetic-consent"] }, createdAt: NOW });
   await enrollmentProfiles.appendEnrollment(enrollment);
   let profile = buildOwnerProfileRevision({ userId: USER_ID, basedOnRevisionId: null,
-    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 2,
-    sessionOpportunities: [1, 2].map((order) => ({ opportunityId: `owner-opportunity-${order}`, order,
-      minutes: input.knownMinutes ? 45 : null })),
-    sessionMinutes: input.knownMinutes ? { status: "known", minutes: 45 } :
+    primaryGoal: "strength", trainingMode: "develop", secondaryGoal: null, daysPerWeek: 4,
+    sessionOpportunities: [1, 2, 3, 4].map((order) => ({ opportunityId: `owner-opportunity-${order}`, order,
+      minutes: input.knownMinutes ? 90 : null })),
+    sessionMinutes: input.knownMinutes ? { status: "known", minutes: 90 } :
       { status: "explicit_unknown", minutes: null },
     equipmentCapabilitySnapshot: { environment: "commercial_gym",
       capabilityIds: input.capabilityIds ?? ["commercial_gym", "dumbbells", "adjustable_bench"], confirmed: true,
@@ -142,11 +142,16 @@ describe("controlled owner genuine generation and application", () => {
     ]);
     expect(value.generated).toMatchObject({ productShadowCallCount: 0, legacyGenerateProgramCallCount: 0 });
     expect(value.generated.preview).toMatchObject({ counterfactual: true, applied: false, stale: false,
-      readinessStatus: "preview_only_unknown_duration" });
+      readinessStatus: "ready_for_approval" });
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
       fact.startsWith("owner-query:loading-suitability:"))).toBe(false);
     expect(value.generated.preview?.unresolvedFacts.some((fact) =>
-      fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(true);
+      fact.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:"))).toBe(false);
+    expect(value.generated.preview?.productProjection.sessions.every((session) =>
+      session.durationStatus === "bounded" &&
+      session.calculatedDuration?.knownUpperBoundSeconds !== null &&
+      session.calculatedDuration!.knownUpperBoundSeconds <= (session.availableMinutes ?? 0) * 60))
+      .toBe(true);
     expect(JSON.stringify(value.generated.preview)).not.toContain("owner@example");
   });
 

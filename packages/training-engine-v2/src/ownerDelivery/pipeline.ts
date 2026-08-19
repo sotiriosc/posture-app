@@ -47,14 +47,21 @@ import {
 } from "../weekPlanning";
 import {
   compileSessionPrescription,
+  PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1,
+  PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1_REFERENCE,
   PRESCRIPTION_POLICY_V1,
   type PrescriptionCompilationContextFacts,
   type PrescriptionSessionCompilerInput,
 } from "../prescription";
 import {
   PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE,
+  SESSION_DURATION_FEASIBILITY_POLICY_V1,
+  SESSION_DURATION_FEASIBILITY_POLICY_V1_REFERENCE,
   SESSION_SEQUENCING_POLICY_V1,
+  executeBoundedDurationRecompositionLoop,
   sequenceFinalSession,
+  type DurationRecompositionDecision,
+  type DurationRecompositionStatus,
   type FinalSequencingSearchResourcePolicy,
 } from "../sequencing";
 import {
@@ -111,7 +118,9 @@ const ENGINE_POLICY_VERSIONS = Object.freeze([
   "PRODUCTION_WEEK_POLICY_V1_CAUSAL_CORE@1.0.0",
   `${OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE.policyId}@${OWNER_GET_STRONGER_TOPOLOGY_POLICY_REFERENCE.version}`,
   "PRESCRIPTION_POLICY_V1@1.0.0",
+  `${PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1_REFERENCE.policyId}@${PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1_REFERENCE.version}`,
   "SESSION_SEQUENCING_POLICY_V1@1.0.0",
+  `${SESSION_DURATION_FEASIBILITY_POLICY_V1_REFERENCE.policyId}@${SESSION_DURATION_FEASIBILITY_POLICY_V1_REFERENCE.version}`,
   "POST_PRESCRIPTION_WEEK_VALIDATION_POLICY_V1_SUPPORTED_CORE@1.0.0",
 ]);
 
@@ -147,6 +156,13 @@ interface SessionExecution {
   readonly handoff: Handoff;
   readonly compilation: Compilation;
   readonly sequence: Sequence;
+  readonly durationResolution: {
+    readonly status: DurationRecompositionStatus;
+    readonly rebuildCount: number;
+    readonly structuralIterationBound: number;
+    readonly intentStateFingerprints: readonly string[];
+    readonly decisions: readonly DurationRecompositionDecision[];
+  };
 }
 
 class OwnerPipelinePreflightError extends Error {
@@ -593,6 +609,7 @@ function compileSession(input: { readonly command: OwnerGenerationCommand; reado
     executionAttemptId: stableId("owner-generation-attempt", { commandId: input.command.commandId,
       intentId: intent.id }), evaluationTime: input.command.evaluationTime, policy: PRESCRIPTION_POLICY_V1,
     availablePolicies: [PRESCRIPTION_POLICY_V1],
+    operationalDurationPolicy: PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1,
     revisionContextByHandoffId: Object.fromEntries(input.handoff.assignments.map((assignment) =>
       [assignment.handoffId, null])),
   };
@@ -736,48 +753,85 @@ function executeSessions(input: ControlledOwnerProductionPipelineInput, source: 
             exerciseId: exercise.id })?.answer === "no") ? [exercise.id] : []));
       const ownerCandidatePool = REFERENCE_EXERCISES.filter((exercise) =>
         !loadingContradictedExerciseIds.has(exercise.id));
-      const candidates = buildSessionCandidateResults(planning.sessionIntent, {
-        athlete, assessment, alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
-        painAndInjury: plannerInput.painAndInjury, trainingSafety: plannerInput.trainingSafety,
-        equipment, history: plannerInput.history, satisfiedPrerequisiteIds: plannerInput.satisfiedPrerequisiteIds,
-        evaluationAsOf: input.command.evaluationTime,
-      }, { candidatePool: ownerCandidatePool });
-      const skeleton = composeSessionSkeleton({ intent: planning.sessionIntent, candidateResultsByNeed: candidates });
-      const handoff = buildSessionPrescriptionHandoff({ intent: planning.sessionIntent, skeleton,
-        candidateResultsByNeed: candidates });
-      if (!skeleton.assignments.length || !handoff.assignments.length) {
-        const unresolved = candidateQuestions({ pipelineInput: input, intent,
-          sessionIntent: planning.sessionIntent, candidates, policy: responsibilityPolicy, equipment });
-        const code = unresolved.prerequisiteIds.length > 0
-          ? `OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:${unresolved.prerequisiteIds.join("|")}`
-          : "OWNER_SESSION_COMPOSER_EMPTY";
-        throw new OwnerPipelinePreflightError(code, unresolved.questions,
-          unresolved.blockerCodes.length ? unresolved.blockerCodes : [code]);
+      const durationExecution = executeBoundedDurationRecompositionLoop({
+        initialIntent: planning.sessionIntent,
+        fingerprintIntent: (currentIntent) => deterministicToken({
+          sessionIntentId: currentIntent.id, needs: currentIntent.needs,
+        }),
+        build: (currentIntent) => {
+        const currentPlanning = Object.freeze({ ...planning, sessionIntent: currentIntent }) as Planning;
+        const candidates = buildSessionCandidateResults(currentIntent, {
+          athlete, assessment, alignmentPriorities: deriveAlignmentPriorities(assessment).priorities,
+          painAndInjury: plannerInput.painAndInjury, trainingSafety: plannerInput.trainingSafety,
+          equipment, history: plannerInput.history,
+          satisfiedPrerequisiteIds: plannerInput.satisfiedPrerequisiteIds,
+          evaluationAsOf: input.command.evaluationTime,
+        }, { candidatePool: ownerCandidatePool });
+        const skeleton = composeSessionSkeleton({ intent: currentIntent, candidateResultsByNeed: candidates });
+        const handoff = buildSessionPrescriptionHandoff({ intent: currentIntent, skeleton,
+          candidateResultsByNeed: candidates });
+        if (!skeleton.assignments.length || !handoff.assignments.length) {
+          const unresolved = candidateQuestions({ pipelineInput: input, intent,
+            sessionIntent: currentIntent, candidates, policy: responsibilityPolicy, equipment });
+          const code = unresolved.prerequisiteIds.length > 0
+            ? `OWNER_REQUIRED_CANDIDATE_CAPABILITY_UNRESOLVED:${unresolved.prerequisiteIds.join("|")}`
+            : "OWNER_SESSION_COMPOSER_EMPTY";
+          throw new OwnerPipelinePreflightError(code, unresolved.questions,
+            unresolved.blockerCodes.length ? unresolved.blockerCodes : [code]);
+        }
+        const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput,
+          planning: currentPlanning, skeleton, candidates, handoff });
+        if (compilation.status !== "compiled") {
+          throw new Error(`OWNER_PRESCRIPTION_BLOCKED:${compilation.status}`);
+        }
+        const facts = deriveCanonicalCompositionFacts({ candidateResultsByNeed: candidates,
+          continuity: currentIntent.continuityEvidence });
+        const sequence = sequenceFinalSession({
+          sequencingContract: PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE,
+          policy: SESSION_SEQUENCING_POLICY_V1, availablePolicies: [SESSION_SEQUENCING_POLICY_V1],
+          intent: currentIntent, skeleton, sequencingHandoff: buildSessionSequencingInput(skeleton),
+          prescriptionSession: compilation,
+          compositionFacts: skeleton.assignments.map((assignment) => facts.get(assignment.exerciseId)!),
+          currentEquipment: equipment,
+          equipmentRealizations: compilation.assignmentResults.flatMap((result) =>
+            result.equipmentRealization ? [result.equipmentRealization] : []),
+          explicitTransitionFacts: [], operationalDurationPolicy: SESSION_DURATION_FEASIBILITY_POLICY_V1,
+          availableMinutes: currentIntent.availableMinutes,
+          availableCapacityStatus: opportunity.minutes === null ? "unknown" : "known",
+          trainingReadiness: buildTrainingReadinessTrace({ trainingSafety: plannerInput.trainingSafety }),
+          executionAttemptId: stableId("owner-generation-attempt", { commandId: input.command.commandId,
+            intentId: currentIntent.id }), evaluationTime: input.command.evaluationTime,
+          searchResourcePolicy: OWNER_FINAL_SEQUENCE_SEARCH_POLICY,
+          availableSearchResourcePolicies: [OWNER_FINAL_SEQUENCE_SEARCH_POLICY], revisionContext: null,
+        });
+        const finalDuration = sequence.plan?.duration ?? sequence.calculatedDuration ?? null;
+        if (!finalDuration) throw new Error(`OWNER_FINAL_SEQUENCE_BLOCKED:${sequence.status}`);
+        return Object.freeze({ skeleton, prescription: compilation, finalDuration,
+          artifact: Object.freeze({ planning: currentPlanning, candidates, skeleton, handoff,
+            compilation, sequence }) });
+        },
+      });
+      if (durationExecution.status === "duration_over_capacity_required_work") {
+        throw new Error("OWNER_DURATION_OVER_CAPACITY_REQUIRED_WORK");
       }
-      const compilation = compileSession({ command: input.command, profile: input.profile, plannerInput, planning,
-        skeleton, candidates, handoff });
-      if (compilation.status !== "compiled") throw new Error(`OWNER_PRESCRIPTION_BLOCKED:${compilation.status}`);
-      const facts = deriveCanonicalCompositionFacts({ candidateResultsByNeed: candidates,
-        continuity: planning.sessionIntent.continuityEvidence });
-      const sequence = sequenceFinalSession({ sequencingContract: PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE,
-        policy: SESSION_SEQUENCING_POLICY_V1, availablePolicies: [SESSION_SEQUENCING_POLICY_V1],
-        intent: planning.sessionIntent, skeleton, sequencingHandoff: buildSessionSequencingInput(skeleton),
-        prescriptionSession: compilation,
-        compositionFacts: skeleton.assignments.map((assignment) => facts.get(assignment.exerciseId)!),
-        currentEquipment: equipment,
-        equipmentRealizations: compilation.assignmentResults.flatMap((result) =>
-          result.equipmentRealization ? [result.equipmentRealization] : []),
-        explicitTransitionFacts: [], availableMinutes: planning.sessionIntent.availableMinutes,
-        trainingReadiness: buildTrainingReadinessTrace({ trainingSafety: plannerInput.trainingSafety }),
-        executionAttemptId: stableId("owner-generation-attempt", { commandId: input.command.commandId,
-          intentId: planning.sessionIntent.id }), evaluationTime: input.command.evaluationTime,
-        searchResourcePolicy: OWNER_FINAL_SEQUENCE_SEARCH_POLICY,
-        availableSearchResourcePolicies: [OWNER_FINAL_SEQUENCE_SEARCH_POLICY], revisionContext: null });
-      if (!sequence.plan) throw new Error(`OWNER_FINAL_SEQUENCE_BLOCKED:${sequence.status}`);
+      if (durationExecution.status === "duration_recomposition_exhausted") {
+        throw new Error(`OWNER_DURATION_RECOMPOSITION_EXHAUSTED:${durationExecution.reasonCodes.join("|")}`);
+      }
+      if (durationExecution.status === "invalid_duration_recomposition_input") {
+        throw new Error("OWNER_DURATION_RECOMPOSITION_INVALID_INPUT");
+      }
+      const final = durationExecution.finalBuild.artifact;
+      if (!final.sequence.plan) throw new Error(`OWNER_FINAL_SEQUENCE_BLOCKED:${final.sequence.status}`);
       return Object.freeze({ opportunityId: reservation.opportunityId,
         reservationId: reservation.reservationId, minutes: opportunity.minutes,
-        materialized: Object.freeze(objectives), allocationMaterialization, plannerInput, planning, candidates,
-        skeleton, handoff, compilation, sequence });
+        materialized: Object.freeze(objectives), allocationMaterialization, plannerInput,
+        planning: final.planning, candidates: final.candidates, skeleton: final.skeleton,
+        handoff: final.handoff, compilation: final.compilation, sequence: final.sequence,
+        durationResolution: Object.freeze({ status: durationExecution.status,
+          rebuildCount: durationExecution.rebuildCount,
+          structuralIterationBound: durationExecution.structuralIterationBound,
+          intentStateFingerprints: Object.freeze(durationExecution.intentStateFingerprints),
+          decisions: Object.freeze(durationExecution.decisions) }) });
     }));
 }
 
@@ -845,7 +899,9 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
     sessions: Object.freeze(sessions.map((session) => Object.freeze({
       sessionId: session.planning.sessionIntent!.id, opportunityId: session.opportunityId,
       purpose: "strength_development",
-      durationStatus: session.sequence.plan!.duration.status === "fully_determinable" ? "known" : "unknown",
+      durationStatus: session.sequence.plan!.duration.knownUpperBoundSeconds === null ? "unknown" :
+        session.sequence.plan!.duration.knownLowerBoundSeconds ===
+          session.sequence.plan!.duration.knownUpperBoundSeconds ? "known" : "bounded",
       durationMinutes: session.sequence.plan!.duration.status === "fully_determinable" ?
         session.sequence.plan!.duration.knownLowerBoundSeconds / 60 : null,
       availableMinutes: session.minutes,
@@ -853,9 +909,20 @@ function displayProjection(input: ControlledOwnerProductionPipelineInput, intent
         status: session.sequence.plan!.duration.status,
         knownLowerBoundSeconds: session.sequence.plan!.duration.knownLowerBoundSeconds,
         knownUpperBoundSeconds: session.sequence.plan!.duration.knownUpperBoundSeconds,
+        lowerBoundSeconds: session.sequence.plan!.duration.lowerBoundSeconds,
+        upperBoundSeconds: session.sequence.plan!.duration.upperBoundSeconds,
+        completeness: session.sequence.plan!.duration.completeness,
         unknownComponents: Object.freeze([...session.sequence.plan!.duration.unknownComponents]),
+        includedComponents: Object.freeze([...(session.sequence.plan!.duration.includedComponents ?? [])]),
+        policyRefs: Object.freeze([...(session.sequence.plan!.duration.operationalPolicyRefs ?? [])]),
         accountedAssignmentIds: Object.freeze(session.sequence.plan!.steps.map((step) => step.assignmentId)),
         noInventedTime: true as const,
+      }),
+      durationResolution: Object.freeze({
+        status: session.durationResolution.status,
+        rebuildCount: session.durationResolution.rebuildCount,
+        structuralIterationBound: session.durationResolution.structuralIterationBound,
+        intentStateFingerprints: Object.freeze([...session.durationResolution.intentStateFingerprints]),
       }),
       exerciseAssignments: Object.freeze(session.sequence.plan!.steps.map((step) => {
         const assignment = session.handoff.assignments.find((entry) => entry.handoffId === step.assignmentId)!;
@@ -1015,8 +1082,21 @@ function semanticCompleteness(input: { readonly profile: OwnerGetStrongerProfile
       session.availableMinutes !== undefined && session.calculatedDuration !== undefined &&
       session.calculatedDuration.noInventedTime &&
       session.calculatedDuration.accountedAssignmentIds.length === session.exerciseAssignments.length &&
-      (session.durationStatus === "known") ===
-        (session.calculatedDuration.status === "fully_determinable")),
+      (session.calculatedDuration.includedComponents?.reduce((total, component) =>
+        total + component.lowerBoundSeconds, 0) ?? -1) ===
+          session.calculatedDuration.knownLowerBoundSeconds &&
+      (session.calculatedDuration.knownUpperBoundSeconds === null ||
+        (session.calculatedDuration.includedComponents?.reduce((total, component) =>
+          total + component.upperBoundSeconds, 0) ?? -1) ===
+            session.calculatedDuration.knownUpperBoundSeconds) &&
+      new Set(session.calculatedDuration.includedComponents?.map((component) =>
+        component.componentId) ?? []).size === session.calculatedDuration.includedComponents?.length &&
+      (session.durationStatus === "unknown") ===
+        (session.calculatedDuration.knownUpperBoundSeconds === null) &&
+      (session.durationStatus === "bounded") ===
+        (session.calculatedDuration.knownUpperBoundSeconds !== null &&
+          session.calculatedDuration.knownLowerBoundSeconds !==
+            session.calculatedDuration.knownUpperBoundSeconds)),
     topologyQualitySatisfied: topology.valid,
     executionRequirementLineageComplete,
     postPrescriptionExecutionRequirementsPreserved,
@@ -1136,7 +1216,8 @@ export function runControlledOwnerProductionPipeline(
     const sessions = executeSessions(input, source, intent, weekPlan, responsibilityPolicy);
     unresolvedFacts = uniqueSorted([...unresolvedFacts, ...sessions.flatMap((session) => {
       const status = session.sequence.plan!.duration.status;
-      return status === "fully_determinable" || status === "fits_known_bound" ? [] :
+      return status === "fully_determinable" || status === "fits_known_bound" ||
+        status === "unknown_due_to_available_capacity" ? [] :
         [`OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE:${session.opportunityId}:${status}`];
     })]);
     stages.push(artifact("session_intent", "planSessionIntent", sessions.map((entry) => entry.planning)));

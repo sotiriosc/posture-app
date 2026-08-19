@@ -81,7 +81,7 @@ const ONTOLOGY_AUDIT = Object.freeze([
 ] as const);
 
 function recursiveSource(root: string): string {
-  return readdirSync(root).sort().flatMap((name) => {
+  return readdirSync(root).sort().filter((name) => name !== ".next").flatMap((name) => {
     const path = resolve(root, name);
     return statSync(path).isDirectory() ? [recursiveSource(path)] : /\.(ts|tsx|js|jsx)$/.test(name)
       ? [readFileSync(path, "utf8")] : [];
@@ -94,9 +94,11 @@ function activationEvidence() {
   const workspaceRoot = resolve(packageRoot, "../..");
   const apps = recursiveSource(resolve(workspaceRoot, "apps"));
   const weekSource = recursiveSource(resolve(packageRoot, "src/weekValidation"));
+  // Controlled owner activation has its own exact guard; this frozen report audits every other runtime path.
   const otherEngineSource = readdirSync(resolve(packageRoot, "src"), { withFileTypes: true })
     .filter((entry) => entry.isDirectory() &&
-      entry.name !== "weekValidation" && entry.name !== "weekValidationV1_1")
+      entry.name !== "weekValidation" && entry.name !== "weekValidationV1_1" &&
+      entry.name !== "ownerDelivery")
     .map((entry) => recursiveSource(resolve(packageRoot, "src", entry.name))).join("\n");
   const count = (source: string, value: string): number => source.split(value).length - 1;
   return {

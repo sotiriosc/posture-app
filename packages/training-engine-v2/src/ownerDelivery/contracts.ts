@@ -1,5 +1,6 @@
 import type { EquipmentCapabilityKey, MachineId } from "../domain/equipment";
 import type { ExercisePrerequisiteType } from "../domain/exercise";
+import type { OperationalDurationComponent } from "../prescription/compiler/contracts";
 import { deterministicToken, explicitIsoTime, sameSemanticValue, stableId, uniqueSorted } from
   "../prescription/compiler/utilities";
 
@@ -336,20 +337,34 @@ export interface OwnerProgramSessionProjection {
   readonly sessionId: string;
   readonly opportunityId: string;
   readonly purpose: string;
-  readonly durationStatus: "known" | "unknown";
+  readonly durationStatus: "known" | "bounded" | "unknown";
   readonly durationMinutes: number | null;
   /** Available time and calculated work are separate facts. Optional for immutable older previews. */
   readonly availableMinutes?: number | null;
   readonly calculatedDuration?: {
     readonly status: "fully_determinable" | "bounded" | "unknown_due_to_prescription" |
       "unknown_due_to_setup_transition" | "unknown_due_to_interexercise_recovery" |
-      "unknown_due_to_section_transition" | "definitely_over_budget" | "possibly_over_budget" |
+      "unknown_due_to_section_transition" | "unknown_due_to_available_capacity" |
+      "definitely_over_budget" | "possibly_over_budget" |
       "fits_known_bound";
     readonly knownLowerBoundSeconds: number;
     readonly knownUpperBoundSeconds: number | null;
+    readonly lowerBoundSeconds?: number;
+    readonly upperBoundSeconds?: number | null;
+    readonly completeness?: "complete" | "unknown";
     readonly unknownComponents: readonly string[];
+    readonly includedComponents?: readonly OperationalDurationComponent[];
+    readonly policyRefs?: readonly string[];
     readonly accountedAssignmentIds: readonly string[];
     readonly noInventedTime: true;
+  };
+  readonly durationResolution?: {
+    readonly status: "duration_unknown" | "duration_within_capacity" |
+      "duration_over_capacity_recomposable" | "duration_over_capacity_required_work" |
+      "duration_recomposition_exhausted" | "invalid_duration_recomposition_input";
+    readonly rebuildCount: number;
+    readonly structuralIterationBound: number;
+    readonly intentStateFingerprints: readonly string[];
   };
   readonly exerciseAssignments: readonly OwnerProgramExerciseProjection[];
   readonly practiceModes: readonly ["full", "lighter", "recovery"];

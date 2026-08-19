@@ -7,6 +7,7 @@ export * from "./durationRecomposition";
 export * from "./evaluation";
 export * from "./exactSearch";
 export * from "./interference";
+export * from "./operationalDurationPolicy";
 export * from "./planIdentity";
 export * from "./planRevisions";
 export * from "./policies";

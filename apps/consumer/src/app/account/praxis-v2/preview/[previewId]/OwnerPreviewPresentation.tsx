@@ -23,23 +23,32 @@ function DoseFacts(input: { readonly styles: Readonly<Record<string, string>>; r
     <div className={input.styles.doseFact} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>;
 }
 
-function durationText(session: ControlledOwnerV2ProgramPreview["productProjection"]["sessions"][number]): string {
+function durationPresentation(
+  session: ControlledOwnerV2ProgramPreview["productProjection"]["sessions"][number],
+): { readonly capacity: string; readonly planning: string } {
   const available = typeof session.availableMinutes === "number" ? `${session.availableMinutes} minutes available` :
     "Available time unknown";
   const calculated = session.calculatedDuration;
   if (!calculated) {
-    return session.durationStatus === "known" && typeof session.durationMinutes === "number" ?
-      `${session.durationMinutes} minutes` : "Duration unknown";
+    return { capacity: available, planning: session.durationStatus === "known" &&
+      typeof session.durationMinutes === "number" ? `Planned duration: ${session.durationMinutes} minutes` :
+      "Planned duration unavailable" };
   }
-  const time = (seconds: number) => seconds % 60 === 0 ? `${seconds / 60} minutes` :
-    `${Math.floor(seconds / 60)} minutes ${seconds % 60} seconds`;
   if (calculated.knownUpperBoundSeconds === null) {
-    return `${available} · Calculated at least ${time(calculated.knownLowerBoundSeconds)}; final duration unresolved`;
+    const component = calculated.unknownComponents[0] ?? "";
+    const unresolved = component.includes("setup") ? "setup timing" :
+      component.includes("transition") ? "transition timing" :
+        component.includes("repetition") ? "repetition execution timing" :
+          component.includes("breath") ? "breathing cadence" :
+            component.includes("pace") || component.includes("step") ? "movement pace" :
+              component.includes("rest") ? "rest timing" : "an operational timing fact";
+    return { capacity: available, planning: `Planned duration unavailable: ${unresolved} is unresolved` };
   }
-  const range = calculated.knownLowerBoundSeconds === calculated.knownUpperBoundSeconds ?
-    time(calculated.knownLowerBoundSeconds) :
-    `${time(calculated.knownLowerBoundSeconds)} to ${time(calculated.knownUpperBoundSeconds)}`;
-  return `${available} · Calculated ${range}`;
+  const lowerMinutes = Math.max(1, Math.round(calculated.knownLowerBoundSeconds / 60));
+  const upperMinutes = Math.max(lowerMinutes, Math.round(calculated.knownUpperBoundSeconds / 60));
+  const range = lowerMinutes === upperMinutes ? `${lowerMinutes} minutes` :
+    `${lowerMinutes}-${upperMinutes} minutes`;
+  return { capacity: available, planning: `Planned duration: approximately ${range}` };
 }
 
 function sectionGroup(section: string | undefined): "prepare" | "main" | "supporting" | "cooldown" {
@@ -83,12 +92,16 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
 
     <section className={styles.previewSection} aria-labelledby="sessions-heading">
       <h2 id="sessions-heading">Sessions</h2>
-      <div className={styles.sessionList}>{preview.productProjection.sessions.map((session, sessionIndex) =>
-        <article className={styles.previewSession} data-testid="owner-preview-session" key={session.sessionId}>
+      <div className={styles.sessionList}>{preview.productProjection.sessions.map((session, sessionIndex) => {
+        const duration = durationPresentation(session);
+        return <article className={styles.previewSession} data-testid="owner-preview-session" key={session.sessionId}>
           <header className={styles.sessionHeader}>
             <h3>Session {sessionIndex + 1}</h3>
-            <p className={styles.sessionMeta}>{presentSessionPurpose(session.purpose)} · {
-              durationText(session)}</p>
+            <p className={styles.sessionMeta}>{presentSessionPurpose(session.purpose)}</p>
+            <div className={styles.sessionTiming}>
+              <p>{duration.capacity}</p>
+              <p>{duration.planning}</p>
+            </div>
           </header>
 
           <div className={styles.exerciseList}>{session.exerciseAssignments.map((exercise, exerciseIndex) => {
@@ -144,7 +157,8 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
             <ul className={styles.optionList}>{session.practiceModes.map((mode) =>
               <li key={mode}>{presentPracticeMode(mode)}</li>)}</ul>
           </aside>
-        </article>)}</div>
+        </article>;
+      })}</div>
     </section>
 
     {preview.unresolvedFacts.length ? <section className={styles.previewSection}>
@@ -166,6 +180,24 @@ export default function OwnerPreviewPresentation({ preview, actions, styles }: O
           <div className={styles.technicalFact}><dt>Canonical Week objective IDs</dt><dd><ul>{
             preview.productProjection.weekObjectiveIds.map((id) =>
               <li className={styles.code} key={id}>{id}</li>)}</ul></dd></div>
+          {preview.productProjection.sessions.map((session, index) => session.calculatedDuration ?
+            <div className={styles.technicalFact} key={`duration-${session.sessionId}`}>
+              <dt>Session {index + 1} duration interval</dt><dd>
+                <p className={styles.code}>{session.calculatedDuration.knownLowerBoundSeconds}-{
+                  session.calculatedDuration.knownUpperBoundSeconds ?? "unknown"} seconds · {
+                  session.calculatedDuration.status}</p>
+                {session.durationResolution ? <p className={styles.code}>{session.durationResolution.status} · {
+                  session.durationResolution.rebuildCount} rebuilds / {
+                  session.durationResolution.structuralIterationBound} removable assignments</p> : null}
+                {session.calculatedDuration.policyRefs?.length ? <ul>{session.calculatedDuration.policyRefs.map((ref) =>
+                  <li className={styles.code} key={ref}>{ref}</li>)}</ul> : null}
+                {session.calculatedDuration.includedComponents?.length ? <ul>{
+                  session.calculatedDuration.includedComponents.map((component) =>
+                    <li className={styles.code} key={component.componentId}>{component.kind}: {
+                      component.lowerBoundSeconds}-{component.upperBoundSeconds} seconds ({
+                      component.classification})</li>)}</ul> : null}
+              </dd>
+            </div> : null)}
           {preview.unresolvedFacts.length ? <div className={styles.technicalFact}><dt>Diagnostic identifiers</dt>
             <dd><ul>{preview.unresolvedFacts.map((fact) =>
               <li className={styles.code} key={fact}>{fact}</li>)}</ul></dd></div> : null}

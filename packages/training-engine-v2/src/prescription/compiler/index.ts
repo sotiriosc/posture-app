@@ -5,6 +5,7 @@ export * from "./contracts";
 export * from "./durationInterval";
 export * from "./executionResolution";
 export * from "./loadResolution";
+export * from "./operationalDurationPolicy";
 export * from "./policyResolution";
 export * from "./requirementResolution";
 export * from "./revisions";

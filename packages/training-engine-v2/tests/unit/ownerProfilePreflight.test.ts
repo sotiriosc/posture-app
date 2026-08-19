@@ -209,11 +209,44 @@ describe("controlled-owner progressive profile preflight", () => {
     expect(result.status).toBe("complete");
     expect(result.preflight).toMatchObject({ status: "ready", questions: [], bounded: true,
       maximumQuestionCount: 12 });
-    expect(result.approvalAllowed).toBe(false);
+    expect(result.approvalAllowed).toBe(true);
     expect(result.unresolvedFacts.filter((entry) =>
-      entry.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE"))).toHaveLength(4);
+      entry.startsWith("OWNER_CALCULATED_SESSION_DURATION_INDETERMINATE"))).toHaveLength(0);
+    expect(result.unresolvedFacts).toEqual([]);
     expect(result.unresolvedFacts).not.toContain("OWNER_REQUIRED_LOADING_COMPLETENESS_SATISFIED");
     expect(result.projection?.sessions).toHaveLength(4);
+    expect(result.projection?.sessions.map((session) => session.exerciseAssignments.map((assignment) =>
+      assignment.exerciseId))).toEqual([
+      ["goblet-squat", "dumbbell-romanian-deadlift"],
+      ["dumbbell-bench-press", "chest-supported-dumbbell-row"],
+      ["split-squat", "dumbbell-romanian-deadlift"],
+      ["dumbbell-bench-press", "chest-supported-dumbbell-row"],
+    ]);
+    expect(result.projection?.sessions.map((session) => [
+      session.calculatedDuration?.knownLowerBoundSeconds,
+      session.calculatedDuration?.knownUpperBoundSeconds,
+    ])).toEqual([[573, 2038], [573, 2038], [618, 2278], [573, 2038]]);
+    for (const session of result.projection?.sessions ?? []) {
+      expect(session).toMatchObject({ durationStatus: "bounded", availableMinutes: 90,
+        durationResolution: { status: "duration_within_capacity", rebuildCount: 0 } });
+      expect(session.exerciseAssignments).toHaveLength(2);
+      expect(session.exerciseAssignments.every((assignment) =>
+        assignment.doseBlocks?.map((block) => block.purpose).join(",") ===
+          "preparatory_acclimation,developmental_work")).toBe(true);
+      const components = session.calculatedDuration?.includedComponents ?? [];
+      expect(new Set(components.map((component) => component.componentId)).size).toBe(components.length);
+      expect(components.reduce((sum, component) => sum + component.lowerBoundSeconds, 0))
+        .toBe(session.calculatedDuration?.knownLowerBoundSeconds);
+      expect(components.reduce((sum, component) => sum + component.upperBoundSeconds, 0))
+        .toBe(session.calculatedDuration?.knownUpperBoundSeconds);
+      expect(components.map((component) => component.kind)).toEqual(expect.arrayContaining([
+        "dose_execution", "prescribed_rest", "load_calibration", "initial_session_setup",
+        "exercise_setup", "assignment_transition",
+      ]));
+      expect(session.calculatedDuration?.knownUpperBoundSeconds).toBeLessThanOrEqual(90 * 60);
+    }
+    expect(JSON.stringify(result.projection)).not.toContain("45.359237");
+    expect(result.stages.filter((entry) => entry.stage === "gate_13")).toHaveLength(1);
     expect(result.projection?.sessions.flatMap((session) => session.exerciseAssignments)
       .flatMap((assignment) => assignment.doseBlocks ?? [])
       .filter((block) => block.purpose === "developmental_work")

@@ -6,6 +6,7 @@ import {
   PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_VERSION,
   PRODUCTION_FINAL_SESSION_SEQUENCING_STATUS,
   SESSION_SEQUENCING_POLICY_V1,
+  SESSION_DURATION_FEASIBILITY_POLICY_V1,
   buildSequencedSessionDurationInterval,
   resolveFinalSequencingSearchResourcePolicy,
   resolveFinalSessionSequencingPolicy,
@@ -96,5 +97,73 @@ describe("production Final Session Sequencing contracts", () => {
     expect(duration.knownUpperBoundSeconds).toBeNull();
     expect(duration.status).toBe("unknown_due_to_setup_transition");
     expect(duration.unknownComponents).toContain("setup:SETUP_DURATION_NOT_EXPLICIT");
+  });
+
+  it("adds reviewed initial and between-assignment components exactly once", () => {
+    const prescriptionComponent = {
+      componentId: "prescription:work",
+      owner: "prescription" as const,
+      kind: "dose_execution" as const,
+      lowerBoundSeconds: 100,
+      upperBoundSeconds: 200,
+      policyRef: "PRESCRIPTION_OPERATIONAL_DURATION_POLICY_V1@1.0.0:fixture",
+      classification: "praxis_operational_doctrine" as const,
+      sourceAssignmentId: "assignment:first",
+      sourceDoseBlockId: "block:first",
+      countedExactlyOnce: true as const,
+      provenance: { source: "synthetic_contract_fixture" as const, sourceRef: "prescription:work" },
+    };
+    const assignmentTransition = {
+      componentId: "sequencing:transition",
+      owner: "sequencing" as const,
+      kind: "assignment_transition" as const,
+      lowerBoundSeconds: 10,
+      upperBoundSeconds: 60,
+      policyRef: SESSION_DURATION_FEASIBILITY_POLICY_V1.assignmentTransition.policyRef,
+      classification: "praxis_operational_doctrine" as const,
+      sourceAssignmentId: "assignment:second",
+      sourceDoseBlockId: null,
+      countedExactlyOnce: true as const,
+      provenance: SESSION_DURATION_FEASIBILITY_POLICY_V1.assignmentTransition.provenance,
+    };
+    const exerciseSetup = {
+      ...assignmentTransition,
+      componentId: "sequencing:exercise-setup",
+      kind: "exercise_setup" as const,
+      lowerBoundSeconds: 5,
+      upperBoundSeconds: 30,
+      policyRef: SESSION_DURATION_FEASIBILITY_POLICY_V1.exerciseSetupByRelationship.same_setup.policyRef,
+      provenance: SESSION_DURATION_FEASIBILITY_POLICY_V1.exerciseSetupByRelationship.same_setup.provenance,
+    };
+    const duration = buildSequencedSessionDurationInterval({
+      prescriptionLowerBoundSeconds: 100,
+      prescriptionUpperBoundSeconds: 200,
+      prescriptionUnknownComponents: [],
+      prescriptionIntervalRefs: ["prescription-revision:fixture"],
+      prescriptionComponents: [prescriptionComponent],
+      transitionInstructions: [{
+        sequencingContract: PRODUCTION_FINAL_SESSION_SEQUENCING_CONTRACT_REFERENCE,
+        instructionId: "instruction:reviewed-setup",
+        transitionFactId: "transition:reviewed",
+        type: "setup",
+        target: { kind: "range", minimumSeconds: 15, maximumSeconds: 90 },
+        sourceTransitionFactId: null,
+        countedInDurationExactlyOnce: true,
+        operationalComponents: [assignmentTransition, exerciseSetup],
+        provenance: [assignmentTransition.provenance, exerciseSetup.provenance],
+      }],
+      operationalDurationPolicy: SESSION_DURATION_FEASIBILITY_POLICY_V1,
+      firstAssignmentId: "assignment:first",
+      availableMinutes: 20,
+    });
+
+    expect(duration).toMatchObject({ knownLowerBoundSeconds: 175, knownUpperBoundSeconds: 530,
+      completeness: "complete", status: "fits_known_bound", timingFactReuseCount: 0 });
+    expect(duration.includedComponents?.reduce((sum, component) =>
+      sum + component.lowerBoundSeconds, 0)).toBe(175);
+    expect(duration.includedComponents?.reduce((sum, component) =>
+      sum + component.upperBoundSeconds, 0)).toBe(530);
+    expect(new Set(duration.includedComponents?.map((component) => component.componentId)).size)
+      .toBe(duration.includedComponents?.length);
   });
 });

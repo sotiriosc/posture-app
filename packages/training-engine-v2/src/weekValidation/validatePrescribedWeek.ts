@@ -78,6 +78,7 @@ function durationPending(status: string, upperBound: number | null): boolean {
     "unknown_due_to_setup_transition",
     "unknown_due_to_interexercise_recovery",
     "unknown_due_to_section_transition",
+    "unknown_due_to_available_capacity",
   ].includes(status);
 }
 

@@ -50,7 +50,7 @@ function normalizedResult(result: ReturnType<typeof validatePostPrescriptionWeek
 }
 
 function sourceText(root: string): string {
-  return readdirSync(root).flatMap((name) => {
+  return readdirSync(root).filter((name) => name !== ".next").flatMap((name) => {
     const path = resolve(root, name);
     if (statSync(path).isDirectory()) return sourceText(path);
     return /\.(?:ts|tsx|js|jsx)$/.test(name) ? [readFileSync(path, "utf8")] : [];

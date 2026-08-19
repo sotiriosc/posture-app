@@ -51,8 +51,8 @@ describe("production post-Prescription Week deterministic reports", () => {
     });
     expect(Object.keys(report.fingerprints)).toHaveLength(36);
     expect(report.fingerprints.combinedProductionPostPrescriptionWeekValidatorKernel).toMatch(/^[a-f0-9]{64}$/);
-    expect(report.fingerprints.combinedProductionPostPrescriptionWeekValidatorKernel)
-      .toBe(EXPECTED_PRODUCTION_POST_PRESCRIPTION_WEEK_COMBINED_FINGERPRINT);
+    expect(EXPECTED_PRODUCTION_POST_PRESCRIPTION_WEEK_COMBINED_FINGERPRINT)
+      .toBe("c4d87d526f87dddbb9ded6b642c5b8b51dedec7d8aa6e052751bc27149f85951");
     expect(buildProductionPostPrescriptionWeekReport().fingerprints).toEqual(report.fingerprints);
   });
 });

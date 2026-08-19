@@ -24,20 +24,26 @@ describe("Final Session Sequencing production activation guards", () => {
     expect(sequencingIndex).not.toContain("designContracts");
   });
 
-  it("has no app, generateProgram, engine runtime, consumer, gyms, default-policy, or Product Adapter activation", () => {
+  it("activates only through controlled owner delivery, never Product, Product Shadow, or app defaults", () => {
     const roots = [
       resolve(repositoryRoot, "apps"),
       resolve(repositoryRoot, "packages/engine/src"),
       resolve(repositoryRoot, "packages/training-engine-v2/src"),
     ];
     const liveFiles = roots.flatMap(TypeScriptFiles).filter((file) => !file.startsWith(`${sequencingRoot}/`));
+    const controlledOwnerPipeline = resolve(
+      repositoryRoot,
+      "packages/training-engine-v2/src/ownerDelivery/pipeline.ts",
+    );
     const activationPattern = /\bsequenceFinalSession\b|PRODUCTION_FINAL_SESSION_SEQUENCING_KERNEL_IMPLEMENTED_NOT_ACTIVATED/;
-    const violations = liveFiles.filter((file) => activationPattern.test(readFileSync(file, "utf8")))
+    const activations = liveFiles.filter((file) => activationPattern.test(readFileSync(file, "utf8")));
+    const violations = activations.filter((file) => file !== controlledOwnerPipeline)
       .map((file) => file.slice(repositoryRoot.length + 1));
     const generateProgramViolations = liveFiles.filter((file) => {
       const source = readFileSync(file, "utf8");
       return /generateProgram/.test(source) && activationPattern.test(source);
     });
+    expect(activations).toEqual([controlledOwnerPipeline]);
     expect(violations).toEqual([]);
     expect(generateProgramViolations).toEqual([]);
   });

@@ -30,6 +30,8 @@ import {
   type PrescriptionCompilationContextFacts,
   type PrescriptionEquipmentRealization,
   type PrescriptionExecutionRequirement,
+  type OperationalDurationComponent,
+  type PrescriptionOperationalExecutionTimingClass,
   type PrescriptionRestInstruction,
   type ProductionExercisePrescriptionPlan,
   type ProductionPrescriptionDecisionTrace,
@@ -344,7 +346,12 @@ export function compilePrescriptionAssignmentWithResolvedUseCase(
       instruction.appliesAfterBlockId === block.blockId
     ),
   }));
-  const interval = combineBlockDurationIntervals(blocks, input.sessionIntent.availableMinutes * 60);
+  const interval = combineBlockDurationIntervals({
+    blocks,
+    assignment: context.assignment,
+    availableSeconds: input.sessionIntent.availableMinutes * 60,
+    operationalPolicy: input.operationalDurationPolicy ?? null,
+  });
   const compatibilityProjection = buildPrescriptionCompatibilityProjection({
     blocks,
     restInstructions: allRestInstructions,
@@ -1044,19 +1051,75 @@ function deduplicateRestInstructions(
   return [...new Map(instructions.map((entry) => [entry.restInstructionId, entry])).values()];
 }
 
-function combineBlockDurationIntervals(
-  blocks: readonly ProductionPrescriptionDoseBlock[],
-  availableSeconds: number,
-) {
-  const intervals = blocks.map((block) => buildPrescriptionDurationInterval({
+function operationalTimingClass(
+  block: ProductionPrescriptionDoseBlock,
+  assignment: SessionExerciseAssignment,
+): PrescriptionOperationalExecutionTimingClass | null {
+  if (block.purpose === "preparatory_acclimation") return "lift_acclimation";
+  if (block.purpose === "recovery_or_downregulation" || assignment.section === "cooldown") {
+    return "cooldown_recovery";
+  }
+  if (block.purpose === "developmental_work") {
+    return assignment.section === "main"
+      ? "primary_developmental_strength"
+      : "supporting_developmental";
+  }
+  if (block.purpose !== "technique_quality_work") return null;
+  if (assignment.section === "warmup") return "dependency_preparation";
+  if (assignment.section === "activation") return "activation_control";
+  return "accessory_support";
+}
+
+function combineBlockDurationIntervals(input: {
+  readonly blocks: readonly ProductionPrescriptionDoseBlock[];
+  readonly assignment: SessionExerciseAssignment;
+  readonly availableSeconds: number;
+  readonly operationalPolicy: PrescriptionAssignmentCompilerInput["operationalDurationPolicy"];
+}) {
+  const intervals = input.blocks.map((block) => buildPrescriptionDurationInterval({
     dose: block.dose,
     restInstructions: block.restInstructions,
-    availableSeconds,
+    availableSeconds: input.availableSeconds,
+    operationalPolicy: input.operationalPolicy,
+    executionTimingClass: operationalTimingClass(block, input.assignment),
+    assignmentId: input.assignment.routinePrescriptionHandoffId,
+    blockId: block.blockId,
   }));
-  const lower = intervals.reduce((total, interval) => total + interval.knownLowerBoundSeconds, 0);
-  const upper = intervals.every((interval) => interval.knownUpperBoundSeconds !== null)
+  let lower = intervals.reduce((total, interval) => total + interval.knownLowerBoundSeconds, 0);
+  let upper = intervals.every((interval) => interval.knownUpperBoundSeconds !== null)
     ? intervals.reduce((total, interval) => total + (interval.knownUpperBoundSeconds ?? 0), 0)
     : null;
+  const includedComponents: OperationalDurationComponent[] = intervals.flatMap((interval) =>
+    interval.includedComponents ?? []);
+  const calibrationBlock = input.blocks.find((block) =>
+    block.purpose === "developmental_work" && block.dose.load?.kind === "user_selected_by_effort");
+  const calibrationClass = calibrationBlock
+    ? operationalTimingClass(calibrationBlock, input.assignment)
+    : null;
+  const calibrationBound = calibrationClass
+    ? input.operationalPolicy?.loadCalibration[calibrationClass]
+    : null;
+  if (calibrationBlock && calibrationBound) {
+    lower += calibrationBound.lowerBoundSeconds;
+    if (upper !== null) upper += calibrationBound.upperBoundSeconds;
+    includedComponents.push(Object.freeze({
+      componentId: stableId("prescription-duration-component", {
+        kind: "load_calibration",
+        assignmentId: input.assignment.routinePrescriptionHandoffId,
+        blockId: calibrationBlock.blockId,
+      }),
+      owner: "prescription" as const,
+      kind: "load_calibration" as const,
+      lowerBoundSeconds: calibrationBound.lowerBoundSeconds,
+      upperBoundSeconds: calibrationBound.upperBoundSeconds,
+      policyRef: calibrationBound.policyRef,
+      classification: calibrationBound.classification,
+      sourceAssignmentId: input.assignment.routinePrescriptionHandoffId,
+      sourceDoseBlockId: calibrationBlock.blockId,
+      countedExactlyOnce: true as const,
+      provenance: calibrationBound.provenance,
+    }));
+  }
   const unknownComponents = uniqueSorted(
     intervals.flatMap((interval) => interval.unknownComponents),
   ) as readonly PrescriptionDurationUnknownComponent[];
@@ -1064,11 +1127,15 @@ function combineBlockDurationIntervals(
     knownLowerBoundSeconds: lower,
     knownUpperBoundSeconds: upper,
     unknownComponents,
-    status: lower > availableSeconds
+    status: lower > input.availableSeconds
       ? "definitely_over_budget" as const
-      : upper !== null && upper > availableSeconds
+      : upper !== null && upper > input.availableSeconds
         ? "possibly_over_budget" as const
         : intervals[0]?.status ?? "bounded_before_sequencing" as const,
+    ...(input.operationalPolicy ? {
+      includedComponents: Object.freeze(includedComponents),
+      operationalPolicyRefs: uniqueSorted(includedComponents.map((entry) => entry.policyRef)),
+    } : {}),
     provenance: productionProvenance("prescription-compiler:duration:assignment"),
   };
 }

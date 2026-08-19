@@ -224,7 +224,8 @@ describe("owner preview exact page and API reads", () => {
     expect(output).toContain("Sessions");
     expect(output).toContain("Session 1");
     expect(output).toContain("Session 2");
-    expect(output.match(/Strength development · 90 minutes/g)).toHaveLength(2);
+    expect(output.match(/Strength development/g)).toHaveLength(2);
+    expect(output.match(/Planned duration: 90 minutes/g)).toHaveLength(2);
     expect(output).toContain("Dumbbell bench press");
     expect(output).toContain("Lift acclimation");
     expect(output).toContain("Main work");
@@ -268,10 +269,37 @@ describe("owner preview exact page and API reads", () => {
 
     const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
     const text = document.body.textContent ?? "";
-    expect(text).toContain("90 minutes available · Calculated at least 30 minutes; final duration unresolved");
+    expect(text).toContain("90 minutes available");
+    expect(text).toContain("Planned duration unavailable: setup timing is unresolved");
     expect(text.indexOf("Prepare")).toBeLessThan(text.indexOf("Main work"));
     expect(text).toContain("Activation / control");
     expect(text).toContain("Confirmed shoulder control supports low-fatigue preparation.");
+  });
+
+  it("presents a finite planning range separately from session capacity", async () => {
+    const projection = PREVIEW.productProjection;
+    const boundedPreview: ControlledOwnerV2ProgramPreview = { ...PREVIEW, unresolvedFacts: [],
+      productProjection: { ...projection, unresolvedFacts: [], sessions: [{ ...projection.sessions[0]!,
+        durationStatus: "bounded", durationMinutes: null, availableMinutes: 90,
+        calculatedDuration: { status: "fits_known_bound", knownLowerBoundSeconds: 573,
+          knownUpperBoundSeconds: 2_038, lowerBoundSeconds: 573, upperBoundSeconds: 2_038,
+          completeness: "complete", unknownComponents: [], includedComponents: [],
+          policyRefs: ["SESSION_DURATION_FEASIBILITY_POLICY_V1@1.0.0"],
+          accountedAssignmentIds: [projection.sessions[0]!.exerciseAssignments[0]!.assignmentId],
+          noInventedTime: true },
+        durationResolution: { status: "duration_within_capacity", rebuildCount: 0,
+          structuralIterationBound: 0, intentStateFingerprints: ["intent-state"] } }] } };
+    harness.previews.set(key(OWNER_ID, PREVIEW_ID), boundedPreview);
+
+    const document = new JSDOM(renderToStaticMarkup(await page(PREVIEW_ID))).window.document;
+    const text = document.body.textContent ?? "";
+    expect(text).toContain("90 minutes available");
+    expect(text).toContain("Planned duration: approximately 10-34 minutes");
+    expect(text).not.toContain("Calculated 10");
+    expect(document.querySelector("[data-testid='owner-preview-technical-details']")?.hasAttribute("open"))
+      .toBe(false);
+    expect(text).toContain("573-2038 seconds");
+    expect(text).toContain("SESSION_DURATION_FEASIBILITY_POLICY_V1@1.0.0");
   });
 
   it("presents unresolved pain Safety as review-required rather than duration-only", async () => {

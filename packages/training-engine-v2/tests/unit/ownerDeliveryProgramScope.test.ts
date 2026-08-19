@@ -354,7 +354,12 @@ describe("controlled owner Get stronger program scope and projection truth", () 
       expect(result.status, `days=${days}:${result.unresolvedFacts.join(",")}`).toBe("complete");
       expect(result.projection?.sessions).toHaveLength(Math.min(days, 4));
     }
-    for (const minutes of [15, 30, 45, 90, 180]) {
+    for (const minutes of [15, 30, 45]) {
+      const result = fixture({ id: `minutes-${minutes}`, minutes }).result;
+      expect(result.status).toBe("blocked");
+      expect(result.unresolvedFacts).toContain("OWNER_DURATION_OVER_CAPACITY_REQUIRED_WORK");
+    }
+    for (const minutes of [90, 180]) {
       expect(fixture({ id: `minutes-${minutes}`, minutes }).result.status).toBe("complete");
     }
     for (const experience of ["beginner", "intermediate", "advanced"] as const) {
@@ -368,6 +373,11 @@ describe("controlled owner Get stronger program scope and projection truth", () 
     const unknown = fixture({ id: "unknown-duration", minutes: null }).result;
     expect(unknown).toMatchObject({ status: "complete", approvalAllowed: false });
     expect(unknown.unresolvedFacts).toContain("OWNER_SESSION_DURATION_EXPLICIT_UNKNOWN");
+    expect(unknown.unresolvedFacts.some((fact) => fact.includes("OVER_CAPACITY"))).toBe(false);
+    expect(unknown.projection?.sessions.every((session) =>
+      session.calculatedDuration?.status === "unknown_due_to_available_capacity" &&
+      session.durationResolution?.status === "duration_unknown" &&
+      session.durationResolution.rebuildCount === 0)).toBe(true);
   });
 
   it("fails restricted equipment closed and keeps canonical pain and opaque history non-authoritative", () => {
